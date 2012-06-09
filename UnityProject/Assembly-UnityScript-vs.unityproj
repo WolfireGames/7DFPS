@@ -47,6 +47,7 @@
      <Compile Include="Assets\AimScript.js" />
      <Compile Include="Assets\LockCursor.js" />
      <Compile Include="Assets\muzzleflashscript.js" />
+     <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
