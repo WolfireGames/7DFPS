@@ -1,0 +1,9 @@
+- movement
+-- sprint
+-- crouch
+-- mouse sensitivity
+
+- aim
+-- gun model
+-- toggle sights
+-- independent aim
