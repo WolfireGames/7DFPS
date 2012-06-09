@@ -1,5 +1,6 @@
 #pragma strict
 
+var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
 private var gun_instance:GameObject;
 private var main_camera:GameObject;
@@ -30,7 +31,7 @@ function FixedUpdate() {
 	if(Input.GetMouseButtonDown(0)){
 		var hit:RaycastHit;
 		if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit)){
-			Instantiate(gun_obj, hit.point, gun_instance.transform.rotation);
+			Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
 		}
 	}
 }
