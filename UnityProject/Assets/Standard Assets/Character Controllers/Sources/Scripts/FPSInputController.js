@@ -34,7 +34,9 @@ function Update () {
 	// Apply the direction to the CharacterMotor
 	motor.inputMoveDirection = transform.rotation * directionVector;
 	motor.inputJump = Input.GetButton("Jump");
-	
+}
+
+function FixedUpdate() {
 	var controller = GetComponent (CharacterController);
 	if(Input.GetKey("left ctrl")){
 		controller.height = Mathf.Lerp(controller.height, crouch_height, 0.1);

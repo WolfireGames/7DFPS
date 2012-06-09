@@ -2,6 +2,7 @@
 
 var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
+var muzzle_flash:GameObject;
 private var gun_instance:GameObject;
 private var main_camera:GameObject;
 private var aiming = 0.0;
@@ -16,6 +17,8 @@ private var rotation_y = 0.0;
 private var view_rotation_x = 0.0;
 private var view_rotation_y = 0.0;
 private var character_controller:CharacterController;
+private var shot = false;
+private var recoil = 1.0;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -42,6 +45,10 @@ function FixedUpdate() {
 	gun_instance.transform.position = Vector3.Lerp(unaimed_pos, aim_pos, aiming);
 	gun_instance.transform.forward = Vector3.Lerp(unaimed_dir, aim_dir, aiming);
 	
+	recoil = Mathf.Max(0.0, recoil - Time.deltaTime * 30.0);
+	gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
+	gun_instance.transform.position.y -= recoil * 0.2;
+	
 	if(Input.GetMouseButton(1)){
 		aiming = Mathf.Lerp(aiming, 1.0, 0.5);
 	} else {
@@ -63,12 +70,21 @@ function FixedUpdate() {
 	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, 0, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
-	if(Input.GetMouseButtonDown(0)){
-		var hit:RaycastHit;
-		if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit)){
-			Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
+	if(Input.GetMouseButton(0)){
+		if(!shot){
+			Instantiate(muzzle_flash, aim_pos + aim_dir * 0.2, gun_instance.transform.rotation);
+			var hit:RaycastHit;
+			if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit)){
+				Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
+				Instantiate(muzzle_flash, hit.point + hit.normal * 0.5, gun_instance.transform.rotation);
+			}
+			rotation_y += Random.Range(1.0,2.0);
+			rotation_x += Random.Range(-1.0,1.0);
+			shot = true;
+			recoil = Random.Range(0.8,1.2);
+			Debug.Log(recoil);
 		}
-		rotation_y += Random.Range(1.0,2.0);
-		rotation_x += Random.Range(-1.0,1.0);
+	} else {
+		shot = false;
 	}
 }
