@@ -3,10 +3,11 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AimScript.js">
     <Files>
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" Line="58" Column="3" />
-      <File FileName="Assets\AimScript.js" Line="77" Column="10" />
+      <File FileName="Assets\AimScript.js" Line="49" Column="27" />
       <File FileName="Assets\LockCursor.js" Line="6" Column="1" />
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\FPSInputController.js" Line="47" Column="3" />
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" Line="1" Column="1" />
+      <File FileName="Assets\muzzleflashscript.js" Line="7" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
