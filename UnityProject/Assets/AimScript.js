@@ -3,6 +3,7 @@
 var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
 var muzzle_flash:GameObject;
+var shell_casing:GameObject;
 private var gun_instance:GameObject;
 private var main_camera:GameObject;
 private var aiming = 0.0;
@@ -34,13 +35,63 @@ function Start () {
 	character_controller = GetComponent(CharacterController);
 }
 
+function AimPos() : Vector3 {
+	var aim_dir = AimDir();
+	return main_camera.transform.position + aim_dir;
+}
+
+function AimDir() : Vector3 {
+	var aim_rot = Quaternion();
+	aim_rot.SetEulerAngles(-rotation_y * Mathf.PI / 180.0, rotation_x * Mathf.PI / 180.0, 0.0);
+	return aim_rot * Vector3(0.0,0.0,1.0);
+}
+
+function PullSlideBack() {
+	if(round_in_chamber){
+		var shell_casing_rotate = Quaternion();
+		shell_casing_rotate.eulerAngles.x = -90;
+		var casing:GameObject = Instantiate(shell_casing, gun_instance.transform.position + gun_instance.transform.forward * 0.2, gun_instance.transform.rotation * shell_casing_rotate);
+		casing.rigidbody.velocity = gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-2.0));
+		casing.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+		round_in_chamber = false;
+	}
+	if(mag_ammo > 0){
+		--mag_ammo;
+		round_in_chamber = true;
+	}
+}
+
 function Update () {
+	var aim_dir = AimDir();
+	var aim_pos = AimPos();
+	
+	if(Input.GetMouseButtonDown(0)){
+		if(round_in_chamber){
+			Instantiate(muzzle_flash, aim_pos + aim_dir * 0.2, gun_instance.transform.rotation);
+			var hit:RaycastHit;
+			var mask = 1<<8;
+			mask = ~mask;
+			if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit, Mathf.Infinity, mask)){
+				Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
+				Instantiate(muzzle_flash, hit.point + hit.normal * 0.5, gun_instance.transform.rotation);
+			}
+			rotation_y += Random.Range(1.0,2.0);
+			rotation_x += Random.Range(-1.0,1.0);
+			recoil = Random.Range(0.8,1.2);
+			PullSlideBack();
+		}
+	}
+	
+	if(Input.GetKeyDown('m')){
+		mag_ammo = kMaxAmmoInMag;
+	}
+	if(Input.GetKeyDown('r')){
+		PullSlideBack();
+	}
 }
 
 function FixedUpdate() {
-	var aim_rot = Quaternion();
-	aim_rot.SetEulerAngles(-rotation_y * Mathf.PI / 180.0, rotation_x * Mathf.PI / 180.0, 0.0);
-	var aim_dir = aim_rot * Vector3(0.0,0.0,1.0);
+	var aim_dir = AimDir();
 	var aim_pos = main_camera.transform.position + aim_dir;
 	
 	var unaimed_pos = transform.position + transform.forward;
@@ -72,28 +123,4 @@ function FixedUpdate() {
 	
 	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, 0, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
-	
-	if(Input.GetMouseButton(0)){
-		if(!shot){
-			if(round_in_chamber){
-				round_in_chamber = false;
-				Instantiate(muzzle_flash, aim_pos + aim_dir * 0.2, gun_instance.transform.rotation);
-				var hit:RaycastHit;
-				if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit)){
-					Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
-					Instantiate(muzzle_flash, hit.point + hit.normal * 0.5, gun_instance.transform.rotation);
-				}
-				rotation_y += Random.Range(1.0,2.0);
-				rotation_x += Random.Range(-1.0,1.0);
-				recoil = Random.Range(0.8,1.2);
-				if(mag_ammo > 0){
-					--mag_ammo;
-					round_in_chamber = true;
-				}
-			}
-			shot = true;
-		}
-	} else {
-		shot = false;
-	}
 }
