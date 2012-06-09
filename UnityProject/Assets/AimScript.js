@@ -32,6 +32,11 @@ private var mag_offset = 0.0;
 private var kGunDistance = 0.3;
 private var kAimSpringStrength = 100.0;
 private var kAimSpringDamping = 0.00001;
+private var slide_rel_pos : Vector3;
+private var slide_amount = 0.0;
+private var hammer_rel_pos : Vector3;
+private var hammer_rel_rot : Quaternion;
+private var hammer_cocked = 1.0;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -40,6 +45,9 @@ public var max_angle_y = 60.0;
 
 function Start () {
 	gun_instance = Instantiate(gun_obj);
+	slide_rel_pos = gun_instance.transform.FindChild("slide").localPosition;
+	hammer_rel_pos = gun_instance.transform.FindChild("hammer").localPosition;
+	hammer_rel_rot = gun_instance.transform.FindChild("hammer").localRotation;
 	magazine_instance_in_gun = Instantiate(magazine_obj);
 	main_camera = transform.FindChild("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
@@ -57,14 +65,15 @@ function AimDir() : Vector3 {
 }
 
 function PullSlideBack() {
+	slide_amount = 1.0;
 	if(round_in_chamber){
 		var shell_casing_rotate = Quaternion();
 		shell_casing_rotate.eulerAngles.x = 0;
 		var casing:GameObject;
 		if(round_in_chamber_fired){
-			casing = Instantiate(shell_casing, gun_instance.transform.position + gun_instance.transform.forward * 0.2, gun_instance.transform.rotation * shell_casing_rotate);
+			casing = Instantiate(shell_casing, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation * shell_casing_rotate);
 		} else {
-			casing = Instantiate(casing_with_bullet, gun_instance.transform.position + gun_instance.transform.forward * 0.2, gun_instance.transform.rotation * shell_casing_rotate);
+			casing = Instantiate(casing_with_bullet, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation * shell_casing_rotate);
 		}
 		casing.rigidbody.velocity = gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
 		casing.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
@@ -97,8 +106,12 @@ function Update () {
 	}
 	
 	recoil = Mathf.Max(0.0, recoil - Time.deltaTime * 30.0);
-	gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
-	gun_instance.transform.position.y -= recoil * 0.2;
+	//gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
+	//gun_instance.transform.position.y -= recoil * 0.2;
+	gun_instance.transform.RotateAround(
+		gun_instance.transform.FindChild("point_recoil_rotate").position,
+		gun_instance.transform.rotation * Vector3(1,0,0),
+		recoil * -30.0);
 	
 	if(Input.GetMouseButton(1)){
 		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
@@ -107,6 +120,7 @@ function Update () {
 	}
 	aim_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	aiming += aim_vel * Time.deltaTime;
+	
 	
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aiming);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aiming);
@@ -131,9 +145,10 @@ function Update () {
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	if(Input.GetMouseButtonDown(0)){
+		hammer_cocked = 0.0;
 		if(round_in_chamber){
 			round_in_chamber_fired = true;
-			Instantiate(muzzle_flash, aim_pos + aim_dir * 0.2, gun_instance.transform.rotation);
+			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzle").position, gun_instance.transform.rotation);
 			var hit:RaycastHit;
 			var mask = 1<<8;
 			mask = ~mask;
@@ -174,6 +189,21 @@ function Update () {
 			Time.timeScale = 1.0;
 		}
 	}
+	
+	gun_instance.transform.FindChild("slide").localPosition = 
+		slide_rel_pos + 
+		(gun_instance.transform.FindChild("point_slide_end").localPosition - 
+		 gun_instance.transform.FindChild("point_slide_start").localPosition) * slide_amount;
+	
+	
+	gun_instance.transform.FindChild("hammer").localPosition = 
+		Vector3.Lerp(hammer_rel_pos, gun_instance.transform.FindChild("point_hammer_cocked").localPosition, hammer_cocked);
+	gun_instance.transform.FindChild("hammer").localRotation = 
+		Quaternion.Slerp(hammer_rel_rot, gun_instance.transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
+		
+	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
+	
+	slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * 5.0);
 }
 
 function FixedUpdate() {
