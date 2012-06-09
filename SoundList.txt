@@ -1,0 +1,37 @@
+Gunshot:
+- Colt 1911 firing [shooting away from mic, shooting towards mic] [small room, large room, open, just-echo]
+
+Gun foley:
+- Pull back slide
+- Slide snaps forward
+- Press mag eject button
+- Switch safety
+- Insert magazine (hard, soft)
+- Magazine falls on ground
+- Shell casings fall on ground
+- Bullets fall on ground
+- Insert bullet in magazine
+- Pick up magazine
+- Pick up bullet
+- Put bullet in pocket
+- Remove bullet from pocket
+- Put magazine in pocket
+- Remove magazine from pocket
+
+Fired Bullets:
+- bullet flyby (crack)
+- bullet flyby (whizz)
+- bullet ricochet
+- bullet impact metal
+- bullet impact concrete
+- bullet impact glass
+
+Footsteps:
+- Rubber-soled shoes on concrete, metal
+- Run, walk, jump, crouch-walk
+
+Movement foley:
+- loose cloth clothing
+- bullets clink in pocket
+- magazines clink in pocket
+- aim gun, run, walk, jump, crouch-walk
