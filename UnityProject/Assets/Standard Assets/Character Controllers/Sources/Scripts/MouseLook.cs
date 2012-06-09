@@ -27,6 +27,8 @@ public class MouseLook : MonoBehaviour {
 
 	public float minimumY = -60F;
 	public float maximumY = 60F;
+	
+	public Vector3 forward;
 
 	float rotationY = 0F;
 
@@ -52,6 +54,7 @@ public class MouseLook : MonoBehaviour {
 			
 			transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
 		}
+		forward = transform.forward;
 	}
 	
 	void Start ()

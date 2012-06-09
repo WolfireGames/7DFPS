@@ -5,18 +5,38 @@ var gun_obj:GameObject;
 private var gun_instance:GameObject;
 private var main_camera:GameObject;
 private var aiming = 0.0;
+private var rotation_x_leeway = 0.0;
+private var rotation_y_min_leeway = 0.0;
+private var rotation_y_max_leeway = 0.0;
+private var kRotationXLeeway = 5.0;
+private var kRotationYMinLeeway = 20.0;
+private var kRotationYMaxLeeway = 10.0;
+private var rotation_x = 0.0;
+private var rotation_y = 0.0;
+private var view_rotation_x = 0.0;
+private var view_rotation_y = 0.0;
+private var character_controller:CharacterController;
+
+public var sensitivity_x = 2.0;
+public var sensitivity_y = 2.0;
+public var min_angle_y = -60.0;
+public var max_angle_y = 60.0;
 
 function Start () {
 	gun_instance = Instantiate(gun_obj);
 	main_camera = transform.FindChild("Main Camera").gameObject;
+	character_controller = GetComponent(CharacterController);
 }
 
 function Update () {
 }
 
 function FixedUpdate() {
-	var aim_pos = main_camera.transform.position + main_camera.transform.forward;
-	var aim_dir = main_camera.transform.forward;
+	var aim_rot = Quaternion();
+	aim_rot.SetEulerAngles(-rotation_y * Mathf.PI / 180.0, rotation_x * Mathf.PI / 180.0, 0.0);
+	var aim_dir = aim_rot * Vector3(0.0,0.0,1.0);
+	var aim_pos = main_camera.transform.position + aim_dir;
+	
 	var unaimed_pos = transform.position + transform.forward;
 	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
 	gun_instance.transform.position = Vector3.Lerp(unaimed_pos, aim_pos, aiming);
@@ -28,10 +48,27 @@ function FixedUpdate() {
 		aiming = Mathf.Lerp(aiming, 0.0, 0.5);
 	}
 	
+	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+	
+	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
+	
+	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aiming);
+	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aiming);
+	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aiming);
+	
+	view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
+	view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
+	
+	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, 0, 0);
+	character_controller.transform.localEulerAngles.y = view_rotation_x;
+	
 	if(Input.GetMouseButtonDown(0)){
 		var hit:RaycastHit;
 		if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit)){
 			Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
 		}
+		rotation_y += Random.Range(1.0,2.0);
+		rotation_x += Random.Range(-1.0,1.0);
 	}
 }

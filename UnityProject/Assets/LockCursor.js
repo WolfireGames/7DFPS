@@ -1,15 +1,14 @@
 #pragma strict
 
-function Start () {
-
-}
-
-function OnMouseDown () {
-    // Lock the cursor
-    Screen.lockCursor = true;
+function Start () {	
+	Screen.lockCursor = true;
 }
 
 function Update () {
-    if (Input.GetKeyDown ("escape"))
+    if (Input.GetKeyDown ("escape")){
         Screen.lockCursor = false;
+    }
+    if (Input.GetMouseButtonDown(0)){
+	    Screen.lockCursor = true;
+    }
 }
