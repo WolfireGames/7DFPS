@@ -1,5 +1,6 @@
 #pragma strict
 
+var magazine_obj:GameObject;
 var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
 var muzzle_flash:GameObject;
@@ -23,6 +24,8 @@ private var recoil = 1.0;
 private var kMaxAmmoInMag = 8;
 private var mag_ammo = kMaxAmmoInMag;
 private var round_in_chamber = true;
+private var magazine_instance_in_gun:GameObject;
+private var mag_offset = 0.0;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -31,6 +34,7 @@ public var max_angle_y = 60.0;
 
 function Start () {
 	gun_instance = Instantiate(gun_obj);
+	magazine_instance_in_gun = Instantiate(magazine_obj);
 	main_camera = transform.FindChild("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
 }
@@ -51,7 +55,7 @@ function PullSlideBack() {
 		var shell_casing_rotate = Quaternion();
 		shell_casing_rotate.eulerAngles.x = -90;
 		var casing:GameObject = Instantiate(shell_casing, gun_instance.transform.position + gun_instance.transform.forward * 0.2, gun_instance.transform.rotation * shell_casing_rotate);
-		casing.rigidbody.velocity = gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-2.0));
+		casing.rigidbody.velocity = gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
 		casing.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
 		round_in_chamber = false;
 	}
@@ -83,7 +87,19 @@ function Update () {
 	}
 	
 	if(Input.GetKeyDown('m')){
-		mag_ammo = kMaxAmmoInMag;
+		if(!magazine_instance_in_gun){
+			mag_ammo = kMaxAmmoInMag;
+			magazine_instance_in_gun = Instantiate(magazine_obj);
+			mag_offset = -2.0;
+		}
+	}
+	if(Input.GetKeyDown('e')){
+		if(magazine_instance_in_gun){
+			//Destroy(magazine_instance_in_gun);
+			magazine_instance_in_gun.AddComponent(Rigidbody);
+			magazine_instance_in_gun = null;
+			mag_ammo = 0;
+		}
 	}
 	if(Input.GetKeyDown('r')){
 		PullSlideBack();
@@ -98,6 +114,12 @@ function FixedUpdate() {
 	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
 	gun_instance.transform.position = Vector3.Lerp(unaimed_pos, aim_pos, aiming);
 	gun_instance.transform.forward = Vector3.Lerp(unaimed_dir, aim_dir, aiming);
+	if(magazine_instance_in_gun){
+		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
+		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
+		magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
+		mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
+	}
 	
 	recoil = Mathf.Max(0.0, recoil - Time.deltaTime * 30.0);
 	gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
