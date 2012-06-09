@@ -34,6 +34,7 @@ private var kAimSpringStrength = 100.0;
 private var kAimSpringDamping = 0.00001;
 private var slide_rel_pos : Vector3;
 private var slide_amount = 0.0;
+private var slide_lock = false;
 private var hammer_rel_pos : Vector3;
 private var hammer_rel_rot : Quaternion;
 private var hammer_cocked = 1.0;
@@ -65,6 +66,9 @@ function AimDir() : Vector3 {
 }
 
 function PullSlideBack() {
+	if(slide_lock){
+		return;
+	}
 	slide_amount = 1.0;
 	if(round_in_chamber){
 		var shell_casing_rotate = Quaternion();
@@ -79,6 +83,17 @@ function PullSlideBack() {
 		casing.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
 		round_in_chamber = false;
 	}
+	if(mag_ammo > 0){
+		--mag_ammo;
+		round_in_chamber = true;
+		round_in_chamber_fired = false;
+	} else if(magazine_instance_in_gun){
+		slide_lock = true;
+	}
+}
+
+function ReleaseSlideLock() {
+	slide_lock = false;
 	if(mag_ammo > 0){
 		--mag_ammo;
 		round_in_chamber = true;
@@ -144,7 +159,7 @@ function Update () {
 	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, 0, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
-	if(Input.GetMouseButtonDown(0)){
+	if(Input.GetMouseButtonDown(0) && !slide_lock){
 		hammer_cocked = 0.0;
 		if(round_in_chamber){
 			round_in_chamber_fired = true;
@@ -179,6 +194,9 @@ function Update () {
 			mag_ammo = 0;
 		}
 	}
+	if(Input.GetKeyDown('t')){
+		ReleaseSlideLock();
+	}
 	if(Input.GetKeyDown('r')){
 		PullSlideBack();
 	}
@@ -203,7 +221,9 @@ function Update () {
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
 	
-	slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * 5.0);
+	if(!slide_lock){
+		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * 5.0);
+	}
 }
 
 function FixedUpdate() {
