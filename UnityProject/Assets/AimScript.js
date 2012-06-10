@@ -46,6 +46,11 @@ private var slide_amount = 0.0;
 private var slide_lock = false;
 private var hammer_rel_pos : Vector3;
 private var hammer_rel_rot : Quaternion;
+private var safety_rel_pos : Vector3;
+private var safety_rel_rot : Quaternion;
+private var safety_off = 1.0;
+enum Safety{OFF, ON};
+private var safety = Safety.OFF;
 private var hammer_cocked = 1.0;
 private var target_gun_rotate : Quaternion;
 private var aim_toggle = false;
@@ -81,6 +86,8 @@ function Start () {
 	slide_rel_pos = gun_instance.transform.FindChild("slide").localPosition;
 	hammer_rel_pos = gun_instance.transform.FindChild("hammer").localPosition;
 	hammer_rel_rot = gun_instance.transform.FindChild("hammer").localRotation;
+	safety_rel_pos = gun_instance.transform.FindChild("safety").localPosition;
+	safety_rel_rot = gun_instance.transform.FindChild("safety").localRotation;
 	magazine_instance_in_gun = Instantiate(magazine_obj);
 	main_camera = GameObject.Find("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
@@ -232,7 +239,7 @@ function Update () {
 	main_camera.transform.localEulerAngles += Vector3(head_y_recoil, head_x_recoil, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
-	if(Input.GetMouseButtonDown(0) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0){
+	if(Input.GetMouseButtonDown(0) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
 		hammer_cocked = 0.0;
 		if(round_in_chamber && slide_amount == 0.0){
 			round_in_chamber_fired = true;
@@ -310,6 +317,19 @@ function Update () {
 			slide_lock = true;
 		}
 	}
+	if(Input.GetKeyDown('v')){
+		if(safety == Safety.OFF){
+			safety = Safety.ON;
+		} else if(safety == Safety.ON){
+			safety = Safety.OFF;
+		}
+	}
+	if(safety == Safety.OFF){
+		safety_off = Mathf.Min(1.0, safety_off + Time.deltaTime * 10.0);
+	} else if(safety == Safety.ON){
+		safety_off = Mathf.Max(0.0, safety_off - Time.deltaTime * 10.0);
+	}
+	
 	if(Input.GetKeyDown('r')){
 		if(left_hand_occupied == false && slide_stage == SlideStage.NOTHING){
 			left_hand_occupied = true;
@@ -321,7 +341,7 @@ function Update () {
 		hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
 	}
 	if(Input.GetKeyUp('f')){
-		if(Input.GetMouseButton(0) || hammer_cocked != 1.0){
+		if((Input.GetMouseButton(0) && safety_off == 1.0) || hammer_cocked != 1.0){
 			thumb_on_hammer = Thumb.SLOW_LOWERING;
 		} else {
 			thumb_on_hammer = Thumb.OFF_HAMMER;
@@ -356,6 +376,13 @@ function Update () {
 	
 	target_slide_pull_pose = 0.0;
 	target_reload_pose = 0.0;
+	
+	if(safety == Safety.ON){
+		target_reload_pose = 0.2;
+		target_slide_pull_pose = 0.0;
+		gun_tilt = GunTilt.RIGHT;
+	}
+	
 	if(slide_lock){
 		if(gun_tilt != GunTilt.LEFT){
 			target_reload_pose = 0.7;
@@ -419,6 +446,11 @@ function Update () {
 		Vector3.Lerp(hammer_rel_pos, gun_instance.transform.FindChild("point_hammer_cocked").localPosition, hammer_cocked);
 	gun_instance.transform.FindChild("hammer").localRotation = 
 		Quaternion.Slerp(hammer_rel_rot, gun_instance.transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
+	
+	gun_instance.transform.FindChild("safety").localPosition = 
+		Vector3.Lerp(safety_rel_pos, gun_instance.transform.FindChild("point_safety_off").localPosition, safety_off);
+	gun_instance.transform.FindChild("safety").localRotation = 
+		Quaternion.Slerp(safety_rel_rot, gun_instance.transform.FindChild("point_safety_off").localRotation, safety_off);
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
 
