@@ -53,6 +53,8 @@ enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
 enum SlideStage {NOTHING, PULLBACK, HOLD};
 private var slide_stage : SlideStage = SlideStage.NOTHING;
+enum MagStage {OUT, INSERTING, IN, REMOVING};
+private var mag_stage : MagStage = MagStage.IN;
 private var mag_seated = 1.0;
 
 public var sensitivity_x = 2.0;
@@ -155,8 +157,9 @@ function Update () {
 	if(magazine_instance_in_gun){
 		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
 		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
-		magazine_instance_in_gun.transform.position += gun_instance.transform.FindChild("point_mag_to_insert").position - 
-													   gun_instance.transform.FindChild("point_mag_inserted").position;
+		magazine_instance_in_gun.transform.position += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
+													    gun_instance.transform.FindChild("point_mag_inserted").position) * 
+													   (1.0 - mag_seated);
 		
 		//magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
 		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
@@ -224,6 +227,7 @@ function Update () {
 			mag_ammo = kMaxAmmoInMag;
 			magazine_instance_in_gun = Instantiate(magazine_obj);
 			mag_offset = -2.0;
+			mag_seated = 0.0;
 		}
 	}
 	if(Input.GetKeyDown('e')){
