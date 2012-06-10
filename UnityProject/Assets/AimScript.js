@@ -85,7 +85,7 @@ function AimDir() : Vector3 {
 
 function PullSlideBack() {
 	slide_amount = 1.0;
-	if(slide_lock && magazine_instance_in_gun && mag_ammo == 0){
+	if(slide_lock && mag_stage == MagStage.IN && mag_ammo == 0){
 		return;
 	}
 	slide_lock = false;
@@ -106,7 +106,7 @@ function PullSlideBack() {
 		--mag_ammo;
 		round_in_chamber = true;
 		round_in_chamber_fired = false;
-	} else if(magazine_instance_in_gun){
+	} else if(mag_stage == MagStage.IN){
 		slide_lock = true;
 	}
 }
@@ -223,7 +223,9 @@ function Update () {
 	}
 	
 	if(Input.GetKeyDown('m')){
-		if(!magazine_instance_in_gun){
+		if(mag_stage == MagStage.OUT && !left_hand_occupied){
+			left_hand_occupied = true;
+			mag_stage = MagStage.INSERTING;
 			mag_ammo = kMaxAmmoInMag;
 			magazine_instance_in_gun = Instantiate(magazine_obj);
 			mag_offset = -2.0;
@@ -231,14 +233,31 @@ function Update () {
 		}
 	}
 	if(Input.GetKeyDown('e')){
-		if(magazine_instance_in_gun){
-			//Destroy(magazine_instance_in_gun);
-			magazine_instance_in_gun.AddComponent(Rigidbody);
-			magazine_instance_in_gun.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-			magazine_instance_in_gun = null;
+		if(mag_stage == MagStage.IN){
+			mag_stage = MagStage.REMOVING;
 			mag_ammo = 0;
 		}
 	}
+	
+	if(mag_stage == MagStage.INSERTING){
+		mag_seated += Time.deltaTime * 5.0;
+		if(mag_seated >= 1.0){
+			mag_seated = 1.0;
+			mag_stage = MagStage.IN;
+			left_hand_occupied = false;
+		}
+	}
+	if(mag_stage == MagStage.REMOVING){
+		mag_seated -= Time.deltaTime * 5.0;
+		if(mag_seated <= 0.0){
+			mag_seated = 0.0;
+			mag_stage = MagStage.OUT;
+			magazine_instance_in_gun.AddComponent(Rigidbody);
+			magazine_instance_in_gun.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+			magazine_instance_in_gun = null;
+		}
+	}
+	
 	if(Input.GetKeyDown('t')){
 		if(slide_amount == kSlideLockPosition){
 			ReleaseSlideLock();
