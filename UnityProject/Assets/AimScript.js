@@ -28,6 +28,12 @@ private var x_recoil_offset_vel = 0.0;
 private var y_recoil_offset_vel = 0.0;
 private var kRecoilSpringStrength = 800.0;
 private var kRecoilSpringDamping = 0.000001;
+private var head_x_recoil = 0.0;
+private var head_y_recoil = 0.0;
+private var head_x_recoil_vel = 0.0;
+private var head_y_recoil_vel = 0.0;
+private var kHeadRecoilSpringStrength = 800.0;
+private var kHeadRecoilSpringDamping = 0.000001;
 private var round_in_chamber = true;
 private var round_in_chamber_fired = false;
 private var magazine_instance_in_gun:GameObject;
@@ -52,6 +58,9 @@ private var target_reload_pose = 0.0;
 private var kSlideLockPosition = 0.8;
 private var kSlideLockSpeed = 20.0;
 private var left_hand_occupied = false;
+private var kMaxHeadRecoil = 10;
+private var head_recoil_delay : float[] = new float[kMaxHeadRecoil];
+private var next_head_recoil_delay = 0;
 enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
 enum SlideStage {NOTHING, PULLBACK, HOLD};
@@ -73,6 +82,9 @@ function Start () {
 	magazine_instance_in_gun = Instantiate(magazine_obj);
 	main_camera = GameObject.Find("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
+	for(var i=0; i<kMaxHeadRecoil; ++i){
+		head_recoil_delay[i] = -1.0;
+	}
 }
 
 function AimPos() : Vector3 {
@@ -121,7 +133,7 @@ function PullSlideBack() {
 
 function ReleaseSlideLock() {
 	slide_lock = false;
-	if(MagScript().NumRounds() > 0){
+	if(magazine_instance_in_gun && MagScript().NumRounds() > 0){
 		MagScript().RemoveRound();
 		round_in_chamber = true;
 		round_in_chamber_fired = false;
@@ -214,7 +226,8 @@ function Update () {
 		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
 		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
 	}
-	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, view_rotation_x, 0);
+	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
+	main_camera.transform.localEulerAngles += Vector3(head_y_recoil, head_x_recoil, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	if(Input.GetMouseButtonDown(0) && !slide_lock){
@@ -233,7 +246,20 @@ function Update () {
 			rotation_x += Random.Range(-1.0,1.0);
 			x_recoil_offset_vel -= Random.Range(150.0,300.0);
 			y_recoil_offset_vel += Random.Range(-200.0,200.0);
+			head_recoil_delay[next_head_recoil_delay] = 0.1;
+			next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
 			PullSlideBack();
+		}
+	}
+	
+	for(var i = 0; i < kMaxHeadRecoil; ++i){
+		if(head_recoil_delay[i] != -1.0){
+			head_recoil_delay[i] -= Time.deltaTime;
+			if(head_recoil_delay[i] <= 0.0){
+				head_x_recoil_vel += Random.Range(-30.0,30.0);
+				head_y_recoil_vel += Random.Range(-30.0,30.0);
+				head_recoil_delay[i] = -1.0;
+			}
 		}
 	}
 	
@@ -353,6 +379,14 @@ function Update () {
 	y_recoil_offset_vel -= y_recoil_offset * kRecoilSpringStrength * Time.deltaTime;
 	y_recoil_offset_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
 	y_recoil_offset += y_recoil_offset_vel * Time.deltaTime;	
+	
+	head_x_recoil_vel -= head_x_recoil * kRecoilSpringStrength * Time.deltaTime;
+	head_x_recoil_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
+	head_x_recoil += head_x_recoil_vel * Time.deltaTime;	
+	
+	head_y_recoil_vel -= head_y_recoil * kRecoilSpringStrength * Time.deltaTime;
+	head_y_recoil_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
+	head_y_recoil += head_y_recoil_vel * Time.deltaTime;	
 	
 	gun_instance.transform.FindChild("slide").localPosition = 
 		slide_rel_pos + 
