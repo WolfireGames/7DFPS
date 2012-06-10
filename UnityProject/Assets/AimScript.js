@@ -184,18 +184,7 @@ function Update () {
 		gun_instance.transform.rotation,
 		gun_instance.transform.FindChild("pose_reload").rotation,
 		reload_pose);
-	
-	if(magazine_instance_in_gun){
-		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
-		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
-		magazine_instance_in_gun.transform.position += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
-													    gun_instance.transform.FindChild("point_mag_inserted").position) * 
-													   (1.0 - mag_seated);
 		
-		//magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
-		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
-	}
-	
 	//gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
 	//gun_instance.transform.position.y -= recoil * 0.2;
 	gun_instance.transform.RotateAround(
@@ -207,6 +196,17 @@ function Update () {
 		gun_instance.transform.FindChild("point_recoil_rotate").position,
 		Vector3(0,1,0),
 		y_recoil_offset);
+	
+	if(magazine_instance_in_gun){
+		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
+		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
+		magazine_instance_in_gun.transform.position += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
+													    gun_instance.transform.FindChild("point_mag_inserted").position) * 
+													   (1.0 - mag_seated);
+		
+		//magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
+		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
+	}
 	
 	if(Input.GetMouseButton(1) || aim_toggle){
 		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
@@ -284,6 +284,8 @@ function Update () {
 	if(Input.GetKeyDown('e')){
 		if(mag_stage == MagStage.IN){
 			mag_stage = MagStage.REMOVING;
+			y_recoil_offset_vel += Random.Range(-40.0,40.0);
+			x_recoil_offset_vel += Random.Range(-40.0,100.0);
 		}
 	}
 	
@@ -292,6 +294,10 @@ function Update () {
 		if(mag_seated >= 1.0){
 			mag_seated = 1.0;
 			mag_stage = MagStage.IN;
+			y_recoil_offset_vel += Random.Range(-40.0,40.0);
+			x_recoil_offset_vel += Random.Range(50.0,300.0);
+			rotation_x += Random.Range(-0.4,0.4);
+			rotation_y += Random.Range(0.0,1.0);
 			left_hand_occupied = false;
 		}
 	}
