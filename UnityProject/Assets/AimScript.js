@@ -22,7 +22,12 @@ private var view_rotation_x = 0.0;
 private var view_rotation_y = 0.0;
 private var character_controller:CharacterController;
 private var shot = false;
-private var recoil = 1.0;
+private var x_recoil_offset = 0.0;
+private var y_recoil_offset = 0.0;
+private var x_recoil_offset_vel = 0.0;
+private var y_recoil_offset_vel = 0.0;
+private var kRecoilSpringStrength = 800.0;
+private var kRecoilSpringDamping = 0.000001;
 private var kMaxAmmoInMag = 8;
 private var mag_ammo = kMaxAmmoInMag;
 private var round_in_chamber = true;
@@ -165,13 +170,17 @@ function Update () {
 		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
 	}
 	
-	recoil = Mathf.Max(0.0, recoil - Time.deltaTime * 30.0);
 	//gun_instance.transform.rotation.eulerAngles.x += recoil * -30.0;
 	//gun_instance.transform.position.y -= recoil * 0.2;
 	gun_instance.transform.RotateAround(
 		gun_instance.transform.FindChild("point_recoil_rotate").position,
 		gun_instance.transform.rotation * Vector3(1,0,0),
-		recoil * -30.0);
+		x_recoil_offset);
+		
+	gun_instance.transform.RotateAround(
+		gun_instance.transform.FindChild("point_recoil_rotate").position,
+		Vector3(0,1,0),
+		y_recoil_offset);
 	
 	if(Input.GetMouseButton(1) || aim_toggle){
 		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
@@ -204,8 +213,8 @@ function Update () {
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	if(Input.GetMouseButtonDown(0) && !slide_lock){
-		hammer_cocked = 0.0;
-		if(round_in_chamber){
+		hammer_cocked = slide_amount;
+		if(round_in_chamber && slide_amount == 0.0){
 			round_in_chamber_fired = true;
 			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzle").position, gun_instance.transform.rotation);
 			var hit:RaycastHit;
@@ -217,7 +226,8 @@ function Update () {
 			}
 			rotation_y += Random.Range(1.0,2.0);
 			rotation_x += Random.Range(-1.0,1.0);
-			recoil = Random.Range(0.8,1.2);
+			x_recoil_offset_vel -= Random.Range(150.0,300.0);
+			y_recoil_offset_vel += Random.Range(-200.0,200.0);
 			PullSlideBack();
 		}
 	}
@@ -333,6 +343,14 @@ function Update () {
 	reload_pose_vel += (target_reload_pose - reload_pose) * kAimSpringStrength * Time.deltaTime;
 	reload_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	reload_pose += reload_pose_vel * Time.deltaTime;	
+	
+	x_recoil_offset_vel -= x_recoil_offset * kRecoilSpringStrength * Time.deltaTime;
+	x_recoil_offset_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
+	x_recoil_offset += x_recoil_offset_vel * Time.deltaTime;	
+	
+	y_recoil_offset_vel -= y_recoil_offset * kRecoilSpringStrength * Time.deltaTime;
+	y_recoil_offset_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
+	y_recoil_offset += y_recoil_offset_vel * Time.deltaTime;	
 	
 	gun_instance.transform.FindChild("slide").localPosition = 
 		slide_rel_pos + 
