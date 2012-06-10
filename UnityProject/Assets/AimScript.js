@@ -61,6 +61,8 @@ private var left_hand_occupied = false;
 private var kMaxHeadRecoil = 10;
 private var head_recoil_delay : float[] = new float[kMaxHeadRecoil];
 private var next_head_recoil_delay = 0;
+enum Thumb{ON_HAMMER, OFF_HAMMER, SLOW_LOWERING};
+private var thumb_on_hammer = Thumb.OFF_HAMMER;
 enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
 enum SlideStage {NOTHING, PULLBACK, HOLD};
@@ -230,8 +232,8 @@ function Update () {
 	main_camera.transform.localEulerAngles += Vector3(head_y_recoil, head_x_recoil, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
-	if(Input.GetMouseButtonDown(0) && !slide_lock){
-		hammer_cocked = slide_amount;
+	if(Input.GetMouseButtonDown(0) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0){
+		hammer_cocked = 0.0;
 		if(round_in_chamber && slide_amount == 0.0){
 			round_in_chamber_fired = true;
 			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzle").position, gun_instance.transform.rotation);
@@ -314,6 +316,25 @@ function Update () {
 			slide_stage = SlideStage.PULLBACK;
 		}
 	}
+	if(Input.GetKey('f')){
+		thumb_on_hammer = Thumb.ON_HAMMER;
+		hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
+	}
+	if(Input.GetKeyUp('f')){
+		if(Input.GetMouseButton(0) || hammer_cocked != 1.0){
+			thumb_on_hammer = Thumb.SLOW_LOWERING;
+		} else {
+			thumb_on_hammer = Thumb.OFF_HAMMER;
+		}
+	}
+	if(thumb_on_hammer == Thumb.SLOW_LOWERING){
+		hammer_cocked -= Time.deltaTime * 10.0f;
+		if(hammer_cocked <= 0.0){
+			hammer_cocked = 0.0;
+			thumb_on_hammer = Thumb.OFF_HAMMER;
+		}
+	}
+	
 	if(Input.GetKeyDown('q')){
 		aim_toggle = !aim_toggle;
 	}
