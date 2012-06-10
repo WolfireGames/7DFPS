@@ -41,8 +41,13 @@ private var hammer_cocked = 1.0;
 private var target_gun_rotate : Quaternion;
 private var aim_toggle = false;
 private var slide_pull_pose = 0.0;
+private var slide_pull_pose_vel = 0.0;
+private var target_slide_pull_pose = 0.0;
 private var kSlideLockPosition = 0.8;
 private var kSlideLockSpeed = 20.0;
+private var left_hand_occupied = false;
+enum SlideStage {NOTHING, PULLBACK, HOLD};
+private var slide_stage : SlideStage = SlideStage.NOTHING;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -111,6 +116,13 @@ function mix( a:Vector3, b:Vector3, val:float ) : Vector3{
 	return a + (b-a) * val;
 }
 
+function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
+	var angle = 0.0;
+	var axis = Vector3();
+	(Quaternion.Inverse(b)*a).ToAngleAxis(angle, axis);
+	return a * Quaternion.AngleAxis(angle * -val, axis);
+}
+
 function Update () {
 	var aim_dir = AimDir();
 	var aim_pos = AimPos();
@@ -119,8 +131,13 @@ function Update () {
 	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
 	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aiming);
 	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aiming);
-	gun_instance.transform.position = gun_instance.transform.FindChild("pose_slide_pull").position;
-	gun_instance.transform.rotation =  gun_instance.transform.FindChild("pose_slide_pull").rotation;
+	gun_instance.transform.position = mix(gun_instance.transform.position,
+									      gun_instance.transform.FindChild("pose_slide_pull").position,
+									      slide_pull_pose);
+	gun_instance.transform.rotation = mix(
+		gun_instance.transform.rotation,
+		gun_instance.transform.FindChild("pose_slide_pull").rotation,
+		slide_pull_pose);
 	
 	if(magazine_instance_in_gun){
 		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
@@ -143,8 +160,7 @@ function Update () {
 		aim_vel += (0.0 - aiming) * kAimSpringStrength * Time.deltaTime;
 	}
 	aim_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-	aiming += aim_vel * Time.deltaTime;
-	
+	aiming += aim_vel * Time.deltaTime;	
 	
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aiming);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aiming);
@@ -214,7 +230,10 @@ function Update () {
 		}
 	}
 	if(Input.GetKeyDown('r')){
-		PullSlideBack();
+		if(left_hand_occupied == false && slide_stage == SlideStage.NOTHING){
+			left_hand_occupied = true;
+			slide_stage = SlideStage.PULLBACK;
+		}
 	}
 	if(Input.GetKeyDown('q')){
 		aim_toggle = !aim_toggle;
@@ -226,6 +245,36 @@ function Update () {
 			Time.timeScale = 1.0;
 		}
 	}
+	
+	target_slide_pull_pose = 0.0;
+	if(slide_lock){
+		target_slide_pull_pose = 0.5;
+	}
+	if(slide_stage == SlideStage.PULLBACK){
+		target_slide_pull_pose = 1.0;
+		slide_amount += Time.deltaTime * 10.0;
+		if(slide_amount >= 1.0){
+			PullSlideBack();
+			slide_stage = SlideStage.HOLD;
+		}
+		if(!Input.GetKey('r')){
+			slide_stage = SlideStage.NOTHING;
+			left_hand_occupied = false;
+		}
+	}
+	if(slide_stage == SlideStage.HOLD){
+		target_slide_pull_pose = 1.0;
+		slide_amount = 1.0;
+		if(!Input.GetKey('r')){
+			slide_stage = SlideStage.NOTHING;
+			left_hand_occupied = false;
+		}
+	}
+	
+	
+	slide_pull_pose_vel += (target_slide_pull_pose - slide_pull_pose) * kAimSpringStrength * Time.deltaTime;
+	slide_pull_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
+	slide_pull_pose += slide_pull_pose_vel * Time.deltaTime;	
 	
 	gun_instance.transform.FindChild("slide").localPosition = 
 		slide_rel_pos + 
@@ -240,7 +289,9 @@ function Update () {
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
 
-	slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+	if(slide_stage == SlideStage.NOTHING){
+		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+	}
 	if(slide_lock){
 		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
 	}
