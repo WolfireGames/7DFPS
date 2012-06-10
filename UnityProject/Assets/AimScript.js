@@ -53,6 +53,7 @@ enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
 enum SlideStage {NOTHING, PULLBACK, HOLD};
 private var slide_stage : SlideStage = SlideStage.NOTHING;
+private var mag_seated = 1.0;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
