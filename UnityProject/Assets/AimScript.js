@@ -155,8 +155,11 @@ function Update () {
 	if(magazine_instance_in_gun){
 		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
 		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
-		magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
-		mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
+		magazine_instance_in_gun.transform.position += gun_instance.transform.FindChild("point_mag_to_insert").position - 
+													   gun_instance.transform.FindChild("point_mag_inserted").position;
+		
+		//magazine_instance_in_gun.transform.position += gun_instance.transform.rotation * Vector3(0.0,mag_offset,0.0);
+		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
 	}
 	
 	recoil = Mathf.Max(0.0, recoil - Time.deltaTime * 30.0);
