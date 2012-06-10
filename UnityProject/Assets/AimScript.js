@@ -38,6 +38,11 @@ private var slide_lock = false;
 private var hammer_rel_pos : Vector3;
 private var hammer_rel_rot : Quaternion;
 private var hammer_cocked = 1.0;
+private var target_gun_rotate : Quaternion;
+private var aim_toggle = false;
+private var slide_pull_pose = 0.0;
+private var kSlideLockPosition = 0.8;
+private var kSlideLockSpeed = 20.0;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -66,10 +71,11 @@ function AimDir() : Vector3 {
 }
 
 function PullSlideBack() {
-	if(slide_lock){
+	slide_amount = 1.0;
+	if(slide_lock && magazine_instance_in_gun && mag_ammo == 0){
 		return;
 	}
-	slide_amount = 1.0;
+	slide_lock = false;
 	if(round_in_chamber){
 		var shell_casing_rotate = Quaternion();
 		shell_casing_rotate.eulerAngles.x = 0;
@@ -113,6 +119,9 @@ function Update () {
 	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
 	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aiming);
 	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aiming);
+	gun_instance.transform.position = gun_instance.transform.FindChild("pose_slide_pull").position;
+	gun_instance.transform.rotation =  gun_instance.transform.FindChild("pose_slide_pull").rotation;
+	
 	if(magazine_instance_in_gun){
 		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
 		magazine_instance_in_gun.transform.rotation = gun_instance.transform.rotation;
@@ -128,7 +137,7 @@ function Update () {
 		gun_instance.transform.rotation * Vector3(1,0,0),
 		recoil * -30.0);
 	
-	if(Input.GetMouseButton(1)){
+	if(Input.GetMouseButton(1) || aim_toggle){
 		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
 	} else {
 		aim_vel += (0.0 - aiming) * kAimSpringStrength * Time.deltaTime;
@@ -195,10 +204,20 @@ function Update () {
 		}
 	}
 	if(Input.GetKeyDown('t')){
-		ReleaseSlideLock();
+		if(slide_amount == kSlideLockPosition){
+			ReleaseSlideLock();
+		}
+	}
+	if(Input.GetKey('t')){
+		if(slide_amount > kSlideLockPosition){
+			slide_lock = true;
+		}
 	}
 	if(Input.GetKeyDown('r')){
 		PullSlideBack();
+	}
+	if(Input.GetKeyDown('q')){
+		aim_toggle = !aim_toggle;
 	}
 	if(Input.GetKeyDown('tab')){
 		if(Time.timeScale == 1.0){
@@ -220,9 +239,10 @@ function Update () {
 		Quaternion.Slerp(hammer_rel_rot, gun_instance.transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
-	
-	if(!slide_lock){
-		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * 5.0);
+
+	slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+	if(slide_lock){
+		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
 	}
 }
 
