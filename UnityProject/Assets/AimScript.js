@@ -43,9 +43,14 @@ private var aim_toggle = false;
 private var slide_pull_pose = 0.0;
 private var slide_pull_pose_vel = 0.0;
 private var target_slide_pull_pose = 0.0;
+private var reload_pose = 0.0;
+private var reload_pose_vel = 0.0;
+private var target_reload_pose = 0.0;
 private var kSlideLockPosition = 0.8;
 private var kSlideLockSpeed = 20.0;
 private var left_hand_occupied = false;
+enum GunTilt {LEFT, CENTER, RIGHT};
+private var gun_tilt : GunTilt = GunTilt.CENTER;
 enum SlideStage {NOTHING, PULLBACK, HOLD};
 private var slide_stage : SlideStage = SlideStage.NOTHING;
 
@@ -138,6 +143,13 @@ function Update () {
 		gun_instance.transform.rotation,
 		gun_instance.transform.FindChild("pose_slide_pull").rotation,
 		slide_pull_pose);
+	gun_instance.transform.position = mix(gun_instance.transform.position,
+									      gun_instance.transform.FindChild("pose_reload").position,
+									      reload_pose);
+	gun_instance.transform.rotation = mix(
+		gun_instance.transform.rotation,
+		gun_instance.transform.FindChild("pose_reload").rotation,
+		reload_pose);
 	
 	if(magazine_instance_in_gun){
 		magazine_instance_in_gun.transform.position = gun_instance.transform.position;
@@ -246,25 +258,40 @@ function Update () {
 		}
 	}
 	
+	if(slide_pull_pose < 0.1 && target_reload_pose < 0.1){
+		gun_tilt = GunTilt.CENTER;
+	} else if(slide_pull_pose > target_reload_pose){
+		gun_tilt = GunTilt.LEFT;
+	} else {
+		gun_tilt = GunTilt.RIGHT;
+	}
+	
+	Debug.Log("Gun Tilt: "+gun_tilt);
+	
 	target_slide_pull_pose = 0.0;
+	target_reload_pose = 0.0;
 	if(slide_lock){
-		target_slide_pull_pose = 0.5;
-	}
-	if(slide_stage == SlideStage.PULLBACK){
-		target_slide_pull_pose = 1.0;
-		slide_amount += Time.deltaTime * 10.0;
-		if(slide_amount >= 1.0){
-			PullSlideBack();
-			slide_stage = SlideStage.HOLD;
-		}
-		if(!Input.GetKey('r')){
-			slide_stage = SlideStage.NOTHING;
-			left_hand_occupied = false;
+		if(gun_tilt != GunTilt.LEFT){
+			target_reload_pose = 0.7;
+		} else {
+			target_slide_pull_pose = 0.7;
 		}
 	}
-	if(slide_stage == SlideStage.HOLD){
-		target_slide_pull_pose = 1.0;
-		slide_amount = 1.0;
+	if(slide_stage == SlideStage.PULLBACK || slide_stage == SlideStage.HOLD){
+		if(gun_tilt != GunTilt.RIGHT){
+			target_slide_pull_pose = 1.0;
+		} else {
+			target_reload_pose = 1.0;
+		}
+		if(slide_stage == SlideStage.PULLBACK){
+			slide_amount += Time.deltaTime * 10.0;
+			if(slide_amount >= 1.0){
+				PullSlideBack();
+				slide_stage = SlideStage.HOLD;
+			}
+		} else {
+			slide_amount = 1.0;
+		}
 		if(!Input.GetKey('r')){
 			slide_stage = SlideStage.NOTHING;
 			left_hand_occupied = false;
@@ -275,6 +302,10 @@ function Update () {
 	slide_pull_pose_vel += (target_slide_pull_pose - slide_pull_pose) * kAimSpringStrength * Time.deltaTime;
 	slide_pull_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	slide_pull_pose += slide_pull_pose_vel * Time.deltaTime;	
+	
+	reload_pose_vel += (target_reload_pose - reload_pose) * kAimSpringStrength * Time.deltaTime;
+	reload_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
+	reload_pose += reload_pose_vel * Time.deltaTime;	
 	
 	gun_instance.transform.FindChild("slide").localPosition = 
 		slide_rel_pos + 
