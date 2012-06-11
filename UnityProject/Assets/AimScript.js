@@ -34,8 +34,9 @@ private var head_x_recoil_vel = 0.0;
 private var head_y_recoil_vel = 0.0;
 private var kHeadRecoilSpringStrength = 800.0;
 private var kHeadRecoilSpringDamping = 0.000001;
-private var round_in_chamber = true;
-private var round_in_chamber_fired = false;
+private var round_in_chamber:GameObject;
+enum RoundState {EMPTY, READY, FIRED, LOADING, JAMMED};
+private var round_in_chamber_state = RoundState.READY;
 private var magazine_instance_in_gun:GameObject;
 private var mag_offset = 0.0;
 private var kGunDistance = 0.3;
@@ -89,6 +90,7 @@ function Start () {
 	safety_rel_pos = gun_instance.transform.FindChild("safety").localPosition;
 	safety_rel_rot = gun_instance.transform.FindChild("safety").localRotation;
 	magazine_instance_in_gun = Instantiate(magazine_obj);
+	round_in_chamber = Instantiate(casing_with_bullet, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.FindChild("point_chambered_round").rotation);
 	main_camera = GameObject.Find("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
 	for(var i=0; i<kMaxHeadRecoil; ++i){
@@ -111,42 +113,40 @@ function MagScript() : mag_script {
 	return magazine_instance_in_gun.GetComponent("mag_script");
 }
 
+function ChamberRoundFromMag() : boolean {
+	if(magazine_instance_in_gun && MagScript().NumRounds() > 0){
+		if(!round_in_chamber){
+			MagScript().RemoveRound();
+			round_in_chamber = Instantiate(casing_with_bullet, gun_instance.transform.FindChild("point_load_round").position, gun_instance.transform.FindChild("point_load_round").rotation);
+			round_in_chamber_state = RoundState.LOADING;
+		}
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function PullSlideBack() {
 	slide_amount = 1.0;
 	if(slide_lock && mag_stage == MagStage.IN && (!magazine_instance_in_gun || MagScript().NumRounds() == 0)){
 		return;
 	}
 	slide_lock = false;
-	if(round_in_chamber){
-		var shell_casing_rotate = Quaternion();
-		shell_casing_rotate.eulerAngles.x = 0;
-		var casing:GameObject;
-		if(round_in_chamber_fired){
-			casing = Instantiate(shell_casing, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation * shell_casing_rotate);
-		} else {
-			casing = Instantiate(casing_with_bullet, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation * shell_casing_rotate);
-		}
-		casing.rigidbody.velocity = character_controller.velocity;
-		casing.rigidbody.velocity += gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
-		casing.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
-		round_in_chamber = false;
+	if(round_in_chamber && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
+		round_in_chamber.AddComponent(Rigidbody);
+		round_in_chamber.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+		round_in_chamber.rigidbody.velocity = character_controller.velocity;
+		round_in_chamber.rigidbody.velocity += gun_instance.transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
+		round_in_chamber.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+		round_in_chamber = null;
 	}
-	if(magazine_instance_in_gun && MagScript().NumRounds() > 0){
-		MagScript().RemoveRound();
-		round_in_chamber = true;
-		round_in_chamber_fired = false;
-	} else if(mag_stage == MagStage.IN){
+	if(!ChamberRoundFromMag() && mag_stage == MagStage.IN){
 		slide_lock = true;
 	}
 }
 
 function ReleaseSlideLock() {
 	slide_lock = false;
-	if(magazine_instance_in_gun && MagScript().NumRounds() > 0){
-		MagScript().RemoveRound();
-		round_in_chamber = true;
-		round_in_chamber_fired = false;
-	}
 }
 
 function mix( a:Vector3, b:Vector3, val:float ) : Vector3{
@@ -208,6 +208,20 @@ function Update () {
 		//mag_offset = Mathf.Min(0.0, mag_offset + Time.deltaTime * 5.0);
 	}
 	
+	if(round_in_chamber){
+		switch(round_in_chamber_state){
+			case RoundState.READY:
+			case RoundState.FIRED:
+				round_in_chamber.transform.position = gun_instance.transform.FindChild("point_chambered_round").position;
+				round_in_chamber.transform.rotation = gun_instance.transform.FindChild("point_chambered_round").rotation;
+				break;
+			case RoundState.LOADING:
+				round_in_chamber.transform.position = gun_instance.transform.FindChild("point_load_round").position;
+				round_in_chamber.transform.rotation = gun_instance.transform.FindChild("point_load_round").rotation;
+				break;
+		}
+	}
+	
 	if(Input.GetMouseButton(1) || aim_toggle){
 		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
 	} else {
@@ -241,8 +255,11 @@ function Update () {
 	
 	if(Input.GetMouseButtonDown(0) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
 		hammer_cocked = 0.0;
-		if(round_in_chamber && slide_amount == 0.0){
-			round_in_chamber_fired = true;
+		if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
+			round_in_chamber_state = RoundState.FIRED;
+			GameObject.Destroy(round_in_chamber);
+			round_in_chamber = Instantiate(shell_casing, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation);
+		
 			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzle").position, gun_instance.transform.rotation);
 			var hit:RaycastHit;
 			var mask = 1<<8;
@@ -294,6 +311,7 @@ function Update () {
 		if(mag_seated >= 1.0){
 			mag_seated = 1.0;
 			mag_stage = MagStage.IN;
+			ChamberRoundFromMag();
 			y_recoil_offset_vel += Random.Range(-40.0,40.0);
 			x_recoil_offset_vel += Random.Range(50.0,300.0);
 			rotation_x += Random.Range(-0.4,0.4);
@@ -462,6 +480,9 @@ function Update () {
 
 	if(slide_stage == SlideStage.NOTHING){
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+		if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
+			round_in_chamber_state = RoundState.READY;
+		}
 	}
 	if(slide_lock){
 		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
