@@ -4,6 +4,7 @@ var sound_gunshot_bigroom : AudioClip[];
 var sound_gunshot_smallroom : AudioClip[];
 var sound_gunshot_open : AudioClip[];
 
+var add_head_recoil = false;
 var recoil_transfer_x = 0.0;
 var recoil_transfer_y = 0.0;
 var rotation_transfer_x = 0.0;
@@ -152,6 +153,11 @@ function ApplyPressureToTrigger() : boolean {
 				Instantiate(bullet_hole_obj, hit.point, transform.rotation);
 			}
 			PullSlideBack();
+			rotation_transfer_y += Random.Range(1.0,2.0);
+			rotation_transfer_x += Random.Range(-1.0,1.0);
+			recoil_transfer_x -= Random.Range(150.0,300.0);
+			recoil_transfer_y += Random.Range(-200.0,200.0);
+			add_head_recoil = true;
 			return true;
 		}
 	}
@@ -160,31 +166,6 @@ function ApplyPressureToTrigger() : boolean {
 
 function ReleasePressureFromTrigger() {
 	pressure_on_trigger = PressureState.NONE;
-}
-
-function PullTrigger() : boolean {
-	if(!slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
-		hammer_cocked = 0.0;
-		if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
-			var which_shot = Random.Range(0,sound_gunshot_smallroom.length-1);
-			audio.PlayOneShot(sound_gunshot_smallroom[which_shot]);
-			round_in_chamber_state = RoundState.FIRED;
-			GameObject.Destroy(round_in_chamber);
-			round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
-			round_in_chamber.transform.parent = transform;
-	
-			Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
-			var hit:RaycastHit;
-			var mask = 1<<8;
-			mask = ~mask;
-			if(Physics.Raycast(transform.position, transform.forward, hit, Mathf.Infinity, mask)){
-				Instantiate(bullet_hole_obj, hit.point, transform.rotation);
-			}
-			PullSlideBack();
-			return true;
-		}
-	}
-	return false;
 }
 
 function MagEject() : boolean {
@@ -236,6 +217,18 @@ function ReleaseHammer() {
 	} else {
 		thumb_on_hammer = Thumb.OFF_HAMMER;
 	}
+}
+
+function IsSafetyOn() : boolean {
+	return (safety == Safety.ON);
+}
+
+function IsSlideLocked() : boolean {
+	return (slide_lock);
+}
+
+function IsSlidePulledBack() : boolean {
+	return (slide_stage != SlideStage.NOTHING);
 }
 
 function Update () {

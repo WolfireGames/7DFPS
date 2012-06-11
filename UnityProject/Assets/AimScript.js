@@ -142,6 +142,10 @@ function AimDir() : Vector3 {
 	return aim_rot * Vector3(0.0,0.0,1.0);
 }
 
+function GetGunScript() : GunScript {
+	return gun_instance.GetComponent(GunScript);
+}
+
 function mix( a:Vector3, b:Vector3, val:float ) : Vector3{
 	return a + (b-a) * val;
 }
@@ -407,12 +411,6 @@ function Update () {
 		}
 	}
 	
-	if(Input.GetMouseButton(0) && gun_instance){
-		gun_instance.GetComponent(GunScript).ApplyPressureToTrigger();
-	} else {
-		gun_instance.GetComponent(GunScript).ReleasePressureFromTrigger();
-	}
-	
 	for(i = 0; i < kMaxHeadRecoil; ++i){
 		if(head_recoil_delay[i] != -1.0){
 			head_recoil_delay[i] -= Time.deltaTime;
@@ -433,7 +431,7 @@ function Update () {
 			magazine_instance_in_hand = null;
 		}
 	}
-	if(holstered == Holster.NOT_HOLSTERED){
+	
 	if(Input.GetKeyDown('m')){
 		if(mag_stage == HandMagStage.HOLD){
 			hold_pose_spring.target_state = 0.0;
@@ -469,25 +467,77 @@ function Update () {
 	*/
 	
 	if(gun_instance){
+		var gun_script = GetGunScript();
+		if(Input.GetMouseButton(0)){
+			gun_script.ApplyPressureToTrigger();
+		} else {
+			gun_script.ReleasePressureFromTrigger();
+		}
 		if(Input.GetKeyDown('t')){
-			gun_instance.GetComponent(GunScript).ReleaseSlideLock();
+			gun_script.ReleaseSlideLock();
 		}
 		if(Input.GetKey('t')){
-			gun_instance.GetComponent(GunScript).PressureOnSlideLock();
+			gun_script.PressureOnSlideLock();
 		}
 		if(Input.GetKeyDown('v')){
-			gun_instance.GetComponent(GunScript).ToggleSafety();			
+			gun_script.ToggleSafety();			
 		}	
 		if(Input.GetKeyDown('r')){
-			gun_instance.GetComponent(GunScript).PullBackSlide();
-		} else {
-			gun_instance.GetComponent(GunScript).ReleaseSlide();
+			gun_script.PullBackSlide();
+		}
+		if(Input.GetKeyUp('r')){
+			gun_script.ReleaseSlide();
 		}
 		if(Input.GetKey('f')){
-			gun_instance.GetComponent(GunScript).PressureOnHammer();
+			gun_script.PressureOnHammer();
 		}
 		if(Input.GetKeyUp('f')){
-			gun_instance.GetComponent(GunScript).ReleaseHammer();
+			gun_script.ReleaseHammer();
+		}		
+		
+		if(slide_pose_spring.target_state < 0.1 && reload_pose_spring.target_state < 0.1){
+			gun_tilt = GunTilt.CENTER;
+		} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){
+			gun_tilt = GunTilt.LEFT;
+		} else {
+			gun_tilt = GunTilt.RIGHT;
+		}
+		
+		slide_pose_spring.target_state = 0.0;
+		reload_pose_spring.target_state = 0.0;
+		
+		if(gun_script.IsSafetyOn()){
+			reload_pose_spring.target_state = 0.2;
+			slide_pose_spring.target_state = 0.0;
+			gun_tilt = GunTilt.RIGHT;
+		}
+		
+		if(gun_script.IsSlideLocked()){
+			if(gun_tilt != GunTilt.LEFT){
+				reload_pose_spring.target_state = 0.7;
+			} else {
+				slide_pose_spring.target_state = 0.7;
+			}
+		}
+		if(gun_script.IsSlidePulledBack()){
+			if(gun_tilt != GunTilt.RIGHT){
+				slide_pose_spring.target_state = 1.0;
+			} else {
+				reload_pose_spring.target_state = 1.0;
+			}
+		}
+		x_recoil_spring.vel += gun_script.recoil_transfer_x;
+		y_recoil_spring.vel += gun_script.recoil_transfer_y;
+		rotation_x += gun_script.rotation_transfer_x;
+		rotation_y += gun_script.rotation_transfer_y;
+		gun_script.recoil_transfer_x = 0.0;
+		gun_script.recoil_transfer_y = 0.0;
+		gun_script.rotation_transfer_x = 0.0;
+		gun_script.rotation_transfer_y = 0.0;
+		if(gun_script.add_head_recoil){
+			head_recoil_delay[next_head_recoil_delay] = 0.1;
+			next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
+			gun_script.add_head_recoil = false;
 		}
 	}
 	
@@ -500,51 +550,6 @@ function Update () {
 		} else {
 			Time.timeScale = 1.0;
 		}
-	}
-	
-	if(slide_pose_spring.target_state < 0.1 && reload_pose_spring.target_state < 0.1){
-		gun_tilt = GunTilt.CENTER;
-	} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){
-		gun_tilt = GunTilt.LEFT;
-	} else {
-		gun_tilt = GunTilt.RIGHT;
-	}
-	}
-	
-	slide_pose_spring.target_state = 0.0;
-	reload_pose_spring.target_state = 0.0;
-	
-	if(holstered == Holster.NOT_HOLSTERED){
-		/*if(safety == Safety.ON){
-			reload_pose_spring.target_state = 0.2;
-			slide_pose_spring.target_state = 0.0;
-			gun_tilt = GunTilt.RIGHT;
-		}
-		
-		if(slide_lock){
-			if(gun_tilt != GunTilt.LEFT){
-				reload_pose_spring.target_state = 0.7;
-			} else {
-				slide_pose_spring.target_state = 0.7;
-			}
-		}
-		if(slide_stage == SlideStage.PULLBACK || slide_stage == SlideStage.HOLD){
-			if(gun_tilt != GunTilt.RIGHT){
-				slide_pose_spring.target_state = 1.0;
-			} else {
-				reload_pose_spring.target_state = 1.0;
-			}
-			if(slide_stage == SlideStage.PULLBACK){
-				slide_amount += Time.deltaTime * 10.0;
-				if(slide_amount >= 1.0){
-					PullSlideBack();
-					slide_stage = SlideStage.HOLD;
-				}
-			} else {
-				slide_amount = 1.0;
-			}
-		}	
-		*/
 	}
 	
 	slide_pose_spring.Update();
