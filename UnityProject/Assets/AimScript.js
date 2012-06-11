@@ -332,15 +332,71 @@ function Update () {
 	if(Input.GetKeyDown('2')){
 		target_weapon_slot = 1;
 	}
+	if(Input.GetKeyDown('3')){
+		target_weapon_slot = 2;
+	}
+	if(Input.GetKeyDown('4')){
+		target_weapon_slot = 3;
+	}
+	if(Input.GetKeyDown('5')){
+		target_weapon_slot = 4;
+	}
+	if(Input.GetKeyDown('6')){
+		target_weapon_slot = 5;
+	}
+	if(Input.GetKeyDown('7')){
+		target_weapon_slot = 6;
+	}
+	if(Input.GetKeyDown('8')){
+		target_weapon_slot = 7;
+	}
+	if(Input.GetKeyDown('9')){
+		target_weapon_slot = 8;
+	}
+	if(Input.GetKeyDown('0')){
+		target_weapon_slot = 9;
+	}
 	if(active_weapon_slot != target_weapon_slot){
-		if(active_weapon_slot == 0){
+		if(mag_stage == MagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+			weapon_slots[target_weapon_slot].type = WeaponSlotType.MAGAZINE;
+			weapon_slots[target_weapon_slot].in_use = false;
+			weapon_slots[target_weapon_slot].obj = magazine_instance_in_gun;
+			magazine_instance_in_gun = null;
+			mag_stage = MagStage.OUT;
+			target_weapon_slot = active_weapon_slot;
+		} else if(mag_stage == MagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+			var temp = weapon_slots[target_weapon_slot].obj;
+			weapon_slots[target_weapon_slot].obj = magazine_instance_in_gun;
+			magazine_instance_in_gun = temp;
+			magazine_instance_in_gun.transform.localScale = Vector3(1.0,1.0,1.0);
+			target_weapon_slot = active_weapon_slot;
+		} else if(target_weapon_slot != -1 && mag_stage == MagStage.OUT && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+			magazine_instance_in_gun = weapon_slots[target_weapon_slot].obj;
+			magazine_instance_in_gun.transform.localScale = Vector3(1.0,1.0,1.0);
+			mag_stage = MagStage.HOLD;
+			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+			weapon_slots[target_weapon_slot].obj = null;
+			weapon_slots[target_weapon_slot].in_use = false;
+			target_weapon_slot = active_weapon_slot;
+		} else if(active_weapon_slot == 0){
 			HolsterGun();
-		}
-		if(active_weapon_slot == -1){
-			active_weapon_slot = target_weapon_slot;
-			weapon_slots[target_weapon_slot].in_use = true;
-			if(active_weapon_slot == 0){
-				holstered = Holster.NOT_HOLSTERED;
+		} else if(active_weapon_slot == -1){
+			if(weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+				target_weapon_slot = -1;
+			} else {
+				if(target_weapon_slot == 0){
+					holstered = Holster.NOT_HOLSTERED;
+					weapon_slots[target_weapon_slot].in_use = true;
+					active_weapon_slot = target_weapon_slot;
+				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+					magazine_instance_in_gun = weapon_slots[target_weapon_slot].obj;
+					magazine_instance_in_gun.transform.localScale = Vector3(1.0,1.0,1.0);
+					mag_stage = MagStage.HOLD;
+					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+					weapon_slots[target_weapon_slot].obj = null;
+					weapon_slots[target_weapon_slot].in_use = false;
+					target_weapon_slot = active_weapon_slot;
+				}
 			}
 		}
 	}
@@ -356,6 +412,7 @@ function Update () {
 	} else {
 		holstered_amount_vel += (0.0 - holstered_amount) * kAimSpringStrength * Time.deltaTime;
 	}
+	
 	holstered_amount_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	holstered_amount += holstered_amount_vel * Time.deltaTime;	
 	
