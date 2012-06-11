@@ -87,6 +87,7 @@ private var slide_stage : SlideStage = SlideStage.NOTHING;
 enum MagStage {HOLD, HOLD_TO_INSERT, OUT, INSERTING, IN, REMOVING};
 private var mag_stage : MagStage = MagStage.IN;
 private var mag_seated = 1.0;
+private var collected_rounds = new Array();
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
@@ -299,28 +300,37 @@ function Update () {
 	aiming += aim_vel * Time.deltaTime;	
 	
 	if(Input.GetKeyDown('g')){
-		if(mag_stage == MagStage.OUT){
-			var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
-			for(var collider in colliders){
-				if(collider.gameObject.name == "colt_1911_magazine_object_filled(Clone)"){
-					if(collider.gameObject.rigidbody){
-						magazine_instance_in_gun = collider.gameObject;
-						Destroy(magazine_instance_in_gun.rigidbody);
-						hold_pose = 0.0;
-						hold_pose_vel = 0.0;
-						target_hold_pose = 1.0;
-						mag_ground_pos = magazine_instance_in_gun.transform.position;
-						mag_ground_rot = magazine_instance_in_gun.transform.rotation;
-						mag_ground_pose = 1.0;
-						mag_ground_pose_vel = 1.0;
-						hold_pose = 1.0;
-						hold_pose_vel = 0.0;
-						target_hold_pose = 1.0;
-						mag_stage = MagStage.HOLD;
-						break;
-					}
-				}
+		var nearest_mag = null;
+		var nearest_mag_dist = 0.0;
+		var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
+		for(var collider in colliders){
+			if(collider.gameObject.name == "colt_1911_magazine_object_filled(Clone)" && collider.gameObject.rigidbody){
+				var dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
+				if(!nearest_mag || dist < nearest_mag_dist){	
+					nearest_mag_dist = dist;
+					nearest_mag = collider.gameObject;
+				}					
+			} else if(collider.gameObject.name == "45_acp_round_object(Clone)" && collider.gameObject.rigidbody){
+				collected_rounds.push(collider.gameObject);			
+				collider.gameObject.rigidbody.useGravity = false;
+				collider.gameObject.rigidbody.WakeUp();
+				collider.enabled = false;
 			}
+		}
+		if(nearest_mag && mag_stage == MagStage.OUT){
+			magazine_instance_in_gun = nearest_mag;
+			Destroy(magazine_instance_in_gun.rigidbody);
+			hold_pose = 0.0;
+			hold_pose_vel = 0.0;
+			target_hold_pose = 1.0;
+			mag_ground_pos = magazine_instance_in_gun.transform.position;
+			mag_ground_rot = magazine_instance_in_gun.transform.rotation;
+			mag_ground_pose = 1.0;
+			mag_ground_pose_vel = 1.0;
+			hold_pose = 1.0;
+			hold_pose_vel = 0.0;
+			target_hold_pose = 1.0;
+			mag_stage = MagStage.HOLD;
 		}
 	}
 	if(Input.GetKeyDown('`') && active_weapon_slot != -1){
@@ -496,6 +506,15 @@ function Update () {
 		}
 	}
 	
+	if(Input.GetKeyDown('e')){
+		if(mag_stage == MagStage.HOLD){
+			mag_stage = MagStage.OUT;
+			magazine_instance_in_gun.AddComponent(Rigidbody);
+			magazine_instance_in_gun.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+			magazine_instance_in_gun.rigidbody.velocity = character_controller.velocity;
+			magazine_instance_in_gun = null;
+		}
+	}
 	if(holstered == Holster.NOT_HOLSTERED){
 	if(Input.GetKeyDown('m')){
 		if(mag_stage == MagStage.HOLD){
@@ -520,12 +539,6 @@ function Update () {
 			mag_stage = MagStage.REMOVING;
 			y_recoil_offset_vel += Random.Range(-40.0,40.0);
 			x_recoil_offset_vel += Random.Range(-40.0,100.0);
-		} else if(mag_stage == MagStage.HOLD){
-			mag_stage = MagStage.OUT;
-			magazine_instance_in_gun.AddComponent(Rigidbody);
-			magazine_instance_in_gun.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-			magazine_instance_in_gun.rigidbody.velocity = character_controller.velocity;
-			magazine_instance_in_gun = null;
 		} else if(mag_stage == MagStage.HOLD_TO_INSERT){
 			mag_stage = MagStage.HOLD;
 			target_hold_pose = 1.0;
@@ -726,6 +739,19 @@ function Update () {
 	if(slide_lock){
 		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
 	}
+	
+	var attract_pos = transform.position - Vector3(0,character_controller.height * 0.2,0);
+	for(i=0; i<collected_rounds.length; ++i){
+		var round = collected_rounds[i] as GameObject;
+		round.rigidbody.velocity += (attract_pos - round.transform.position) * Time.deltaTime * 5.0;
+		//round.rigidbody.position += round.rigidbody.velocity * Time.deltaTime;
+		if(Vector3.Distance(round.transform.position, attract_pos) < 0.5){
+			GameObject.Destroy(round);
+			++num_loose_bullets;
+			collected_rounds.splice(i,1);
+		}
+	}
+	collected_rounds.remove(null);
 }
 
 function FixedUpdate() {
