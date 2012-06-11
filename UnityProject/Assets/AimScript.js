@@ -1,5 +1,8 @@
 #pragma strict
 
+var sound_gunshot_bigroom : AudioClip[];
+var sound_gunshot_smallroom : AudioClip[];
+var sound_gunshot_open : AudioClip[];
 var magazine_obj:GameObject;
 var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
@@ -478,6 +481,8 @@ function Update () {
 	if(Input.GetMouseButtonDown(0) && holstered == Holster.NOT_HOLSTERED && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
 		hammer_cocked = 0.0;
 		if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
+			var which_shot = Random.Range(0,sound_gunshot_smallroom.length-1);
+			audio.PlayOneShot(sound_gunshot_smallroom[which_shot]);
 			round_in_chamber_state = RoundState.FIRED;
 			GameObject.Destroy(round_in_chamber);
 			round_in_chamber = Instantiate(shell_casing, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation);
