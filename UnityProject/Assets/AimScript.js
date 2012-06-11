@@ -107,25 +107,13 @@ private var safety = Safety.OFF;
 
 enum Holster{NOT_HOLSTERED, HOLSTERED};
 private var holstered = Holster.NOT_HOLSTERED;
-private var holstered_amount = 0.0;
-private var holstered_amount_vel = 0.0;
+private var holster_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 
-private var target_gun_rotate : Quaternion;
+private var slide_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var reload_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var hold_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var mag_ground_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 
-private var slide_pull_pose = 0.0;
-private var slide_pull_pose_vel = 0.0;
-private var target_slide_pull_pose = 0.0;
-
-private var reload_pose = 0.0;
-private var reload_pose_vel = 0.0;
-private var target_reload_pose = 0.0;
-
-private var hold_pose = 0.0;
-private var hold_pose_vel = 0.0;
-private var target_hold_pose = 0.0;
-
-private var mag_ground_pose = 0.0;
-private var mag_ground_pose_vel = 0.0;
 private var kSlideLockPosition = 0.8;
 private var kSlideLockSpeed = 20.0;
 private var left_hand_occupied = false;
@@ -290,25 +278,25 @@ function Update () {
 	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
 	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
 	
-	gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holstered_amount);
-	gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holstered_amount);
-	gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holstered_amount);
+	gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
+	gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
+	gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
 	
 	gun_instance.transform.position = mix(gun_instance.transform.position,
 									      gun_instance.transform.FindChild("pose_slide_pull").position,
-									      slide_pull_pose);
+									      slide_pose_spring.state);
 									      
 	gun_instance.transform.rotation = mix(
 		gun_instance.transform.rotation,
 		gun_instance.transform.FindChild("pose_slide_pull").rotation,
-		slide_pull_pose);
+		slide_pose_spring.state);
 	gun_instance.transform.position = mix(gun_instance.transform.position,
 									      gun_instance.transform.FindChild("pose_reload").position,
-									      reload_pose);
+									      reload_pose_spring.state);
 	gun_instance.transform.rotation = mix(
 		gun_instance.transform.rotation,
 		gun_instance.transform.FindChild("pose_reload").rotation,
-		reload_pose);
+		reload_pose_spring.state);
 		
 	gun_instance.transform.RotateAround(
 		gun_instance.transform.FindChild("point_recoil_rotate").position,
@@ -329,10 +317,10 @@ function Update () {
 	   if(mag_stage == MagStage.HOLD || mag_stage == MagStage.HOLD_TO_INSERT){
 			var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
 			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
-	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose);
-	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose);
-	   		magazine_instance_in_gun.transform.position = mix(mag_pos, hold_pos, hold_pose);
-			magazine_instance_in_gun.transform.rotation = mix(mag_rot, hold_rot, hold_pose);
+	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
+	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
+	   		magazine_instance_in_gun.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
+			magazine_instance_in_gun.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
 		} else {
 			magazine_instance_in_gun.transform.position = mag_pos;
 			magazine_instance_in_gun.transform.rotation = mag_rot;
@@ -381,16 +369,13 @@ function Update () {
 		if(nearest_mag && mag_stage == MagStage.OUT){
 			magazine_instance_in_gun = nearest_mag;
 			Destroy(magazine_instance_in_gun.rigidbody);
-			hold_pose = 0.0;
-			hold_pose_vel = 0.0;
-			target_hold_pose = 1.0;
 			mag_ground_pos = magazine_instance_in_gun.transform.position;
 			mag_ground_rot = magazine_instance_in_gun.transform.rotation;
-			mag_ground_pose = 1.0;
-			mag_ground_pose_vel = 1.0;
-			hold_pose = 1.0;
-			hold_pose_vel = 0.0;
-			target_hold_pose = 1.0;
+			mag_ground_pose_spring.state = 1.0;
+			mag_ground_pose_spring.vel = 1.0;
+			hold_pose_spring.state = 1.0;
+			hold_pose_spring.vel = 0.0;
+			hold_pose_spring.target_state = 1.0;
 			mag_stage = MagStage.HOLD;
 		}
 	}
@@ -473,19 +458,16 @@ function Update () {
 	}
 	
 	if(holstered == Holster.HOLSTERED){
-		holstered_amount_vel += (1.0 - holstered_amount) * kAimSpringStrength * Time.deltaTime;
-		if(holstered_amount >= 1.0){
+		holster_spring.target_state = 1.0;
+		if(holster_spring.state >= 1.0){
 			weapon_slots[0].in_use = false;
 			active_weapon_slot = -1;
-			holstered_amount = 1.0;
-			holstered_amount_vel = 1.0;
 		}
 	} else {
-		holstered_amount_vel += (0.0 - holstered_amount) * kAimSpringStrength * Time.deltaTime;
+		holster_spring.target_state = 0.0;
 	}
 	
-	holstered_amount_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-	holstered_amount += holstered_amount_vel * Time.deltaTime;	
+	holster_spring.Update();
 	
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
@@ -580,7 +562,7 @@ function Update () {
 	if(holstered == Holster.NOT_HOLSTERED){
 	if(Input.GetKeyDown('m')){
 		if(mag_stage == MagStage.HOLD){
-			target_hold_pose = 0.0;
+			hold_pose_spring.target_state = 0.0;
 			mag_stage = MagStage.HOLD_TO_INSERT;
 			//magazine_instance_in_gun.transform.parent = gun_instance.transform;
 			
@@ -591,7 +573,7 @@ function Update () {
 	}
 	
 	if(mag_stage == MagStage.HOLD_TO_INSERT){
-		if(hold_pose < 0.01){
+		if(hold_pose_spring.state < 0.01){
 			mag_stage = MagStage.INSERTING;
 		}
 	}
@@ -603,7 +585,7 @@ function Update () {
 			x_recoil_spring.vel += Random.Range(-40.0,100.0);
 		} else if(mag_stage == MagStage.HOLD_TO_INSERT){
 			mag_stage = MagStage.HOLD;
-			target_hold_pose = 1.0;
+			hold_pose_spring.target_state = 1.0;
 		}
 	}
 	
@@ -628,8 +610,8 @@ function Update () {
 			mag_seated = 0.0;
 			mag_stage = MagStage.HOLD;
 			magazine_instance_in_gun.transform.parent = null;
-			target_hold_pose = 1.0;
-			hold_pose = 0.0;
+			hold_pose_spring.target_state = 1.0;
+			hold_pose_spring.state = 0.0;
 		}
 	}
 	
@@ -692,37 +674,37 @@ function Update () {
 		}
 	}
 	
-	if(slide_pull_pose < 0.1 && target_reload_pose < 0.1){
+	if(slide_pose_spring.target_state < 0.1 && reload_pose_spring.target_state < 0.1){
 		gun_tilt = GunTilt.CENTER;
-	} else if(slide_pull_pose > target_reload_pose){
+	} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){
 		gun_tilt = GunTilt.LEFT;
 	} else {
 		gun_tilt = GunTilt.RIGHT;
 	}
 	}
 	
-	target_slide_pull_pose = 0.0;
-	target_reload_pose = 0.0;
+	slide_pose_spring.target_state = 0.0;
+	reload_pose_spring.target_state = 0.0;
 	
 	if(holstered == Holster.NOT_HOLSTERED){
 		if(safety == Safety.ON){
-			target_reload_pose = 0.2;
-			target_slide_pull_pose = 0.0;
+			reload_pose_spring.target_state = 0.2;
+			slide_pose_spring.target_state = 0.0;
 			gun_tilt = GunTilt.RIGHT;
 		}
 		
 		if(slide_lock){
 			if(gun_tilt != GunTilt.LEFT){
-				target_reload_pose = 0.7;
+				reload_pose_spring.target_state = 0.7;
 			} else {
-				target_slide_pull_pose = 0.7;
+				slide_pose_spring.target_state = 0.7;
 			}
 		}
 		if(slide_stage == SlideStage.PULLBACK || slide_stage == SlideStage.HOLD){
 			if(gun_tilt != GunTilt.RIGHT){
-				target_slide_pull_pose = 1.0;
+				slide_pose_spring.target_state = 1.0;
 			} else {
-				target_reload_pose = 1.0;
+				reload_pose_spring.target_state = 1.0;
 			}
 			if(slide_stage == SlideStage.PULLBACK){
 				slide_amount += Time.deltaTime * 10.0;
@@ -740,28 +722,16 @@ function Update () {
 		}	
 	}
 	
-	slide_pull_pose_vel += (target_slide_pull_pose - slide_pull_pose) * kAimSpringStrength * Time.deltaTime;
-	slide_pull_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-	slide_pull_pose += slide_pull_pose_vel * Time.deltaTime;	
-	
-	reload_pose_vel += (target_reload_pose - reload_pose) * kAimSpringStrength * Time.deltaTime;
-	reload_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-	reload_pose += reload_pose_vel * Time.deltaTime;	
-	
+	slide_pose_spring.Update();
+	reload_pose_spring.Update();
 	x_recoil_spring.Update();
 	y_recoil_spring.Update();
-
 	head_recoil_spring_x.Update();
 	head_recoil_spring_y.Update();
 
-		if(mag_stage == MagStage.HOLD || mag_stage == MagStage.HOLD_TO_INSERT){
-		hold_pose_vel += (target_hold_pose - hold_pose) * kAimSpringStrength * Time.deltaTime;
-		hold_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-		hold_pose += hold_pose_vel * Time.deltaTime;	
-		
-		mag_ground_pose_vel -= mag_ground_pose * kAimSpringStrength * Time.deltaTime;
-		mag_ground_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-		mag_ground_pose += mag_ground_pose_vel * Time.deltaTime;	
+	if(mag_stage == MagStage.HOLD || mag_stage == MagStage.HOLD_TO_INSERT){
+		hold_pose_spring.Update();
+		mag_ground_pose_spring.Update();
 	}
 	
 	gun_instance.transform.FindChild("slide").localPosition = 
