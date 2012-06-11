@@ -323,18 +323,33 @@ function Update () {
 			}
 		}
 	}
-	if(Input.GetKeyDown('`')){
-		if(holstered == Holster.NOT_HOLSTERED){
+	if(Input.GetKeyDown('`') && active_weapon_slot != -1){
+		target_weapon_slot = -1;
+	}
+	if(Input.GetKeyDown('1')){
+		target_weapon_slot = 0;
+	}
+	if(Input.GetKeyDown('2')){
+		target_weapon_slot = 1;
+	}
+	if(active_weapon_slot != target_weapon_slot){
+		if(active_weapon_slot == 0){
 			HolsterGun();
-		} else if(holstered == Holster.HOLSTERED){
-			holstered = Holster.NOT_HOLSTERED;
-			weapon_slots[0].in_use = true;
+		}
+		if(active_weapon_slot == -1){
+			active_weapon_slot = target_weapon_slot;
+			weapon_slots[target_weapon_slot].in_use = true;
+			if(active_weapon_slot == 0){
+				holstered = Holster.NOT_HOLSTERED;
+			}
 		}
 	}
+	
 	if(holstered == Holster.HOLSTERED){
 		holstered_amount_vel += (1.0 - holstered_amount) * kAimSpringStrength * Time.deltaTime;
 		if(holstered_amount >= 1.0){
 			weapon_slots[0].in_use = false;
+			active_weapon_slot = -1;
 			holstered_amount = 1.0;
 			holstered_amount_vel = 1.0;
 		}
