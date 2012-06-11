@@ -304,13 +304,13 @@ function Update () {
 		var nearest_mag_dist = 0.0;
 		var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
 		for(var collider in colliders){
-			if(collider.gameObject.name == "colt_1911_magazine_object_filled(Clone)" && collider.gameObject.rigidbody){
+			if(collider.gameObject.name == magazine_obj.name+"(Clone)" && collider.gameObject.rigidbody){
 				var dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
 				if(!nearest_mag || dist < nearest_mag_dist){	
 					nearest_mag_dist = dist;
 					nearest_mag = collider.gameObject;
 				}					
-			} else if(collider.gameObject.name == "45_acp_round_object(Clone)" && collider.gameObject.rigidbody){
+			} else if(collider.gameObject.name == casing_with_bullet.name+"(Clone)" && collider.gameObject.rigidbody){
 				collected_rounds.push(collider.gameObject);			
 				collider.gameObject.rigidbody.useGravity = false;
 				collider.gameObject.rigidbody.WakeUp();
@@ -743,7 +743,8 @@ function Update () {
 	var attract_pos = transform.position - Vector3(0,character_controller.height * 0.2,0);
 	for(i=0; i<collected_rounds.length; ++i){
 		var round = collected_rounds[i] as GameObject;
-		round.rigidbody.velocity += (attract_pos - round.transform.position) * Time.deltaTime * 5.0;
+		round.rigidbody.velocity += (attract_pos - round.transform.position) * Time.deltaTime * 20.0;
+		round.rigidbody.velocity *= Mathf.Pow(0.1, Time.deltaTime);;
 		//round.rigidbody.position += round.rigidbody.velocity * Time.deltaTime;
 		if(Vector3.Distance(round.transform.position, attract_pos) < 0.5){
 			GameObject.Destroy(round);
