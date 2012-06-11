@@ -1,76 +1,129 @@
 #pragma strict
 
+// Sound effects
+
 var sound_gunshot_bigroom : AudioClip[];
 var sound_gunshot_smallroom : AudioClip[];
 var sound_gunshot_open : AudioClip[];
+
+// Prefabs 
+
 var magazine_obj:GameObject;
-var bullet_hole_obj:GameObject;
 var gun_obj:GameObject;
+
+var bullet_hole_obj:GameObject;
 var muzzle_flash:GameObject;
+
 var shell_casing:GameObject;
 var casing_with_bullet:GameObject;
-private var gun_instance:GameObject;
+
+// Shortcuts to components
+
 private var main_camera:GameObject;
-private var aiming = 0.0;
-private var aim_vel = 0.0;
+private var character_controller:CharacterController;
+
+// Instances
+
+private var gun_instance:GameObject;
+
+// Public parameters
+
+public var sensitivity_x = 2.0;
+public var sensitivity_y = 2.0;
+public var min_angle_y = -60.0;
+public var max_angle_y = 60.0;
+
+// Private variables
+
+class Spring {
+	var state : float;
+	var target_state : float;
+	var vel : float;
+	var strength : float;
+	var damping : float;
+	function Spring(state : float, target_state : float, strength : float, damping : float){
+		this.Set(state, target_state, strength, damping);
+	}
+	function Set(state : float, target_state : float, strength : float, damping : float){
+		this.state = state;
+		this.target_state = target_state;
+		this.strength = strength;
+		this.damping = damping;
+		this.vel = 0.0;		
+	}
+	function Update() {
+		this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
+		this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
+		this.state += this.vel * Time.deltaTime;	
+	}
+};
+
+private var aim_toggle = false;
+private var kAimSpringStrength = 100.0;
+private var kAimSpringDamping = 0.00001;
+private var aim_spring = new Spring(0,0,kAimSpringStrength,kAimSpringDamping);
+
 private var rotation_x_leeway = 0.0;
 private var rotation_y_min_leeway = 0.0;
 private var rotation_y_max_leeway = 0.0;
 private var kRotationXLeeway = 5.0;
 private var kRotationYMinLeeway = 20.0;
 private var kRotationYMaxLeeway = 10.0;
+
 private var rotation_x = 0.0;
 private var rotation_y = 0.0;
 private var view_rotation_x = 0.0;
 private var view_rotation_y = 0.0;
-private var character_controller:CharacterController;
-private var shot = false;
-private var x_recoil_offset = 0.0;
-private var y_recoil_offset = 0.0;
-private var x_recoil_offset_vel = 0.0;
-private var y_recoil_offset_vel = 0.0;
+
 private var kRecoilSpringStrength = 800.0;
 private var kRecoilSpringDamping = 0.000001;
-private var head_x_recoil = 0.0;
-private var head_y_recoil = 0.0;
-private var head_x_recoil_vel = 0.0;
-private var head_y_recoil_vel = 0.0;
-private var kHeadRecoilSpringStrength = 800.0;
-private var kHeadRecoilSpringDamping = 0.000001;
+private var x_recoil_spring = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
+private var y_recoil_spring = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
+private var head_recoil_spring_x = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
+private var head_recoil_spring_y = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
+
 private var round_in_chamber:GameObject;
 enum RoundState {EMPTY, READY, FIRED, LOADING, JAMMED};
 private var round_in_chamber_state = RoundState.READY;
+
 private var magazine_instance_in_gun:GameObject;
 private var mag_offset = 0.0;
 private var kGunDistance = 0.3;
-private var kAimSpringStrength = 100.0;
-private var kAimSpringDamping = 0.00001;
+
 private var slide_rel_pos : Vector3;
 private var slide_amount = 0.0;
 private var slide_lock = false;
+
 private var hammer_rel_pos : Vector3;
 private var hammer_rel_rot : Quaternion;
+private var hammer_cocked = 1.0;
+
 private var safety_rel_pos : Vector3;
 private var safety_rel_rot : Quaternion;
+
 private var safety_off = 1.0;
 enum Safety{OFF, ON};
 private var safety = Safety.OFF;
+
 enum Holster{NOT_HOLSTERED, HOLSTERED};
 private var holstered = Holster.NOT_HOLSTERED;
 private var holstered_amount = 0.0;
 private var holstered_amount_vel = 0.0;
-private var hammer_cocked = 1.0;
+
 private var target_gun_rotate : Quaternion;
-private var aim_toggle = false;
+
 private var slide_pull_pose = 0.0;
 private var slide_pull_pose_vel = 0.0;
 private var target_slide_pull_pose = 0.0;
+
 private var reload_pose = 0.0;
 private var reload_pose_vel = 0.0;
 private var target_reload_pose = 0.0;
+
 private var hold_pose = 0.0;
 private var hold_pose_vel = 0.0;
 private var target_hold_pose = 0.0;
+
 private var mag_ground_pose = 0.0;
 private var mag_ground_pose_vel = 0.0;
 private var kSlideLockPosition = 0.8;
@@ -81,21 +134,21 @@ private var head_recoil_delay : float[] = new float[kMaxHeadRecoil];
 private var next_head_recoil_delay = 0;
 private var mag_ground_pos : Vector3;
 private var mag_ground_rot : Quaternion;
+
 enum Thumb{ON_HAMMER, OFF_HAMMER, SLOW_LOWERING};
 private var thumb_on_hammer = Thumb.OFF_HAMMER;
+
 enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
+
 enum SlideStage {NOTHING, PULLBACK, HOLD};
 private var slide_stage : SlideStage = SlideStage.NOTHING;
+
 enum MagStage {HOLD, HOLD_TO_INSERT, OUT, INSERTING, IN, REMOVING};
 private var mag_stage : MagStage = MagStage.IN;
 private var mag_seated = 1.0;
-private var collected_rounds = new Array();
 
-public var sensitivity_x = 2.0;
-public var sensitivity_y = 2.0;
-public var min_angle_y = -60.0;
-public var max_angle_y = 60.0;
+private var collected_rounds = new Array();
 
 private var active_weapon_slot = 0;
 private var target_weapon_slot = 0;
@@ -234,8 +287,8 @@ function Update () {
 	var holstered_scale = Vector3(0.3,0.3,0.3); 
 	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
 		
-	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aiming);
-	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aiming);
+	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
+	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
 	
 	gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holstered_amount);
 	gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holstered_amount);
@@ -260,12 +313,12 @@ function Update () {
 	gun_instance.transform.RotateAround(
 		gun_instance.transform.FindChild("point_recoil_rotate").position,
 		gun_instance.transform.rotation * Vector3(1,0,0),
-		x_recoil_offset);
+		x_recoil_spring.state);
 		
 	gun_instance.transform.RotateAround(
 		gun_instance.transform.FindChild("point_recoil_rotate").position,
 		Vector3(0,1,0),
-		y_recoil_offset);
+		y_recoil_spring.state);
 	
 	if(magazine_instance_in_gun){
 		var mag_pos = gun_instance.transform.position;
@@ -301,12 +354,11 @@ function Update () {
 	}
 	
 	if(Input.GetMouseButton(1) || aim_toggle){
-		aim_vel += (1.0 - aiming) * kAimSpringStrength * Time.deltaTime;
+		aim_spring.target_state = 1.0;
 	} else {
-		aim_vel += (0.0 - aiming) * kAimSpringStrength * Time.deltaTime;
+		aim_spring.target_state = 0.0;
 	}
-	aim_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
-	aiming += aim_vel * Time.deltaTime;	
+	aim_spring.Update();
 	
 	if(Input.GetKeyDown('g')){
 		var nearest_mag = null;
@@ -435,9 +487,9 @@ function Update () {
 	holstered_amount_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	holstered_amount += holstered_amount_vel * Time.deltaTime;	
 	
-	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aiming);
-	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aiming);
-	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aiming);
+	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
+	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
+	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
 	
 	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
 	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
@@ -455,7 +507,7 @@ function Update () {
 		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
 	}
 	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
-	main_camera.transform.localEulerAngles += Vector3(head_y_recoil, head_x_recoil, 0);
+	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	for(i=0; i<10; ++i){
@@ -497,8 +549,8 @@ function Update () {
 			}
 			rotation_y += Random.Range(1.0,2.0);
 			rotation_x += Random.Range(-1.0,1.0);
-			x_recoil_offset_vel -= Random.Range(150.0,300.0);
-			y_recoil_offset_vel += Random.Range(-200.0,200.0);
+			x_recoil_spring.vel -= Random.Range(150.0,300.0);
+			y_recoil_spring.vel += Random.Range(-200.0,200.0);
 			head_recoil_delay[next_head_recoil_delay] = 0.1;
 			next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
 			PullSlideBack();
@@ -509,8 +561,8 @@ function Update () {
 		if(head_recoil_delay[i] != -1.0){
 			head_recoil_delay[i] -= Time.deltaTime;
 			if(head_recoil_delay[i] <= 0.0){
-				head_x_recoil_vel += Random.Range(-30.0,30.0);
-				head_y_recoil_vel += Random.Range(-30.0,30.0);
+				head_recoil_spring_x.vel += Random.Range(-30.0,30.0);
+				head_recoil_spring_y.vel += Random.Range(-30.0,30.0);
 				head_recoil_delay[i] = -1.0;
 			}
 		}
@@ -547,8 +599,8 @@ function Update () {
 	if(Input.GetKeyDown('e')){
 		if(mag_stage == MagStage.IN){
 			mag_stage = MagStage.REMOVING;
-			y_recoil_offset_vel += Random.Range(-40.0,40.0);
-			x_recoil_offset_vel += Random.Range(-40.0,100.0);
+			y_recoil_spring.vel += Random.Range(-40.0,40.0);
+			x_recoil_spring.vel += Random.Range(-40.0,100.0);
 		} else if(mag_stage == MagStage.HOLD_TO_INSERT){
 			mag_stage = MagStage.HOLD;
 			target_hold_pose = 1.0;
@@ -563,8 +615,8 @@ function Update () {
 			if(slide_amount > 0.7){
 				ChamberRoundFromMag();
 			}
-			y_recoil_offset_vel += Random.Range(-40.0,40.0);
-			x_recoil_offset_vel += Random.Range(50.0,300.0);
+			y_recoil_spring.vel += Random.Range(-40.0,40.0);
+			x_recoil_spring.vel += Random.Range(50.0,300.0);
 			rotation_x += Random.Range(-0.4,0.4);
 			rotation_y += Random.Range(0.0,1.0);
 			left_hand_occupied = false;
@@ -696,23 +748,13 @@ function Update () {
 	reload_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 	reload_pose += reload_pose_vel * Time.deltaTime;	
 	
-	x_recoil_offset_vel -= x_recoil_offset * kRecoilSpringStrength * Time.deltaTime;
-	x_recoil_offset_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
-	x_recoil_offset += x_recoil_offset_vel * Time.deltaTime;	
-	
-	y_recoil_offset_vel -= y_recoil_offset * kRecoilSpringStrength * Time.deltaTime;
-	y_recoil_offset_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
-	y_recoil_offset += y_recoil_offset_vel * Time.deltaTime;	
-	
-	head_x_recoil_vel -= head_x_recoil * kRecoilSpringStrength * Time.deltaTime;
-	head_x_recoil_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
-	head_x_recoil += head_x_recoil_vel * Time.deltaTime;	
-	
-	head_y_recoil_vel -= head_y_recoil * kRecoilSpringStrength * Time.deltaTime;
-	head_y_recoil_vel *= Mathf.Pow(kRecoilSpringDamping, Time.deltaTime);
-	head_y_recoil += head_y_recoil_vel * Time.deltaTime;	
-	
-	if(mag_stage == MagStage.HOLD || mag_stage == MagStage.HOLD_TO_INSERT){
+	x_recoil_spring.Update();
+	y_recoil_spring.Update();
+
+	head_recoil_spring_x.Update();
+	head_recoil_spring_y.Update();
+
+		if(mag_stage == MagStage.HOLD || mag_stage == MagStage.HOLD_TO_INSERT){
 		hold_pose_vel += (target_hold_pose - hold_pose) * kAimSpringStrength * Time.deltaTime;
 		hold_pose_vel *= Mathf.Pow(kAimSpringDamping, Time.deltaTime);
 		hold_pose += hold_pose_vel * Time.deltaTime;	
