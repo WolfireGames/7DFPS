@@ -223,14 +223,20 @@ function Update () {
 	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
 	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
 	
-	var holstered_dir = (transform.forward*0.1 + Vector3(0,-1,0)).normalized;
-	var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
+	//var holstered_dir = (transform.forward*0.1 + Vector3(0,-1,0)).normalized;
+	//var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
+		
+	var i = 0;
+	var holstered_pos = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
+	var holstered_scale = Vector3(0.3,0.3,0.3); 
+	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
 		
 	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aiming);
 	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aiming);
 	
 	gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holstered_amount);
-	gun_instance.transform.forward = mix(gun_instance.transform.forward, holstered_dir, holstered_amount);
+	gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holstered_amount);
+	gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holstered_amount);
 	
 	gun_instance.transform.position = mix(gun_instance.transform.position,
 									      gun_instance.transform.FindChild("pose_slide_pull").position,
@@ -449,7 +455,7 @@ function Update () {
 	main_camera.transform.localEulerAngles += Vector3(head_y_recoil, head_x_recoil, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
-	for(var i=0; i<10; ++i){
+	for(i=0; i<10; ++i){
 		if(weapon_slots[i].type == WeaponSlotType.EMPTY || weapon_slots[i].in_use){
 			if(weapon_slots[i].in_use){
 				weapon_slots[i].obj.transform.localScale = Vector3(1.0,1.0,1.0);
@@ -477,13 +483,12 @@ function Update () {
 			round_in_chamber = Instantiate(shell_casing, gun_instance.transform.FindChild("point_chambered_round").position, gun_instance.transform.rotation);
 			round_in_chamber.transform.parent = gun_instance.transform;
 	
-			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzle").position, gun_instance.transform.rotation);
+			Instantiate(muzzle_flash, gun_instance.transform.FindChild("point_muzzleflash").position, gun_instance.transform.FindChild("point_muzzleflash").rotation);
 			var hit:RaycastHit;
 			var mask = 1<<8;
 			mask = ~mask;
 			if(Physics.Raycast(gun_instance.transform.position, gun_instance.transform.forward, hit, Mathf.Infinity, mask)){
 				Instantiate(bullet_hole_obj, hit.point, gun_instance.transform.rotation);
-				Instantiate(muzzle_flash, hit.point + hit.normal * 0.5, gun_instance.transform.rotation);
 			}
 			rotation_y += Random.Range(1.0,2.0);
 			rotation_x += Random.Range(-1.0,1.0);
@@ -550,7 +555,7 @@ function Update () {
 		if(mag_seated >= 1.0){
 			mag_seated = 1.0;
 			mag_stage = MagStage.IN;
-			if(slide_lock){
+			if(slide_amount > 0.7){
 				ChamberRoundFromMag();
 			}
 			y_recoil_offset_vel += Random.Range(-40.0,40.0);
