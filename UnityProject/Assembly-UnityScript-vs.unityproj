@@ -48,6 +48,7 @@
      <Compile Include="Assets\Effects\muzzleflashscript.js" />
      <Compile Include="Assets\LockCursor.js" />
      <Compile Include="Assets\mag_script.js" />
+     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
