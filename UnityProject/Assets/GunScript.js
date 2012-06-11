@@ -3,6 +3,14 @@
 var sound_gunshot_bigroom : AudioClip[];
 var sound_gunshot_smallroom : AudioClip[];
 var sound_gunshot_open : AudioClip[];
+var sound_mag_eject_button : AudioClip[];
+var sound_mag_ejection : AudioClip[];
+var sound_mag_insertion : AudioClip[];
+var sound_slide_back : AudioClip[];
+var sound_slide_front : AudioClip[];
+var sound_safety : AudioClip[];
+
+private var kGunMechanicVolume = 0.2;
 
 var add_head_recoil = false;
 var recoil_transfer_x = 0.0;
@@ -129,6 +137,12 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 	return a * Quaternion.AngleAxis(angle * -val, axis);
 }
 
+function PlaySoundFromGroup(group : Array, volume : float){
+	var which_shot = Random.Range(0,group.length-1);
+	audio.PlayOneShot(group[which_shot], volume);
+}
+
+
 function ApplyPressureToTrigger() : boolean {
 	if(pressure_on_trigger == PressureState.NONE){
 		pressure_on_trigger = PressureState.INITIAL;
@@ -138,8 +152,7 @@ function ApplyPressureToTrigger() : boolean {
 	if(pressure_on_trigger == PressureState.INITIAL && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
 		hammer_cocked = 0.0;
 		if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
-			var which_shot = Random.Range(0,sound_gunshot_smallroom.length-1);
-			audio.PlayOneShot(sound_gunshot_smallroom[which_shot]);
+			PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
 			round_in_chamber_state = RoundState.FIRED;
 			GameObject.Destroy(round_in_chamber);
 			round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
@@ -169,8 +182,10 @@ function ReleasePressureFromTrigger() {
 }
 
 function MagEject() : boolean {
+	PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
 	if(mag_stage != MagStage.OUT){
 		mag_stage = MagStage.REMOVING;
+		PlaySoundFromGroup(sound_mag_ejection, kGunMechanicVolume);
 		return true;
 	}
 	return false;
@@ -189,6 +204,7 @@ function PressureOnSlideLock() {
 }
 
 function ToggleSafety() {
+	PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
 	if(safety == Safety.OFF){
 		safety = Safety.ON;
 	} else if(safety == Safety.ON){
@@ -284,6 +300,7 @@ function Update () {
 			if(slide_amount >= 1.0){
 				PullSlideBack();
 				slide_stage = SlideStage.HOLD;
+				PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
 			}
 		} else {
 			slide_amount = 1.0;
@@ -308,8 +325,12 @@ function Update () {
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
 
+	var old_slide_amount = slide_amount;
 	if(slide_stage == SlideStage.NOTHING){
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+		if(slide_amount == 0.0 && old_slide_amount != 0.0){
+			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+		}
 		if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
 			round_in_chamber_state = RoundState.READY;
 		}
@@ -317,6 +338,9 @@ function Update () {
 	
 	if(slide_lock){
 		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
+		if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
+			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+		}
 	}
 }
 

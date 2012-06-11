@@ -1,9 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\AimScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ShellCasingScript.js">
     <Files>
-      <File FileName="Assets\AimScript.js" Line="93" Column="37" />
-      <File FileName="Assets\Effects\muzzleflashscript.js" Line="17" Column="2" />
+      <File FileName="Assets\AimScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Effects\muzzleflashscript.js" Line="1" Column="1" />
+      <File FileName="Assets\GunScript.js" Line="143" Column="2" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" Line="1" Column="1" />
+      <File FileName="Assets\ShellCasingScript.js" Line="25" Column="73" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
