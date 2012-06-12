@@ -105,7 +105,6 @@ function PullSlideBack() {
 	slide_lock = false;
 	if(round_in_chamber && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
 		round_in_chamber.AddComponent(Rigidbody);
-		Debug.Log("Playing sound");
 		PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
 		round_in_chamber.transform.parent = null;
 		round_in_chamber.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
@@ -259,13 +258,16 @@ function IsSlidePulledBack() : boolean {
 function RemoveMag() : GameObject {
 	var mag = magazine_instance_in_gun;
 	magazine_instance_in_gun = null;
+	mag.transform.parent = null;
 	ready_to_remove_mag = false;
 	return mag;
 }
 
 function InsertMag(mag : GameObject) : GameObject {
 	magazine_instance_in_gun = mag;
+	mag.transform.parent = transform;
 	mag_stage = MagStage.INSERTING;
+	PlaySoundFromGroup(sound_mag_insertion, kGunMechanicVolume);
 	mag_seated = 0.0;
 }
 
@@ -348,6 +350,9 @@ function Update () {
 		Quaternion.Slerp(safety_rel_rot, transform.FindChild("point_safety_off").localRotation, safety_off);
 		
 	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
+	if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
+		hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
+	}
 
 	var old_slide_amount = slide_amount;
 	if(slide_stage == SlideStage.NOTHING){
