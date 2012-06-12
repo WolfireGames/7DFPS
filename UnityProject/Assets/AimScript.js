@@ -394,6 +394,14 @@ function Update () {
 	var insert_mag_with_number_key = false;
 	
 	if(target_weapon_slot != -2 && !mag_ejecting && (mag_stage == HandMagStage.EMPTY || mag_stage == HandMagStage.HOLD)){
+		if(target_weapon_slot == -1 && !gun_instance){
+			for(i=0; i<10; ++i){
+				if(weapon_slots[i].type == WeaponSlotType.GUN){
+					target_weapon_slot = i;
+					break;
+				}
+			}
+		}
 		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
 			// Put held mag in empty slot
 			for(i=0; i<10; ++i){
@@ -423,7 +431,7 @@ function Update () {
 			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
 			weapon_slots[target_weapon_slot].spring.state = 1.0;
 			target_weapon_slot = -2;
-		} else if(gun_instance){
+		} else if(gun_instance && target_weapon_slot == -1){
 			// Put gun away
 			if(target_weapon_slot == -1){
 				for(i=0; i<10; ++i){
@@ -448,7 +456,7 @@ function Update () {
 				gun_instance = null;
 				target_weapon_slot = -2;
 			}
-		} else if(target_weapon_slot >= 0){
+		} else if(target_weapon_slot >= 0 && !gun_instance){
 			if(weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
 				target_weapon_slot = -2;
 			} else {
