@@ -2,7 +2,7 @@ private var motor : CharacterMotor;
 
 private var stand_height = 2.0;
 private var crouch_height = 1.0;
-
+private var crouching = false;
 
 // Use this for initialization
 function Awake () {
@@ -34,11 +34,15 @@ function Update () {
 	// Apply the direction to the CharacterMotor
 	motor.inputMoveDirection = transform.rotation * directionVector;
 	motor.inputJump = Input.GetButton("Jump");
+	
+	if(Input.GetKeyDown("c")){
+		crouching = !crouching;
+	}
 }
 
 function FixedUpdate() {
 	var controller = GetComponent (CharacterController);
-	if(Input.GetKey("left ctrl")){
+	if(crouching){
 		controller.height = Mathf.Lerp(controller.height, crouch_height, 0.1);
 	} else {
 		var old_height = controller.height;

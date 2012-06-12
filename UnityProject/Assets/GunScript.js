@@ -24,7 +24,7 @@ var velocity : Vector3;
 
 var magazine_obj:GameObject;
 
-var bullet_hole_obj:GameObject;
+var bullet_obj:GameObject;
 var muzzle_flash:GameObject;
 
 var shell_casing:GameObject;
@@ -163,12 +163,8 @@ function ApplyPressureToTrigger() : boolean {
 			round_in_chamber.transform.parent = transform;
 	
 			Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
-			var hit:RaycastHit;
-			var mask = 1<<8;
-			mask = ~mask;
-			if(Physics.Raycast(transform.position, transform.forward, hit, Mathf.Infinity, mask)){
-				Instantiate(bullet_hole_obj, hit.point, transform.rotation);
-			}
+			var bullet = Instantiate(bullet_obj, transform.position, transform.rotation);
+			bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
 			PullSlideBack();
 			rotation_transfer_y += Random.Range(1.0,2.0);
 			rotation_transfer_x += Random.Range(-1.0,1.0);
