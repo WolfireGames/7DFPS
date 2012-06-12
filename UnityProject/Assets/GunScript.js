@@ -263,6 +263,11 @@ function RemoveMag() : GameObject {
 	return mag;
 }
 
+
+function IsThereAMagInGun() : boolean {
+	return magazine_instance_in_gun;
+}
+
 function InsertMag(mag : GameObject) {
 	if(magazine_instance_in_gun){
 		return;

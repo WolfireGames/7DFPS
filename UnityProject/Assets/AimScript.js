@@ -523,7 +523,7 @@ function Update () {
 			hold_pose_spring.target_state = 1.0;
 		}
 		if(Input.GetKeyDown('m')){
-			if(mag_stage == HandMagStage.HOLD){
+			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
 				hold_pose_spring.target_state = 0.0;
 				mag_stage = HandMagStage.HOLD_TO_INSERT;
 			}
