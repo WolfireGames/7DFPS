@@ -74,10 +74,6 @@ private var head_recoil_spring_y = new Spring(0,0,kRecoilSpringStrength,kRecoilS
 private var magazine_instance_in_hand:GameObject;
 private var kGunDistance = 0.3;
 
-enum Holster{NOT_HOLSTERED, HOLSTERED};
-private var holstered = Holster.NOT_HOLSTERED;
-private var holster_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
-
 private var slide_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var reload_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 
@@ -99,8 +95,7 @@ private var mag_stage = HandMagStage.EMPTY;
 
 private var collected_rounds = new Array();
 
-private var active_weapon_slot = 0;
-private var target_weapon_slot = 0;
+private var target_weapon_slot = -2;
 private var num_loose_bullets = 30;
 
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY};
@@ -108,7 +103,6 @@ enum WeaponSlotType {GUN, MAGAZINE, EMPTY};
 class WeaponSlot {
 	var obj:GameObject = null;
 	var type:WeaponSlotType = WeaponSlotType.EMPTY;
-	var in_use = false;
 };
 
 private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
@@ -123,12 +117,8 @@ function Start () {
 	for(i=0; i<10; ++i){
 		weapon_slots[i] = new WeaponSlot();
 	}
-	weapon_slots[0].type = WeaponSlotType.GUN;
-	weapon_slots[0].obj = gun_instance;
-	weapon_slots[0].in_use = true;
 	weapon_slots[1].type = WeaponSlotType.MAGAZINE;
 	weapon_slots[1].obj = Instantiate(magazine_obj);
-	weapon_slots[1].in_use = false;
 }
 
 function AimPos() : Vector3 {
@@ -163,15 +153,6 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 	return a * Quaternion.AngleAxis(angle * -val, axis);
 }
 
-function HolsterGun() : boolean {
-	if(!left_hand_occupied){
-		holstered = Holster.HOLSTERED;
-		return true;
-	} else {
-		return false;
-	}
-}
-
 function Update () {
 	main_camera.transform.position = transform.position;
 	
@@ -189,51 +170,60 @@ function Update () {
 	var holstered_scale = Vector3(0.3,0.3,0.3); 
 	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
 		
-	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
-	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
-	
-	gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
-	gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
-	gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
-	
-	gun_instance.transform.position = mix(gun_instance.transform.position,
-									      gun_instance.transform.FindChild("pose_slide_pull").position,
-									      slide_pose_spring.state);
-									      
-	gun_instance.transform.rotation = mix(
-		gun_instance.transform.rotation,
-		gun_instance.transform.FindChild("pose_slide_pull").rotation,
-		slide_pose_spring.state);
-	gun_instance.transform.position = mix(gun_instance.transform.position,
-									      gun_instance.transform.FindChild("pose_reload").position,
-									      reload_pose_spring.state);
-	gun_instance.transform.rotation = mix(
-		gun_instance.transform.rotation,
-		gun_instance.transform.FindChild("pose_reload").rotation,
-		reload_pose_spring.state);
+	if(gun_instance){
+		gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
+		gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
 		
-	gun_instance.transform.RotateAround(
-		gun_instance.transform.FindChild("point_recoil_rotate").position,
-		gun_instance.transform.rotation * Vector3(1,0,0),
-		x_recoil_spring.state);
+		//gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
+		//gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
+		//gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
 		
-	gun_instance.transform.RotateAround(
-		gun_instance.transform.FindChild("point_recoil_rotate").position,
-		Vector3(0,1,0),
-		y_recoil_spring.state);
+		gun_instance.transform.position = mix(gun_instance.transform.position,
+										      gun_instance.transform.FindChild("pose_slide_pull").position,
+										      slide_pose_spring.state);
+										      
+		gun_instance.transform.rotation = mix(
+			gun_instance.transform.rotation,
+			gun_instance.transform.FindChild("pose_slide_pull").rotation,
+			slide_pose_spring.state);
+		gun_instance.transform.position = mix(gun_instance.transform.position,
+										      gun_instance.transform.FindChild("pose_reload").position,
+										      reload_pose_spring.state);
+		gun_instance.transform.rotation = mix(
+			gun_instance.transform.rotation,
+			gun_instance.transform.FindChild("pose_reload").rotation,
+			reload_pose_spring.state);
+			
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			gun_instance.transform.rotation * Vector3(1,0,0),
+			x_recoil_spring.state);
+			
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			Vector3(0,1,0),
+			y_recoil_spring.state);
+	}
 	
 	if(magazine_instance_in_hand){
-		var mag_pos = gun_instance.transform.position;
-		var mag_rot = gun_instance.transform.rotation;
-		mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
-				    gun_instance.transform.FindChild("point_mag_inserted").position);
+		if(gun_instance){
+			var mag_pos = gun_instance.transform.position;
+			var mag_rot = gun_instance.transform.rotation;
+			mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
+					    gun_instance.transform.FindChild("point_mag_inserted").position);
+	    }
 	   if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
 			var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
 			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
 	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
 	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
-	   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
-			magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
+	   		if(gun_instance){ 
+		   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
+				magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
+			} else {
+		   		magazine_instance_in_hand.transform.position = hold_pos;
+				magazine_instance_in_hand.transform.rotation = hold_rot;
+			}
 		} else {
 			magazine_instance_in_hand.transform.position = mag_pos;
 			magazine_instance_in_hand.transform.rotation = mag_rot;
@@ -278,7 +268,7 @@ function Update () {
 			mag_stage = HandMagStage.HOLD;
 		}
 	}
-	if(Input.GetKeyDown('`') && active_weapon_slot != -1){
+	if(Input.GetKeyDown('`')){
 		target_weapon_slot = -1;
 	}
 	if(Input.GetKeyDown('1')){
@@ -311,62 +301,67 @@ function Update () {
 	if(Input.GetKeyDown('0')){
 		target_weapon_slot = 9;
 	}
-	if(active_weapon_slot != target_weapon_slot){
+	if(target_weapon_slot != -2){
 		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+			// Put held mag in empty slot
 			weapon_slots[target_weapon_slot].type = WeaponSlotType.MAGAZINE;
-			weapon_slots[target_weapon_slot].in_use = false;
 			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
 			magazine_instance_in_hand = null;
 			mag_stage = HandMagStage.EMPTY;
-			target_weapon_slot = active_weapon_slot;
+			target_weapon_slot = -2;
 		} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+			// Swap held mag with one in inventory
 			var temp = weapon_slots[target_weapon_slot].obj;
 			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
 			magazine_instance_in_hand = temp;
 			magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
-			target_weapon_slot = active_weapon_slot;
+			target_weapon_slot = -2;
 		} else if(target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+			// Take mag from inventory
 			magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
 			magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
 			mag_stage = HandMagStage.HOLD;
+			hold_pose_spring.state = 1.0;
+			hold_pose_spring.target_state = 1.0;
 			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
 			weapon_slots[target_weapon_slot].obj = null;
-			weapon_slots[target_weapon_slot].in_use = false;
-			target_weapon_slot = active_weapon_slot;
-		} else if(active_weapon_slot == 0){
-			HolsterGun();
-		} else if(active_weapon_slot == -1){
+			target_weapon_slot = -2;
+		} else if(gun_instance){
+			// Put gun away
+			if(target_weapon_slot == -1){
+				for(i=0; i<10; ++i){
+					if(weapon_slots[i].type == WeaponSlotType.EMPTY){
+						target_weapon_slot = i;
+					}
+				}
+			}
+			if(target_weapon_slot != -1){
+				weapon_slots[target_weapon_slot].type = WeaponSlotType.GUN;
+				weapon_slots[target_weapon_slot].obj = gun_instance;
+				gun_instance = null;
+				target_weapon_slot = -2;
+			}
+		} else if(target_weapon_slot >= 0){
 			if(weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
-				target_weapon_slot = -1;
+				target_weapon_slot = -2;
 			} else {
-				if(target_weapon_slot == 0){
-					holstered = Holster.NOT_HOLSTERED;
-					weapon_slots[target_weapon_slot].in_use = true;
-					active_weapon_slot = target_weapon_slot;
+				if(weapon_slots[target_weapon_slot].type == WeaponSlotType.GUN){
+					gun_instance = weapon_slots[target_weapon_slot].obj;
+					gun_instance.transform.localScale = Vector3(1.0,1.0,1.0);
+					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+					weapon_slots[target_weapon_slot].obj = null;
+					target_weapon_slot = -2;
 				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
 					magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
 					magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
 					mag_stage = HandMagStage.HOLD;
 					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
 					weapon_slots[target_weapon_slot].obj = null;
-					weapon_slots[target_weapon_slot].in_use = false;
-					target_weapon_slot = active_weapon_slot;
+					target_weapon_slot = -2;
 				}
 			}
 		}
 	}
-	
-	if(holstered == Holster.HOLSTERED){
-		holster_spring.target_state = 1.0;
-		if(holster_spring.state >= 1.0){
-			weapon_slots[0].in_use = false;
-			active_weapon_slot = -1;
-		}
-	} else {
-		holster_spring.target_state = 0.0;
-	}
-	
-	holster_spring.Update();
 	
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
@@ -376,7 +371,7 @@ function Update () {
 	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
 	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
 		
-	if((Input.GetMouseButton(1) || aim_toggle) && holstered == Holster.NOT_HOLSTERED){
+	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
 		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
 		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
 	} else {
@@ -392,20 +387,13 @@ function Update () {
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	for(i=0; i<10; ++i){
-		if(weapon_slots[i].type == WeaponSlotType.EMPTY || weapon_slots[i].in_use){
-			if(weapon_slots[i].in_use){
-				weapon_slots[i].obj.transform.localScale = Vector3(1.0,1.0,1.0);
-				var renderers = weapon_slots[i].obj.GetComponentsInChildren(Renderer);
-				for(var renderer : Renderer in renderers){
-					renderer.castShadows = true; 
-				}
-			}
+		if(weapon_slots[i].type == WeaponSlotType.EMPTY){
 			continue;
 		}
 		weapon_slots[i].obj.transform.position = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
 		weapon_slots[i].obj.transform.localScale = Vector3(0.3,0.3,0.3); 
 		weapon_slots[i].obj.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
-		renderers = weapon_slots[i].obj.GetComponentsInChildren(Renderer);
+		var renderers = weapon_slots[i].obj.GetComponentsInChildren(Renderer);
 		for(var renderer : Renderer in renderers){
 			renderer.castShadows = false; 
 		}

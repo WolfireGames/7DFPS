@@ -263,7 +263,10 @@ function RemoveMag() : GameObject {
 	return mag;
 }
 
-function InsertMag(mag : GameObject) : GameObject {
+function InsertMag(mag : GameObject) {
+	if(magazine_instance_in_gun){
+		return;
+	}
 	magazine_instance_in_gun = mag;
 	mag.transform.parent = transform;
 	mag_stage = MagStage.INSERTING;
