@@ -97,6 +97,7 @@ private var collected_rounds = new Array();
 
 private var target_weapon_slot = -2;
 private var num_loose_bullets = 30;
+private var queue_drop = false;
 
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
@@ -385,7 +386,14 @@ function Update () {
 		slot.spring.Update();
 	}
 	
-	if(target_weapon_slot != -2){
+	var mag_ejecting = false;
+	if(gun_instance && (gun_instance.GetComponent(GunScript).IsMagCurrentlyEjecting() || gun_instance.GetComponent(GunScript).ready_to_remove_mag)){
+		mag_ejecting = true;
+	}
+	
+	var insert_mag_with_number_key = false;
+	
+	if(target_weapon_slot != -2 && !mag_ejecting && (mag_stage == HandMagStage.EMPTY || mag_stage == HandMagStage.HOLD)){
 		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
 			// Put held mag in empty slot
 			for(i=0; i<10; ++i){
@@ -402,18 +410,10 @@ function Update () {
 			magazine_instance_in_hand = null;
 			mag_stage = HandMagStage.EMPTY;
 			target_weapon_slot = -2;
-		/*} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
-			// Swap held mag with one in inventory
-			var temp = weapon_slots[target_weapon_slot].obj;
-			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
-			weapon_slots[target_weapon_slot].spring.state = 0.0;
-			weapon_slots[target_weapon_slot].start_pos = magazine_instance_in_hand.transform.position - main_camera.transform.position;
-			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * magazine_instance_in_hand.transform.rotation;
-			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
-			magazine_instance_in_hand = temp;
-			magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
-			target_weapon_slot = -2;*/
-		} else if(target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+		} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTYING && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand && gun_instance && !gun_instance.GetComponent(GunScript).IsThereAMagInGun()){
+			insert_mag_with_number_key = true;
+			target_weapon_slot = -2;
+		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
 			// Take mag from inventory
 			magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
 			mag_stage = HandMagStage.HOLD;
@@ -433,7 +433,7 @@ function Update () {
 					}
 				}
 			}
-			if(target_weapon_slot != -1){
+			if(target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
 				for(i=0; i<10; ++i){
 					if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == gun_instance){
 						weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
@@ -470,19 +470,24 @@ function Update () {
 		}
 	}
 	
-	if(Input.GetKeyDown('e')){
+	if(Input.GetKeyDown('e') || queue_drop){
 		if(mag_stage == HandMagStage.HOLD){
 			mag_stage = HandMagStage.EMPTY;
 			magazine_instance_in_hand.AddComponent(Rigidbody);
 			magazine_instance_in_hand.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 			magazine_instance_in_hand.rigidbody.velocity = character_controller.velocity;
 			magazine_instance_in_hand = null;
+			queue_drop = false;
 		}
 	}
 	
 	if(Input.GetKeyDown('e')){
 		if(mag_stage == HandMagStage.EMPTY && gun_instance){
-			gun_instance.GetComponent(GunScript).MagEject();
+			if(gun_instance.GetComponent(GunScript).IsMagCurrentlyEjecting()){
+				queue_drop = true;
+			} else {
+				gun_instance.GetComponent(GunScript).MagEject();
+			}
 		} else if(mag_stage == HandMagStage.HOLD_TO_INSERT){
 			mag_stage = HandMagStage.HOLD;
 			hold_pose_spring.target_state = 1.0;
@@ -582,8 +587,8 @@ function Update () {
 			hold_pose_spring.vel = 0.0;
 			hold_pose_spring.target_state = 1.0;
 		}
-		if(Input.GetKeyDown('m')){
-			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
+		if(Input.GetKeyDown('i') || insert_mag_with_number_key){
+			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
 				hold_pose_spring.target_state = 0.0;
 				mag_stage = HandMagStage.HOLD_TO_INSERT;
 			}
@@ -595,7 +600,6 @@ function Update () {
 				mag_stage = HandMagStage.EMPTY;
 			}
 		}
-		
 	}
 	
 	if(Input.GetKeyDown('q')){

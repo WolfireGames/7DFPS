@@ -265,9 +265,12 @@ function RemoveMag() : GameObject {
 	return mag;
 }
 
-
 function IsThereAMagInGun() : boolean {
 	return magazine_instance_in_gun;
+}
+
+function IsMagCurrentlyEjecting() : boolean {
+	return mag_stage == MagStage.REMOVING;
 }
 
 function InsertMag(mag : GameObject) {
