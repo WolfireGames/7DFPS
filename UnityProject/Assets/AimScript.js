@@ -432,19 +432,6 @@ function Update () {
 		}
 	}
 	
-	if(Input.GetKeyDown('m')){
-		if(mag_stage == HandMagStage.HOLD){
-			hold_pose_spring.target_state = 0.0;
-			mag_stage = HandMagStage.HOLD_TO_INSERT;
-		}
-	}
-	
-	/*if(mag_stage == HandMagStage.HOLD_TO_INSERT){
-		if(hold_pose_spring.state < 0.01){
-			mag_stage = HandMagStage.INSERTING;
-		}
-	}*/
-	
 	if(Input.GetKeyDown('e')){
 		if(mag_stage == HandMagStage.EMPTY && gun_instance){
 			gun_instance.GetComponent(GunScript).MagEject();
@@ -539,6 +526,28 @@ function Update () {
 			next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
 			gun_script.add_head_recoil = false;
 		}
+		
+		if(gun_script.ready_to_remove_mag && !magazine_instance_in_hand){
+			magazine_instance_in_hand = gun_script.RemoveMag();
+			mag_stage = HandMagStage.HOLD;
+			hold_pose_spring.state = 0.0;
+			hold_pose_spring.vel = 0.0;
+			hold_pose_spring.target_state = 1.0;
+		}
+		if(Input.GetKeyDown('m')){
+			if(mag_stage == HandMagStage.HOLD){
+				hold_pose_spring.target_state = 0.0;
+				mag_stage = HandMagStage.HOLD_TO_INSERT;
+			}
+		}
+		if(mag_stage == HandMagStage.HOLD_TO_INSERT){
+			if(hold_pose_spring.state < 0.01){
+				gun_script.InsertMag(magazine_instance_in_hand);
+				magazine_instance_in_hand = null;
+				mag_stage = HandMagStage.EMPTY;
+			}
+		}
+		
 	}
 	
 	if(Input.GetKeyDown('q')){

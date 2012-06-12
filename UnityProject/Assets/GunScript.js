@@ -9,6 +9,7 @@ var sound_mag_insertion : AudioClip[];
 var sound_slide_back : AudioClip[];
 var sound_slide_front : AudioClip[];
 var sound_safety : AudioClip[];
+var sound_bullet_eject : AudioClip[];
 
 private var kGunMechanicVolume = 0.2;
 
@@ -104,6 +105,8 @@ function PullSlideBack() {
 	slide_lock = false;
 	if(round_in_chamber && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
 		round_in_chamber.AddComponent(Rigidbody);
+		Debug.Log("Playing sound");
+		PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
 		round_in_chamber.transform.parent = null;
 		round_in_chamber.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 		round_in_chamber.rigidbody.velocity = velocity;
@@ -172,6 +175,8 @@ function ApplyPressureToTrigger() : boolean {
 			recoil_transfer_y += Random.Range(-200.0,200.0);
 			add_head_recoil = true;
 			return true;
+		} else {
+			PlaySoundFromGroup(sound_mag_eject_button, 0.5);
 		}
 	}
 	return false;
@@ -251,6 +256,19 @@ function IsSlidePulledBack() : boolean {
 	return (slide_stage != SlideStage.NOTHING);
 }
 
+function RemoveMag() : GameObject {
+	var mag = magazine_instance_in_gun;
+	magazine_instance_in_gun = null;
+	ready_to_remove_mag = false;
+	return mag;
+}
+
+function InsertMag(mag : GameObject) : GameObject {
+	magazine_instance_in_gun = mag;
+	mag_stage = MagStage.INSERTING;
+	mag_seated = 0.0;
+}
+
 function Update () {
 	if(magazine_instance_in_gun){
 		var mag_pos = transform.position;
@@ -281,6 +299,7 @@ function Update () {
 		if(mag_seated <= 0.0){
 			mag_seated = 0.0;
 			ready_to_remove_mag = true;
+			mag_stage = MagStage.OUT;
 		}
 	}
 	
