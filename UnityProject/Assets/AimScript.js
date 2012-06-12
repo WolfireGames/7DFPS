@@ -98,11 +98,14 @@ private var collected_rounds = new Array();
 private var target_weapon_slot = -2;
 private var num_loose_bullets = 30;
 
-enum WeaponSlotType {GUN, MAGAZINE, EMPTY};
+enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
 class WeaponSlot {
 	var obj:GameObject = null;
 	var type:WeaponSlotType = WeaponSlotType.EMPTY;
+	var start_pos : Vector3 = Vector3(0,0,0);
+	var start_rot : Quaternion = Quaternion.identity;
+	var spring = new Spring(1,1,100,0.000001);
 };
 
 private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
@@ -149,6 +152,9 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 	}
 	if(angle < -180){
 		angle += 360;
+	}
+	if(angle == 0){
+		return a;
 	}
 	return a * Quaternion.AngleAxis(angle * -val, axis);
 }
@@ -268,6 +274,42 @@ function Update () {
 			mag_stage = HandMagStage.HOLD;
 		}
 	}
+	
+	
+	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
+	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
+	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
+	
+	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
+		
+	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
+		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
+		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
+	} else {
+		view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+		view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+		view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
+		
+		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
+		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
+	}
+	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
+	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
+	character_controller.transform.localEulerAngles.y = view_rotation_x;
+	
+	for(i = 0; i < kMaxHeadRecoil; ++i){
+		if(head_recoil_delay[i] != -1.0){
+			head_recoil_delay[i] -= Time.deltaTime;
+			if(head_recoil_delay[i] <= 0.0){
+				head_recoil_spring_x.vel += Random.Range(-30.0,30.0);
+				head_recoil_spring_y.vel += Random.Range(-30.0,30.0);
+				head_recoil_delay[i] = -1.0;
+			}
+		}
+	}
+	
 	if(Input.GetKeyDown('`')){
 		target_weapon_slot = -1;
 	}
@@ -301,30 +343,85 @@ function Update () {
 	if(Input.GetKeyDown('0')){
 		target_weapon_slot = 9;
 	}
+	
+	for(i=0; i<10; ++i){
+		var slot = weapon_slots[i];
+		if(slot.type == WeaponSlotType.EMPTY){
+			continue;
+		}
+		slot.obj.transform.localScale = Vector3(1.0,1.0,1.0); 
+	}
+	for(i=0; i<10; ++i){
+		slot = weapon_slots[i];
+		if(slot.type == WeaponSlotType.EMPTY){
+			continue;
+		}
+		var start_pos = main_camera.transform.position + slot.start_pos;
+		var start_rot = main_camera.transform.rotation * slot.start_rot;
+		if(slot.type == WeaponSlotType.EMPTYING){
+			start_pos = slot.obj.transform.position;
+			start_rot = slot.obj.transform.rotation;
+			if(Mathf.Abs(slot.spring.vel) <= 0.01 && slot.spring.state <= 0.01){
+				slot.type = WeaponSlotType.EMPTY;
+				slot.spring.state = 0.0;
+			}
+		}
+		slot.obj.transform.position = mix(
+			start_pos, 
+			main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3, 
+			slot.spring.state);
+		var scale = 0.3 * slot.spring.state + (1.0 - slot.spring.state);
+		slot.obj.transform.localScale.x *= scale;
+		slot.obj.transform.localScale.y *= scale;
+		slot.obj.transform.localScale.z *= scale;
+		slot.obj.transform.rotation = mix(
+			start_rot, 
+			main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0)), 
+			slot.spring.state);
+		var renderers = slot.obj.GetComponentsInChildren(Renderer);
+		for(var renderer : Renderer in renderers){
+			renderer.castShadows = false; 
+		}
+		slot.spring.Update();
+	}
+	
 	if(target_weapon_slot != -2){
 		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
 			// Put held mag in empty slot
+			for(i=0; i<10; ++i){
+				if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand){
+					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+				}
+			}
 			weapon_slots[target_weapon_slot].type = WeaponSlotType.MAGAZINE;
 			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
+			weapon_slots[target_weapon_slot].spring.state = 0.0;
+			weapon_slots[target_weapon_slot].spring.target_state = 1.0;
+			weapon_slots[target_weapon_slot].start_pos = magazine_instance_in_hand.transform.position - main_camera.transform.position;
+			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * magazine_instance_in_hand.transform.rotation;
 			magazine_instance_in_hand = null;
 			mag_stage = HandMagStage.EMPTY;
 			target_weapon_slot = -2;
-		} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+		/*} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
 			// Swap held mag with one in inventory
 			var temp = weapon_slots[target_weapon_slot].obj;
 			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
+			weapon_slots[target_weapon_slot].spring.state = 0.0;
+			weapon_slots[target_weapon_slot].start_pos = magazine_instance_in_hand.transform.position - main_camera.transform.position;
+			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * magazine_instance_in_hand.transform.rotation;
+			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
 			magazine_instance_in_hand = temp;
 			magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
-			target_weapon_slot = -2;
+			target_weapon_slot = -2;*/
 		} else if(target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
 			// Take mag from inventory
 			magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
-			magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
 			mag_stage = HandMagStage.HOLD;
 			hold_pose_spring.state = 1.0;
 			hold_pose_spring.target_state = 1.0;
-			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
-			weapon_slots[target_weapon_slot].obj = null;
+			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
+			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
+			weapon_slots[target_weapon_slot].spring.state = 1.0;
 			target_weapon_slot = -2;
 		} else if(gun_instance){
 			// Put gun away
@@ -332,12 +429,22 @@ function Update () {
 				for(i=0; i<10; ++i){
 					if(weapon_slots[i].type == WeaponSlotType.EMPTY){
 						target_weapon_slot = i;
+						break;
 					}
 				}
 			}
 			if(target_weapon_slot != -1){
+				for(i=0; i<10; ++i){
+					if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == gun_instance){
+						weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+					}
+				}
 				weapon_slots[target_weapon_slot].type = WeaponSlotType.GUN;
 				weapon_slots[target_weapon_slot].obj = gun_instance;
+				weapon_slots[target_weapon_slot].spring.state = 0.0;
+				weapon_slots[target_weapon_slot].spring.target_state = 1.0;
+				weapon_slots[target_weapon_slot].start_pos = gun_instance.transform.position - main_camera.transform.position;
+				weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * gun_instance.transform.rotation;
 				gun_instance = null;
 				target_weapon_slot = -2;
 			}
@@ -347,65 +454,18 @@ function Update () {
 			} else {
 				if(weapon_slots[target_weapon_slot].type == WeaponSlotType.GUN){
 					gun_instance = weapon_slots[target_weapon_slot].obj;
-					gun_instance.transform.localScale = Vector3(1.0,1.0,1.0);
-					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
-					weapon_slots[target_weapon_slot].obj = null;
+					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
+					weapon_slots[target_weapon_slot].spring.target_state = 0.0;
+					weapon_slots[target_weapon_slot].spring.state = 1.0;
 					target_weapon_slot = -2;
 				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
 					magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
-					magazine_instance_in_hand.transform.localScale = Vector3(1.0,1.0,1.0);
 					mag_stage = HandMagStage.HOLD;
-					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
-					weapon_slots[target_weapon_slot].obj = null;
+					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
+					weapon_slots[target_weapon_slot].spring.target_state = 0.0;
+					weapon_slots[target_weapon_slot].spring.state = 1.0;
 					target_weapon_slot = -2;
 				}
-			}
-		}
-	}
-	
-	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
-	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
-	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
-	
-	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
-		
-	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
-		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
-		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
-	} else {
-		view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-		view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-		view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
-		
-		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
-		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
-	}
-	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
-	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
-	character_controller.transform.localEulerAngles.y = view_rotation_x;
-	
-	for(i=0; i<10; ++i){
-		if(weapon_slots[i].type == WeaponSlotType.EMPTY){
-			continue;
-		}
-		weapon_slots[i].obj.transform.position = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
-		weapon_slots[i].obj.transform.localScale = Vector3(0.3,0.3,0.3); 
-		weapon_slots[i].obj.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
-		var renderers = weapon_slots[i].obj.GetComponentsInChildren(Renderer);
-		for(var renderer : Renderer in renderers){
-			renderer.castShadows = false; 
-		}
-	}
-	
-	for(i = 0; i < kMaxHeadRecoil; ++i){
-		if(head_recoil_delay[i] != -1.0){
-			head_recoil_delay[i] -= Time.deltaTime;
-			if(head_recoil_delay[i] <= 0.0){
-				head_recoil_spring_x.vel += Random.Range(-30.0,30.0);
-				head_recoil_spring_y.vel += Random.Range(-30.0,30.0);
-				head_recoil_delay[i] = -1.0;
 			}
 		}
 	}

@@ -77,6 +77,7 @@ function Start () {
 	magazine_instance_in_gun.transform.parent = transform;
 	round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
 	round_in_chamber.transform.parent = transform;
+	round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
 }
 
 function MagScript() : mag_script {
@@ -89,6 +90,7 @@ function ChamberRoundFromMag() : boolean {
 			MagScript().RemoveRound();
 			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_load_round").position, transform.FindChild("point_load_round").rotation);
 			round_in_chamber.transform.parent = transform;
+			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
 			round_in_chamber_state = RoundState.LOADING;
 		}
 		return true;
