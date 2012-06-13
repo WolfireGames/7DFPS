@@ -47,6 +47,7 @@
      <Compile Include="Assets\AimScript.js" />
      <Compile Include="Assets\BulletScript.js" />
      <Compile Include="Assets\Effects\muzzleflashscript.js" />
+     <Compile Include="Assets\Effects\plasterpuffscript.js" />
      <Compile Include="Assets\Effects\sparkeffect.js" />
      <Compile Include="Assets\GunScript.js" />
      <Compile Include="Assets\LockCursor.js" />
@@ -56,6 +57,8 @@
      <Compile Include="Assets\mag_script.js" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
+     <None Include="Assets\Materials\Particle Alpha Blend modified.shader" />
+     <None Include="Assets\Materials\particle add modified.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>

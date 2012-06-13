@@ -1,12 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\BulletScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Materials\Particle Alpha Blend modified.shader">
     <Files>
-      <File FileName="Assets\MusicScript.js" Line="18" Column="19" />
-      <File FileName="Assets\AimScript.js" Line="114" Column="12" />
-      <File FileName="Assets\BulletScript.js" Line="82" Column="1" />
+      <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Particle Add.shader" Line="1" Column="35" />
+      <File FileName="Assets\MusicScript.js" Line="1" Column="1" />
+      <File FileName="Assets\AimScript.js" Line="1" Column="1" />
+      <File FileName="Assets\BulletScript.js" Line="1" Column="1" />
       <File FileName="Assets\GunScript.js" Line="1" Column="1" />
-      <File FileName="Assets\StationaryTurretScript.js" Line="179" Column="26" />
+      <File FileName="Assets\StationaryTurretScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Effects\sparkeffect.js" Line="1" Column="1" />
+      <File FileName="Assets\Effects\muzzleflashscript.js" Line="1" Column="1" />
+      <File FileName="Assets\Materials\particle add modified.shader" Line="67" Column="1" />
+      <File FileName="Assets\Materials\Particle Alpha Blend modified.shader" Line="26" Column="14" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
