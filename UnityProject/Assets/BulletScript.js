@@ -2,6 +2,7 @@
 
 var bullet_obj : GameObject;
 var bullet_hole_obj : GameObject;
+var metal_bullet_hole_obj : GameObject;
 private var old_pos;
 private var hit_something = false;
 private var line_renderer : LineRenderer; 
@@ -70,7 +71,13 @@ function Update () {
 				hit_transform_obj.rigidbody.AddForceAtPosition(velocity * 0.01, hit.point, ForceMode.Impulse);
 			}
 			if(Vector3.Magnitude(velocity) > 50){
-				var hole = Instantiate(bullet_hole_obj, hit.point, Quaternion.identity);
+				var hole : GameObject;
+				if(!turret_script){
+					hole = Instantiate(bullet_hole_obj, hit.point, Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360)));
+				} else {
+					hole = Instantiate(metal_bullet_hole_obj, hit.point, Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360)));
+				}
+				hole.transform.position += hit.normal * 0.01;
 				hole.transform.parent = hit_obj.transform;
 			}
 			hit_something = true;
@@ -87,5 +94,8 @@ function Update () {
 		var start_color = Color(1,1,1,(1.0 - life_time * 5.0)*0.05);
 		var end_color = Color(1,1,1,(1.0 - death_time * 5.0)*0.05);
 		line_renderer.SetColors(start_color, end_color);
+		if(end_color.a <= 0.0){
+			Destroy(this.gameObject);
+		}
 	}
 }
