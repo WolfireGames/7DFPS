@@ -281,6 +281,7 @@ function InsertMag(mag : GameObject) {
 }
 
 function Update () {
+	var old_slide_amount = slide_amount;
 	if(magazine_instance_in_gun){
 		var mag_pos = transform.position;
 		var mag_rot = transform.rotation;
@@ -363,7 +364,6 @@ function Update () {
 		hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
 	}
 
-	var old_slide_amount = slide_amount;
 	if(slide_stage == SlideStage.NOTHING){
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
 		if(slide_amount == 0.0 && old_slide_amount != 0.0){

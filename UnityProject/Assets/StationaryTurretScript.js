@@ -1,8 +1,21 @@
 #pragma strict
 
+var sound_gunshot : AudioClip[];
+var sound_damage_camera : AudioClip[];
+var sound_damage_gun : AudioClip[];
+var sound_damage_battery : AudioClip[];
+var sound_damage_ammo : AudioClip[];
+var sound_damage_motor : AudioClip[];
+var sound_engine_loop : AudioClip;
+var sound_damaged_engine_loop : AudioClip;
+
+var audiosource_motor : AudioSource;
+var audiosource_effect : AudioSource;
+
 var electric_spark_obj : GameObject;
 var muzzle_flash : GameObject;
 var bullet_obj : GameObject;
+
 private var gun_delay = 0.0;
 private var alive = true;
 private var rotation_x = Spring(0,0,100,0.0001);
@@ -27,6 +40,11 @@ private var alert_cooldown_delay = 0.0;
 private var kMaxRange = 10.0;
 var target_pos : Vector3;
 
+function PlaySoundFromGroup(group : Array, volume : float){
+	var which_shot = Random.Range(0,group.length-1);
+	audiosource_effect.PlayOneShot(group[which_shot], volume);
+}
+
 function GetLightObject() : GameObject {
 	return transform.FindChild("gun pivot").FindChild("camera").FindChild("light").gameObject;
 }
@@ -42,26 +60,33 @@ function Damage(obj : GameObject){
 		motor_alive = false;
 		camera_alive = false;
 		trigger_alive = false;
+		PlaySoundFromGroup(sound_damage_battery,1.0);
 		rotation_x.target_state = 40.0;
 		damage_done = true;
 	} else if(obj.name == "pivot motor" && motor_alive){
 		motor_alive = false;
+		PlaySoundFromGroup(sound_damage_motor,1.0);
 		damage_done = true;
 	} else if(obj.name == "power cable" && (camera_alive || trigger_alive)){
 		camera_alive = false;
 		damage_done = true;
+		PlaySoundFromGroup(sound_damage_battery,1.0);
 		trigger_alive = false;
 	} else if(obj.name == "ammo box" && ammo_alive){
 		ammo_alive = false;
+		PlaySoundFromGroup(sound_damage_ammo,1.0);
 		damage_done = true;
 	} else if(obj.name == "gun" && barrel_alive){
 		barrel_alive = false;
+		PlaySoundFromGroup(sound_damage_gun,1.0);
 		damage_done = true;
 	} else if(obj.name == "camera" && camera_alive){
 		camera_alive = false;
+		PlaySoundFromGroup(sound_damage_camera,1.0);
 		damage_done = true;
 	} else if(obj.name == "camera armor" && camera_alive){
 		camera_alive = false;
+		PlaySoundFromGroup(sound_damage_camera,1.0);
 		damage_done = true;
 	}
 	if(damage_done){
@@ -96,6 +121,17 @@ function Start () {
 	gun_pivot = transform.FindChild("gun pivot");
 	initial_turret_orientation = gun_pivot.transform.localRotation;
 	initial_turret_position = gun_pivot.transform.localPosition;
+	audiosource_effect = gameObject.AddComponent(AudioSource);
+	audiosource_effect.rolloffMode = AudioRolloffMode.Linear;
+	audiosource_effect.maxDistance = 30;
+	
+	audiosource_motor = gameObject.AddComponent(AudioSource);
+	audiosource_motor.loop = true;
+	audiosource_motor.rolloffMode = AudioRolloffMode.Linear;
+	audiosource_motor.volume = 0.4;
+	audiosource_motor.clip = sound_engine_loop;
+	audiosource_motor.maxDistance = 4;
+	audiosource_motor.Play();
 }
 
 function Update () {
@@ -144,6 +180,8 @@ function Update () {
 				gun_delay += 0.1;
 				var point_muzzle_flash = gun_pivot.FindChild("gun").FindChild("point_muzzleflash");
 				Instantiate(muzzle_flash, point_muzzle_flash.position, point_muzzle_flash.rotation);
+				PlaySoundFromGroup(sound_gunshot, 1.0);
+				
 				var bullet = Instantiate(bullet_obj, point_muzzle_flash.position, point_muzzle_flash.rotation);
 				bullet.GetComponent(BulletScript).SetVelocity(point_muzzle_flash.forward * 300.0);
 				bullet.GetComponent(BulletScript).SetHostile();				
@@ -235,6 +273,10 @@ function Update () {
 	if(!camera_alive){
 		GetLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
 	}
+	var target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01;
+	target_pitch = Mathf.Clamp(target_pitch, 0.2, 2.0);
+	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
+	
 	rotation_x.Update();
 	rotation_y.Update();
 	gun_pivot.localRotation = initial_turret_orientation;
