@@ -23,6 +23,7 @@ private var kAlertDelay = 0.6;
 private var kAlertCooldownDelay = 2.0;
 private var alert_delay = 0.0;
 private var alert_cooldown_delay = 0.0;
+private var kMaxRange = 10.0;
 var target_pos : Vector3;
 
 function GetLightObject() : GameObject {
@@ -129,6 +130,8 @@ function Update () {
 				Instantiate(muzzle_flash, point_muzzle_flash.position, point_muzzle_flash.rotation);
 				var bullet = Instantiate(bullet_obj, point_muzzle_flash.position, point_muzzle_flash.rotation);
 				bullet.GetComponent(BulletScript).SetVelocity(point_muzzle_flash.forward * 300.0);
+				rotation_x.vel += Random.Range(-50,50);
+				rotation_y.vel += Random.Range(-50,50);
 				--bullets;
 			}
 		}
@@ -138,10 +141,23 @@ function Update () {
 	}
 	if(camera_alive){
 		var player = GameObject.Find("Player");
+		var dist = Vector3.Distance(player.transform.position, transform.position);
+		var danger = Mathf.Max(0.0, 1.0 - dist/kMaxRange);
+		if(danger > 0.0){
+			danger = Mathf.Min(0.2, danger);
+		}
+		if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
+			danger = 1.0;
+		}
+		if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
+			danger += 0.5;
+		}
+		player.GetComponent(MusicScript).SetDangerLevel(danger);
+		
 		var camera = transform.FindChild("gun pivot").FindChild("camera");
 		rel_pos = player.transform.position - camera.position;
 		var sees_target = false;
-		if(Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.7){
+		if(dist < kMaxRange && Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.7){
 			var hit:RaycastHit;
 			if(!Physics.Linecast(camera.position, player.transform.position, hit, 1<<0)){
 				sees_target = true;
