@@ -163,7 +163,7 @@ function ApplyPressureToTrigger() : boolean {
 			round_in_chamber.transform.parent = transform;
 	
 			Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
-			var bullet = Instantiate(bullet_obj, transform.position, transform.rotation);
+			var bullet = Instantiate(bullet_obj, transform.FindChild("point_muzzle").position, transform.FindChild("point_muzzle").rotation);
 			bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
 			PullSlideBack();
 			rotation_transfer_y += Random.Range(1.0,2.0);

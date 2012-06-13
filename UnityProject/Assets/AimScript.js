@@ -111,6 +111,10 @@ class WeaponSlot {
 
 private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
 
+function WasShot(){
+
+}
+
 function Start () {
 	gun_instance = Instantiate(gun_obj);
 	main_camera = GameObject.Find("Main Camera").gameObject;
