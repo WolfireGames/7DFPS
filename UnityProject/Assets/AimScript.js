@@ -165,6 +165,35 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 }
 
 function Update () {
+	if(Input.GetMouseButton(1) || aim_toggle){
+		aim_spring.target_state = 1.0;
+	} else {
+		aim_spring.target_state = 0.0;
+	}
+	aim_spring.Update();
+	
+	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
+	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
+	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
+	
+	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
+		
+	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
+		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
+		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
+	} else {
+		view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+		view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+		view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
+		
+		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
+		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
+	}
+	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
+	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
+	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	main_camera.transform.position = transform.position;
 	
 	var aim_dir = AimDir();
@@ -241,13 +270,6 @@ function Update () {
 		}
 	}
 	
-	if(Input.GetMouseButton(1) || aim_toggle){
-		aim_spring.target_state = 1.0;
-	} else {
-		aim_spring.target_state = 0.0;
-	}
-	aim_spring.Update();
-	
 	if(Input.GetKeyDown('g')){
 		var nearest_mag = null;
 		var nearest_mag_dist = 0.0;
@@ -279,30 +301,6 @@ function Update () {
 			mag_stage = HandMagStage.HOLD;
 		}
 	}
-	
-	
-	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
-	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
-	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
-	
-	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
-		
-	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
-		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
-		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
-	} else {
-		view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-		view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-		view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
-		
-		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
-		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
-	}
-	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
-	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
-	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	
 	for(i = 0; i < kMaxHeadRecoil; ++i){
 		if(head_recoil_delay[i] != -1.0){
@@ -470,7 +468,7 @@ function Update () {
 					weapon_slots[target_weapon_slot].spring.target_state = 0.0;
 					weapon_slots[target_weapon_slot].spring.state = 1.0;
 					target_weapon_slot = -2;
-				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE && mag_stage == HandMagStage.EMPTY){
 					magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
 					mag_stage = HandMagStage.HOLD;
 					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
@@ -599,7 +597,7 @@ function Update () {
 			hold_pose_spring.vel = 0.0;
 			hold_pose_spring.target_state = 1.0;
 		}
-		if(Input.GetKeyDown('i') || insert_mag_with_number_key){
+		if(Input.GetKeyDown('z') || insert_mag_with_number_key){
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
 				hold_pose_spring.target_state = 0.0;
 				mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -611,6 +609,11 @@ function Update () {
 				magazine_instance_in_hand = null;
 				mag_stage = HandMagStage.EMPTY;
 			}
+		}
+	}
+	if(Input.GetKeyDown('z')){
+		if(mag_stage == HandMagStage.HOLD && !gun_instance){
+			magazine_instance_in_hand.GetComponent(mag_script).AddRound();
 		}
 	}
 	

@@ -46,6 +46,7 @@
   <ItemGroup>
      <Compile Include="Assets\AimScript.js" />
      <Compile Include="Assets\BulletScript.js" />
+     <Compile Include="Assets\Effects\electricsparkscript.js" />
      <Compile Include="Assets\Effects\muzzleflashscript.js" />
      <Compile Include="Assets\Effects\plasterpuffscript.js" />
      <Compile Include="Assets\Effects\sparkeffect.js" />

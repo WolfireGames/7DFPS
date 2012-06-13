@@ -4,6 +4,7 @@ private var num_rounds = 8;
 private var max_rounds = 8;
 private var old_pos : Vector3;
 var collided = false;
+var sound_add_round : AudioClip[];
 var sound_mag_bounce : AudioClip[];
 var life_time = 0.0;
 
@@ -17,6 +18,7 @@ function AddRound() {
 	if(num_rounds >= max_rounds){
 		return;
 	}
+	PlaySoundFromGroup(sound_add_round, 0.3);
 	++num_rounds;
 	var round_obj = transform.FindChild("round_"+num_rounds);
 	round_obj.renderer.enabled = true;

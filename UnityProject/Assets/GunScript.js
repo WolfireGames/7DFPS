@@ -367,7 +367,7 @@ function Update () {
 	if(slide_stage == SlideStage.NOTHING){
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
 		if(slide_amount == 0.0 && old_slide_amount != 0.0){
-			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
 		}
 		if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
 			round_in_chamber_state = RoundState.READY;

@@ -1,5 +1,6 @@
 #pragma strict
 
+var electric_spark_obj : GameObject;
 var muzzle_flash : GameObject;
 var bullet_obj : GameObject;
 private var gun_delay = 0.0;
@@ -30,26 +31,41 @@ function GetLightObject() : GameObject {
 	return transform.FindChild("gun pivot").FindChild("camera").FindChild("light").gameObject;
 }
 
+function RandomOrientation() : Quaternion {
+	return Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360));
+}
+
 function Damage(obj : GameObject){
-	if(obj.name == "battery"){
+	var damage_done = false;
+	if(obj.name == "battery" && battery_alive){
 		battery_alive = false;
 		motor_alive = false;
 		camera_alive = false;
 		trigger_alive = false;
 		rotation_x.target_state = 40.0;
-	} else if(obj.name == "pivot motor"){
+		damage_done = true;
+	} else if(obj.name == "pivot motor" && motor_alive){
 		motor_alive = false;
-	} else if(obj.name == "power cable"){
+		damage_done = true;
+	} else if(obj.name == "power cable" && (camera_alive || trigger_alive)){
 		camera_alive = false;
+		damage_done = true;
 		trigger_alive = false;
-	} else if(obj.name == "ammo box"){
+	} else if(obj.name == "ammo box" && ammo_alive){
 		ammo_alive = false;
-	} else if(obj.name == "gun"){
+		damage_done = true;
+	} else if(obj.name == "gun" && barrel_alive){
 		barrel_alive = false;
-	} else if(obj.name == "camera"){
+		damage_done = true;
+	} else if(obj.name == "camera" && camera_alive){
 		camera_alive = false;
-	} else if(obj.name == "camera armor"){
+		damage_done = true;
+	} else if(obj.name == "camera armor" && camera_alive){
 		camera_alive = false;
+		damage_done = true;
+	}
+	if(damage_done){
+		Instantiate(electric_spark_obj, obj.transform.position, RandomOrientation());
 	}
 }
 
@@ -130,6 +146,7 @@ function Update () {
 				Instantiate(muzzle_flash, point_muzzle_flash.position, point_muzzle_flash.rotation);
 				var bullet = Instantiate(bullet_obj, point_muzzle_flash.position, point_muzzle_flash.rotation);
 				bullet.GetComponent(BulletScript).SetVelocity(point_muzzle_flash.forward * 300.0);
+				bullet.GetComponent(BulletScript).SetHostile();				
 				rotation_x.vel += Random.Range(-50,50);
 				rotation_y.vel += Random.Range(-50,50);
 				--bullets;
