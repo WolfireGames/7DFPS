@@ -3,6 +3,7 @@
 var bullet_obj : GameObject;
 var bullet_hole_obj : GameObject;
 var metal_bullet_hole_obj : GameObject;
+var spark_effect : GameObject;
 private var old_pos;
 private var hit_something = false;
 private var line_renderer : LineRenderer; 
@@ -77,6 +78,8 @@ function Update () {
 				} else {
 					hole = Instantiate(metal_bullet_hole_obj, hit.point, Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360)));
 				}
+				var spark_instance = Instantiate(spark_effect, hit.point, Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360)));
+				spark_instance.transform.position += hit.normal * 0.05;
 				hole.transform.position += hit.normal * 0.01;
 				hole.transform.parent = hit_obj.transform;
 			}
