@@ -117,7 +117,7 @@ function WasShot(){
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
 	x_recoil_spring.vel += Random.Range(-400,400);
-	x_recoil_spring.vel += Random.Range(-400,400);
+	y_recoil_spring.vel += Random.Range(-400,400);
 	rotation_x += Random.Range(-4,4);
 	rotation_y += Random.Range(-4,4);
 }
@@ -662,6 +662,7 @@ function Update () {
 			GameObject.Destroy(round);
 			++num_loose_bullets;
 			collected_rounds.splice(i,1);
+			PlaySoundFromGroup(sound_bullet_grab, 0.2);
 		}
 	}
 	collected_rounds.remove(null);
