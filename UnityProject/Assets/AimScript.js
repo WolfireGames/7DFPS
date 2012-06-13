@@ -6,6 +6,8 @@ var magazine_obj:GameObject;
 var gun_obj:GameObject;
 var casing_with_bullet:GameObject;
 
+var sound_bullet_grab : AudioClip[];
+
 // Shortcuts to components
 
 private var main_camera:GameObject;
@@ -112,7 +114,17 @@ class WeaponSlot {
 private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
 
 function WasShot(){
+	head_recoil_spring_x.vel += Random.Range(-400,400);
+	head_recoil_spring_y.vel += Random.Range(-400,400);
+	x_recoil_spring.vel += Random.Range(-400,400);
+	x_recoil_spring.vel += Random.Range(-400,400);
+	rotation_x += Random.Range(-4,4);
+	rotation_y += Random.Range(-4,4);
+}
 
+function PlaySoundFromGroup(group : Array, volume : float){
+	var which_shot = Random.Range(0,group.length-1);
+	audio.PlayOneShot(group[which_shot], volume);
 }
 
 function Start () {

@@ -108,7 +108,11 @@ function Update () {
 				}
 				effect.transform.position += hit.normal * 0.05;
 				hole.transform.position += hit.normal * 0.01;
-				hole.transform.parent = hit_obj.transform;
+				if(!aim_script){
+					hole.transform.parent = hit_obj.transform;
+				} else {
+					hole.transform.parent = GameObject.Find("Main Camera").transform;
+				}
 			}
 			hit_something = true;
 		}
