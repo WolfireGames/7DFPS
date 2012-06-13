@@ -3,6 +3,7 @@
 var sound_hit_concrete : AudioClip[];
 var sound_hit_metal : AudioClip[];
 var sound_hit_glass : AudioClip[];
+var sound_hit_body : AudioClip[];
 var sound_hit_ricochet : AudioClip[];
 var sound_flyby : AudioClip[];
 var bullet_obj : GameObject;
@@ -97,14 +98,18 @@ function Update () {
 			if(Vector3.Magnitude(velocity) > 50){
 				var hole : GameObject;
 				var effect : GameObject;
-				if(!turret_script){
-					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0 : 0.4);
-					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());
-					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
-				} else {
+				if(turret_script){
 					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0 : 0.8);
 					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
 					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
+				} else if(aim_script){
+					PlaySoundFromGroup(sound_hit_body, 1.0);
+					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());
+					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
+				} else {
+					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0 : 0.4);
+					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());
+					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
 				}
 				effect.transform.position += hit.normal * 0.05;
 				hole.transform.position += hit.normal * 0.01;

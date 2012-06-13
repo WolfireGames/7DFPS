@@ -12,6 +12,7 @@ var sound_bullet_grab : AudioClip[];
 
 private var main_camera:GameObject;
 private var character_controller:CharacterController;
+			
 
 // Instances
 
@@ -72,6 +73,9 @@ private var x_recoil_spring = new Spring(0,0,kRecoilSpringStrength,kRecoilSpring
 private var y_recoil_spring = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
 private var head_recoil_spring_x = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
 private var head_recoil_spring_y = new Spring(0,0,kRecoilSpringStrength,kRecoilSpringDamping);
+
+private var mag_pos : Vector3;
+private var mag_rot : Quaternion;
 
 private var magazine_instance_in_hand:GameObject;
 private var kGunDistance = 0.3;
@@ -259,8 +263,8 @@ function Update () {
 	
 	if(magazine_instance_in_hand){
 		if(gun_instance){
-			var mag_pos = gun_instance.transform.position;
-			var mag_rot = gun_instance.transform.rotation;
+			mag_pos = gun_instance.transform.position;
+			mag_rot = gun_instance.transform.rotation;
 			mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
 					    gun_instance.transform.FindChild("point_mag_inserted").position);
 	    }
@@ -269,7 +273,7 @@ function Update () {
 			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
 	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
 	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
-	   		if(gun_instance){ 
+	   		if(hold_pose_spring.state != 1.0){ 
 		   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
 				magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
 			} else {
