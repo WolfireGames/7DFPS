@@ -44,7 +44,8 @@ function Start () {
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	if(group.length == 0){return;}
-	var which_shot = Random.Range(0,group.length-1);
+	var which_shot = Random.Range(0,group.length);
+	Debug.Log(which_shot);
 	audio.PlayOneShot(group[which_shot], volume);
 }
 
@@ -68,6 +69,7 @@ function FixedUpdate () {
 		}
 	} else if(!rigidbody){
 		life_time = 0.0;
+		collided = false;
 	}
 	old_pos = transform.position;
 }

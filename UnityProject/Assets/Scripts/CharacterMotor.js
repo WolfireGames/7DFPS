@@ -6,6 +6,7 @@ private var kStandHeight = 2.0;
 private var kCrouchHeight = 1.0;
 private var crouching = false;
 private var step_timer = 0.0;
+private var head_bob = 0.0;
 
 var sound_footstep_jump_concrete : AudioClip[];
 var sound_footstep_run_concrete : AudioClip[];
@@ -308,7 +309,12 @@ private function UpdateFunction () {
 	}
 	// We were not grounded but just landed on something
 	else if (!grounded && IsGroundedTest()) {
-		PlaySoundFromGroup(sound_footstep_jump_concrete, 1.0);
+		if(old_vel.y < -8.0){
+			GetComponent(AimScript).FallDeath(old_vel);
+		} else if(old_vel.y < 0.0){
+			PlaySoundFromGroup(sound_footstep_jump_concrete, Mathf.Min(-old_vel.y, 1.0));
+			GetComponent(AimScript).StepRecoil(-old_vel.y * 0.1);
+		}
 		height_spring.vel = old_vel.y;
 		grounded = true;
 		jumping.jumping = false;
@@ -351,9 +357,9 @@ function FixedUpdate () {
 	
 	var controller = GetComponent (CharacterController);
 	if(crouching){
-		height_spring.target_state = 0.5;
+		height_spring.target_state = 0.5 + head_bob;
 	} else {
-		height_spring.target_state = 1.0;
+		height_spring.target_state = 1.0 + head_bob;
 	}
 	height_spring.Update();
 	var old_height = controller.transform.localScale.y * controller.height;
@@ -399,6 +405,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 	if(grounded){
 		var step_volume = movement.velocity.magnitude * 0.15;
 		step_volume = Mathf.Clamp(step_volume, 0.0,1.0);
+		head_bob = Mathf.Sin(step_timer * Mathf.PI) * 0.1 - 0.05;
 		if(desiredVelocity.magnitude > 0.0){
 			var step_speed = movement.velocity.magnitude * 0.75;
 			if(crouching){
@@ -412,6 +419,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
+				GetComponent(AimScript).StepRecoil(step_volume);
 				step_timer = 1.0;
 			}
 		} else {
@@ -421,6 +429,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
+				GetComponent(AimScript).StepRecoil(step_volume);
 			}
 			step_timer = 0.5;
 		}

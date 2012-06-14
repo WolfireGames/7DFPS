@@ -8,13 +8,13 @@ var casing_with_bullet:GameObject;
 var texture_death_screen : Texture;
 
 var sound_bullet_grab : AudioClip[];
+var sound_body_fall : AudioClip[];
 
 // Shortcuts to components
 
 private var main_camera:GameObject;
 private var character_controller:CharacterController;
 			
-
 // Instances
 
 private var gun_instance:GameObject;
@@ -113,6 +113,7 @@ private var head_tilt_vel = 0.0;
 private var head_tilt_x_vel = 0.0;
 private var head_tilt_y_vel = 0.0;
 private var dead_fade = 0.0;
+private var dead_body_fell = false;
 
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
@@ -134,6 +135,11 @@ function IsDead() : boolean {
 	return dead;
 }
 
+function StepRecoil(amount : float) {
+	x_recoil_spring.vel += Random.Range(100,400) * amount;
+	y_recoil_spring.vel += Random.Range(-200,200) * amount;
+}
+
 function WasShot(){
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
@@ -148,6 +154,14 @@ function WasShot(){
 	if(dead && Random.Range(0.0,1.0) < 0.3){
 		dead_fade += 0.3;
 	}
+}
+
+function FallDeath(vel : Vector3) {
+	SetDead(true);
+	head_fall_vel = vel.y;
+	dead_fade = 0.5;
+	head_recoil_spring_x.vel += Random.Range(-400,400);
+	head_recoil_spring_y.vel += Random.Range(-400,400);
 }
 
 function SetDead(new_dead : boolean) {
@@ -170,6 +184,7 @@ function SetDead(new_dead : boolean) {
 		head_fall = 0.0;
 		head_fall_vel = 0.0;
 		dead_fade = 0.0;
+		dead_body_fell = false;
 	}
 }
 
@@ -575,6 +590,10 @@ function Update () {
 				head_tilt_vel = 0.0;
 				head_tilt_x_vel = 0.0;
 				head_tilt_y_vel = 0.0;
+				if(!dead_body_fell){
+					PlaySoundFromGroup(sound_body_fall, 1.0);
+					dead_body_fell = true;
+				}
 			}
 			head_fall_vel *= -0.3;
 		}
