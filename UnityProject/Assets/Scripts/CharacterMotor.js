@@ -12,30 +12,8 @@ var sound_footstep_run_concrete : AudioClip[];
 var sound_footstep_walk_concrete : AudioClip[];
 var sound_footstep_crouchwalk_concrete : AudioClip[];
 
-class Spring {
-	var state : float;
-	var target_state : float;
-	var vel : float;
-	var strength : float;
-	var damping : float;
-	function Spring(state : float, target_state : float, strength : float, damping : float){
-		this.Set(state, target_state, strength, damping);
-	}
-	function Set(state : float, target_state : float, strength : float, damping : float){
-		this.state = state;
-		this.target_state = target_state;
-		this.strength = strength;
-		this.damping = damping;
-		this.vel = 0.0;		
-	}
-	function Update() {
-		this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
-		this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
-		this.state += this.vel * Time.deltaTime;	
-	}
-};
-
 var height_spring = new Spring(0,0,100,0.00001);
+var die_dir : Vector3;
 
 // Does this script currently respond to input?
 var canControl : boolean = true;
@@ -384,12 +362,14 @@ function FixedUpdate () {
 	if(height > old_height){
 		controller.transform.position.y += height - old_height;
 	}
+	die_dir *= 0.93;
+	
 	if (useFixedUpdate)
 		UpdateFunction();
 }
 
 function Update () {
-	if(Input.GetKeyDown("c")){
+	if(!GetComponent(AimScript).IsDead() && Input.GetKeyDown("c")){
 		crouching = !crouching;
 	}
 	if (!useFixedUpdate)
@@ -594,6 +574,10 @@ private function MoveWithPlatform () : boolean {
 }
 
 private function GetDesiredHorizontalVelocity () {
+	if(GetComponent(AimScript).IsDead()){
+		return die_dir;
+	}
+	
 	// Find desired velocity
 	var desiredLocalDirection : Vector3 = tr.InverseTransformDirection(inputMoveDirection);
 	var maxSpeed : float = MaxSpeedInDirection(desiredLocalDirection);
@@ -602,7 +586,8 @@ private function GetDesiredHorizontalVelocity () {
 		var movementSlopeAngle = Mathf.Asin(movement.velocity.normalized.y)  * Mathf.Rad2Deg;
 		maxSpeed *= movement.slopeSpeedMultiplier.Evaluate(movementSlopeAngle);
 	}
-	return tr.TransformDirection(desiredLocalDirection * maxSpeed);
+	die_dir = tr.TransformDirection(desiredLocalDirection * maxSpeed);
+	return die_dir;
 }
 
 private function AdjustGroundVelocityToNormal (hVelocity : Vector3, groundNormal : Vector3) : Vector3 {

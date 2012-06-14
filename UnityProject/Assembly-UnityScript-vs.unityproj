@@ -44,18 +44,21 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\AimScript.js" />
-     <Compile Include="Assets\BulletScript.js" />
-     <Compile Include="Assets\Effects\electricsparkscript.js" />
-     <Compile Include="Assets\Effects\muzzleflashscript.js" />
-     <Compile Include="Assets\Effects\plasterpuffscript.js" />
-     <Compile Include="Assets\Effects\sparkeffect.js" />
-     <Compile Include="Assets\GunScript.js" />
-     <Compile Include="Assets\LockCursor.js" />
-     <Compile Include="Assets\MusicScript.js" />
-     <Compile Include="Assets\ShellCasingScript.js" />
-     <Compile Include="Assets\StationaryTurretScript.js" />
-     <Compile Include="Assets\mag_script.js" />
+     <Compile Include="Assets\Scripts\AimScript.js" />
+     <Compile Include="Assets\Scripts\BulletScript.js" />
+     <Compile Include="Assets\Scripts\CharacterMotor.js" />
+     <Compile Include="Assets\Scripts\FPSInputController.js" />
+     <Compile Include="Assets\Scripts\GunScript.js" />
+     <Compile Include="Assets\Scripts\LockCursor.js" />
+     <Compile Include="Assets\Scripts\MusicScript.js" />
+     <Compile Include="Assets\Scripts\PlatformInputController.js" />
+     <Compile Include="Assets\Scripts\ShellCasingScript.js" />
+     <Compile Include="Assets\Scripts\StationaryTurretScript.js" />
+     <Compile Include="Assets\Scripts\electricsparkscript.js" />
+     <Compile Include="Assets\Scripts\mag_script.js" />
+     <Compile Include="Assets\Scripts\muzzleflashscript.js" />
+     <Compile Include="Assets\Scripts\plasterpuffscript.js" />
+     <Compile Include="Assets\Scripts\sparkeffect.js" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
      <None Include="Assets\Materials\Particle Alpha Blend modified.shader" />

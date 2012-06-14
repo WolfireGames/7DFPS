@@ -70,11 +70,6 @@ function Update () {
 			var hit_transform_obj = hit.transform.gameObject;
 			var aim_script : AimScript = RecursiveHasScript(hit_obj, "AimScript", 1);
 			var turret_script : StationaryTurretScript = RecursiveHasScript(hit_obj, "StationaryTurretScript", 3);
-			if(aim_script){
-				aim_script.WasShot();
-			} else if (turret_script){
-				turret_script.WasShot(hit_obj, hit.point, velocity);
-			}
 			transform.position = hit.point;
 			var ricochet_amount = Vector3.Dot(velocity.normalized, hit.normal) * -1.0;
 			if(Random.Range(0.0,1.0) > ricochet_amount && Vector3.Magnitude(velocity) * (1.0-ricochet_amount) > 10.0){
@@ -102,10 +97,12 @@ function Update () {
 					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0 : 0.8);
 					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
 					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
+					turret_script.WasShot(hit_obj, hit.point, velocity);
 				} else if(aim_script){
-					PlaySoundFromGroup(sound_hit_body, 1.0);
 					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());
 					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
+					PlaySoundFromGroup(sound_hit_body, 1.0);
+					aim_script.WasShot();
 				} else {
 					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0 : 0.4);
 					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());

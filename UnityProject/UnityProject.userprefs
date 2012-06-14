@@ -1,14 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\CharacterMotor.js">
     <Files>
-      <File FileName="Assets\mag_script.js" Line="106" Column="4" />
-      <File FileName="Assets\AimScript.js" Line="29" Column="1" />
-      <File FileName="Assets\BulletScript.js" Line="58" Column="1" />
-      <File FileName="Assets\GunScript.js" Line="382" Column="4" />
-      <File FileName="Assets\StationaryTurretScript.js" Line="82" Column="15" />
-      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" Line="424" Column="13" />
-      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\FPSInputController.js" Line="7" Column="1" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\FPSInputController.js" Line="28" Column="3" />
+      <File FileName="Assets\AimScript.js" Line="1" Column="1" />
+      <File FileName="Assets\mag_script.js" Line="1" Column="1" />
+      <File FileName="Assets\BulletScript.js" Line="30" Column="17" />
+      <File FileName="Assets\GunScript.js" Line="1" Column="1" />
+      <File FileName="Assets\StationaryTurretScript.js" Line="1" Column="1" />
+      <File FileName="Assets\CharacterMotor.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

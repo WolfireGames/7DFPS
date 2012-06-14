@@ -18,8 +18,8 @@ var bullet_obj : GameObject;
 
 private var gun_delay = 0.0;
 private var alive = true;
-private var rotation_x = Spring(0,0,100,0.0001);
-private var rotation_y = Spring(0,0,100,0.0001);
+private var rotation_x = Spring(0.0,0.0,100.0,0.0001);
+private var rotation_y = Spring(0.0,0.0,100.0,0.0001);
 private var initial_turret_orientation : Quaternion;
 private var initial_turret_position : Vector3;
 private var gun_pivot : Transform;

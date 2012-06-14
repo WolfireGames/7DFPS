@@ -5,6 +5,7 @@
 var magazine_obj:GameObject;
 var gun_obj:GameObject;
 var casing_with_bullet:GameObject;
+var texture_death_screen : Texture;
 
 var sound_bullet_grab : AudioClip[];
 
@@ -27,23 +28,23 @@ public var max_angle_y = 60.0;
 
 // Private variables
 
-class Spring {
+public class Spring {
 	var state : float;
 	var target_state : float;
 	var vel : float;
 	var strength : float;
 	var damping : float;
-	function Spring(state : float, target_state : float, strength : float, damping : float){
+	public function Spring(state : float, target_state : float, strength : float, damping : float){
 		this.Set(state, target_state, strength, damping);
 	}
-	function Set(state : float, target_state : float, strength : float, damping : float){
+	public function Set(state : float, target_state : float, strength : float, damping : float){
 		this.state = state;
 		this.target_state = target_state;
 		this.strength = strength;
 		this.damping = damping;
 		this.vel = 0.0;		
 	}
-	function Update() {
+	public function Update() {
 		this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
 		this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
 		this.state += this.vel * Time.deltaTime;	
@@ -105,6 +106,14 @@ private var target_weapon_slot = -2;
 private var num_loose_bullets = 30;
 private var queue_drop = false;
 
+private var head_fall = 0.0;
+private var head_fall_vel = 0.0;
+private var head_tilt = 0.0;
+private var head_tilt_vel = 0.0;
+private var head_tilt_x_vel = 0.0;
+private var head_tilt_y_vel = 0.0;
+private var dead_fade = 0.0;
+
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
 class WeaponSlot {
@@ -117,6 +126,14 @@ class WeaponSlot {
 
 private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
 
+private var health = 1.0;
+private var dying = false;
+private var dead = false;
+
+function IsDead() : boolean {
+	return dead;
+}
+
 function WasShot(){
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
@@ -124,6 +141,36 @@ function WasShot(){
 	y_recoil_spring.vel += Random.Range(-400,400);
 	rotation_x += Random.Range(-4,4);
 	rotation_y += Random.Range(-4,4);
+	dying = true;
+	if(Random.Range(0.0,1.0) < 0.3){
+		SetDead(true);
+	}
+	if(dead && Random.Range(0.0,1.0) < 0.3){
+		dead_fade += 0.3;
+	}
+}
+
+function SetDead(new_dead : boolean) {
+	if(new_dead == dead){
+		return;
+	}
+	dead = new_dead;
+	if(!dead){
+		head_tilt_vel = 0.0;
+		head_tilt_x_vel = 0.0;
+		head_tilt_y_vel = 0.0;
+		head_tilt = 0.0;
+		head_fall = 0.0;
+		dead_fade = 0.0;
+	} else {
+		GetComponent(MusicScript).HandleEvent(MusicEvent.DEAD);
+		head_tilt_vel = Random.Range(-100,100);
+		head_tilt_x_vel = Random.Range(-100,100);
+		head_tilt_y_vel = Random.Range(-100,100);
+		head_fall = 0.0;
+		head_fall_vel = 0.0;
+		dead_fade = 0.0;
+	}
 }
 
 function PlaySoundFromGroup(group : Array, volume : float){
@@ -180,113 +227,8 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 	return a * Quaternion.AngleAxis(angle * -val, axis);
 }
 
-function Update () {
-	if(Input.GetMouseButton(1) || aim_toggle){
-		aim_spring.target_state = 1.0;
-	} else {
-		aim_spring.target_state = 0.0;
-	}
-	aim_spring.Update();
-	
-	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
-	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
-	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
-	
-	rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-	rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-	rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
-		
-	if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
-		view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
-		view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
-	} else {
-		view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
-		view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
-		view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
-		
-		rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
-		rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
-	}
-	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, 0);
-	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
-	character_controller.transform.localEulerAngles.y = view_rotation_x;
-	main_camera.transform.position = transform.position;
-	
-	var aim_dir = AimDir();
-	var aim_pos = AimPos();	
-	
-	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
-	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
-	
-	//var holstered_dir = (transform.forward*0.1 + Vector3(0,-1,0)).normalized;
-	//var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
-		
-	var i = 0;
-	var holstered_pos = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
-	var holstered_scale = Vector3(0.3,0.3,0.3); 
-	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
-		
-	if(gun_instance){
-		gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
-		gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
-		
-		//gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
-		//gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
-		//gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
-		
-		gun_instance.transform.position = mix(gun_instance.transform.position,
-										      gun_instance.transform.FindChild("pose_slide_pull").position,
-										      slide_pose_spring.state);
-										      
-		gun_instance.transform.rotation = mix(
-			gun_instance.transform.rotation,
-			gun_instance.transform.FindChild("pose_slide_pull").rotation,
-			slide_pose_spring.state);
-		gun_instance.transform.position = mix(gun_instance.transform.position,
-										      gun_instance.transform.FindChild("pose_reload").position,
-										      reload_pose_spring.state);
-		gun_instance.transform.rotation = mix(
-			gun_instance.transform.rotation,
-			gun_instance.transform.FindChild("pose_reload").rotation,
-			reload_pose_spring.state);
-			
-		gun_instance.transform.RotateAround(
-			gun_instance.transform.FindChild("point_recoil_rotate").position,
-			gun_instance.transform.rotation * Vector3(1,0,0),
-			x_recoil_spring.state);
-			
-		gun_instance.transform.RotateAround(
-			gun_instance.transform.FindChild("point_recoil_rotate").position,
-			Vector3(0,1,0),
-			y_recoil_spring.state);
-	}
-	
-	if(magazine_instance_in_hand){
-		if(gun_instance){
-			mag_pos = gun_instance.transform.position;
-			mag_rot = gun_instance.transform.rotation;
-			mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
-					    gun_instance.transform.FindChild("point_mag_inserted").position);
-	    }
-	   if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
-			var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
-			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
-	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
-	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
-	   		if(hold_pose_spring.state != 1.0){ 
-		   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
-				magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
-			} else {
-		   		magazine_instance_in_hand.transform.position = hold_pos;
-				magazine_instance_in_hand.transform.rotation = hold_rot;
-			}
-		} else {
-			magazine_instance_in_hand.transform.position = mag_pos;
-			magazine_instance_in_hand.transform.rotation = mag_rot;
-		}
-	}
-	
-	if(Input.GetKeyDown('g')){
+function HandleControls() {
+	if(Input.GetKey('g')){
 		var nearest_mag = null;
 		var nearest_mag_dist = 0.0;
 		var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
@@ -318,7 +260,7 @@ function Update () {
 		}
 	}
 	
-	for(i = 0; i < kMaxHeadRecoil; ++i){
+	for(var i = 0; i < kMaxHeadRecoil; ++i){
 		if(head_recoil_delay[i] != -1.0){
 			head_recoil_delay[i] -= Time.deltaTime;
 			if(head_recoil_delay[i] <= 0.0){
@@ -361,47 +303,6 @@ function Update () {
 	}
 	if(Input.GetKeyDown('0')){
 		target_weapon_slot = 9;
-	}
-	
-	for(i=0; i<10; ++i){
-		var slot = weapon_slots[i];
-		if(slot.type == WeaponSlotType.EMPTY){
-			continue;
-		}
-		slot.obj.transform.localScale = Vector3(1.0,1.0,1.0); 
-	}
-	for(i=0; i<10; ++i){
-		slot = weapon_slots[i];
-		if(slot.type == WeaponSlotType.EMPTY){
-			continue;
-		}
-		var start_pos = main_camera.transform.position + slot.start_pos;
-		var start_rot = main_camera.transform.rotation * slot.start_rot;
-		if(slot.type == WeaponSlotType.EMPTYING){
-			start_pos = slot.obj.transform.position;
-			start_rot = slot.obj.transform.rotation;
-			if(Mathf.Abs(slot.spring.vel) <= 0.01 && slot.spring.state <= 0.01){
-				slot.type = WeaponSlotType.EMPTY;
-				slot.spring.state = 0.0;
-			}
-		}
-		slot.obj.transform.position = mix(
-			start_pos, 
-			main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3, 
-			slot.spring.state);
-		var scale = 0.3 * slot.spring.state + (1.0 - slot.spring.state);
-		slot.obj.transform.localScale.x *= scale;
-		slot.obj.transform.localScale.y *= scale;
-		slot.obj.transform.localScale.z *= scale;
-		slot.obj.transform.rotation = mix(
-			start_rot, 
-			main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0)), 
-			slot.spring.state);
-		var renderers = slot.obj.GetComponentsInChildren(Renderer);
-		for(var renderer : Renderer in renderers){
-			renderer.castShadows = false; 
-		}
-		slot.spring.Update();
 	}
 	
 	var mag_ejecting = false;
@@ -643,6 +544,195 @@ function Update () {
 			Time.timeScale = 1.0;
 		}
 	}
+}
+
+function Update () {
+	if(dying){
+		health -= Time.deltaTime;
+	}
+	if(health <= 0.0){
+		health = 0.0;
+		SetDead(true);
+		dying = false;
+	}
+
+	if(Input.GetKeyDown("p")){
+		SetDead(!dead);
+	}
+	
+	if(dead){
+		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
+		head_fall_vel -= 9.8 * Time.deltaTime;
+		head_fall += head_fall_vel * Time.deltaTime;
+		head_tilt += head_tilt_vel * Time.deltaTime;
+		view_rotation_x += head_tilt_x_vel * Time.deltaTime;
+		view_rotation_y += head_tilt_y_vel * Time.deltaTime;
+		var min_fall = character_controller.height * character_controller.transform.localScale.y * -0.5 + 0.1;
+		if(head_fall < min_fall && head_fall_vel < 0.0){			
+			if(Mathf.Abs(head_fall_vel) > 0.5){
+				head_recoil_spring_x.vel += Random.Range(-10,10) * Mathf.Abs(head_fall_vel);
+				head_recoil_spring_y.vel += Random.Range(-10,10) * Mathf.Abs(head_fall_vel);
+				head_tilt_vel = 0.0;
+				head_tilt_x_vel = 0.0;
+				head_tilt_y_vel = 0.0;
+			}
+			head_fall_vel *= -0.3;
+		}
+		head_fall = Mathf.Max(min_fall,head_fall);
+	}
+		
+	if((Input.GetMouseButton(1) || aim_toggle) && !dead){
+		aim_spring.target_state = 1.0;
+	} else {
+		aim_spring.target_state = 0.0;
+	}
+	aim_spring.Update();
+	
+	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
+	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
+	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
+	
+	if(!dead){
+		rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+		rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
+	
+		if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
+			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
+			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
+		} else {
+			view_rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
+			view_rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
+			view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
+			
+			rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
+			rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
+		}
+	}
+	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, head_tilt);
+	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
+	character_controller.transform.localEulerAngles.y = view_rotation_x;
+	main_camera.transform.position = transform.position;
+	main_camera.transform.position.y += head_fall;
+	
+	var aim_dir = AimDir();
+	var aim_pos = AimPos();	
+	
+	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
+	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
+	
+	//var holstered_dir = (transform.forward*0.1 + Vector3(0,-1,0)).normalized;
+	//var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
+		
+	var i = 0;
+	var holstered_pos = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
+	var holstered_scale = Vector3(0.3,0.3,0.3); 
+	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
+		
+	if(gun_instance){
+		gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
+		gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
+		
+		//gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
+		//gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
+		//gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
+		
+		gun_instance.transform.position = mix(gun_instance.transform.position,
+										      gun_instance.transform.FindChild("pose_slide_pull").position,
+										      slide_pose_spring.state);
+										      
+		gun_instance.transform.rotation = mix(
+			gun_instance.transform.rotation,
+			gun_instance.transform.FindChild("pose_slide_pull").rotation,
+			slide_pose_spring.state);
+		gun_instance.transform.position = mix(gun_instance.transform.position,
+										      gun_instance.transform.FindChild("pose_reload").position,
+										      reload_pose_spring.state);
+		gun_instance.transform.rotation = mix(
+			gun_instance.transform.rotation,
+			gun_instance.transform.FindChild("pose_reload").rotation,
+			reload_pose_spring.state);
+			
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			gun_instance.transform.rotation * Vector3(1,0,0),
+			x_recoil_spring.state);
+			
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			Vector3(0,1,0),
+			y_recoil_spring.state);
+	}
+	
+	if(magazine_instance_in_hand){
+		if(gun_instance){
+			mag_pos = gun_instance.transform.position;
+			mag_rot = gun_instance.transform.rotation;
+			mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
+					    gun_instance.transform.FindChild("point_mag_inserted").position);
+	    }
+	   if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
+			var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
+			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
+	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
+	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
+	   		if(hold_pose_spring.state != 1.0){ 
+		   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
+				magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
+			} else {
+		   		magazine_instance_in_hand.transform.position = hold_pos;
+				magazine_instance_in_hand.transform.rotation = hold_rot;
+			}
+		} else {
+			magazine_instance_in_hand.transform.position = mag_pos;
+			magazine_instance_in_hand.transform.rotation = mag_rot;
+		}
+	}
+	
+	for(i=0; i<10; ++i){
+		var slot = weapon_slots[i];
+		if(slot.type == WeaponSlotType.EMPTY){
+			continue;
+		}
+		slot.obj.transform.localScale = Vector3(1.0,1.0,1.0); 
+	}
+	for(i=0; i<10; ++i){
+		slot = weapon_slots[i];
+		if(slot.type == WeaponSlotType.EMPTY){
+			continue;
+		}
+		var start_pos = main_camera.transform.position + slot.start_pos;
+		var start_rot = main_camera.transform.rotation * slot.start_rot;
+		if(slot.type == WeaponSlotType.EMPTYING){
+			start_pos = slot.obj.transform.position;
+			start_rot = slot.obj.transform.rotation;
+			if(Mathf.Abs(slot.spring.vel) <= 0.01 && slot.spring.state <= 0.01){
+				slot.type = WeaponSlotType.EMPTY;
+				slot.spring.state = 0.0;
+			}
+		}
+		slot.obj.transform.position = mix(
+			start_pos, 
+			main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3, 
+			slot.spring.state);
+		var scale = 0.3 * slot.spring.state + (1.0 - slot.spring.state);
+		slot.obj.transform.localScale.x *= scale;
+		slot.obj.transform.localScale.y *= scale;
+		slot.obj.transform.localScale.z *= scale;
+		slot.obj.transform.rotation = mix(
+			start_rot, 
+			main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0)), 
+			slot.spring.state);
+		var renderers = slot.obj.GetComponentsInChildren(Renderer);
+		for(var renderer : Renderer in renderers){
+			renderer.castShadows = false; 
+		}
+		slot.spring.Update();
+	}
+	
+	if(!dead){
+		HandleControls();
+	}
 	
 	slide_pose_spring.Update();
 	reload_pose_spring.Update();
@@ -673,4 +763,15 @@ function Update () {
 }
 
 function FixedUpdate() {
+}
+
+function OnGUI() {
+	if(dead){
+	    if(!texture_death_screen){
+	        Debug.LogError("Assign a Texture in the inspector.");
+	        return;
+	    }
+	    GUI.color = Color(1,1,1,dead_fade);
+	    GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height), texture_death_screen, ScaleMode.StretchToFill, true);
+	}
 }
