@@ -240,6 +240,10 @@ function Update () {
 					}
 					target_pos = player.transform.position;
 					break;
+				case AIState.ALERT_COOLDOWN:
+					ai_state = AIState.ALERT;
+					alert_delay = kAlertDelay;
+					break;
 			}
 		} else {
 			switch(ai_state){
