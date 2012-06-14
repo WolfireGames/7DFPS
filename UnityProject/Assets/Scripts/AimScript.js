@@ -567,7 +567,7 @@ function Update () {
 		head_tilt += head_tilt_vel * Time.deltaTime;
 		view_rotation_x += head_tilt_x_vel * Time.deltaTime;
 		view_rotation_y += head_tilt_y_vel * Time.deltaTime;
-		var min_fall = character_controller.height * character_controller.transform.localScale.y * -0.5 + 0.1;
+		var min_fall = character_controller.height * character_controller.transform.localScale.y * -1.0;
 		if(head_fall < min_fall && head_fall_vel < 0.0){			
 			if(Mathf.Abs(head_fall_vel) > 0.5){
 				head_recoil_spring_x.vel += Random.Range(-10,10) * Mathf.Abs(head_fall_vel);
@@ -613,6 +613,7 @@ function Update () {
 	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	main_camera.transform.position = transform.position;
+	main_camera.transform.position.y += character_controller.height * character_controller.transform.localScale.y - 0.1;
 	main_camera.transform.position.y += head_fall;
 	
 	var aim_dir = AimDir();

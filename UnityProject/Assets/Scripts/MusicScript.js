@@ -32,6 +32,7 @@ function Start () {
 		var source : AudioSource = gameObject.AddComponent(AudioSource);
 		source.clip = music_layers[i];
 		music_sources[i] = source;
+		music_sources[i].loop = true;
 		music_sources[i].volume = 0.0;
 		target_gain[i] = 0.0;
 	}
