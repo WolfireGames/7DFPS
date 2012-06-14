@@ -1,6 +1,5 @@
 UnityProject/Temp/*
 UnityProject/Library/cache/*
-UnityProject/Library/metadata/*
 UnityProject/Library/previews/*
 UnityProject/Library/ScriptAssemblies/*
 *.suo
