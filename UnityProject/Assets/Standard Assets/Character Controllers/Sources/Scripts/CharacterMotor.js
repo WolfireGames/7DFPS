@@ -5,11 +5,47 @@
 private var kStandHeight = 2.0;
 private var kCrouchHeight = 1.0;
 private var crouching = false;
+private var step_timer = 0.0;
+
+var sound_footstep_jump_concrete : AudioClip[];
+var sound_footstep_run_concrete : AudioClip[];
+var sound_footstep_walk_concrete : AudioClip[];
+var sound_footstep_crouchwalk_concrete : AudioClip[];
+
+class Spring {
+	var state : float;
+	var target_state : float;
+	var vel : float;
+	var strength : float;
+	var damping : float;
+	function Spring(state : float, target_state : float, strength : float, damping : float){
+		this.Set(state, target_state, strength, damping);
+	}
+	function Set(state : float, target_state : float, strength : float, damping : float){
+		this.state = state;
+		this.target_state = target_state;
+		this.strength = strength;
+		this.damping = damping;
+		this.vel = 0.0;		
+	}
+	function Update() {
+		this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
+		this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
+		this.state += this.vel * Time.deltaTime;	
+	}
+};
+
+var height_spring = new Spring(0,0,100,0.00001);
 
 // Does this script currently respond to input?
 var canControl : boolean = true;
 
 var useFixedUpdate : boolean = true;
+
+function PlaySoundFromGroup(group : Array, volume : float){
+	var which_shot = Random.Range(0,group.length-1);
+	audio.PlayOneShot(group[which_shot], volume);
+}
 
 // For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.
 // Very handy for organization!
@@ -243,6 +279,8 @@ private function UpdateFunction () {
 		}
 	}
 	
+	var old_vel = movement.velocity;
+	
 	// Calculate the velocity based on the current and previous position.  
 	// This means our velocity will only be the amount the character actually moved as a result of collisions.
 	var oldHVelocity : Vector3 = new Vector3(velocity.x, 0, velocity.z);
@@ -292,6 +330,8 @@ private function UpdateFunction () {
 	}
 	// We were not grounded but just landed on something
 	else if (!grounded && IsGroundedTest()) {
+		PlaySoundFromGroup(sound_footstep_jump_concrete, 1.0);
+		height_spring.vel = old_vel.y;
 		grounded = true;
 		jumping.jumping = false;
 		SubtractNewPlatformVelocity();
@@ -333,13 +373,17 @@ function FixedUpdate () {
 	
 	var controller = GetComponent (CharacterController);
 	if(crouching){
-		controller.transform.localScale.y = Mathf.Lerp(controller.transform.localScale.y, 0.5, 0.1);
+		height_spring.target_state = 0.5;
 	} else {
-		//var old_height = controller.height;
-		controller.transform.localScale.y = Mathf.Lerp(controller.transform.localScale.y, 1.0, 0.1);
-		//controller.transform.position.y += controller.height - old_height;
+		height_spring.target_state = 1.0;
 	}
-	
+	height_spring.Update();
+	var old_height = controller.transform.localScale.y * controller.height;
+	controller.transform.localScale.y = height_spring.state;
+	var height = controller.transform.localScale.y * controller.height;
+	if(height > old_height){
+		controller.transform.position.y += height - old_height;
+	}
 	if (useFixedUpdate)
 		UpdateFunction();
 }
@@ -368,8 +412,39 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 		// Multiply with the sliding speed
 		desiredVelocity *= sliding.slidingSpeed;
 	}
-	else
+	else {
 		desiredVelocity = GetDesiredHorizontalVelocity();
+	}
+	
+	if(grounded){
+		var step_volume = movement.velocity.magnitude * 0.15;
+		step_volume = Mathf.Clamp(step_volume, 0.0,1.0);
+		if(desiredVelocity.magnitude > 0.0){
+			var step_speed = movement.velocity.magnitude * 0.75;
+			if(crouching){
+				step_speed *= 1.5;
+			}
+			step_speed = Mathf.Clamp(step_speed,1.0,3.0);
+			step_timer -= Time.deltaTime * step_speed;
+			if(step_timer < 0.0){
+				if(crouching){
+					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);
+				} else {
+					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
+				}
+				step_timer = 1.0;
+			}
+		} else {
+			if(step_timer < 0.8 && step_timer != 0.5){
+				if(crouching){
+					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);
+				} else {
+					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
+				}
+			}
+			step_timer = 0.5;
+		}
+	}
 	
 	if (movingPlatform.enabled && movingPlatform.movementTransfer == MovementTransferOnJump.PermaTransfer) {
 		desiredVelocity += movement.frameVelocity;
@@ -439,6 +514,9 @@ private function ApplyGravityAndJumping (velocity : Vector3) {
 		// and if they hit the button a fraction of a second too soon and no new jump happens as a consequence,
 		// it's confusing and it feels like the game is buggy.
 		if (jumping.enabled && canControl && (Time.time - jumping.lastButtonDownTime < 0.2)) {
+			PlaySoundFromGroup(sound_footstep_run_concrete, 1.0);
+			step_timer = 0.0;
+			crouching = false;
 			grounded = false;
 			jumping.jumping = true;
 			jumping.lastStartTime = Time.time;
