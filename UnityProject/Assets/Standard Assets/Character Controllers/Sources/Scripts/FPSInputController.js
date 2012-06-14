@@ -1,9 +1,5 @@
 private var motor : CharacterMotor;
 
-private var stand_height = 2.0;
-private var crouch_height = 1.0;
-private var crouching = false;
-
 // Use this for initialization
 function Awake () {
 	motor = GetComponent(CharacterMotor);
@@ -33,22 +29,10 @@ function Update () {
 	
 	// Apply the direction to the CharacterMotor
 	motor.inputMoveDirection = transform.rotation * directionVector;
-	motor.inputJump = Input.GetButton("Jump");
-	
-	if(Input.GetKeyDown("c")){
-		crouching = !crouching;
-	}
+	motor.inputJump = Input.GetButton("Jump");	
 }
 
 function FixedUpdate() {
-	var controller = GetComponent (CharacterController);
-	if(crouching){
-		controller.height = Mathf.Lerp(controller.height, crouch_height, 0.1);
-	} else {
-		var old_height = controller.height;
-		controller.height = Mathf.Lerp(controller.height, stand_height, 0.1);
-		controller.transform.position.y += controller.height - old_height;
-	}
 }
 
 // Require a character controller to be attached to the same game object

@@ -281,7 +281,6 @@ function InsertMag(mag : GameObject) {
 }
 
 function Update () {
-	var old_slide_amount = slide_amount;
 	if(magazine_instance_in_gun){
 		var mag_pos = transform.position;
 		var mag_rot = transform.rotation;
@@ -333,13 +332,17 @@ function Update () {
 	if(slide_stage == SlideStage.PULLBACK || slide_stage == SlideStage.HOLD){
 		if(slide_stage == SlideStage.PULLBACK){
 			slide_amount += Time.deltaTime * 10.0;
-			if(slide_amount >= 1.0){
-				PullSlideBack();
+			if(slide_amount >= kSlideLockPosition && slide_lock){
+				slide_amount = kSlideLockPosition;
 				slide_stage = SlideStage.HOLD;
 				PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
 			}
-		} else {
-			slide_amount = 1.0;
+			if(slide_amount >= 1.0){
+				PullSlideBack();
+				slide_amount = 1.0;
+				slide_stage = SlideStage.HOLD;
+				PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
+			}
 		}
 	}	
 	
@@ -365,21 +368,26 @@ function Update () {
 	}
 
 	if(slide_stage == SlideStage.NOTHING){
+		var old_slide_amount = slide_amount;
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
 		if(slide_amount == 0.0 && old_slide_amount != 0.0){
 			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
+			if(round_in_chamber){
+				round_in_chamber.transform.position = transform.FindChild("point_chambered_round").position;
+				round_in_chamber.transform.rotation = transform.FindChild("point_chambered_round").rotation;
+			}
 		}
 		if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
 			round_in_chamber_state = RoundState.READY;
 		}
-	}
-	
-	if(slide_lock){
-		slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
-		if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
-			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+		if(slide_lock){
+			slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
+			if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
+				PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+			}
 		}
 	}
+	
 }
 
 function FixedUpdate() {

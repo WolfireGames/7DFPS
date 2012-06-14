@@ -2,6 +2,10 @@
 #pragma implicit
 #pragma downcast
 
+private var kStandHeight = 2.0;
+private var kCrouchHeight = 1.0;
+private var crouching = false;
+
 // Does this script currently respond to input?
 var canControl : boolean = true;
 
@@ -327,11 +331,23 @@ function FixedUpdate () {
 		}
 	}
 	
+	var controller = GetComponent (CharacterController);
+	if(crouching){
+		controller.transform.localScale.y = Mathf.Lerp(controller.transform.localScale.y, 0.5, 0.1);
+	} else {
+		//var old_height = controller.height;
+		controller.transform.localScale.y = Mathf.Lerp(controller.transform.localScale.y, 1.0, 0.1);
+		//controller.transform.position.y += controller.height - old_height;
+	}
+	
 	if (useFixedUpdate)
 		UpdateFunction();
 }
 
 function Update () {
+	if(Input.GetKeyDown("c")){
+		crouching = !crouching;
+	}
 	if (!useFixedUpdate)
 		UpdateFunction();
 }
@@ -571,7 +587,7 @@ function MaxSpeedInDirection (desiredMovementDirection : Vector3) : float {
 		var zAxisEllipseMultiplier : float = (desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) / movement.maxSidewaysSpeed;
 		var temp : Vector3 = new Vector3(desiredMovementDirection.x, 0, desiredMovementDirection.z / zAxisEllipseMultiplier).normalized;
 		var length : float = new Vector3(temp.x, 0, temp.z * zAxisEllipseMultiplier).magnitude * movement.maxSidewaysSpeed;
-		return length;
+		return length * (crouching ? 0.5 : 1.0);
 	}
 }
 
