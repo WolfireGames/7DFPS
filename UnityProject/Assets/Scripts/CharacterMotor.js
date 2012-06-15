@@ -426,7 +426,6 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 			} else {
 				step_speed = running * 5.0;
 			}
-			Debug.Log(step_speed);
 			step_timer -= Time.deltaTime * step_speed;
 			if(step_timer < 0.0){
 				if(crouching){
@@ -443,8 +442,6 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 			if(step_timer < 0.8 && step_timer != 0.5){
 				if(crouching){
 					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);
-				} else if(running > 0.0){
-					PlaySoundFromGroup(sound_footstep_run_concrete, step_volume);
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
