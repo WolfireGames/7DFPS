@@ -6,6 +6,7 @@ var sound_damage_gun : AudioClip[];
 var sound_damage_battery : AudioClip[];
 var sound_damage_ammo : AudioClip[];
 var sound_damage_motor : AudioClip[];
+var sound_bump : AudioClip[];
 var sound_engine_loop : AudioClip;
 var sound_damaged_engine_loop : AudioClip;
 
@@ -44,6 +45,10 @@ private var kMaxRange = 10.0;
 private var rotor_speed = 0.0;
 private var top_rotor_rotation = 0.0;
 private var bottom_rotor_rotation = 0.0;
+private var initial_pos : Vector3;
+private var stuck = false;
+private var stuck_delay = 0.0;
+private var tilt_correction : Vector3;
 var target_pos : Vector3;
 
 function PlaySoundFromGroup(group : Array, volume : float){
@@ -62,6 +67,10 @@ function GetDroneLightObject() : GameObject {
 	return transform.FindChild("camera_pivot").FindChild("camera").FindChild("light").gameObject;
 }
 
+function GetDroneLensFlareObject() : GameObject {
+	return transform.FindChild("camera_pivot").FindChild("camera").FindChild("lens flare").gameObject;
+}
+
 
 function RandomOrientation() : Quaternion {
 	return Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360));
@@ -74,14 +83,13 @@ function Damage(obj : GameObject){
 		motor_alive = false;
 		camera_alive = false;
 		trigger_alive = false;
+		if(robot_type == RobotType.SHOCK_DRONE){
+			barrel_alive = false;
+		}
 		PlaySoundFromGroup(sound_damage_battery,1.0);
 		rotation_x.target_state = 40.0;
 		damage_done = true;
-	} else if(obj.name == "pivot motor" && motor_alive){
-		motor_alive = false;
-		PlaySoundFromGroup(sound_damage_motor,1.0);
-		damage_done = true;
-	} else if(obj.name == "motor" && motor_alive){
+	} else if((obj.name == "pivot motor" || obj.name == "motor") && motor_alive){
 		motor_alive = false;
 		PlaySoundFromGroup(sound_damage_motor,1.0);
 		damage_done = true;
@@ -94,7 +102,7 @@ function Damage(obj : GameObject){
 		ammo_alive = false;
 		PlaySoundFromGroup(sound_damage_ammo,1.0);
 		damage_done = true;
-	} else if(obj.name == "gun" && barrel_alive){
+	} else if((obj.name == "gun" || obj.name == "shock prod") && barrel_alive){
 		barrel_alive = false;
 		PlaySoundFromGroup(sound_damage_gun,1.0);
 		damage_done = true;
@@ -147,10 +155,8 @@ function Start () {
 	
 	audiosource_motor = gameObject.AddComponent(AudioSource);
 	audiosource_motor.loop = true;
-	audiosource_motor.rolloffMode = AudioRolloffMode.Linear;
 	audiosource_motor.volume = 0.4;
 	audiosource_motor.clip = sound_engine_loop;
-	audiosource_motor.maxDistance = 4;
 	audiosource_motor.Play();
 	
 	switch(robot_type){
@@ -158,12 +164,16 @@ function Start () {
 			gun_pivot = transform.FindChild("gun pivot");
 			initial_turret_orientation = gun_pivot.transform.localRotation;
 			initial_turret_position = gun_pivot.transform.localPosition;
+			audiosource_motor.rolloffMode = AudioRolloffMode.Linear;
+			audiosource_motor.maxDistance = 4;
 			break;
 		case RobotType.SHOCK_DRONE:
 			audiosource_motor.maxDistance = 8;
 			break;
 	}
 	
+	initial_pos = transform.position;	
+	target_pos = initial_pos;
 }
 
 function UpdateStationaryTurret() {
@@ -328,27 +338,64 @@ function UpdateStationaryTurret() {
 }
 
 function UpdateDrone() {
-	var target_pos = GameObject.Find("Player").transform.position;
-	target_pos.y += 1.0;
-	if(motor_alive){
-		rotor_speed = 9.81 + (target_pos.y - (transform.position.y + rigidbody.velocity.y));
+	if(motor_alive){		
+		var kFlyDeadZone = 0.2;
+		var kFlySpeed = 10.0;
+		var target_vel = (target_pos - transform.position) / kFlyDeadZone;
+		if(target_vel.magnitude > 1.0){
+			target_vel = target_vel.normalized;
+		}
+		target_vel *= kFlySpeed;
+		var target_accel = target_vel - rigidbody.velocity;
+		target_accel.y += 9.81;
+		
+		rotor_speed = target_accel.magnitude;
 		rotor_speed = Mathf.Clamp(rotor_speed, 0.0, 14.0);
+		
 		var up = transform.rotation * Vector3(0,1,0);
 		var correction : Quaternion;
-		correction.SetFromToRotation(up, Vector3(0,1,0) + (target_pos - (transform.position + rigidbody.velocity)).normalized * 0.2);
+		correction.SetFromToRotation(up, target_accel.normalized);
 		var correction_vec : Vector3;
 		var correction_angle : float;
 		correction.ToAngleAxis(correction_angle, correction_vec);
-		rigidbody.AddTorque(correction_vec * correction_angle * Time.deltaTime, ForceMode.Force);
-		rigidbody.angularDrag = 0.9;
+		tilt_correction = correction_vec * correction_angle;
+		
+		
+		var rel_pos = target_pos - transform.position;
+		var x_axis = transform.rotation * Vector3(1,0,0);
+		var y_axis = transform.rotation * Vector3(0,1,0);
+		var z_axis = transform.rotation * Vector3(0,0,1);
+		var y_plane_pos = Vector3(Vector3.Dot(rel_pos, z_axis), 0.0, -Vector3.Dot(rel_pos, x_axis)).normalized;
+		var target_y = Mathf.Atan2(y_plane_pos.x, y_plane_pos.z)/Mathf.PI*180-90;
+		while(target_y > 180){
+			target_y -= 360.0;
+		}
+		while(target_y < -180){
+			target_y += 360.0;
+		}
+		Debug.Log(target_y);
+		tilt_correction += y_axis * (target_y) * 0.5;	
+		
+		/*if(rigidbody.velocity.magnitude < 0.2){ 
+			stuck_delay += Time.deltaTime;
+			if(stuck_delay > 1.0){
+				target_pos = transform.position + Vector3(Random.Range(-1.0,1.0), Random.Range(-1.0,1.0), Random.Range(-1.0,1.0));
+				stuck_delay = 0.0;
+			}
+		} else {
+			stuck_delay = 0.0;
+		}*/
 	} else {
 		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
 		rigidbody.angularDrag = 0.05;
 	}
 	if(barrel_alive){
-		if(gun_delay <= 0.0){
+		if(gun_delay <= 0.0 && ai_state == AIState.FIRING){
 			gun_delay = 0.1;	
 			Instantiate(muzzle_flash, transform.FindChild("point_spark").position, RandomOrientation());
+			if(Vector3.Distance(transform.FindChild("point_spark").position, GameObject.Find("Player").transform.position) < 1){;
+				GameObject.Find("Player").GetComponent(AimScript).Shock();
+			}
 		}
 		gun_delay = Mathf.Max(0.0, gun_delay - Time.deltaTime);
 	}
@@ -365,7 +412,7 @@ function UpdateDrone() {
 	transform.FindChild("bottom rotor").localEulerAngles.y = bottom_rotor_rotation;
 	transform.FindChild("top rotor").localEulerAngles.y = top_rotor_rotation;
 	
-	rigidbody.velocity += transform.rotation * Vector3(0,1,0) * Time.deltaTime * rotor_speed;
+	//rigidbody.velocity += transform.rotation * Vector3(0,1,0) * rotor_speed * Time.deltaTime;
 	if(camera_alive){
 		var player = GameObject.Find("Player");
 		var dist = Vector3.Distance(player.transform.position, transform.position);
@@ -382,7 +429,7 @@ function UpdateDrone() {
 		player.GetComponent(MusicScript).SetDangerLevel(danger);
 		
 		var camera = transform.FindChild("camera_pivot").FindChild("camera");
-		var rel_pos = player.transform.position - camera.position;
+		rel_pos = player.transform.position - camera.position;
 		var sees_target = false;
 		if(dist < kMaxRange && Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.7){
 			var hit:RaycastHit;
@@ -397,20 +444,26 @@ function UpdateDrone() {
 					alert_delay = kAlertDelay;
 					break;
 				case AIState.AIMING:
-					if(Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.9){
+					target_pos = player.transform.position;
+					if(Vector3.Distance(transform.position, target_pos) < 4){
 						ai_state = AIState.FIRING;
 					}
-					target_pos = player.transform.position;
+					target_pos.y += 1.0;
 					break;					
 				case AIState.FIRING:
 					target_pos = player.transform.position;
+					if(Vector3.Distance(transform.position, target_pos) > 4){
+						ai_state = AIState.AIMING;
+					}
+					target_pos.y += 1.0;
 					break;
 				case AIState.ALERT:
 					alert_delay -= Time.deltaTime;
+					target_pos = player.transform.position;
+					target_pos.y += 1.0;
 					if(alert_delay <= 0.0){
 						ai_state = AIState.AIMING;
 					}
-					target_pos = player.transform.position;
 					break;
 				case AIState.ALERT_COOLDOWN:
 					ai_state = AIState.ALERT;
@@ -449,6 +502,8 @@ function UpdateDrone() {
 	if(!camera_alive){
 		GetDroneLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
 	}
+	(GetDroneLensFlareObject().GetComponent(LensFlare) as LensFlare).color = GetDroneLightObject().light.color;
+	(GetDroneLensFlareObject().GetComponent(LensFlare) as LensFlare).brightness = GetDroneLightObject().light.intensity;
 	var target_pitch = rotor_speed * 0.2;
 	target_pitch = Mathf.Clamp(target_pitch, 0.2, 3.0);
 	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
@@ -469,7 +524,7 @@ function Update () {
 
 function OnCollisionEnter(collision : Collision) {
 	if(robot_type == RobotType.SHOCK_DRONE){
-		if(collision.impactForceSum.magnitude > 5){
+		if(collision.impactForceSum.magnitude > 10){
 			if(Random.Range(0.0,1.0)<0.5 && motor_alive){
 				Damage(transform.FindChild("motor").gameObject);
 			} else if(Random.Range(0.0,1.0)<0.5 && camera_alive){
@@ -480,6 +535,17 @@ function OnCollisionEnter(collision : Collision) {
 				motor_alive = true;
 				Damage(transform.FindChild("motor").gameObject);
 			} 
+		} else {
+			PlaySoundFromGroup(sound_bump, collision.impactForceSum.magnitude * 0.15);
+		}
+	}
+}
+
+function FixedUpdate() {
+	if(robot_type == RobotType.SHOCK_DRONE){
+		rigidbody.AddForce(transform.rotation * Vector3(0,1,0) * rotor_speed, ForceMode.Force);
+		if(motor_alive){
+			rigidbody.AddTorque(tilt_correction, ForceMode.Force);
 		}
 	}
 }
