@@ -52,8 +52,8 @@
      <Compile Include="Assets\Scripts\LockCursor.js" />
      <Compile Include="Assets\Scripts\MusicScript.js" />
      <Compile Include="Assets\Scripts\PlatformInputController.js" />
+     <Compile Include="Assets\Scripts\RobotScript.js" />
      <Compile Include="Assets\Scripts\ShellCasingScript.js" />
-     <Compile Include="Assets\Scripts\StationaryTurretScript.js" />
      <Compile Include="Assets\Scripts\electricsparkscript.js" />
      <Compile Include="Assets\Scripts\mag_script.js" />
      <Compile Include="Assets\Scripts\muzzleflashscript.js" />

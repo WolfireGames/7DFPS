@@ -45,7 +45,6 @@ function Start () {
 function PlaySoundFromGroup(group : Array, volume : float){
 	if(group.length == 0){return;}
 	var which_shot = Random.Range(0,group.length);
-	Debug.Log(which_shot);
 	audio.PlayOneShot(group[which_shot], volume);
 }
 

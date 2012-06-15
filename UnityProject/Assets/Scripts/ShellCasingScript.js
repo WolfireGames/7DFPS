@@ -6,7 +6,7 @@ var old_pos : Vector3;
 var life_time = 0.0;
 
 function PlaySoundFromGroup(group : Array, volume : float){
-	var which_shot = Random.Range(0,group.length-1);
+	var which_shot = Random.Range(0,group.length);
 	audio.PlayOneShot(group[which_shot], volume);
 }
 

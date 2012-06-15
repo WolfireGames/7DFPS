@@ -9,12 +9,15 @@ var sound_damage_motor : AudioClip[];
 var sound_engine_loop : AudioClip;
 var sound_damaged_engine_loop : AudioClip;
 
-var audiosource_motor : AudioSource;
-var audiosource_effect : AudioSource;
+private var audiosource_motor : AudioSource;
+private var audiosource_effect : AudioSource;
 
 var electric_spark_obj : GameObject;
 var muzzle_flash : GameObject;
 var bullet_obj : GameObject;
+
+enum RobotType {SHOCK_DRONE, STATIONARY_TURRET, MOBILE_TURRET, GUN_DRONE};
+var robot_type : RobotType;
 
 private var gun_delay = 0.0;
 private var alive = true;
@@ -38,16 +41,27 @@ private var kAlertCooldownDelay = 2.0;
 private var alert_delay = 0.0;
 private var alert_cooldown_delay = 0.0;
 private var kMaxRange = 10.0;
+private var rotor_speed = 0.0;
+private var top_rotor_rotation = 0.0;
+private var bottom_rotor_rotation = 0.0;
 var target_pos : Vector3;
 
 function PlaySoundFromGroup(group : Array, volume : float){
-	var which_shot = Random.Range(0,group.length-1);
+	if(group.length == 0){
+		return;
+	}
+	var which_shot = Random.Range(0,group.length);
 	audiosource_effect.PlayOneShot(group[which_shot], volume);
 }
 
-function GetLightObject() : GameObject {
+function GetTurretLightObject() : GameObject {
 	return transform.FindChild("gun pivot").FindChild("camera").FindChild("light").gameObject;
 }
+
+function GetDroneLightObject() : GameObject {
+	return transform.FindChild("camera_pivot").FindChild("camera").FindChild("light").gameObject;
+}
+
 
 function RandomOrientation() : Quaternion {
 	return Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360));
@@ -114,13 +128,15 @@ function WasShot(obj : GameObject, pos : Vector3, vel : Vector3) {
 		var x_plane_pos = Vector3(-Vector3.Dot(rel_pos, z_axis), 0.0, Vector3.Dot(rel_pos, y_axis));
 		rotation_x.vel += Vector3.Dot(x_plane_vel, x_plane_pos) * 10.0;
 	}
+	if(robot_type == RobotType.SHOCK_DRONE){
+		if(Random.Range(0.0,1.0) < 0.3){
+			Damage(transform.FindChild("battery").gameObject);
+		}
+	}
 	Damage(obj);
 }
 
 function Start () {
-	gun_pivot = transform.FindChild("gun pivot");
-	initial_turret_orientation = gun_pivot.transform.localRotation;
-	initial_turret_position = gun_pivot.transform.localPosition;
 	audiosource_effect = gameObject.AddComponent(AudioSource);
 	audiosource_effect.rolloffMode = AudioRolloffMode.Linear;
 	audiosource_effect.maxDistance = 30;
@@ -132,9 +148,21 @@ function Start () {
 	audiosource_motor.clip = sound_engine_loop;
 	audiosource_motor.maxDistance = 4;
 	audiosource_motor.Play();
+	
+	switch(robot_type){
+		case RobotType.STATIONARY_TURRET:
+			gun_pivot = transform.FindChild("gun pivot");
+			initial_turret_orientation = gun_pivot.transform.localRotation;
+			initial_turret_position = gun_pivot.transform.localPosition;
+			break;
+		case RobotType.SHOCK_DRONE:
+			audiosource_motor.maxDistance = 8;
+			break;
+	}
+	
 }
 
-function Update () {
+function UpdateStationaryTurret() {
 	if(motor_alive){
 		switch(ai_state){
 			case AIState.IDLE:
@@ -263,19 +291,19 @@ function Update () {
 		}
 		switch(ai_state){
 			case AIState.IDLE:
-				GetLightObject().light.color = Color(0,0,1);
+				GetTurretLightObject().light.color = Color(0,0,1);
 				break;
 			case AIState.AIMING:
-				GetLightObject().light.color = Color(1,0,0);
+				GetTurretLightObject().light.color = Color(1,0,0);
 				break;
 			case AIState.ALERT:
 			case AIState.ALERT_COOLDOWN:
-				GetLightObject().light.color = Color(1,1,0);
+				GetTurretLightObject().light.color = Color(1,1,0);
 				break;
 		}
 	}
 	if(!camera_alive){
-		GetLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
+		GetTurretLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
 	}
 	var target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01;
 	target_pitch = Mathf.Clamp(target_pitch, 0.2, 2.0);
@@ -293,4 +321,133 @@ function Update () {
 		transform.FindChild("point_pivot").position, 
 		transform.FindChild("point_pivot").rotation * Vector3(0,1,0),
 		rotation_y.state);
+}
+
+function UpdateDrone() {
+	if(motor_alive){
+		rotor_speed = 10.0;
+		var up = transform.rotation * Vector3(0,1,0);
+		var correction : Quaternion;
+		correction.SetFromToRotation(up, Vector3(0,1,0));
+		var correction_vec : Vector3;
+		var correction_angle : float;
+		correction.ToAngleAxis(correction_angle, correction_vec);
+		rigidbody.AddTorque(correction_vec * correction_angle * Time.deltaTime, ForceMode.Force);
+		rigidbody.angularDrag = 0.9;
+	} else {
+		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
+		rigidbody.angularDrag = 0.05;
+	}
+	top_rotor_rotation += rotor_speed * Time.deltaTime * 1000.0;
+	bottom_rotor_rotation -= rotor_speed * Time.deltaTime * 1000.0;
+	if(rotor_speed * Time.timeScale > 7.0){
+		transform.FindChild("bottom rotor").gameObject.renderer.enabled = false;
+		transform.FindChild("top rotor").gameObject.renderer.enabled = false;
+	} else {
+		transform.FindChild("bottom rotor").gameObject.renderer.enabled = true;
+		transform.FindChild("top rotor").gameObject.renderer.enabled = true;
+	}
+	transform.FindChild("bottom rotor").localEulerAngles.y = bottom_rotor_rotation;
+	transform.FindChild("top rotor").localEulerAngles.y = top_rotor_rotation;
+	
+	rigidbody.velocity += transform.rotation * Vector3(0,1,0) * Time.deltaTime * rotor_speed;
+	if(camera_alive){
+		var player = GameObject.Find("Player");
+		var dist = Vector3.Distance(player.transform.position, transform.position);
+		var danger = Mathf.Max(0.0, 1.0 - dist/kMaxRange);
+		if(danger > 0.0){
+			danger = Mathf.Min(0.2, danger);
+		}
+		if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
+			danger = 1.0;
+		}
+		if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
+			danger += 0.5;
+		}
+		player.GetComponent(MusicScript).SetDangerLevel(danger);
+		
+		var camera = transform.FindChild("camera_pivot").FindChild("camera");
+		var rel_pos = player.transform.position - camera.position;
+		var sees_target = false;
+		if(dist < kMaxRange && Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.7){
+			var hit:RaycastHit;
+			if(!Physics.Linecast(camera.position, player.transform.position, hit, 1<<0)){
+				sees_target = true;
+			}
+		}
+		if(sees_target){
+			switch(ai_state){
+				case AIState.IDLE:
+					ai_state = AIState.ALERT;
+					alert_delay = kAlertDelay;
+					break;
+				case AIState.AIMING:
+					if(Vector3.Dot(camera.rotation*Vector3(0,-1,0), rel_pos.normalized) > 0.9){
+						ai_state = AIState.FIRING;
+					}
+					target_pos = player.transform.position;
+					break;					
+				case AIState.FIRING:
+					target_pos = player.transform.position;
+					break;
+				case AIState.ALERT:
+					alert_delay -= Time.deltaTime;
+					if(alert_delay <= 0.0){
+						ai_state = AIState.AIMING;
+					}
+					target_pos = player.transform.position;
+					break;
+				case AIState.ALERT_COOLDOWN:
+					ai_state = AIState.ALERT;
+					alert_delay = kAlertDelay;
+					break;
+			}
+		} else {
+			switch(ai_state){
+				case AIState.AIMING:
+				case AIState.FIRING:
+				case AIState.ALERT:
+					ai_state = AIState.ALERT_COOLDOWN;
+					alert_cooldown_delay = kAlertCooldownDelay;
+					break;
+				case AIState.ALERT_COOLDOWN:
+					alert_cooldown_delay -= Time.deltaTime;
+					if(alert_cooldown_delay <= 0.0){
+						ai_state = AIState.IDLE;
+					}
+					break;
+			}
+		}
+		switch(ai_state){
+			case AIState.IDLE:
+				GetDroneLightObject().light.color = Color(0,0,1);
+				break;
+			case AIState.AIMING:
+				GetDroneLightObject().light.color = Color(1,0,0);
+				break;
+			case AIState.ALERT:
+			case AIState.ALERT_COOLDOWN:
+				GetDroneLightObject().light.color = Color(1,1,0);
+				break;
+		}
+	}
+	if(!camera_alive){
+		GetDroneLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
+	}
+	var target_pitch = rotor_speed * 0.2;
+	target_pitch = Mathf.Clamp(target_pitch, 0.2, 2.0);
+	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
+	audiosource_motor.volume = rotor_speed * 0.1;
+}
+
+
+function Update () {
+	switch(robot_type){
+		case RobotType.STATIONARY_TURRET:
+			UpdateStationaryTurret();
+			break;
+		case RobotType.SHOCK_DRONE:
+			UpdateDrone();
+			break;
+	}
 }

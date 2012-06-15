@@ -52,7 +52,7 @@ function RandomOrientation() : Quaternion {
 }
 
 function PlaySoundFromGroup(group : Array, volume : float){
-	var which_shot = Random.Range(0,group.length-1);
+	var which_shot = Random.Range(0,group.length);
 	audio.PlayOneShot(group[which_shot], volume);
 }
 
@@ -69,7 +69,7 @@ function Update () {
 			var hit_obj = hit.collider.gameObject;
 			var hit_transform_obj = hit.transform.gameObject;
 			var aim_script : AimScript = RecursiveHasScript(hit_obj, "AimScript", 1);
-			var turret_script : StationaryTurretScript = RecursiveHasScript(hit_obj, "StationaryTurretScript", 3);
+			var turret_script : RobotScript = RecursiveHasScript(hit_obj, "RobotScript", 3);
 			transform.position = hit.point;
 			var ricochet_amount = Vector3.Dot(velocity.normalized, hit.normal) * -1.0;
 			if(Random.Range(0.0,1.0) > ricochet_amount && Vector3.Magnitude(velocity) * (1.0-ricochet_amount) > 10.0){

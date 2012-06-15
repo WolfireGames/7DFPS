@@ -189,7 +189,7 @@ function SetDead(new_dead : boolean) {
 }
 
 function PlaySoundFromGroup(group : Array, volume : float){
-	var which_shot = Random.Range(0,group.length-1);
+	var which_shot = Random.Range(0,group.length);
 	audio.PlayOneShot(group[which_shot], volume);
 }
 
