@@ -422,7 +422,10 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 	if(grounded){
 		var step_volume = movement.velocity.magnitude * 0.15;
 		step_volume = Mathf.Clamp(step_volume, 0.0,1.0);
-		head_bob = Mathf.Sin(step_timer * Mathf.PI) * 0.1 - 0.05;
+		head_bob = (Mathf.Sin(step_timer * Mathf.PI) * 0.1 - 0.05) * movement.velocity.magnitude * 0.5;
+		if(running > 0.0){
+			head_bob *= 2.0;
+		}
 		if(velocity.magnitude > 0.01){
 			var step_speed = movement.velocity.magnitude * 0.75;
 			if(movement.velocity.normalized.y > 0.1){
@@ -430,7 +433,6 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 			} else if(movement.velocity.normalized.y < -0.1){
 				step_speed -= movement.velocity.normalized.y * 2.0;
 			}
-			Debug.Log(step_speed);
 			if(crouching){
 				step_speed *= 1.5;
 			}

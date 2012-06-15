@@ -44,12 +44,12 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\LevelScript.js" />
      <Compile Include="Assets\Scripts\AimScript.js" />
      <Compile Include="Assets\Scripts\BulletScript.js" />
      <Compile Include="Assets\Scripts\CharacterMotor.js" />
      <Compile Include="Assets\Scripts\FPSInputController.js" />
      <Compile Include="Assets\Scripts\GunScript.js" />
+     <Compile Include="Assets\Scripts\LevelScript.js" />
      <Compile Include="Assets\Scripts\LockCursor.js" />
      <Compile Include="Assets\Scripts\MusicScript.js" />
      <Compile Include="Assets\Scripts\PlatformInputController.js" />
