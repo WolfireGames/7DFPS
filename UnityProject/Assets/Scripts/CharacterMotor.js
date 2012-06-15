@@ -13,6 +13,8 @@ var sound_footstep_run_concrete : AudioClip[];
 var sound_footstep_walk_concrete : AudioClip[];
 var sound_footstep_crouchwalk_concrete : AudioClip[];
 
+var running = 0.0;
+
 var height_spring = new Spring(0,0,100,0.00001);
 var die_dir : Vector3;
 
@@ -37,6 +39,10 @@ var inputMoveDirection : Vector3 = Vector3.zero;
 // for the jump button directly so this script can also be used by AIs.
 @System.NonSerialized
 var inputJump : boolean = false;
+
+function SetRunning(val : float){
+	running = val;
+}
 
 class CharacterMotorMovement {
 	// The maximum horizontal speed when moving
@@ -360,7 +366,7 @@ function FixedUpdate () {
 	}
 	
 	var controller = GetComponent (CharacterController);
-	if(crouching){
+	if(crouching && running == 0.0){
 		height_spring.target_state = 0.5 + head_bob;
 	} else {
 		height_spring.target_state = 1.0 + head_bob;
@@ -381,7 +387,7 @@ function FixedUpdate () {
 function Update () {
 	if(!GetComponent(AimScript).IsDead() && Input.GetKeyDown("c")){
 		crouching = !crouching;
-	}
+	}	
 	if (!useFixedUpdate)
 		UpdateFunction();
 }
@@ -415,11 +421,18 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 			if(crouching){
 				step_speed *= 1.5;
 			}
-			step_speed = Mathf.Clamp(step_speed,1.0,3.0);
+			if(!running){
+				step_speed = Mathf.Clamp(step_speed,1.0,3.0);
+			} else {
+				step_speed = running * 5.0;
+			}
+			Debug.Log(step_speed);
 			step_timer -= Time.deltaTime * step_speed;
 			if(step_timer < 0.0){
 				if(crouching){
 					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);
+				} else if(running > 0.0){
+					PlaySoundFromGroup(sound_footstep_run_concrete, step_volume);
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
@@ -430,6 +443,8 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 			if(step_timer < 0.8 && step_timer != 0.5){
 				if(crouching){
 					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);
+				} else if(running > 0.0){
+					PlaySoundFromGroup(sound_footstep_run_concrete, step_volume);
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
@@ -457,7 +472,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 	}
 	// If we're in the air and don't have control, don't apply any velocity change at all.
 	// If we're on the ground and don't have control we do apply it - it will correspond to friction.
-	if (grounded || canControl)
+	if (grounded)// || canControl)
 		velocity += velocityChangeVector;
 	
 	if (grounded) {
@@ -663,7 +678,7 @@ function MaxSpeedInDirection (desiredMovementDirection : Vector3) : float {
 		var zAxisEllipseMultiplier : float = (desiredMovementDirection.z > 0 ? movement.maxForwardSpeed : movement.maxBackwardsSpeed) / movement.maxSidewaysSpeed;
 		var temp : Vector3 = new Vector3(desiredMovementDirection.x, 0, desiredMovementDirection.z / zAxisEllipseMultiplier).normalized;
 		var length : float = new Vector3(temp.x, 0, temp.z * zAxisEllipseMultiplier).magnitude * movement.maxSidewaysSpeed;
-		return length * (crouching ? 0.5 : 1.0);
+		return length * (crouching ? 0.5 : 1.0) * (1.0 + running);
 	}
 }
 
