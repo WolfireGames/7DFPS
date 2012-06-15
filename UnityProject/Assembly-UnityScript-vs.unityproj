@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\PlatformInputController.js" />
      <Compile Include="Assets\Scripts\RobotScript.js" />
      <Compile Include="Assets\Scripts\ShellCasingScript.js" />
+     <Compile Include="Assets\Scripts\ShootableLight.js" />
      <Compile Include="Assets\Scripts\electricsparkscript.js" />
      <Compile Include="Assets\Scripts\mag_script.js" />
      <Compile Include="Assets\Scripts\muzzleflashscript.js" />
