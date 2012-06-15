@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\LevelScript.js" />
      <Compile Include="Assets\Scripts\AimScript.js" />
      <Compile Include="Assets\Scripts\BulletScript.js" />
      <Compile Include="Assets\Scripts\CharacterMotor.js" />
