@@ -159,14 +159,14 @@ function WasShot(){
 function FallDeath(vel : Vector3) {
 	SetDead(true);
 	head_fall_vel = vel.y;
-	dead_fade = 0.5;
+	dead_fade = Mathf.Max(dead_fade, 0.5);
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
 }
 
 function Shock() {
 	SetDead(true);
-	dead_fade = 0.5;
+	//dead_fade = Mathf.Max(dead_fade, 0.5);
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
 }

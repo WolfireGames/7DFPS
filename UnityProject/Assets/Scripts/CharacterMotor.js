@@ -199,6 +199,10 @@ function Awake () {
 	tr = transform;
 }
 
+function GetVelocity() {
+	return movement.velocity;
+}
+
 private function UpdateFunction () {
 	// We copy the actual velocity into a temporary variable that we can manipulate.
 	var velocity : Vector3 = movement.velocity;

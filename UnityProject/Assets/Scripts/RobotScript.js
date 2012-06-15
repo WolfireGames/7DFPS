@@ -346,7 +346,7 @@ function UpdateDrone() {
 			target_vel = target_vel.normalized;
 		}
 		target_vel *= kFlySpeed;
-		var target_accel = target_vel - rigidbody.velocity;
+		var target_accel = (target_vel - rigidbody.velocity);
 		target_accel.y += 9.81;
 		
 		rotor_speed = target_accel.magnitude;
@@ -373,10 +373,11 @@ function UpdateDrone() {
 		while(target_y < -180){
 			target_y += 360.0;
 		}
-		Debug.Log(target_y);
-		tilt_correction += y_axis * (target_y) * 0.5;	
+		tilt_correction += y_axis * target_y;	
+		tilt_correction -= rigidbody.angularVelocity;
+		tilt_correction *= 5.0;
 		
-		/*if(rigidbody.velocity.magnitude < 0.2){ 
+		if(rigidbody.velocity.magnitude < 0.2){ 
 			stuck_delay += Time.deltaTime;
 			if(stuck_delay > 1.0){
 				target_pos = transform.position + Vector3(Random.Range(-1.0,1.0), Random.Range(-1.0,1.0), Random.Range(-1.0,1.0));
@@ -384,7 +385,7 @@ function UpdateDrone() {
 			}
 		} else {
 			stuck_delay = 0.0;
-		}*/
+		}
 	} else {
 		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
 		rigidbody.angularDrag = 0.05;
@@ -438,28 +439,29 @@ function UpdateDrone() {
 			}
 		}
 		if(sees_target){
+			var new_target = player.transform.position + player.GetComponent(CharacterMotor).GetVelocity() * 
+							Mathf.Clamp(Vector3.Distance(player.transform.position, transform.position) * 0.1, 0.5, 1.0);
 			switch(ai_state){
 				case AIState.IDLE:
 					ai_state = AIState.ALERT;
 					alert_delay = kAlertDelay;
 					break;
 				case AIState.AIMING:
-					target_pos = player.transform.position;
+					target_pos = new_target;
 					if(Vector3.Distance(transform.position, target_pos) < 4){
 						ai_state = AIState.FIRING;
 					}
 					target_pos.y += 1.0;
 					break;					
 				case AIState.FIRING:
-					target_pos = player.transform.position;
+					target_pos = new_target;
 					if(Vector3.Distance(transform.position, target_pos) > 4){
 						ai_state = AIState.AIMING;
 					}
-					target_pos.y += 1.0;
 					break;
 				case AIState.ALERT:
 					alert_delay -= Time.deltaTime;
-					target_pos = player.transform.position;
+					target_pos = new_target;
 					target_pos.y += 1.0;
 					if(alert_delay <= 0.0){
 						ai_state = AIState.AIMING;
