@@ -68,6 +68,7 @@ function Update () {
 		if(Physics.Linecast(old_pos, transform.position, hit, 1<<0 | 1<<9 | 1<<11)){
 			var hit_obj = hit.collider.gameObject;
 			var hit_transform_obj = hit.transform.gameObject;
+			var light_script : ShootableLight = RecursiveHasScript(hit_obj, "ShootableLight", 1);
 			var aim_script : AimScript = RecursiveHasScript(hit_obj, "AimScript", 1);
 			var turret_script : RobotScript = RecursiveHasScript(hit_obj, "RobotScript", 3);
 			transform.position = hit.point;
@@ -89,6 +90,9 @@ function Update () {
 			}
 			if(hit_transform_obj.rigidbody){
 				hit_transform_obj.rigidbody.AddForceAtPosition(velocity * 0.01, hit.point, ForceMode.Impulse);
+			}
+			if(light_script){
+				light_script.WasShot(hit_obj, hit.point, velocity);
 			}
 			if(Vector3.Magnitude(velocity) > 50){
 				var hole : GameObject;
