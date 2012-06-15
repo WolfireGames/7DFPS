@@ -12,6 +12,7 @@ var sound_damaged_engine_loop : AudioClip;
 
 private var audiosource_motor : AudioSource;
 private var audiosource_effect : AudioSource;
+private var audiosource_foley : AudioSource;
 
 var electric_spark_obj : GameObject;
 var muzzle_flash : GameObject;
@@ -152,6 +153,8 @@ function Start () {
 	audiosource_effect = gameObject.AddComponent(AudioSource);
 	audiosource_effect.rolloffMode = AudioRolloffMode.Linear;
 	audiosource_effect.maxDistance = 30;
+	
+	audiosource_foley = gameObject.AddComponent(AudioSource);
 	
 	audiosource_motor = gameObject.AddComponent(AudioSource);
 	audiosource_motor.loop = true;
@@ -338,6 +341,7 @@ function UpdateStationaryTurret() {
 }
 
 function UpdateDrone() {
+	var rel_pos = target_pos - transform.position;
 	if(motor_alive){		
 		var kFlyDeadZone = 0.2;
 		var kFlySpeed = 10.0;
@@ -347,6 +351,9 @@ function UpdateDrone() {
 		}
 		target_vel *= kFlySpeed;
 		var target_accel = (target_vel - rigidbody.velocity);
+		if(ai_state == AIState.IDLE){
+			target_accel *= 0.1;
+		}
 		target_accel.y += 9.81;
 		
 		rotor_speed = target_accel.magnitude;
@@ -359,23 +366,30 @@ function UpdateDrone() {
 		var correction_angle : float;
 		correction.ToAngleAxis(correction_angle, correction_vec);
 		tilt_correction = correction_vec * correction_angle;
+		tilt_correction -= rigidbody.angularVelocity;
 		
 		
-		var rel_pos = target_pos - transform.position;
 		var x_axis = transform.rotation * Vector3(1,0,0);
 		var y_axis = transform.rotation * Vector3(0,1,0);
 		var z_axis = transform.rotation * Vector3(0,0,1);
-		var y_plane_pos = Vector3(Vector3.Dot(rel_pos, z_axis), 0.0, -Vector3.Dot(rel_pos, x_axis)).normalized;
-		var target_y = Mathf.Atan2(y_plane_pos.x, y_plane_pos.z)/Mathf.PI*180-90;
-		while(target_y > 180){
-			target_y -= 360.0;
+		if(ai_state != AIState.IDLE){
+			var y_plane_pos = Vector3(Vector3.Dot(rel_pos, z_axis), 0.0, -Vector3.Dot(rel_pos, x_axis)).normalized;
+			var target_y = Mathf.Atan2(y_plane_pos.x, y_plane_pos.z)/Mathf.PI*180-90;
+			while(target_y > 180){
+				target_y -= 360.0;
+			}
+			while(target_y < -180){
+				target_y += 360.0;
+			}
+			tilt_correction += y_axis * target_y;	
+			tilt_correction *= 5.0;
+		} else {
+			tilt_correction += y_axis;	
 		}
-		while(target_y < -180){
-			target_y += 360.0;
+		
+		if(ai_state == AIState.IDLE){
+			tilt_correction *= 0.1;
 		}
-		tilt_correction += y_axis * target_y;	
-		tilt_correction -= rigidbody.angularVelocity;
-		tilt_correction *= 5.0;
 		
 		if(rigidbody.velocity.magnitude < 0.2){ 
 			stuck_delay += Time.deltaTime;
@@ -386,6 +400,7 @@ function UpdateDrone() {
 		} else {
 			stuck_delay = 0.0;
 		}
+		
 	} else {
 		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
 		rigidbody.angularDrag = 0.05;
@@ -538,7 +553,8 @@ function OnCollisionEnter(collision : Collision) {
 				Damage(transform.FindChild("motor").gameObject);
 			} 
 		} else {
-			PlaySoundFromGroup(sound_bump, collision.impactForceSum.magnitude * 0.15);
+			var which_shot = Random.Range(0,sound_bump.length);
+			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.impactForceSum.magnitude * 0.15);
 		}
 	}
 }
