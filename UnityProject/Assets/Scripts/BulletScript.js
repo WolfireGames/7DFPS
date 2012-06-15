@@ -93,6 +93,7 @@ function Update () {
 			if(Vector3.Magnitude(velocity) > 50){
 				var hole : GameObject;
 				var effect : GameObject;
+				Debug.Log(hit.collider.material.name);
 				if(turret_script){
 					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0 : 0.8);
 					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
@@ -103,6 +104,14 @@ function Update () {
 					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
 					PlaySoundFromGroup(sound_hit_body, 1.0);
 					aim_script.WasShot();
+				} else if(hit.collider.material.name == "metal (Instance)"){
+					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0 : 0.4);
+					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
+					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
+				} else if(hit.collider.material.name == "glass (Instance)"){
+					PlaySoundFromGroup(sound_hit_glass, hostile ? 1.0 : 0.4);
+					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
+					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
 				} else {
 					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0 : 0.4);
 					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());

@@ -578,10 +578,10 @@ function Update () {
 		dying = false;
 	}
 
-	if(Input.GetKeyDown("p")){
+/*	if(Input.GetKeyDown("p")){
 		SetDead(!dead);
 	}
-	
+*/	
 	if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
 		head_fall_vel -= 9.8 * Time.deltaTime;
