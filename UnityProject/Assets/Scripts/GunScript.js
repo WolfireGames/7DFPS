@@ -217,6 +217,7 @@ function ToggleSafety() {
 function PullBackSlide() {
 	if(slide_stage == SlideStage.NOTHING){
 		slide_stage = SlideStage.PULLBACK;
+		slide_lock = false;
 	}
 }
 

@@ -131,6 +131,10 @@ private var health = 1.0;
 private var dying = false;
 private var dead = false;
 
+function IsAiming() : boolean {
+	return aim_spring.target_state == 1.0;
+}
+
 function IsDead() : boolean {
 	return dead;
 }
@@ -582,6 +586,10 @@ function Update () {
 		SetDead(!dead);
 	}
 */	
+	if(Input.GetKeyDown('l')){ 
+		Application.LoadLevel(Application.loadedLevel);
+	}
+		
 	if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
 		head_fall_vel -= 9.8 * Time.deltaTime;

@@ -44,6 +44,10 @@ function SetRunning(val : float){
 	running = val;
 }
 
+function GetRunning() : float{
+	return running;
+}
+
 class CharacterMotorMovement {
 	// The maximum horizontal speed when moving
 	var maxForwardSpeed : float = 10.0;
@@ -388,6 +392,9 @@ function Update () {
 	if(!GetComponent(AimScript).IsDead() && Input.GetKeyDown("c")){
 		crouching = !crouching;
 	}	
+	if(running > 0.0){
+		crouching = false;
+	}
 	if (!useFixedUpdate)
 		UpdateFunction();
 }
@@ -416,15 +423,21 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 		var step_volume = movement.velocity.magnitude * 0.15;
 		step_volume = Mathf.Clamp(step_volume, 0.0,1.0);
 		head_bob = Mathf.Sin(step_timer * Mathf.PI) * 0.1 - 0.05;
-		if(desiredVelocity.magnitude > 0.0){
+		if(velocity.magnitude > 0.01){
 			var step_speed = movement.velocity.magnitude * 0.75;
+			if(movement.velocity.normalized.y > 0.1){
+				step_speed += movement.velocity.normalized.y * 3.0;
+			} else if(movement.velocity.normalized.y < -0.1){
+				step_speed -= movement.velocity.normalized.y * 2.0;
+			}
+			Debug.Log(step_speed);
 			if(crouching){
 				step_speed *= 1.5;
 			}
 			if(!running){
-				step_speed = Mathf.Clamp(step_speed,1.0,3.0);
+				step_speed = Mathf.Clamp(step_speed,1.0,4.0);
 			} else {
-				step_speed = running * 5.0;
+				step_speed = running * 2.5 + 2.5;
 			}
 			step_timer -= Time.deltaTime * step_speed;
 			if(step_timer < 0.0){
@@ -438,7 +451,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 				GetComponent(AimScript).StepRecoil(step_volume);
 				step_timer = 1.0;
 			}
-		} else {
+		} else if(desiredVelocity.magnitude == 0.0 && velocity.magnitude < 0.01){
 			if(step_timer < 0.8 && step_timer != 0.5){
 				if(crouching){
 					PlaySoundFromGroup(sound_footstep_crouchwalk_concrete, step_volume);

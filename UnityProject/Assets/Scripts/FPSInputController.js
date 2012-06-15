@@ -14,17 +14,16 @@ function Update () {
 	// Get the input vector from kayboard or analog stick
 	var directionVector = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 	
-	Debug.Log(Input.GetAxis("Vertical"));
-	
 	if(old_vert_axis < 0.9 && Input.GetAxis("Vertical") >= 0.9){
-		if(forward_input_delay < 0.4){
-			motor.SetRunning(Mathf.Clamp(0.2/forward_input_delay,0.5,1.0));
+		if(forward_input_delay < 0.4 && !GetComponent(AimScript).IsAiming()){
+			motor.SetRunning(Mathf.Clamp((0.4-forward_input_delay)/0.2,0.01,1.0));
+			Debug.Log(Mathf.Clamp((0.4-forward_input_delay)/0.2,0.01,1.0));
 			running = true;			
 		}
 		forward_input_delay = 0.0;
 	}
 	forward_input_delay += Time.deltaTime;
-	if(forward_input_delay > 0.4){
+	if(forward_input_delay > 0.4 || GetComponent(AimScript).IsAiming()){
 		motor.SetRunning(0.0);
 		running = false;
 	}
