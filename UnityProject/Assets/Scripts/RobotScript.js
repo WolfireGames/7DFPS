@@ -81,6 +81,10 @@ function Damage(obj : GameObject){
 		motor_alive = false;
 		PlaySoundFromGroup(sound_damage_motor,1.0);
 		damage_done = true;
+	} else if(obj.name == "motor" && motor_alive){
+		motor_alive = false;
+		PlaySoundFromGroup(sound_damage_motor,1.0);
+		damage_done = true;
 	} else if(obj.name == "power cable" && (camera_alive || trigger_alive)){
 		camera_alive = false;
 		damage_done = true;
@@ -324,11 +328,14 @@ function UpdateStationaryTurret() {
 }
 
 function UpdateDrone() {
+	var target_pos = GameObject.Find("Player").transform.position;
+	target_pos.y += 1.0;
 	if(motor_alive){
-		rotor_speed = 10.0;
+		rotor_speed = 9.81 + (target_pos.y - (transform.position.y + rigidbody.velocity.y));
+		rotor_speed = Mathf.Clamp(rotor_speed, 0.0, 14.0);
 		var up = transform.rotation * Vector3(0,1,0);
 		var correction : Quaternion;
-		correction.SetFromToRotation(up, Vector3(0,1,0));
+		correction.SetFromToRotation(up, Vector3(0,1,0) + (target_pos - (transform.position + rigidbody.velocity)).normalized * 0.2);
 		var correction_vec : Vector3;
 		var correction_angle : float;
 		correction.ToAngleAxis(correction_angle, correction_vec);
@@ -338,6 +345,14 @@ function UpdateDrone() {
 		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
 		rigidbody.angularDrag = 0.05;
 	}
+	if(barrel_alive){
+		if(gun_delay <= 0.0){
+			gun_delay = 0.1;	
+			Instantiate(muzzle_flash, transform.FindChild("point_spark").position, RandomOrientation());
+		}
+		gun_delay = Mathf.Max(0.0, gun_delay - Time.deltaTime);
+	}
+	
 	top_rotor_rotation += rotor_speed * Time.deltaTime * 1000.0;
 	bottom_rotor_rotation -= rotor_speed * Time.deltaTime * 1000.0;
 	if(rotor_speed * Time.timeScale > 7.0){
@@ -435,7 +450,7 @@ function UpdateDrone() {
 		GetDroneLightObject().light.intensity *= Mathf.Pow(0.01, Time.deltaTime);
 	}
 	var target_pitch = rotor_speed * 0.2;
-	target_pitch = Mathf.Clamp(target_pitch, 0.2, 2.0);
+	target_pitch = Mathf.Clamp(target_pitch, 0.2, 3.0);
 	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
 	audiosource_motor.volume = rotor_speed * 0.1;
 }
@@ -449,5 +464,22 @@ function Update () {
 		case RobotType.SHOCK_DRONE:
 			UpdateDrone();
 			break;
+	}
+}
+
+function OnCollisionEnter(collision : Collision) {
+	if(robot_type == RobotType.SHOCK_DRONE){
+		if(collision.impactForceSum.magnitude > 5){
+			if(Random.Range(0.0,1.0)<0.5 && motor_alive){
+				Damage(transform.FindChild("motor").gameObject);
+			} else if(Random.Range(0.0,1.0)<0.5 && camera_alive){
+				Damage(transform.FindChild("camera_pivot").FindChild("camera").gameObject);
+			} else if(Random.Range(0.0,1.0)<0.5 && battery_alive){
+				Damage(transform.FindChild("battery").gameObject);
+			} else {
+				motor_alive = true;
+				Damage(transform.FindChild("motor").gameObject);
+			} 
+		}
 	}
 }

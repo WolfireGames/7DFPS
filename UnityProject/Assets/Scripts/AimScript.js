@@ -23,8 +23,8 @@ private var gun_instance:GameObject;
 
 public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
-public var min_angle_y = -60.0;
-public var max_angle_y = 60.0;
+private var min_angle_y = -89.0;
+private var max_angle_y = 89.0;
 
 // Private variables
 
