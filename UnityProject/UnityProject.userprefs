@@ -1,6 +1,21 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ShootableLight.js">
+    <Files>
+      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\BulletScript.js" Line="95" Column="54" />
+      <File FileName="Assets\Scripts\RobotScript.js" Line="150" Column="1" />
+      <File FileName="Assets\Scripts\taser_spark.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\electricsparkscript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CharacterMotor.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\FPSInputController.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
+      <File FileName="Assets\LevelScript.js" Line="7" Column="39" />
+      <File FileName="Assets\Scripts\ShootableLight.js" Line="13" Column="59" />
+      <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader" Line="3" Column="8" />
+      <File FileName="Assets\Scripts\muzzleflashscript.js" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

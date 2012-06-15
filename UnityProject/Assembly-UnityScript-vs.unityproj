@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\sparkeffect.js" />
      <Compile Include="Assets\Scripts\taser_spark.js" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
+     <None Include="Assets\Materials\Illumin-Diffuse - custom.shader" />
      <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
      <None Include="Assets\Materials\Particle Alpha Blend modified.shader" />
      <None Include="Assets\Materials\particle add modified.shader" />

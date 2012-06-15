@@ -27,6 +27,6 @@ function Update () {
 		light.color = combined_color;
 	}
 	for(var renderer : MeshRenderer in gameObject.GetComponentsInChildren(MeshRenderer)){
-		renderer.material.SetColor("_Color", combined_color);
+		renderer.material.SetColor("_Illum", combined_color);
 	}
 }

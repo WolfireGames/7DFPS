@@ -48,6 +48,7 @@
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" />
      <Compile Include="Assets\Standard Assets\Particles\Legacy Particles\TimedObjectDestructor.js" />
      <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
+     <None Include="Assets\Materials\Illumin-Diffuse - custom.shader" />
      <None Include="Assets\Materials\Masked Tint - Vertex Colors.shader" />
      <None Include="Assets\Materials\Particle Alpha Blend modified.shader" />
      <None Include="Assets\Materials\particle add modified.shader" />
