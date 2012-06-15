@@ -7,9 +7,12 @@ var sound_damage_battery : AudioClip[];
 var sound_damage_ammo : AudioClip[];
 var sound_damage_motor : AudioClip[];
 var sound_bump : AudioClip[];
+var sound_alert : AudioClip;
+var sound_unalert : AudioClip;
 var sound_engine_loop : AudioClip;
 var sound_damaged_engine_loop : AudioClip;
 
+private var audiosource_taser : AudioSource;
 private var audiosource_motor : AudioSource;
 private var audiosource_effect : AudioSource;
 private var audiosource_foley : AudioSource;
@@ -51,6 +54,10 @@ private var stuck = false;
 private var stuck_delay = 0.0;
 private var tilt_correction : Vector3;
 var target_pos : Vector3;
+enum CameraPivotState {DOWN, WAIT_UP, UP, WAIT_DOWN};
+var camera_pivot_state = CameraPivotState.WAIT_DOWN;
+var camera_pivot_delay = 0.0;
+var camera_pivot_angle = 0.0;
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	if(group.length == 0){
@@ -153,9 +160,7 @@ function Start () {
 	audiosource_effect = gameObject.AddComponent(AudioSource);
 	audiosource_effect.rolloffMode = AudioRolloffMode.Linear;
 	audiosource_effect.maxDistance = 30;
-	
-	audiosource_foley = gameObject.AddComponent(AudioSource);
-	
+
 	audiosource_motor = gameObject.AddComponent(AudioSource);
 	audiosource_motor.loop = true;
 	audiosource_motor.volume = 0.4;
@@ -172,6 +177,11 @@ function Start () {
 			break;
 		case RobotType.SHOCK_DRONE:
 			audiosource_motor.maxDistance = 8;
+			audiosource_foley = gameObject.AddComponent(AudioSource);
+			audiosource_taser = gameObject.AddComponent(AudioSource);
+			audiosource_taser.rolloffMode = AudioRolloffMode.Linear;
+			audiosource_taser.loop = true;
+			audiosource_taser.clip = sound_gunshot[0];
 			break;
 	}
 	
@@ -267,6 +277,7 @@ function UpdateStationaryTurret() {
 			switch(ai_state){
 				case AIState.IDLE:
 					ai_state = AIState.ALERT;
+					audiosource_effect.PlayOneShot(sound_alert, 0.3);
 					alert_delay = kAlertDelay;
 					break;
 				case AIState.AIMING:
@@ -302,6 +313,7 @@ function UpdateStationaryTurret() {
 					alert_cooldown_delay -= Time.deltaTime;
 					if(alert_cooldown_delay <= 0.0){
 						ai_state = AIState.IDLE;
+						audiosource_effect.PlayOneShot(sound_unalert, 0.3);
 					}
 					break;
 			}
@@ -405,16 +417,21 @@ function UpdateDrone() {
 		rotor_speed = Mathf.Max(0.0, rotor_speed - Time.deltaTime * 5.0);
 		rigidbody.angularDrag = 0.05;
 	}
-	if(barrel_alive){
-		if(gun_delay <= 0.0 && ai_state == AIState.FIRING){
+	if(barrel_alive && ai_state == AIState.FIRING){
+		if(!audiosource_taser.isPlaying){
+			audiosource_taser.Play();
+		}
+		if(gun_delay <= 0.0){
 			gun_delay = 0.1;	
 			Instantiate(muzzle_flash, transform.FindChild("point_spark").position, RandomOrientation());
 			if(Vector3.Distance(transform.FindChild("point_spark").position, GameObject.Find("Player").transform.position) < 1){;
 				GameObject.Find("Player").GetComponent(AimScript).Shock();
 			}
 		}
-		gun_delay = Mathf.Max(0.0, gun_delay - Time.deltaTime);
+	} else {
+		audiosource_taser.Stop();
 	}
+	gun_delay = Mathf.Max(0.0, gun_delay - Time.deltaTime);
 	
 	top_rotor_rotation += rotor_speed * Time.deltaTime * 1000.0;
 	bottom_rotor_rotation -= rotor_speed * Time.deltaTime * 1000.0;
@@ -430,6 +447,39 @@ function UpdateDrone() {
 	
 	//rigidbody.velocity += transform.rotation * Vector3(0,1,0) * rotor_speed * Time.deltaTime;
 	if(camera_alive){
+		switch(camera_pivot_state) {
+			case CameraPivotState.DOWN:
+				camera_pivot_angle += Time.deltaTime * 25.0;
+				if(camera_pivot_angle > 50){
+					camera_pivot_angle = 50;
+					camera_pivot_state = CameraPivotState.WAIT_UP;
+					camera_pivot_delay = 0.2;
+				}
+				break;
+			case CameraPivotState.UP:
+				camera_pivot_angle -= Time.deltaTime * 25.0;
+				if(camera_pivot_angle < 0){
+					camera_pivot_angle = 0;
+					camera_pivot_state = CameraPivotState.WAIT_DOWN;
+					camera_pivot_delay = 0.2;
+				}
+				break;
+			case CameraPivotState.WAIT_DOWN:
+				camera_pivot_delay -= Time.deltaTime;
+				if(camera_pivot_delay < 0){
+					camera_pivot_state = CameraPivotState.DOWN;
+				}
+				break;
+			case CameraPivotState.WAIT_UP:
+				camera_pivot_delay -= Time.deltaTime;
+				if(camera_pivot_delay < 0){
+					camera_pivot_state = CameraPivotState.UP;
+				}
+				break;
+		}
+		var cam_pivot = transform.FindChild("camera_pivot");
+		cam_pivot.localEulerAngles.x = camera_pivot_angle;
+		Debug.Log(camera_pivot_angle);
 		var player = GameObject.Find("Player");
 		var dist = Vector3.Distance(player.transform.position, transform.position);
 		var danger = Mathf.Max(0.0, 1.0 - dist/kMaxRange);
@@ -460,6 +510,7 @@ function UpdateDrone() {
 				case AIState.IDLE:
 					ai_state = AIState.ALERT;
 					alert_delay = kAlertDelay;
+					audiosource_effect.PlayOneShot(sound_alert, 0.3);
 					break;
 				case AIState.AIMING:
 					target_pos = new_target;
@@ -499,6 +550,7 @@ function UpdateDrone() {
 					alert_cooldown_delay -= Time.deltaTime;
 					if(alert_cooldown_delay <= 0.0){
 						ai_state = AIState.IDLE;
+						audiosource_effect.PlayOneShot(sound_unalert, 0.3);
 					}
 					break;
 			}

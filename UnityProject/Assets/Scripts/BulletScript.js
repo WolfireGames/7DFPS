@@ -5,6 +5,7 @@ var sound_hit_metal : AudioClip[];
 var sound_hit_glass : AudioClip[];
 var sound_hit_body : AudioClip[];
 var sound_hit_ricochet : AudioClip[];
+var sound_glass_break : AudioClip[];
 var sound_flyby : AudioClip[];
 var bullet_obj : GameObject;
 var bullet_hole_obj : GameObject;
@@ -93,6 +94,9 @@ function Update () {
 			}
 			if(light_script){
 				light_script.WasShot(hit_obj, hit.point, velocity);
+				if(hit.collider.material.name == "glass (Instance)"){
+					PlaySoundFromGroup(sound_glass_break, 1.0);
+				}
 			}
 			if(Vector3.Magnitude(velocity) > 50){
 				var hole : GameObject;
