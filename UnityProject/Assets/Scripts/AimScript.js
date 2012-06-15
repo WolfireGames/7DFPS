@@ -9,6 +9,7 @@ var texture_death_screen : Texture;
 
 var sound_bullet_grab : AudioClip[];
 var sound_body_fall : AudioClip[];
+var sound_electrocute : AudioClip[];
 
 // Shortcuts to components
 
@@ -169,6 +170,9 @@ function FallDeath(vel : Vector3) {
 }
 
 function Shock() {
+	if(!dead){
+		PlaySoundFromGroup(sound_electrocute, 1.0);
+	}
 	SetDead(true);
 	//dead_fade = Mathf.Max(dead_fade, 0.5);
 	head_recoil_spring_x.vel += Random.Range(-400,400);
