@@ -1,23 +1,23 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\RobotScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AimScript.js">
     <Files>
-      <File FileName="Assets\Scripts\RobotScript.js" Line="261" Column="8" />
-      <File FileName="Assets\Scripts\ShootableLight.js" Line="16" Column="43" />
       <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader" Line="3" Column="8" />
+      <File FileName="Assets\Scripts\RobotScript.js" Line="205" Column="4" />
+      <File FileName="Assets\Scripts\ShootableLight.js" Line="1" Column="1" />
       <File FileName="Assets\Materials\Illumin-Diffuse - custom.shader" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AimScript.js" Line="226" Column="1" />
-      <File FileName="Assets\Scripts\BulletScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="430" Column="2" />
+      <File FileName="Assets\Scripts\BulletScript.js" Line="73" Column="14" />
       <File FileName="Assets\Scripts\taser_spark.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\electricsparkscript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\CharacterMotor.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CharacterMotor.js" Line="331" Column="3" />
       <File FileName="Assets\Scripts\FPSInputController.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\muzzleflashscript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\LevelScript.js" Line="2" Column="1" />
-      <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="13" Column="5" />
+      <File FileName="Assets\Scripts\LevelScript.js" Line="29" Column="21" />
+      <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="46" Column="46" />
       <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="9" Column="21" />
-      <File FileName="Assets\Scripts\MusicScript.js" Line="25" Column="24" />
+      <File FileName="Assets\Scripts\MusicScript.js" Line="58" Column="66" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

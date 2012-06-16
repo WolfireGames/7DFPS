@@ -56,9 +56,9 @@ function Start () {
 	shadowed_lights = new Array();
 	tiles = new Array();
 	SpawnTile(0,0.0,true);
-	for(var i=-3; i <= 3; ++i){
+	/*for(var i=-3; i <= 3; ++i){
 		CreateTileIfNeeded(i);
-	}
+	}*/
 }
 
 function CreateTileIfNeeded(which:int){
@@ -69,6 +69,7 @@ function CreateTileIfNeeded(which:int){
 		}
 	}
 	if(!found){
+		Debug.Log("Spawning tile: "+which);
 		SpawnTile(which, Mathf.Min(0.6,0.1 * Mathf.Abs(which)), false);
 	}
 }
@@ -76,7 +77,7 @@ function CreateTileIfNeeded(which:int){
 
 function Update () {
 	var main_camera = GameObject.Find("Main Camera").transform;
-	var tile_x : int = main_camera.position.z / 10.0;
+	var tile_x : int = main_camera.position.z / 20.0 + 0.5;
 	for(var i=-2; i <= 2; ++i){
 		CreateTileIfNeeded(tile_x+i);
 	}
