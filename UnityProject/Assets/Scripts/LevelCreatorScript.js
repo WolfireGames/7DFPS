@@ -2,6 +2,7 @@
 
 var level_tiles : GameObject[];
 var shadowed_lights : Array;
+var tiles : Array;
 
 function SpawnTile(where:int, challenge:float , player:boolean){
 	var level_obj = level_tiles[Random.Range(0,level_tiles.Length)];
@@ -48,18 +49,43 @@ function SpawnTile(where:int, challenge:float , player:boolean){
 			shadowed_lights.push(light);
 		}
 	}
+	tiles.push(where);
 }
 
 function Start () {
 	shadowed_lights = new Array();
+	tiles = new Array();
 	SpawnTile(0,0.0,true);
 }
 
+function CreateTileIfNeeded(which:int){
+	var found = false;
+	for(var tile:int in tiles){
+		if(tile == which){
+			found = true;
+		}
+	}
+	if(!found){
+		SpawnTile(which, 0.2, false);
+	}
+}
+
+
 function Update () {
+	var main_camera = GameObject.Find("Main Camera").transform;
+	var tile_x : int = main_camera.position.z / 10.0;
+	CreateTileIfNeeded(tile_x-2);
+	CreateTileIfNeeded(tile_x-1);
+	CreateTileIfNeeded(tile_x);
+	CreateTileIfNeeded(tile_x+1);
+	CreateTileIfNeeded(tile_x+2);
 	for(var light : Light in shadowed_lights){
+		if(!light){
+			Debug.Log("LIGHT IS MISSING");
+		}
 		if(light){
-			var shadowed_amount = Vector3.Distance(GameObject.Find("Main Camera").transform.position, light.gameObject.transform.position);
-			var shadow_threshold = Mathf.Min(20,light.range*2.0);
+			var shadowed_amount = Vector3.Distance(main_camera.position, light.gameObject.transform.position);
+			var shadow_threshold = Mathf.Min(30,light.range*2.0);
 			var fade_threshold = shadow_threshold * 0.75;
 			if(shadowed_amount < shadow_threshold){
 				light.shadows = LightShadows.Hard;
