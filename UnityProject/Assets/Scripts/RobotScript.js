@@ -479,7 +479,6 @@ function UpdateDrone() {
 		}
 		var cam_pivot = transform.FindChild("camera_pivot");
 		cam_pivot.localEulerAngles.x = camera_pivot_angle;
-		Debug.Log(camera_pivot_angle);
 		var player = GameObject.Find("Player");
 		var dist = Vector3.Distance(player.transform.position, transform.position);
 		var danger = Mathf.Max(0.0, 1.0 - dist/kMaxRange);

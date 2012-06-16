@@ -101,7 +101,6 @@ function Update () {
 			if(Vector3.Magnitude(velocity) > 50){
 				var hole : GameObject;
 				var effect : GameObject;
-				Debug.Log(hit.collider.material.name);
 				if(turret_script){
 					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0 : 0.8);
 					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());

@@ -371,7 +371,7 @@ function Update () {
 	if(slide_stage == SlideStage.NOTHING){
 		var old_slide_amount = slide_amount;
 		slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
-		if(slide_amount == 0.0 && old_slide_amount != 0.0){
+		if(!slide_lock && slide_amount == 0.0 && old_slide_amount != 0.0){
 			PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
 			if(round_in_chamber){
 				round_in_chamber.transform.position = transform.FindChild("point_chambered_round").position;
