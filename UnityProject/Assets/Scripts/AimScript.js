@@ -209,6 +209,8 @@ function PlaySoundFromGroup(group : Array, volume : float){
 }
 
 function Start () {
+	rotation_x = transform.rotation.eulerAngles.y;
+	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
 	main_camera = GameObject.Find("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
