@@ -8,10 +8,14 @@ function Start () {
 		var enemies = level.transform.FindChild("enemies");
 		if(enemies){
 			for(var child : Transform in enemies){
-				if(Random.Range(0.0,1.0) < 0.9){
+				//if(Random.Range(0.0,1.0) < 0.9){
 					GameObject.Destroy(child.gameObject);
-				}
+				//}
 			}
+		}
+		var lights = level.GetComponentsInChildren(Light);
+		for(var light : Light in lights){
+			light.shadows = LightShadows.None;
 		}
 		var players = level.transform.FindChild("player_spawn");
 		if(players){
