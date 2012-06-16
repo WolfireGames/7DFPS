@@ -2,6 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\RobotScript.js">
     <Files>
+      <File FileName="Assets\Scripts\RobotScript.js" Line="261" Column="8" />
       <File FileName="Assets\Scripts\ShootableLight.js" Line="16" Column="43" />
       <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader" Line="3" Column="8" />
       <File FileName="Assets\Materials\Illumin-Diffuse - custom.shader" Line="1" Column="1" />
@@ -13,10 +14,10 @@
       <File FileName="Assets\Scripts\FPSInputController.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\muzzleflashscript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\RobotScript.js" Line="401" Column="23" />
       <File FileName="Assets\Scripts\LevelScript.js" Line="2" Column="1" />
       <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="13" Column="5" />
-      <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="1" Column="1" />
+      <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="9" Column="21" />
+      <File FileName="Assets\Scripts\MusicScript.js" Line="25" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

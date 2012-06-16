@@ -113,7 +113,8 @@ private var head_tilt = 0.0;
 private var head_tilt_vel = 0.0;
 private var head_tilt_x_vel = 0.0;
 private var head_tilt_y_vel = 0.0;
-private var dead_fade = 0.0;
+private var dead_fade = 1.0;
+private var dead_volume_fade = 0.0;
 private var dead_body_fell = false;
 
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
@@ -190,7 +191,6 @@ function SetDead(new_dead : boolean) {
 		head_tilt_y_vel = 0.0;
 		head_tilt = 0.0;
 		head_fall = 0.0;
-		dead_fade = 0.0;
 	} else {
 		GetComponent(MusicScript).HandleEvent(MusicEvent.DEAD);
 		head_tilt_vel = Random.Range(-100,100);
@@ -198,7 +198,6 @@ function SetDead(new_dead : boolean) {
 		head_tilt_y_vel = Random.Range(-100,100);
 		head_fall = 0.0;
 		head_fall_vel = 0.0;
-		dead_fade = 0.0;
 		dead_body_fell = false;
 	}
 }
@@ -592,12 +591,13 @@ function Update () {
 		SetDead(!dead);
 	}
 */	
-	if(Input.GetKeyDown('l')){ 
+	if(Input.GetKeyDown('l') || (dead && dead_volume_fade <= 0.0)){ 
 		Application.LoadLevel(Application.loadedLevel);
 	}
-		
+	
 	if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
+		dead_volume_fade = Mathf.Max(0.0, dead_volume_fade - Time.deltaTime * 0.23);
 		head_fall_vel -= 9.8 * Time.deltaTime;
 		head_fall += head_fall_vel * Time.deltaTime;
 		head_tilt += head_tilt_vel * Time.deltaTime;
@@ -619,7 +619,11 @@ function Update () {
 			head_fall_vel *= -0.3;
 		}
 		head_fall = Mathf.Max(min_fall,head_fall);
+	} else {
+		dead_fade = Mathf.Max(0.0, dead_fade - Time.deltaTime * 1.5);
+		dead_volume_fade = Mathf.Min(1.0, dead_volume_fade + Time.deltaTime * 1.5);
 	}
+	AudioListener.volume = dead_volume_fade;
 		
 	if((Input.GetMouseButton(1) || aim_toggle) && !dead){
 		aim_spring.target_state = 1.0;
@@ -807,7 +811,7 @@ function FixedUpdate() {
 }
 
 function OnGUI() {
-	if(dead){
+	if(dead_fade > 0.0){
 	    if(!texture_death_screen){
 	        Debug.LogError("Assign a Texture in the inspector.");
 	        return;

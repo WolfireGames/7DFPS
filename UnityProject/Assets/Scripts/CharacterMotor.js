@@ -326,7 +326,7 @@ private function UpdateFunction () {
 		if(old_vel.y < -8.0){
 			GetComponent(AimScript).FallDeath(old_vel);
 		} else if(old_vel.y < 0.0){
-			PlaySoundFromGroup(sound_footstep_jump_concrete, Mathf.Min(-old_vel.y, 1.0));
+			PlaySoundFromGroup(sound_footstep_jump_concrete, Mathf.Min(old_vel.y / -4.0, 1.0));
 			GetComponent(AimScript).StepRecoil(-old_vel.y * 0.1);
 		}
 		height_spring.vel = old_vel.y;
@@ -420,7 +420,8 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 	}
 	
 	if(grounded){
-		var step_volume = movement.velocity.magnitude * 0.15;
+		var kSoundVolumeMult = 0.8;
+		var step_volume = movement.velocity.magnitude * 0.15 * kSoundVolumeMult;
 		step_volume = Mathf.Clamp(step_volume, 0.0,1.0);
 		head_bob = (Mathf.Sin(step_timer * Mathf.PI) * 0.1 - 0.05) * movement.velocity.magnitude * 0.5;
 		if(running > 0.0){
@@ -450,7 +451,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
-				GetComponent(AimScript).StepRecoil(step_volume);
+				GetComponent(AimScript).StepRecoil(step_volume/kSoundVolumeMult);
 				step_timer = 1.0;
 			}
 		} else if(desiredVelocity.magnitude == 0.0 && velocity.magnitude < 0.01){
@@ -460,7 +461,7 @@ private function ApplyInputVelocityChange (velocity : Vector3) {
 				} else {
 					PlaySoundFromGroup(sound_footstep_walk_concrete, step_volume);					
 				}
-				GetComponent(AimScript).StepRecoil(step_volume);
+				GetComponent(AimScript).StepRecoil(step_volume/kSoundVolumeMult);
 			}
 			step_timer = 0.5;
 		}

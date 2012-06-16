@@ -9,6 +9,7 @@ private var danger = 0.0;
 private var global_gain = 1.0;
 private var target_global_gain = 1.0;
 private var gain_recover_delay = 0.0;
+private var danger_level_accumulate = 0.0;
 enum MusicEvent {DEAD};
 
 function HandleEvent(event : MusicEvent){
@@ -21,8 +22,8 @@ function HandleEvent(event : MusicEvent){
 	}
 }
 
-function SetDangerLevel(val : float) {
-	danger = Mathf.Max(danger, val);
+function AddDangerLevel(val : float) {
+	danger_level_accumulate += val;
 }
 
 function Start () {
@@ -44,9 +45,15 @@ function Start () {
 	target_gain[0] = 1.0;
 }
 
+function Update() { 
+	danger = Mathf.Max(danger_level_accumulate, danger);
+	danger_level_accumulate = 0.0;
+}
+
 function FixedUpdate () {
 	target_gain[1] = danger;
 	target_gain[2] = danger;
+	target_gain[3] = Mathf.Max(0.0, danger-0.5);
 	danger *= 0.99;
 	global_gain = Mathf.Lerp(global_gain, target_global_gain, 0.01);
 	if(gain_recover_delay > 0.0){
