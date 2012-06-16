@@ -56,6 +56,9 @@ function Start () {
 	shadowed_lights = new Array();
 	tiles = new Array();
 	SpawnTile(0,0.0,true);
+	for(var i=-3; i <= 3; ++i){
+		CreateTileIfNeeded(i);
+	}
 }
 
 function CreateTileIfNeeded(which:int){
@@ -66,7 +69,7 @@ function CreateTileIfNeeded(which:int){
 		}
 	}
 	if(!found){
-		SpawnTile(which, 0.2, false);
+		SpawnTile(which, Mathf.Min(0.6,0.1 * Mathf.Abs(which)), false);
 	}
 }
 
@@ -74,11 +77,9 @@ function CreateTileIfNeeded(which:int){
 function Update () {
 	var main_camera = GameObject.Find("Main Camera").transform;
 	var tile_x : int = main_camera.position.z / 10.0;
-	CreateTileIfNeeded(tile_x-2);
-	CreateTileIfNeeded(tile_x-1);
-	CreateTileIfNeeded(tile_x);
-	CreateTileIfNeeded(tile_x+1);
-	CreateTileIfNeeded(tile_x+2);
+	for(var i=-2; i <= 2; ++i){
+		CreateTileIfNeeded(tile_x+i);
+	}
 	for(var light : Light in shadowed_lights){
 		if(!light){
 			Debug.Log("LIGHT IS MISSING");
