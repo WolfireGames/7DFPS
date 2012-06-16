@@ -47,5 +47,8 @@ function Update () {
 	}
 	for(var renderer : MeshRenderer in gameObject.GetComponentsInChildren(MeshRenderer)){
 		renderer.material.SetColor("_Illum", combined_color);
+		if(renderer.gameObject.name == "shade"){
+			renderer.material.SetColor("_Illum", combined_color * 0.5);
+		}
 	}
 }
