@@ -53,6 +53,9 @@ private var initial_pos : Vector3;
 private var stuck = false;
 private var stuck_delay = 0.0;
 private var tilt_correction : Vector3;
+private var distance_sleep = false;
+private var kSleepDistance = 20.0;
+
 var target_pos : Vector3;
 enum CameraPivotState {DOWN, WAIT_UP, UP, WAIT_DOWN};
 var camera_pivot_state = CameraPivotState.WAIT_DOWN;
@@ -190,6 +193,10 @@ function Start () {
 }
 
 function UpdateStationaryTurret() {
+	GetTurretLightObject().light.shadows = LightShadows.None;
+	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+		return;
+	}
 	if(motor_alive){
 		switch(ai_state){
 			case AIState.IDLE:
@@ -353,6 +360,19 @@ function UpdateStationaryTurret() {
 }
 
 function UpdateDrone() {
+	GetDroneLightObject().light.shadows = LightShadows.None;
+	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+		if(motor_alive){
+			distance_sleep = true;
+			rigidbody.Sleep();
+		}
+		return;
+	} else {
+		if(motor_alive && distance_sleep){
+			rigidbody.WakeUp();
+			distance_sleep = false;
+		}
+	}
 	var rel_pos = target_pos - transform.position;
 	if(motor_alive){		
 		var kFlyDeadZone = 0.2;
@@ -447,35 +467,42 @@ function UpdateDrone() {
 	
 	//rigidbody.velocity += transform.rotation * Vector3(0,1,0) * rotor_speed * Time.deltaTime;
 	if(camera_alive){
-		switch(camera_pivot_state) {
-			case CameraPivotState.DOWN:
-				camera_pivot_angle += Time.deltaTime * 25.0;
-				if(camera_pivot_angle > 50){
-					camera_pivot_angle = 50;
-					camera_pivot_state = CameraPivotState.WAIT_UP;
-					camera_pivot_delay = 0.2;
-				}
-				break;
-			case CameraPivotState.UP:
-				camera_pivot_angle -= Time.deltaTime * 25.0;
-				if(camera_pivot_angle < 0){
-					camera_pivot_angle = 0;
-					camera_pivot_state = CameraPivotState.WAIT_DOWN;
-					camera_pivot_delay = 0.2;
-				}
-				break;
-			case CameraPivotState.WAIT_DOWN:
-				camera_pivot_delay -= Time.deltaTime;
-				if(camera_pivot_delay < 0){
-					camera_pivot_state = CameraPivotState.DOWN;
-				}
-				break;
-			case CameraPivotState.WAIT_UP:
-				camera_pivot_delay -= Time.deltaTime;
-				if(camera_pivot_delay < 0){
-					camera_pivot_state = CameraPivotState.UP;
-				}
-				break;
+		if(ai_state == AIState.IDLE){
+			switch(camera_pivot_state) {
+				case CameraPivotState.DOWN:
+					camera_pivot_angle += Time.deltaTime * 25.0;
+					if(camera_pivot_angle > 50){
+						camera_pivot_angle = 50;
+						camera_pivot_state = CameraPivotState.WAIT_UP;
+						camera_pivot_delay = 0.2;
+					}
+					break;
+				case CameraPivotState.UP:
+					camera_pivot_angle -= Time.deltaTime * 25.0;
+					if(camera_pivot_angle < 0){
+						camera_pivot_angle = 0;
+						camera_pivot_state = CameraPivotState.WAIT_DOWN;
+						camera_pivot_delay = 0.2;
+					}
+					break;
+				case CameraPivotState.WAIT_DOWN:
+					camera_pivot_delay -= Time.deltaTime;
+					if(camera_pivot_delay < 0){
+						camera_pivot_state = CameraPivotState.DOWN;
+					}
+					break;
+				case CameraPivotState.WAIT_UP:
+					camera_pivot_delay -= Time.deltaTime;
+					if(camera_pivot_delay < 0){
+						camera_pivot_state = CameraPivotState.UP;
+					}
+					break;
+			}
+		} else {
+			camera_pivot_angle -= Time.deltaTime * 25.0;
+			if(camera_pivot_angle < 0){
+				camera_pivot_angle = 0;
+			}
 		}
 		var cam_pivot = transform.FindChild("camera_pivot");
 		cam_pivot.localEulerAngles.x = camera_pivot_angle;
@@ -611,7 +638,7 @@ function OnCollisionEnter(collision : Collision) {
 }
 
 function FixedUpdate() {
-	if(robot_type == RobotType.SHOCK_DRONE){
+	if(robot_type == RobotType.SHOCK_DRONE && !distance_sleep){
 		rigidbody.AddForce(transform.rotation * Vector3(0,1,0) * rotor_speed, ForceMode.Force);
 		if(motor_alive){
 			rigidbody.AddTorque(tilt_correction, ForceMode.Force);
