@@ -17,7 +17,6 @@ function Update () {
 	if(old_vert_axis < 0.9 && Input.GetAxis("Vertical") >= 0.9){
 		if(forward_input_delay < 0.4 && !GetComponent(AimScript).IsAiming()){
 			motor.SetRunning(Mathf.Clamp((0.4-forward_input_delay)/0.2,0.01,1.0));
-			Debug.Log(Mathf.Clamp((0.4-forward_input_delay)/0.2,0.01,1.0));
 			running = true;			
 		}
 		forward_input_delay = 0.0;
