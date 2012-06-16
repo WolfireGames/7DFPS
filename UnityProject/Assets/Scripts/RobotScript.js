@@ -194,9 +194,15 @@ function Start () {
 }
 
 function UpdateStationaryTurret() {
-	GetTurretLightObject().light.shadows = LightShadows.None;
 	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+		GetTurretLightObject().light.shadows = LightShadows.None;
 		return;
+	} else {
+		if(GetTurretLightObject().light.intensity > 0.0){
+			GetTurretLightObject().light.shadows = LightShadows.Hard;
+		} else {
+			GetTurretLightObject().light.shadows = LightShadows.None;
+		}
 	}
 	if(motor_alive){
 		switch(ai_state){
@@ -364,14 +370,19 @@ function UpdateStationaryTurret() {
 }
 
 function UpdateDrone() {
-	GetDroneLightObject().light.shadows = LightShadows.None;
 	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+		GetDroneLightObject().light.shadows = LightShadows.None;
 		if(motor_alive){
 			distance_sleep = true;
 			rigidbody.Sleep();
 		}
 		return;
 	} else {
+		if(GetDroneLightObject().light.intensity > 0.0){
+			GetDroneLightObject().light.shadows = LightShadows.Hard;
+		} else {
+			GetDroneLightObject().light.shadows = LightShadows.None;
+		}
 		if(motor_alive && distance_sleep){
 			rigidbody.WakeUp();
 			distance_sleep = false;
