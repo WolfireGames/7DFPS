@@ -56,9 +56,9 @@ function Start () {
 	shadowed_lights = new Array();
 	tiles = new Array();
 	SpawnTile(0,0.0,true);
-	/*for(var i=-3; i <= 3; ++i){
+	for(var i=-3; i <= 3; ++i){
 		CreateTileIfNeeded(i);
-	}*/
+	}
 }
 
 function CreateTileIfNeeded(which:int){
