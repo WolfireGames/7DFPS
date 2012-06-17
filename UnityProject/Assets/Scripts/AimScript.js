@@ -625,12 +625,25 @@ function Update () {
 	}
 	AudioListener.volume = dead_volume_fade;
 		
+	var offset_aim_target = false;
 	if((Input.GetMouseButton(1) || aim_toggle) && !dead){
 		aim_spring.target_state = 1.0;
+		var hit : RaycastHit;
+		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2, hit, 1 << 0)){
+			aim_spring.target_state = Mathf.Clamp(
+				1.0 - (Vector3.Distance(hit.point, main_camera.transform.position)/(kGunDistance + 0.2)),
+				0.0,
+				1.0);
+			offset_aim_target = true;
+		}
 	} else {
 		aim_spring.target_state = 0.0;
 	}
+	
 	aim_spring.Update();
+	if(offset_aim_target){
+		aim_spring.target_state = 1.0;
+	}
 	
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);

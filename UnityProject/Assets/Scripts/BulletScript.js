@@ -9,6 +9,7 @@ var sound_glass_break : AudioClip[];
 var sound_flyby : AudioClip[];
 var bullet_obj : GameObject;
 var bullet_hole_obj : GameObject;
+var glass_bullet_hole_obj : GameObject;
 var metal_bullet_hole_obj : GameObject;
 var spark_effect : GameObject;
 var puff_effect : GameObject;
@@ -117,7 +118,7 @@ function Update () {
 					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
 				} else if(hit.collider.material.name == "glass (Instance)"){
 					PlaySoundFromGroup(sound_hit_glass, hostile ? 1.0 : 0.4);
-					hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
+					hole = Instantiate(glass_bullet_hole_obj, hit.point, RandomOrientation());
 					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
 				} else {
 					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0 : 0.4);
