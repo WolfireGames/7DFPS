@@ -4,6 +4,9 @@ var sound_shell_bounce : AudioClip[];
 var collided = false;
 var old_pos : Vector3;
 var life_time = 0.0;
+var glint_delay = 0.0;
+var glint_progress = 0.0;
+private var glint_light:Light;
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	var which_shot = Random.Range(0,group.length);
@@ -12,6 +15,10 @@ function PlaySoundFromGroup(group : Array, volume : float){
 
 function Start () {
 	old_pos = transform.position;
+	if(transform.FindChild("light_pos")){
+		glint_light = transform.FindChild("light_pos").light;
+		glint_light.enabled = false;
+	}
 }
 
 function CollisionSound() {
@@ -31,6 +38,22 @@ function FixedUpdate () {
 		}
 		if(life_time > 2.0){
 			rigidbody.Sleep();
+		}
+	}
+	if(rigidbody && rigidbody.IsSleeping() && glint_light){
+		if(glint_delay == 0.0){
+			glint_delay = Random.Range(1.0,5.0);
+		}
+		glint_delay = Mathf.Max(0.0, glint_delay - Time.deltaTime);
+		if(glint_delay == 0.0){
+			glint_progress = 1.0;
+		}
+		if(glint_progress > 0.0){
+			glint_light.enabled = true;
+			glint_light.intensity = Mathf.Sin(glint_progress * Mathf.PI);
+			glint_progress = Mathf.Max(0.0, glint_progress - Time.deltaTime * 2.0);
+		} else {
+			glint_light.enabled = false;
 		}
 	}
 	old_pos = transform.position;
