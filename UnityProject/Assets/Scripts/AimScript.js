@@ -302,7 +302,7 @@ function ShouldPickUpNearby() : boolean {
 }
 
 function HandleControls() {
-	if(Input.GetKey('g')){
+	if(Input.GetButton("Get")){
 		var nearest_mag = null;
 		var nearest_mag_dist = 0.0;
 		var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
@@ -345,37 +345,37 @@ function HandleControls() {
 		}
 	}
 	
-	if(Input.GetKeyDown('`')){
+	if(Input.GetButtonDown("Holster")){
 		target_weapon_slot = -1;
 	}
-	if(Input.GetKeyDown('1')){
+	if(Input.GetButtonDown("Inventory 1")){
 		target_weapon_slot = 0;
 	}
-	if(Input.GetKeyDown('2')){
+	if(Input.GetButtonDown("Inventory 2")){
 		target_weapon_slot = 1;
 	}
-	if(Input.GetKeyDown('3')){
+	if(Input.GetButtonDown("Inventory 3")){
 		target_weapon_slot = 2;
 	}
-	if(Input.GetKeyDown('4')){
+	if(Input.GetButtonDown("Inventory 4")){
 		target_weapon_slot = 3;
 	}
-	if(Input.GetKeyDown('5')){
+	if(Input.GetButtonDown("Inventory 5")){
 		target_weapon_slot = 4;
 	}
-	if(Input.GetKeyDown('6')){
+	if(Input.GetButtonDown("Inventory 6")){
 		target_weapon_slot = 5;
 	}
-	if(Input.GetKeyDown('7')){
+	if(Input.GetButtonDown("Inventory 7")){
 		target_weapon_slot = 6;
 	}
-	if(Input.GetKeyDown('8')){
+	if(Input.GetButtonDown("Inventory 8")){
 		target_weapon_slot = 7;
 	}
-	if(Input.GetKeyDown('9')){
+	if(Input.GetButtonDown("Inventory 9")){
 		target_weapon_slot = 8;
 	}
-	if(Input.GetKeyDown('0')){
+	if(Input.GetButtonDown("Inventory 10")){
 		target_weapon_slot = 9;
 	}
 	
@@ -471,7 +471,7 @@ function HandleControls() {
 		}
 	}
 	
-	if(Input.GetKeyDown('e') || queue_drop){
+	if(Input.GetButtonDown("Eject/Drop") || queue_drop){
 		if(mag_stage == HandMagStage.HOLD){
 			mag_stage = HandMagStage.EMPTY;
 			magazine_instance_in_hand.AddComponent(Rigidbody);
@@ -482,7 +482,7 @@ function HandleControls() {
 		}
 	}
 	
-	if(Input.GetKeyDown('e')){
+	if(Input.GetButtonDown("Eject/Drop")){
 		if(mag_stage == HandMagStage.EMPTY && gun_instance){
 			if(gun_instance.GetComponent(GunScript).IsMagCurrentlyEjecting()){
 				queue_drop = true;
@@ -509,30 +509,30 @@ function HandleControls() {
 	
 	if(gun_instance){
 		var gun_script = GetGunScript();
-		if(Input.GetMouseButton(0)){
+		if(Input.GetButton("Trigger")){
 			gun_script.ApplyPressureToTrigger();
 		} else {
 			gun_script.ReleasePressureFromTrigger();
 		}
-		if(Input.GetKeyDown('t')){
+		if(Input.GetButtonDown("Slide Lock")){
 			gun_script.ReleaseSlideLock();
 		}
-		if(Input.GetKey('t')){
+		if(Input.GetButton("Slide Lock")){
 			gun_script.PressureOnSlideLock();
 		}
-		if(Input.GetKeyDown('v')){
+		if(Input.GetButtonDown("Safety")){
 			gun_script.ToggleSafety();			
 		}	
-		if(Input.GetKeyDown('r')){
+		if(Input.GetButtonDown("Pull Back Slide")){
 			gun_script.PullBackSlide();
 		}
-		if(Input.GetKeyUp('r')){
+		if(Input.GetButtonUp("Pull Back Slide")){
 			gun_script.ReleaseSlide();
 		}
-		if(Input.GetKey('f')){
+		if(Input.GetButton("Hammer")){
 			gun_script.PressureOnHammer();
 		}
-		if(Input.GetKeyUp('f')){
+		if(Input.GetButtonUp("Hammer")){
 			gun_script.ReleaseHammer();
 		}		
 		
@@ -588,7 +588,7 @@ function HandleControls() {
 			hold_pose_spring.vel = 0.0;
 			hold_pose_spring.target_state = 1.0;
 		}
-		if((Input.GetKeyDown('z')/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
+		if((Input.GetButtonDown("Insert")/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
 				hold_pose_spring.target_state = 0.0;
 				mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -602,7 +602,7 @@ function HandleControls() {
 			}
 		}
 	}
-	if(Input.GetKeyDown('z')){
+	if(Input.GetButtonDown("Insert")){
 		if(loose_bullets.length > 0 && mag_stage == HandMagStage.HOLD && (!gun_instance/* || aim_spring.state < 0.5*/)){
 			if(magazine_instance_in_hand.GetComponent(mag_script).AddRound()){
 				GameObject.Destroy(loose_bullets.pop());
@@ -611,10 +611,10 @@ function HandleControls() {
 		}
 	}
 	
-	if(Input.GetKeyDown('q')){
+	if(Input.GetButtonDown("Aim Toggle")){
 		aim_toggle = !aim_toggle;
 	}
-	if(Input.GetKeyDown('tab')){
+	if(Input.GetButtonDown("Slow Motion Toggle")){
 		if(Time.timeScale == 1.0){
 			Time.timeScale = 0.1;
 		} else {
@@ -694,7 +694,7 @@ function Update() {
 	AudioListener.volume = dead_volume_fade;
 		
 	var offset_aim_target = false;
-	if((Input.GetMouseButton(1) || aim_toggle) && !dead){
+	if((Input.GetButton("Hold To Aim") || aim_toggle) && !dead){
 		aim_spring.target_state = 1.0;
 		var hit : RaycastHit;
 		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2, hit, 1 << 0)){
@@ -722,7 +722,7 @@ function Update() {
 		rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
 		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
 	
-		if((Input.GetMouseButton(1) || aim_toggle) && gun_instance){
+		if((Input.GetButton("Hold To Aim") || aim_toggle) && gun_instance){
 			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
 			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
 		} else {
