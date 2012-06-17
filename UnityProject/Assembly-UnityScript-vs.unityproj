@@ -64,6 +64,7 @@
      <Compile Include="Assets\Scripts\muzzleflashscript.js" />
      <Compile Include="Assets\Scripts\plasterpuffscript.js" />
      <Compile Include="Assets\Scripts\sparkeffect.js" />
+     <Compile Include="Assets\Scripts\tapescript.js" />
      <Compile Include="Assets\Scripts\taser_spark.js" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />

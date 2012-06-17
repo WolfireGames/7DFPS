@@ -14,6 +14,14 @@ function Start () {
 		bullet.AddComponent(Rigidbody);
 		bullet.GetComponent(ShellCasingScript).collided = true;
 	}
+	if(Random.Range(0,0) == 0){
+		var tape : GameObject = Instantiate(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).tape_object);
+		tape.transform.position = transform.position + 
+			Vector3(Random.Range(-0.1,0.1),
+					Random.Range(0.0,0.2),
+					Random.Range(-0.1,0.1));
+		tape.transform.rotation = BulletScript.RandomOrientation();		
+	}
 }
 
 function Update () {

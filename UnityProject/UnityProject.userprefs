@@ -1,13 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AimScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader">
     <Files>
-      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
       <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader" Line="3" Column="8" />
+      <File FileName="Assets\Materials\Illumin-Diffuse - custom.shader" Line="1" Column="1" />
+      <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\Image Effects (Pro Only)\AntialiasingAsPostEffect.js" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\RobotScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\ShootableLight.js" Line="1" Column="1" />
-      <File FileName="Assets\Materials\Illumin-Diffuse - custom.shader" Line="1" Column="1" />
       <File FileName="Assets\Scripts\BulletScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\taser_spark.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\electricsparkscript.js" Line="1" Column="1" />
@@ -16,7 +20,6 @@
       <File FileName="Assets\Scripts\muzzleflashscript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="1" Column="1" />
       <File FileName="Assets\Scripts\MusicScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\mag_script.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\ShellCasingScript.js" Line="1" Column="1" />
@@ -24,6 +27,7 @@
       <File FileName="Assets\Scripts\sparkeffect.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\GUISkinHolder.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LockCursor.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlatformInputController.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

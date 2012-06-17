@@ -133,7 +133,10 @@ private var dead_body_fell = false;
 private var start_tape_delay = 0.0;
 private var stop_tape_delay = 0.0;
 private var tapes_heard = new Array();
+private var tapes_remaining = new Array();
+private var total_tapes = new Array();
 private var tape_in_progress = false;
+private var unplayed_tapes = 0;
 
 private var god_mode = false;
 private var slomo_mode = false;
@@ -281,6 +284,17 @@ function Start() {
 	audiosource_tape_background.clip = holder.sound_tape_background;
 	audiosource_audio_content = gameObject.AddComponent(AudioSource);
 	audiosource_audio_content.loop = false;
+	
+	for(var tape in holder.sound_tape_content){
+		total_tapes.push(tape);
+	}
+	var temp_total_tapes = new Array(total_tapes);
+	while(temp_total_tapes.length > 0){
+		var rand_tape_id = Random.Range(0,temp_total_tapes.length);
+		tapes_remaining.push(temp_total_tapes[rand_tape_id]);
+		temp_total_tapes.RemoveAt(rand_tape_id);
+	}
+	Debug.Log(tapes_remaining);
 }
 
 function AimPos() : Vector3 {
@@ -347,6 +361,11 @@ function HandleControls() {
 					nearest_mag = collider.gameObject;
 				}					
 			} else if((collider.gameObject.name == casing_with_bullet.name || collider.gameObject.name == casing_with_bullet.name+"(Clone)") && collider.gameObject.rigidbody){
+				collected_rounds.push(collider.gameObject);			
+				collider.gameObject.rigidbody.useGravity = false;
+				collider.gameObject.rigidbody.WakeUp();
+				collider.enabled = false;
+			} else if(collider.gameObject.name == "cassette_tape(Clone)" && collider.gameObject.rigidbody){
 				collected_rounds.push(collider.gameObject);			
 				collider.gameObject.rigidbody.useGravity = false;
 				collider.gameObject.rigidbody.WakeUp();
@@ -662,8 +681,9 @@ function StartTapePlay() {
 	if(tape_in_progress && start_tape_delay == 0.0){ 
 		audiosource_audio_content.Play();
 	}
-	if(!tape_in_progress){
-		audiosource_audio_content.clip = holder.sound_tape_content[Random.Range(0,holder.sound_tape_content.length)];
+	if(!tape_in_progress && tapes_remaining.length > 0){
+		audiosource_audio_content.clip = tapes_remaining[0];
+		tapes_remaining.RemoveAt(0);
 		//audiosource_audio_content.pitch = 10.0;
 		//audiosource_audio_content.clip = holder.sound_scream[Random.Range(0,holder.sound_scream.length)];
 		start_tape_delay = Random.Range(0.5,3.0);
@@ -686,7 +706,11 @@ function StopTapePlay() {
 }
 
 function Update() {
-	if(Input.GetKeyDown('l')){
+	if(!tape_in_progress && unplayed_tapes > 0){
+		--unplayed_tapes;
+		StartTapePlay();
+	}
+	if(Input.GetButtonDown("Tape Player") && tape_in_progress){
 		if(!audiosource_tape_background.isPlaying){
 			StartTapePlay();
 		} else {
@@ -696,8 +720,8 @@ function Update() {
 	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
 		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
 		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
-		audiosource_audio_content.pitch = 10.0;
-		audiosource_audio_content.volume = 0.1;
+		//audiosource_audio_content.pitch = 10.0;
+		//audiosource_audio_content.volume = 0.1;
 		if(start_tape_delay > 0.0){
 			if(!audiosource_audio_content.isPlaying){
 				start_tape_delay = Mathf.Max(0.0, start_tape_delay - Time.deltaTime);
@@ -1056,14 +1080,21 @@ function Update() {
 	var attract_pos = transform.position - Vector3(0,character_controller.height * 0.2,0);
 	for(i=0; i<collected_rounds.length; ++i){
 		var round = collected_rounds[i] as GameObject;
+		if(!round){
+			continue;
+		}
 		round.rigidbody.velocity += (attract_pos - round.transform.position) * Time.deltaTime * 20.0;
 		round.rigidbody.velocity *= Mathf.Pow(0.1, Time.deltaTime);;
 		//round.rigidbody.position += round.rigidbody.velocity * Time.deltaTime;
 		if(Vector3.Distance(round.transform.position, attract_pos) < 0.5){
+			if(round.gameObject.name == "cassette_tape(Clone)"){
+				++unplayed_tapes;
+			} else {
+				AddLooseBullet(true);
+				collected_rounds.splice(i,1);
+				PlaySoundFromGroup(sound_bullet_grab, 0.2);
+			}
 			GameObject.Destroy(round);
-			AddLooseBullet(true);
-			collected_rounds.splice(i,1);
-			PlaySoundFromGroup(sound_bullet_grab, 0.2);
 		}
 	}
 	collected_rounds.remove(null);
@@ -1123,11 +1154,15 @@ function OnGUI() {
 	if(gun_instance){
 		gun_script = gun_instance.GetComponent(GunScript);
 	}
-	display_text.push(new DisplayLine(tapes_heard.length + " tapes absorbed out of 6", true));
+	display_text.push(new DisplayLine(tapes_heard.length + " tapes absorbed out of "+total_tapes.length, true));
 	if(!show_help){
 		display_text.push(new DisplayLine("View help: Press [ ? ]", !help_ever_shown));
 	} else {
 		display_text.push(new DisplayLine("Hide help: Press [ ? ]", false));
+		display_text.push(new DisplayLine("", false));
+		if(tape_in_progress){
+			display_text.push(new DisplayLine("Pause/Resume tape player: [ x ]", false));
+		}
 		
 		if(gun_instance){
 			display_text.push(new DisplayLine("Look: [ move mouse ]", false));
