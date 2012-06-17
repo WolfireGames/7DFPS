@@ -389,7 +389,7 @@ function FixedUpdate () {
 }
 
 function Update () {
-	if(!GetComponent(AimScript).IsDead() && Input.GetKeyDown("c")){
+	if(!GetComponent(AimScript).IsDead() && Input.GetButtonDown("Crouch Toggle")){
 		crouching = !crouching;
 	}	
 	if(running > 0.0){

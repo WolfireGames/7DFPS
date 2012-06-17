@@ -633,13 +633,13 @@ function Update() {
 		dying = false;
 	}
 
-	if(Input.GetKey('/')){
+	if(Input.GetButton("Help Toggle")){
 		help_hold_time += Time.deltaTime;
 		if(show_help && help_hold_time >= 1.0){
 			show_advanced_help = true;
 		}
 	}
-	if(Input.GetKeyDown('/')){
+	if(Input.GetButtonDown("Help Toggle")){
 		if(!show_help){
 			show_help = true;
 			help_ever_shown = true;
@@ -647,7 +647,7 @@ function Update() {
 		}
 		help_hold_time = 0.0;
 	}
-	if(Input.GetKeyUp('/')){
+	if(Input.GetButtonUp("Help Toggle")){
 		if(show_help && help_hold_time < 1.0 && !just_started_help){
 			show_help = false;
 		}
@@ -658,10 +658,10 @@ function Update() {
 /*	if(Input.GetKeyDown("p")){
 		SetDead(!dead);
 	}
-*/	
 	if(Input.GetKeyDown('l') || (dead && dead_volume_fade <= 0.0)){ 
 		Application.LoadLevel(Application.loadedLevel);
 	}
+*/	
 	
 	if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
