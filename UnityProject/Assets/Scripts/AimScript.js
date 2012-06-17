@@ -130,7 +130,10 @@ private var dead_fade = 1.0;
 private var dead_volume_fade = 0.0;
 private var dead_body_fell = false;
 
-private var tape_delay = 0.0;
+private var start_tape_delay = 0.0;
+private var stop_tape_delay = 0.0;
+private var tapes_heard = new Array();
+private var tape_in_progress = false;
 
 private var god_mode = false;
 private var slomo_mode = false;
@@ -277,6 +280,7 @@ function Start() {
 	audiosource_tape_background.loop = true;
 	audiosource_tape_background.clip = holder.sound_tape_background;
 	audiosource_audio_content = gameObject.AddComponent(AudioSource);
+	audiosource_audio_content.loop = false;
 }
 
 function AimPos() : Vector3 {
@@ -655,14 +659,28 @@ function HandleControls() {
 function StartTapePlay() {
 	audio.PlayOneShot(holder.sound_tape_start, 1.0);
 	audiosource_tape_background.Play();
-	audiosource_audio_content.clip = holder.sound_tape_content[Random.Range(0,holder.sound_tape_content.length)];
-	tape_delay = Random.Range(1.0,3.0);
+	if(tape_in_progress && start_tape_delay == 0.0){ 
+		audiosource_audio_content.Play();
+	}
+	if(!tape_in_progress){
+		audiosource_audio_content.clip = holder.sound_tape_content[Random.Range(0,holder.sound_tape_content.length)];
+		//audiosource_audio_content.pitch = 10.0;
+		//audiosource_audio_content.clip = holder.sound_scream[Random.Range(0,holder.sound_scream.length)];
+		start_tape_delay = Random.Range(0.5,3.0);
+		stop_tape_delay = 0.0;
+		tape_in_progress = true;
+	}
 }
 
 function StopTapePlay() {
 	audio.PlayOneShot(holder.sound_tape_end, 1.0);
-	audiosource_tape_background.Stop();
-	audiosource_audio_content.Stop();
+	if(tape_in_progress){
+		audiosource_tape_background.Pause();
+		audiosource_audio_content.Pause();
+	} else {
+		audiosource_tape_background.Stop();
+		audiosource_audio_content.Stop();
+	}
 }
 
 function Update() {
@@ -673,10 +691,22 @@ function Update() {
 			StopTapePlay();
 		}
 	}
-	if(audiosource_tape_background.isPlaying && tape_delay > 0.0){
-		tape_delay = Mathf.Max(0.0, tape_delay - Time.deltaTime);
-		if(tape_delay == 0.0){
-			audiosource_audio_content.Play();
+	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
+		if(start_tape_delay > 0.0){
+			if(!audiosource_audio_content.isPlaying){
+				start_tape_delay = Mathf.Max(0.0, start_tape_delay - Time.deltaTime);
+				if(start_tape_delay == 0.0){
+					audiosource_audio_content.Play();
+				}
+			}
+		} else if(stop_tape_delay > 0.0){
+			stop_tape_delay = Mathf.Max(0.0, stop_tape_delay - Time.deltaTime);
+			if(stop_tape_delay == 0.0){
+				tape_in_progress = false;
+				StopTapePlay();
+			}
+		} else if(!audiosource_audio_content.isPlaying){
+			stop_tape_delay = Random.Range(0.5,3.0);
 		}
 	}
 
