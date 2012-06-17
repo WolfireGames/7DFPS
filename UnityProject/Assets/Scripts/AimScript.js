@@ -104,7 +104,7 @@ private var mag_stage = HandMagStage.EMPTY;
 private var collected_rounds = new Array();
 
 private var target_weapon_slot = -2;
-private var num_loose_bullets = 30;
+private var num_loose_bullets = 0;
 private var queue_drop = false;
 
 private var head_fall = 0.0;
@@ -545,7 +545,7 @@ function HandleControls() {
 			hold_pose_spring.vel = 0.0;
 			hold_pose_spring.target_state = 1.0;
 		}
-		if((Input.GetKeyDown('z') && aim_spring.state > 0.5) || insert_mag_with_number_key){
+		if((Input.GetKeyDown('z')/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
 				hold_pose_spring.target_state = 0.0;
 				mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -560,7 +560,7 @@ function HandleControls() {
 		}
 	}
 	if(Input.GetKeyDown('z')){
-		if(mag_stage == HandMagStage.HOLD && (!gun_instance || aim_spring.state < 0.5)){
+		if(num_loose_bullets > 0 && mag_stage == HandMagStage.HOLD && (!gun_instance/* || aim_spring.state < 0.5*/)){
 			magazine_instance_in_hand.GetComponent(mag_script).AddRound();
 		}
 	}
