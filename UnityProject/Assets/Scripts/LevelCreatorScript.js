@@ -69,7 +69,7 @@ function CreateTileIfNeeded(which:int){
 		}
 	}
 	if(!found){
-		Debug.Log("Spawning tile: "+which);
+		//Debug.Log("Spawning tile: "+which);
 		SpawnTile(which, Mathf.Min(0.6,0.1 * Mathf.Abs(which)), false);
 	}
 }
