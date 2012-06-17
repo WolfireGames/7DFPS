@@ -1109,13 +1109,13 @@ function OnGUI() {
 		if(show_advanced_help){
 			display_text.push(new DisplayLine("Advanced help:", false));
 			display_text.push(new DisplayLine("Toggle crouch: [ c ]", false));
-			if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-				display_text.push(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
-			}
 			if(aim_spring.state < 0.5){
 				display_text.push(new DisplayLine("Run: tap repeatedly [ w ]", false));
 			}
 			if(gun_instance){
+				if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
+				display_text.push(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
+				}
 				if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
 					display_text.push(new DisplayLine("Inspect chamber: hold [ t ] and then [ r ]", false));
 				}
