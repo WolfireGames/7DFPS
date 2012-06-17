@@ -125,6 +125,13 @@ private var dead_fade = 1.0;
 private var dead_volume_fade = 0.0;
 private var dead_body_fell = false;
 
+private var god_mode = false;
+private var slomo_mode = false;
+private var iddqd_progress = 0;
+private var idkfa_progress = 0;
+private var slomo_progress = 0;
+private var cheat_delay = 0.0;
+
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
 class WeaponSlot {
@@ -161,29 +168,39 @@ function WasShot(){
 	y_recoil_spring.vel += Random.Range(-400,400);
 	rotation_x += Random.Range(-4,4);
 	rotation_y += Random.Range(-4,4);
-	dying = true;
-	if(Random.Range(0.0,1.0) < 0.3){
-		SetDead(true);
-	}
-	if(dead && Random.Range(0.0,1.0) < 0.3){
-		dead_fade += 0.3;
+	if(!god_mode){
+		dying = true;
+		if(Random.Range(0.0,1.0) < 0.3){
+			SetDead(true);
+		}
+		if(dead && Random.Range(0.0,1.0) < 0.3){
+			dead_fade += 0.3;
+		}
 	}
 }
 
 function FallDeath(vel : Vector3) {
+	if(!god_mode){
+		SetDead(true);
+		head_fall_vel = vel.y;
+		dead_fade = Mathf.Max(dead_fade, 0.5);
+		head_recoil_spring_x.vel += Random.Range(-400,400);
+		head_recoil_spring_y.vel += Random.Range(-400,400);
+	}
+}
+
+function InstaKill() {
 	SetDead(true);
-	head_fall_vel = vel.y;
-	dead_fade = Mathf.Max(dead_fade, 0.5);
-	head_recoil_spring_x.vel += Random.Range(-400,400);
-	head_recoil_spring_y.vel += Random.Range(-400,400);
+	dead_fade = 1.0;
 }
 
 function Shock() {
-	if(!dead){
-		PlaySoundFromGroup(sound_electrocute, 1.0);
+	if(!god_mode){
+		if(!dead){
+			PlaySoundFromGroup(sound_electrocute, 1.0);
+		}
+		SetDead(true);
 	}
-	SetDead(true);
-	//dead_fade = Mathf.Max(dead_fade, 0.5);
 	head_recoil_spring_x.vel += Random.Range(-400,400);
 	head_recoil_spring_y.vel += Random.Range(-400,400);
 }
@@ -614,7 +631,7 @@ function HandleControls() {
 	if(Input.GetButtonDown("Aim Toggle")){
 		aim_toggle = !aim_toggle;
 	}
-	if(Input.GetButtonDown("Slow Motion Toggle")){
+	if(Input.GetButtonDown("Slow Motion Toggle") && slomo_mode){
 		if(Time.timeScale == 1.0){
 			Time.timeScale = 0.1;
 		} else {
@@ -624,6 +641,69 @@ function HandleControls() {
 }
 
 function Update() {
+
+	if(iddqd_progress == 0 && Input.GetKeyDown('i')){
+		++iddqd_progress; cheat_delay = 1.0;
+	} else if(iddqd_progress == 1 && Input.GetKeyDown('d')){
+		++iddqd_progress; cheat_delay = 1.0;
+	} else if(iddqd_progress == 2 && Input.GetKeyDown('d')){
+		++iddqd_progress; cheat_delay = 1.0;
+	} else if(iddqd_progress == 3 && Input.GetKeyDown('q')){
+		++iddqd_progress; cheat_delay = 1.0;
+	} else if(iddqd_progress == 4 && Input.GetKeyDown('d')){
+		iddqd_progress = 0;
+		god_mode = !god_mode; 
+		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+	}
+	if(idkfa_progress == 0 && Input.GetKeyDown('i')){
+		++idkfa_progress; cheat_delay = 1.0;
+	} else if(idkfa_progress == 1 && Input.GetKeyDown('d')){
+		++idkfa_progress; cheat_delay = 1.0;
+	} else if(idkfa_progress == 2 && Input.GetKeyDown('k')){
+		++idkfa_progress; cheat_delay = 1.0;
+	} else if(idkfa_progress == 3 && Input.GetKeyDown('f')){
+		++idkfa_progress; cheat_delay = 1.0;
+	} else if(idkfa_progress == 4 && Input.GetKeyDown('a')){
+		idkfa_progress = 0;
+		if(loose_bullets.length < 30){
+			PlaySoundFromGroup(sound_bullet_grab, 0.2);
+		}
+		while(loose_bullets.length < 30){
+			AddLooseBullet(true);
+		}
+		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+	}
+	if(slomo_progress == 0 && Input.GetKeyDown('s')){
+		++slomo_progress; cheat_delay = 1.0;
+	} else if(slomo_progress == 1 && Input.GetKeyDown('l')){
+		++slomo_progress; cheat_delay = 1.0;
+	} else if(slomo_progress == 2 && Input.GetKeyDown('o')){
+		++slomo_progress; cheat_delay = 1.0;
+	} else if(slomo_progress == 3 && Input.GetKeyDown('m')){
+		++slomo_progress; cheat_delay = 1.0;
+	} else if(slomo_progress == 4 && Input.GetKeyDown('o')){
+		slomo_progress = 0;
+		slomo_mode = true;
+		if(Time.timeScale == 1.0){
+			Time.timeScale = 0.1;
+		} else {
+			Time.timeScale = 1.0;
+		}
+		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+	}
+	if(cheat_delay > 0.0){
+		cheat_delay -= Time.deltaTime;
+		if(cheat_delay <= 0.0){
+			cheat_delay = 0.0;
+			iddqd_progress = 0;
+			idkfa_progress = 0;
+			slomo_progress = 0;
+		}
+	}
+
+	if(transform.position.y < -1){
+		InstaKill();
+	}
 	if(dying){
 		health -= Time.deltaTime;
 	}
@@ -657,11 +737,11 @@ function Update() {
 
 /*	if(Input.GetKeyDown("p")){
 		SetDead(!dead);
-	}
-	if(Input.GetKeyDown('l') || (dead && dead_volume_fade <= 0.0)){ 
+	}*/	
+	if(/*Input.GetKeyDown('l') || */(dead && dead_volume_fade <= 0.0)){ 
 		Application.LoadLevel(Application.loadedLevel);
 	}
-*/	
+
 	
 	if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
