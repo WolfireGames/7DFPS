@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\BulletScript.js" />
      <Compile Include="Assets\Scripts\CharacterMotor.js" />
      <Compile Include="Assets\Scripts\FPSInputController.js" />
+     <Compile Include="Assets\Scripts\GUISkinHolder.js" />
      <Compile Include="Assets\Scripts\GunScript.js" />
      <Compile Include="Assets\Scripts\LevelCreatorScript.js" />
      <Compile Include="Assets\Scripts\LevelScript.js" />

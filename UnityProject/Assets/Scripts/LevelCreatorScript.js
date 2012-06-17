@@ -25,7 +25,7 @@ function SpawnTile(where:int, challenge:float , player:boolean){
 	var items = level_obj.transform.FindChild("items");
 	if(items){
 		for(var child : Transform in items){
-			if(Random.Range(0.0,1.0) <= challenge){
+			if(Random.Range(0.0,1.0) <= (player?challenge+0.3:challenge)){
 				child_obj = Instantiate(child.gameObject, Vector3(0,0,where*20) + child.localPosition + items.localPosition, items.localRotation);
 				child_obj.transform.parent = level.transform;
 			}

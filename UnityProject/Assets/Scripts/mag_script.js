@@ -18,6 +18,10 @@ function RemoveRound() {
 	--num_rounds;
 }
 
+function IsFull() : boolean {
+	return num_rounds == kMaxRounds;
+}
+
 function AddRound() : boolean {
 	if(num_rounds >= kMaxRounds || mag_load_stage != MagLoadStage.NONE){
 		return false;

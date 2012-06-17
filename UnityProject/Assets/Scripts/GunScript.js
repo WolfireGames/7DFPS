@@ -97,6 +97,18 @@ function MagScript() : mag_script {
 	return magazine_instance_in_gun.GetComponent("mag_script");
 }
 
+function ShouldPullSlide() {
+	return (!round_in_chamber && magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0);
+}
+
+function ShouldReleaseSlideLock() {
+	return (round_in_chamber && slide_lock);
+}
+
+function ShouldEjectMag() {
+	return (magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds() == 0);
+}
+
 function ChamberRoundFromMag() : boolean {
 	if(magazine_instance_in_gun && MagScript().NumRounds() > 0 && mag_stage == MagStage.IN){
 		if(!round_in_chamber){
