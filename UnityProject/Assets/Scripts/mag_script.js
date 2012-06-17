@@ -48,8 +48,6 @@ function Start () {
 			round.renderer.enabled = false;
 		}
 	}
-	
-	Debug.Log(num_rounds);
 }
 
 function PlaySoundFromGroup(group : Array, volume : float){

@@ -8,7 +8,7 @@ function SpawnTile(where:int, challenge:float , player:boolean){
 	var level_obj = level_tiles[Random.Range(0,level_tiles.Length)];
 	var level = new GameObject(level_obj.name + " (Clone)");
 	for (var child : Transform in level_obj.transform){
-		if(child.gameObject.name != "enemies" && child.gameObject.name != "player_spawn"){
+		if(child.gameObject.name != "enemies" && child.gameObject.name != "player_spawn" && child.gameObject.name != "items"){
 			var child_obj = Instantiate(child.gameObject, Vector3(0,0,where*20) + child.localPosition, child.localRotation);
 			child_obj.transform.parent = level.transform;
 		}
@@ -18,6 +18,15 @@ function SpawnTile(where:int, challenge:float , player:boolean){
 		for(var child : Transform in enemies){
 			if(Random.Range(0.0,1.0) <= challenge){
 				child_obj = Instantiate(child.gameObject, Vector3(0,0,where*20) + child.localPosition + enemies.localPosition, child.localRotation);
+				child_obj.transform.parent = level.transform;
+			}
+		}
+	}
+	var items = level_obj.transform.FindChild("items");
+	if(items){
+		for(var child : Transform in items){
+			if(Random.Range(0.0,1.0) <= challenge){
+				child_obj = Instantiate(child.gameObject, Vector3(0,0,where*20) + child.localPosition + items.localPosition, items.localRotation);
 				child_obj.transform.parent = level.transform;
 			}
 		}

@@ -24,6 +24,14 @@ function Start () {
 			++j;
 		}
 	}
+	var items = transform.FindChild("items");
+	if(items){
+		for(var child : Transform in items){
+			if(Random.Range(0.0,1.0) < 0.9){
+				GameObject.Destroy(child.gameObject);
+			}
+		}
+	}
 }
 
 function Update () {

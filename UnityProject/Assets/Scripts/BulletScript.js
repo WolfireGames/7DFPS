@@ -49,7 +49,7 @@ function RecursiveHasScript(obj : GameObject, script : String, depth : int) : Mo
 	}
 }
 
-function RandomOrientation() : Quaternion {
+static function RandomOrientation() : Quaternion {
 	return Quaternion.EulerAngles(Random.Range(0,360),Random.Range(0,360),Random.Range(0,360));
 }
 
