@@ -16,7 +16,10 @@ var sound_electrocute : AudioClip[];
 private var main_camera:GameObject;
 private var character_controller:CharacterController;
 private var show_help = false;
+private var show_advanced_help = false;
+private var help_hold_time = 0.0;
 private var help_ever_shown = false;
+private var just_started_help = false;
 			
 // Instances
 
@@ -630,10 +633,27 @@ function Update() {
 		dying = false;
 	}
 
-	if(Input.GetKeyDown('/')){
-		show_help = !show_help;
-		help_ever_shown = true;
+	if(Input.GetKey('/')){
+		help_hold_time += Time.deltaTime;
+		if(show_help && help_hold_time >= 1.0){
+			show_advanced_help = true;
+		}
 	}
+	if(Input.GetKeyDown('/')){
+		if(!show_help){
+			show_help = true;
+			help_ever_shown = true;
+			just_started_help = true;
+		}
+		help_hold_time = 0.0;
+	}
+	if(Input.GetKeyUp('/')){
+		if(show_help && help_hold_time < 1.0 && !just_started_help){
+			show_help = false;
+		}
+		just_started_help = false;
+	}
+
 
 /*	if(Input.GetKeyDown("p")){
 		SetDead(!dead);
@@ -927,6 +947,21 @@ function ShouldDrawWeapon() : boolean {
 	return !gun_instance && !CanLoadBulletsInMag();
 }
 
+function GetMostLoadedMag() : int {
+	var max_rounds = 0;
+	var max_rounds_slot = -1;
+	for(var i=0; i<10; ++i){
+		if(weapon_slots[i].type == WeaponSlotType.MAGAZINE){
+			var rounds = weapon_slots[i].obj.GetComponent(mag_script).NumRounds();
+			if(rounds > max_rounds){
+				max_rounds_slot = i+1;
+				max_rounds = rounds;
+			}
+		}
+	}
+	return max_rounds_slot;
+}
+
 function OnGUI() {
 	var display_text = new Array();
 	var gun_script : GunScript = null;
@@ -939,9 +974,13 @@ function OnGUI() {
 		display_text.push(new DisplayLine("Hide help: Press [ ? ]", false));
 		
 		if(gun_instance){
+			display_text.push(new DisplayLine("Look: [ move mouse ]", false));
+			display_text.push(new DisplayLine("Move: [ WASD ]", false));
+			display_text.push(new DisplayLine("Jump: [ space ]", false));
 			display_text.push(new DisplayLine("Fire weapon: tap [ left mouse button ]", false));
-			display_text.push(new DisplayLine("Aim weapon: hold [ right mouse button ]", false));
-			display_text.push(new DisplayLine("Aim weapon: tap [ q ]", false));
+			var should_aim = (aim_spring.state < 0.5);			
+			display_text.push(new DisplayLine("Aim weapon: hold [ right mouse button ]", should_aim));
+			display_text.push(new DisplayLine("Aim weapon: tap [ q ]", should_aim));
 			display_text.push(new DisplayLine("Holster weapon: tap [ ~ ]", ShouldHolsterGun()));
 		} else {
 			display_text.push(new DisplayLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon()));
@@ -950,24 +989,15 @@ function OnGUI() {
 			display_text.push(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()?true:false));
 			display_text.push(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()?true:false));
 			display_text.push(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
+			display_text.push(new DisplayLine("Pull back hammer: hold [ f ]", !gun_script.IsHammerCocked()?true:false));
+			
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
 				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() > 1);
 				display_text.push(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));
 			} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
 				display_text.push(new DisplayLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag()?true:false));
 			} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
-				var max_rounds = 0;
-				var max_rounds_slot = -1;
-				for(var i=0; i<10; ++i){
-					if(weapon_slots[i].type == WeaponSlotType.MAGAZINE){
-						var rounds = weapon_slots[i].obj.GetComponent(mag_script).NumRounds();
-						if(rounds > max_rounds){
-							max_rounds_slot = i+1;
-							max_rounds = rounds;
-						}
-						break;
-					}
-				}
+				var max_rounds_slot = GetMostLoadedMag();
 				if(max_rounds_slot != -1){
 					display_text.push(new DisplayLine("Equip magazine: tap [ "+max_rounds_slot+" ]", true));
 				}
@@ -979,7 +1009,7 @@ function OnGUI() {
 		}
 		if(mag_stage == HandMagStage.HOLD){
 			var empty_slot = -1;
-			for(i=0; i<10; ++i){
+			for(var i=0; i<10; ++i){
 				if(weapon_slots[i].type == WeaponSlotType.EMPTY){
 					empty_slot = i+1;
 					break;
@@ -991,8 +1021,34 @@ function OnGUI() {
 				str += " ]";
 				display_text.push(new DisplayLine(str, false));
 			}
+				display_text.push(new DisplayLine("Drop magazine: tap [ e ]", false));
 		}
 		display_text.push(new DisplayLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby()));
+		
+		display_text.push(new DisplayLine("", false));
+		if(show_advanced_help){
+			display_text.push(new DisplayLine("Advanced help:", false));
+			display_text.push(new DisplayLine("Toggle crouch: [ c ]", false));
+			if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
+				display_text.push(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
+			}
+			if(aim_spring.state < 0.5){
+				display_text.push(new DisplayLine("Run: tap repeatedly [ w ]", false));
+			}
+			if(gun_instance){
+				if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
+					display_text.push(new DisplayLine("Inspect chamber: hold [ t ] and then [ r ]", false));
+				}
+				if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
+					max_rounds_slot = GetMostLoadedMag();
+					if(max_rounds_slot != -1){
+						display_text.push(new DisplayLine("Quick load magazine: double tap [ "+max_rounds_slot+" ]", false));
+					}
+				}
+			}
+		} else {
+			display_text.push(new DisplayLine("Advanced help: Hold [ ? ]", false));
+		}
 	}
 	var style : GUIStyle = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).gui_skin.label;
 	var width = Screen.width * 0.5;

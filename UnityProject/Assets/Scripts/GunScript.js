@@ -306,6 +306,10 @@ function InsertMag(mag : GameObject) {
 	mag_seated = 0.0;
 }
 
+function IsHammerCocked() : boolean {
+	return hammer_cocked == 1.0;
+}
+
 function Update () {
 	if(magazine_instance_in_gun){
 		var mag_pos = transform.position;
