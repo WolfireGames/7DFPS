@@ -104,8 +104,11 @@ private var mag_stage = HandMagStage.EMPTY;
 private var collected_rounds = new Array();
 
 private var target_weapon_slot = -2;
-private var num_loose_bullets = 0;
 private var queue_drop = false;
+private var loose_bullets : Array;
+private var loose_bullet_spring : Array;
+private var show_bullet_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var picked_up_bullet_delay = 0.0;
 
 private var head_fall = 0.0;
 private var head_fall_vel = 0.0;
@@ -207,7 +210,17 @@ function PlaySoundFromGroup(group : Array, volume : float){
 	audio.PlayOneShot(group[which_shot], volume);
 }
 
-function Start () {
+function AddLooseBullet(spring:boolean) {
+	loose_bullets.push(Instantiate(casing_with_bullet));
+	var new_spring = new Spring(0.3,0.3,kAimSpringStrength,kAimSpringDamping);
+	loose_bullet_spring.push(new_spring);
+	if(spring){
+		new_spring.vel = 3.0;
+		picked_up_bullet_delay = 2.0;
+	}
+}
+
+function Start() {
 	rotation_x = transform.rotation.eulerAngles.y;
 	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
@@ -219,8 +232,17 @@ function Start () {
 	for(i=0; i<10; ++i){
 		weapon_slots[i] = new WeaponSlot();
 	}
-	weapon_slots[1].type = WeaponSlotType.MAGAZINE;
-	weapon_slots[1].obj = Instantiate(magazine_obj);
+	var num_start_mags = Random.Range(0,2);
+	for(i=1; i<num_start_mags+1; ++i){
+		weapon_slots[i].type = WeaponSlotType.MAGAZINE;
+		weapon_slots[i].obj = Instantiate(magazine_obj);
+	}
+	loose_bullets = new Array();
+	loose_bullet_spring = new Array();
+	var num_start_bullets = Random.Range(0,10);
+	for(i=0; i<num_start_bullets; ++i){
+		AddLooseBullet(false);
+	}
 }
 
 function AimPos() : Vector3 {
@@ -560,8 +582,11 @@ function HandleControls() {
 		}
 	}
 	if(Input.GetKeyDown('z')){
-		if(num_loose_bullets > 0 && mag_stage == HandMagStage.HOLD && (!gun_instance/* || aim_spring.state < 0.5*/)){
-			magazine_instance_in_hand.GetComponent(mag_script).AddRound();
+		if(loose_bullets.length > 0 && mag_stage == HandMagStage.HOLD && (!gun_instance/* || aim_spring.state < 0.5*/)){
+			if(magazine_instance_in_hand.GetComponent(mag_script).AddRound()){
+				GameObject.Destroy(loose_bullets.pop());
+				loose_bullet_spring.pop();
+			}
 		}
 	}
 	
@@ -788,6 +813,32 @@ function Update () {
 		slot.spring.Update();
 	}
 	
+	if((mag_stage == HandMagStage.HOLD && !gun_instance) || picked_up_bullet_delay > 0.0){
+		show_bullet_spring.target_state = 1.0;
+		picked_up_bullet_delay = Mathf.Max(0.0, picked_up_bullet_delay - Time.deltaTime);
+	} else {	
+		show_bullet_spring.target_state = 0.0;
+	}
+	show_bullet_spring.Update();
+	
+	for(i=0; i<loose_bullets.length; ++i){
+		var spring : Spring = loose_bullet_spring[i];
+		spring.Update();
+		var bullet : GameObject = loose_bullets[i];
+		bullet.transform.position = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(0.0, main_camera.camera.pixelHeight,0)).direction * 0.3;
+		bullet.transform.position += main_camera.transform.rotation * Vector3(0.02,-0.01,0);
+		bullet.transform.position += main_camera.transform.rotation * Vector3(0.006 * i,0.0,0);
+		bullet.transform.position += main_camera.transform.rotation * Vector3(-0.03,0.03,0) * (1.0 - show_bullet_spring.state);
+		bullet.transform.localScale.x = spring.state;
+		bullet.transform.localScale.y = spring.state;
+		bullet.transform.localScale.z = spring.state;
+		bullet.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(-1,0,0));
+		renderers = bullet.GetComponentsInChildren(Renderer);
+		for(var renderer : Renderer in renderers){
+			renderer.castShadows = false; 
+		}
+	}
+	
 	if(!dead){
 		HandleControls();
 	}
@@ -812,7 +863,7 @@ function Update () {
 		//round.rigidbody.position += round.rigidbody.velocity * Time.deltaTime;
 		if(Vector3.Distance(round.transform.position, attract_pos) < 0.5){
 			GameObject.Destroy(round);
-			++num_loose_bullets;
+			AddLooseBullet(true);
 			collected_rounds.splice(i,1);
 			PlaySoundFromGroup(sound_bullet_grab, 0.2);
 		}

@@ -75,9 +75,22 @@ function Start () {
 	safety_rel_rot = transform.FindChild("safety").localRotation;
 	magazine_instance_in_gun = Instantiate(magazine_obj);
 	magazine_instance_in_gun.transform.parent = transform;
-	round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
-	round_in_chamber.transform.parent = transform;
-	round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
+	if(Random.Range(0,2) == 0){
+		round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
+		round_in_chamber.transform.parent = transform;
+		round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
+	}
+	if(Random.Range(0,2) == 0){
+		safety_off = 0.0;
+		safety = Safety.ON;
+	}
+	if(Random.Range(0,2) == 0){
+		hammer_cocked = 0.0;
+	}
+	if(Random.Range(0,2) == 0){
+		slide_amount = kSlideLockPosition;
+		slide_lock = true;
+	}
 }
 
 function MagScript() : mag_script {

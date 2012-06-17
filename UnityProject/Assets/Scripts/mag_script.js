@@ -18,9 +18,9 @@ function RemoveRound() {
 	--num_rounds;
 }
 
-function AddRound() {
+function AddRound() : boolean {
 	if(num_rounds >= kMaxRounds || mag_load_stage != MagLoadStage.NONE){
-		return;
+		return false;
 	}
 	mag_load_stage = MagLoadStage.PUSHING_DOWN;
 	mag_load_progress = 0.0;
@@ -28,6 +28,7 @@ function AddRound() {
 	++num_rounds;
 	var round_obj = transform.FindChild("round_"+num_rounds);
 	round_obj.renderer.enabled = true;
+	return true;
 }
 
 function NumRounds() : int {
@@ -36,10 +37,19 @@ function NumRounds() : int {
 
 function Start () {
 	old_pos = transform.position;
+	num_rounds = Random.Range(0,kMaxRounds);
 	round_pos = new Vector3[kMaxRounds];
 	for(var i=0; i<kMaxRounds; ++i){
-		round_pos[i] = transform.FindChild("round_"+(i+1)).localPosition;
+		var round = transform.FindChild("round_"+(i+1));
+		round_pos[i] = round.localPosition;
+		if(i < num_rounds){
+			round.renderer.enabled = true;
+		} else {
+			round.renderer.enabled = false;
+		}
 	}
+	
+	Debug.Log(num_rounds);
 }
 
 function PlaySoundFromGroup(group : Array, volume : float){
