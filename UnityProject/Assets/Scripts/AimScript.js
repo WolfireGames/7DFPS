@@ -670,6 +670,8 @@ function StartTapePlay() {
 		stop_tape_delay = 0.0;
 		tape_in_progress = true;
 	}
+	audiosource_tape_background.pitch = 0.1;
+	audiosource_audio_content.pitch = 0.1;
 }
 
 function StopTapePlay() {
@@ -692,6 +694,10 @@ function Update() {
 		}
 	}
 	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
+		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
+		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
+		audiosource_audio_content.pitch = 10.0;
+		audiosource_audio_content.volume = 0.1;
 		if(start_tape_delay > 0.0){
 			if(!audiosource_audio_content.isPlaying){
 				start_tape_delay = Mathf.Max(0.0, start_tape_delay - Time.deltaTime);
@@ -703,6 +709,7 @@ function Update() {
 			stop_tape_delay = Mathf.Max(0.0, stop_tape_delay - Time.deltaTime);
 			if(stop_tape_delay == 0.0){
 				tape_in_progress = false;
+				tapes_heard.push(audiosource_audio_content.clip);
 				StopTapePlay();
 			}
 		} else if(!audiosource_audio_content.isPlaying){
@@ -1116,6 +1123,7 @@ function OnGUI() {
 	if(gun_instance){
 		gun_script = gun_instance.GetComponent(GunScript);
 	}
+	display_text.push(new DisplayLine(tapes_heard.length + " tapes absorbed out of 6", true));
 	if(!show_help){
 		display_text.push(new DisplayLine("View help: Press [ ? ]", !help_ever_shown));
 	} else {
