@@ -11,6 +11,9 @@ var sound_bullet_grab : AudioClip[];
 var sound_body_fall : AudioClip[];
 var sound_electrocute : AudioClip[];
 
+var audiosource_tape_background : AudioSource;
+var audiosource_audio_content : AudioSource;
+
 // Shortcuts to components
 
 private var main_camera:GameObject;
@@ -31,6 +34,8 @@ public var sensitivity_x = 2.0;
 public var sensitivity_y = 2.0;
 private var min_angle_y = -89.0;
 private var max_angle_y = 89.0;
+
+private var holder : GUISkinHolder;
 
 // Private variables
 
@@ -124,6 +129,8 @@ private var head_tilt_y_vel = 0.0;
 private var dead_fade = 1.0;
 private var dead_volume_fade = 0.0;
 private var dead_body_fell = false;
+
+private var tape_delay = 0.0;
 
 private var god_mode = false;
 private var slomo_mode = false;
@@ -265,6 +272,11 @@ function Start() {
 	for(i=0; i<num_start_bullets; ++i){
 		AddLooseBullet(false);
 	}
+	holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
+	audiosource_tape_background = gameObject.AddComponent(AudioSource);
+	audiosource_tape_background.loop = true;
+	audiosource_tape_background.clip = holder.sound_tape_background;
+	audiosource_audio_content = gameObject.AddComponent(AudioSource);
 }
 
 function AimPos() : Vector3 {
@@ -640,7 +652,33 @@ function HandleControls() {
 	}
 }
 
+function StartTapePlay() {
+	audio.PlayOneShot(holder.sound_tape_start, 1.0);
+	audiosource_tape_background.Play();
+	audiosource_audio_content.clip = holder.sound_tape_content[Random.Range(0,holder.sound_tape_content.length)];
+	tape_delay = Random.Range(1.0,3.0);
+}
+
+function StopTapePlay() {
+	audio.PlayOneShot(holder.sound_tape_end, 1.0);
+	audiosource_tape_background.Stop();
+	audiosource_audio_content.Stop();
+}
+
 function Update() {
+	if(Input.GetKeyDown('l')){
+		if(!audiosource_tape_background.isPlaying){
+			StartTapePlay();
+		} else {
+			StopTapePlay();
+		}
+	}
+	if(audiosource_tape_background.isPlaying && tape_delay > 0.0){
+		tape_delay = Mathf.Max(0.0, tape_delay - Time.deltaTime);
+		if(tape_delay == 0.0){
+			audiosource_audio_content.Play();
+		}
+	}
 
 	if(iddqd_progress == 0 && Input.GetKeyDown('i')){
 		++iddqd_progress; cheat_delay = 1.0;
@@ -653,7 +691,7 @@ function Update() {
 	} else if(iddqd_progress == 4 && Input.GetKeyDown('d')){
 		iddqd_progress = 0;
 		god_mode = !god_mode; 
-		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+		PlaySoundFromGroup(holder.sound_scream, 1.0);
 	}
 	if(idkfa_progress == 0 && Input.GetKeyDown('i')){
 		++idkfa_progress; cheat_delay = 1.0;
@@ -671,7 +709,7 @@ function Update() {
 		while(loose_bullets.length < 30){
 			AddLooseBullet(true);
 		}
-		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+		PlaySoundFromGroup(holder.sound_scream, 1.0);
 	}
 	if(slomo_progress == 0 && Input.GetKeyDown('s')){
 		++slomo_progress; cheat_delay = 1.0;
@@ -689,7 +727,7 @@ function Update() {
 		} else {
 			Time.timeScale = 1.0;
 		}
-		PlaySoundFromGroup(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).sound_scream, 1.0);
+		PlaySoundFromGroup(holder.sound_scream, 1.0);
 	}
 	if(cheat_delay > 0.0){
 		cheat_delay -= Time.deltaTime;
@@ -1130,7 +1168,7 @@ function OnGUI() {
 			display_text.push(new DisplayLine("Advanced help: Hold [ ? ]", false));
 		}
 	}
-	var style : GUIStyle = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).gui_skin.label;
+	var style : GUIStyle = holder.gui_skin.label;
 	var width = Screen.width * 0.5;
 	var offset = 0;
 	for(var line : DisplayLine in display_text){
