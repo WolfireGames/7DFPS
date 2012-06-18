@@ -67,6 +67,7 @@
      <Compile Include="Assets\Scripts\tapescript.js" />
      <Compile Include="Assets\Scripts\taser_spark.js" />
      <Compile Include="Assets\splash_screen\splashscript.js" />
+     <Compile Include="Assets\win_screen\slideshow.js" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />

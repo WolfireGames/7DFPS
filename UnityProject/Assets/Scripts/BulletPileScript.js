@@ -14,7 +14,7 @@ function Start () {
 		bullet.AddComponent(Rigidbody);
 		bullet.GetComponent(ShellCasingScript).collided = true;
 	}
-	if(Random.Range(0,5) == 0){
+	if(Random.Range(0,4) == 0){
 		var tape : GameObject = Instantiate(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).tape_object);
 		tape.transform.position = transform.position + 
 			Vector3(Random.Range(-0.1,0.1),

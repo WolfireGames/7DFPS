@@ -127,6 +127,7 @@ private var head_tilt_vel = 0.0;
 private var head_tilt_x_vel = 0.0;
 private var head_tilt_y_vel = 0.0;
 private var dead_fade = 1.0;
+private var win_fade = 0.0;
 private var dead_volume_fade = 0.0;
 private var dead_body_fell = false;
 
@@ -160,6 +161,7 @@ private var weapon_slots : WeaponSlot[] = new WeaponSlot[10];
 private var health = 1.0;
 private var dying = false;
 private var dead = false;
+private var won = false;
 
 function IsAiming() : boolean {
 	return aim_spring.target_state == 1.0;
@@ -181,7 +183,7 @@ function WasShot(){
 	y_recoil_spring.vel += Random.Range(-400,400);
 	rotation_x += Random.Range(-4,4);
 	rotation_y += Random.Range(-4,4);
-	if(!god_mode){
+	if(!god_mode && !won){
 		dying = true;
 		if(Random.Range(0.0,1.0) < 0.3){
 			SetDead(true);
@@ -193,7 +195,7 @@ function WasShot(){
 }
 
 function FallDeath(vel : Vector3) {
-	if(!god_mode){
+	if(!god_mode && !won){
 		SetDead(true);
 		head_fall_vel = vel.y;
 		dead_fade = Mathf.Max(dead_fade, 0.5);
@@ -208,7 +210,7 @@ function InstaKill() {
 }
 
 function Shock() {
-	if(!god_mode){
+	if(!god_mode && !won){
 		if(!dead){
 			PlaySoundFromGroup(sound_electrocute, 1.0);
 		}
@@ -285,8 +287,13 @@ function Start() {
 	audiosource_audio_content = gameObject.AddComponent(AudioSource);
 	audiosource_audio_content.loop = false;
 	
+	var count = 0;
 	for(var tape in holder.sound_tape_content){
 		total_tapes.push(tape);
+		/*++count;
+		if(count >= 2){
+			break;
+		}*/
 	}
 	var temp_total_tapes = new Array(total_tapes);
 	while(temp_total_tapes.length > 0){
@@ -294,7 +301,6 @@ function Start() {
 		tapes_remaining.push(temp_total_tapes[rand_tape_id]);
 		temp_total_tapes.RemoveAt(rand_tape_id);
 	}
-	Debug.Log(tapes_remaining);
 }
 
 function AimPos() : Vector3 {
@@ -705,6 +711,11 @@ function StopTapePlay() {
 	}
 }
 
+function StartWin() {
+	GetComponent(MusicScript).HandleEvent(MusicEvent.WON);
+	won = true;
+}
+
 function Update() {
 	if(!tape_in_progress && unplayed_tapes > 0){
 		--unplayed_tapes;
@@ -718,6 +729,7 @@ function Update() {
 		}
 	}
 	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
+		GetComponent(MusicScript).SetMystical((tapes_heard.length+1.0)/total_tapes.length);
 		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
 		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
 		//audiosource_audio_content.pitch = 10.0;
@@ -735,6 +747,9 @@ function Update() {
 				tape_in_progress = false;
 				tapes_heard.push(audiosource_audio_content.clip);
 				StopTapePlay();
+				if(tapes_heard.length == total_tapes.length){
+					StartWin();
+				}
 			}
 		} else if(!audiosource_audio_content.isPlaying){
 			stop_tape_delay = Random.Range(0.5,3.0);
@@ -840,9 +855,14 @@ function Update() {
 	if(/*Input.GetKeyDown('l') || */(dead && dead_volume_fade <= 0.0)){ 
 		Application.LoadLevel(Application.loadedLevel);
 	}
+	if(won && dead_volume_fade <= 0.0){ 
+		Application.LoadLevel("winscene");
+	}
 
-	
-	if(dead){
+	if(won){
+		win_fade = Mathf.Min(1.0, win_fade + Time.deltaTime * 0.1);
+		dead_volume_fade = Mathf.Max(0.0, dead_volume_fade - Time.deltaTime * 0.1);
+	} else if(dead){
 		dead_fade = Mathf.Min(1.0, dead_fade + Time.deltaTime * 0.3);
 		dead_volume_fade = Mathf.Max(0.0, dead_volume_fade - Time.deltaTime * 0.23);
 		head_fall_vel -= 9.8 * Time.deltaTime;
@@ -1266,7 +1286,11 @@ function OnGUI() {
 	        Debug.LogError("Assign a Texture in the inspector.");
 	        return;
 	    }
-	    GUI.color = Color(1,1,1,dead_fade);
+	    GUI.color = Color(0,0,0,dead_fade);
+	    GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height), texture_death_screen, ScaleMode.StretchToFill, true);
+	}
+	if(win_fade > 0.0){
+	    GUI.color = Color(1,1,1,win_fade);
 	    GUI.DrawTexture(Rect(0,0,Screen.width,Screen.height), texture_death_screen, ScaleMode.StretchToFill, true);
 	}
 }
