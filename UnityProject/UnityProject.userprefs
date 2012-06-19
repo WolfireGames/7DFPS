@@ -2,16 +2,16 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AimScript.js">
     <Files>
-      <File FileName="Assets\splash_screen\splashscript.js" Line="35" Column="12" />
       <File FileName="..\..\..\..\Desktop\Shaders\DefaultResources\Illumin-Diffuse.shader" Line="3" Column="8" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="168" Column="30" />
+      <File FileName="Assets\splash_screen\splashscript.js" Line="1" Column="1" />
       <File FileName="Assets\Materials\Illumin-Diffuse - custom.shader" Line="1" Column="1" />
       <File FileName="Assets\Materials\Masked Tint - Vertex Colors.shader" Line="1" Column="1" />
       <File FileName="Assets\Standard Assets\Image Effects (Pro Only)\AntialiasingAsPostEffect.js" Line="1" Column="1" />
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonController.js" Line="1" Column="1" />
       <File FileName="Assets\Standard Assets\Character Controllers\Sources\Scripts\ThirdPersonCamera.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AimScript.js" Line="859" Column="35" />
-      <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\RobotScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GunScript.js" Line="101" Column="19" />
+      <File FileName="Assets\Scripts\RobotScript.js" Line="639" Column="43" />
       <File FileName="Assets\Scripts\ShootableLight.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\BulletScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\taser_spark.js" Line="1" Column="1" />
@@ -21,12 +21,12 @@
       <File FileName="Assets\Scripts\muzzleflashscript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MusicScript.js" Line="22" Column="7" />
+      <File FileName="Assets\Scripts\MusicScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\mag_script.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\ShellCasingScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\BulletPileScript.js" Line="24" Column="4" />
+      <File FileName="Assets\Scripts\BulletPileScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\sparkeffect.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="12" Column="4" />
+      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LockCursor.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\PlatformInputController.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\tapescript.js" Line="1" Column="1" />
