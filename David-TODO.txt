@@ -7,6 +7,7 @@ Easy:
 + framerate cap?
 + make mouse cursor disappear when tabbing back into game
 + remove round from magazine (for combining etc)
++ menu correctly fades to black on start
 - randomize falling damage?
 - indicator that cheat code is needed for slow motion
 - indicator on screen that cheat code has been used

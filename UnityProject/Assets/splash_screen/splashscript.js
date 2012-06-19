@@ -9,6 +9,7 @@ var state = SplashState.FADE_IN;
 var GameScene : GameObject;
 private var fade_in = 0.0;
 private var fade_out = 0.0;
+private var fade_out_delay = 0.0;
 
 var music_a : AudioClip;
 var music_b : AudioClip;
@@ -40,6 +41,7 @@ function Update () {
 	fade_in = Mathf.Min(5.0, fade_in + Time.deltaTime);
 	if(state == SplashState.FADE_OUT){
 		fade_out = Mathf.Min(1.0, fade_in + Time.deltaTime * 2.0);
+		fade_out_delay += Time.deltaTime;
 	}
 }
 
@@ -72,7 +74,7 @@ function OnGUI(){
 	        audiosource_music_b.Stop();
 	    }
     }
-    if(fade_out == 1.0){
+    if(fade_out_delay >= 0.2){
 		Application.LoadLevel("scene");
 	}	
 }
