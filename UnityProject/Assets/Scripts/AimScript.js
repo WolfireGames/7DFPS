@@ -145,6 +145,7 @@ private var iddqd_progress = 0;
 private var idkfa_progress = 0;
 private var slomo_progress = 0;
 private var cheat_delay = 0.0;
+private var level_reset_hold = 0.0;
 
 enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
 
@@ -852,7 +853,21 @@ function Update() {
 /*	if(Input.GetKeyDown("p")){
 		SetDead(!dead);
 	}*/	
-	if(/*Input.GetKeyDown('l') || */(dead && dead_volume_fade <= 0.0)){ 
+	if(Input.GetButtonDown("Level Reset")){
+		level_reset_hold = 0.01;
+	}
+	if(level_reset_hold != 0.0 && Input.GetButton("Level Reset")){
+		level_reset_hold += Time.deltaTime; 
+		dead_volume_fade = Mathf.Min(1.0-level_reset_hold * 0.5, dead_volume_fade);
+		dead_fade = level_reset_hold * 0.5;
+		if(level_reset_hold >= 2.0){
+			Application.LoadLevel(Application.loadedLevel);
+			level_reset_hold = 0.0;
+		}
+	} else {
+		level_reset_hold = 0.0;
+	}
+	if((dead && dead_volume_fade <= 0.0)){ 
 		Application.LoadLevel(Application.loadedLevel);
 	}
 	if(won && dead_volume_fade <= 0.0){ 
@@ -1239,6 +1254,7 @@ function OnGUI() {
 		display_text.push(new DisplayLine("", false));
 		if(show_advanced_help){
 			display_text.push(new DisplayLine("Advanced help:", false));
+			display_text.push(new DisplayLine("Reset level: hold [ l ]", false));
 			display_text.push(new DisplayLine("Toggle crouch: [ c ]", false));
 			if(aim_spring.state < 0.5){
 				display_text.push(new DisplayLine("Run: tap repeatedly [ w ]", false));
