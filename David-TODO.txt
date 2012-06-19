@@ -1,7 +1,7 @@
 Easy:
-- fix non-colliding floor in room 6
-- fix sight picture for 1911 (sights should be level)
-- make hover bots louder?
++ fix non-colliding floor in room 6
++ respawn button ( if stuck )
++ make hover bots louder?
 - mouse sensitivity slider
 - mouse invert toggle
 - music/sfx/voice volume options
@@ -22,7 +22,7 @@ Easy:
 - investigate jump-higher-by-crouching, possibly add to help
 - add "stop aiming to run" to help
 - problem dropping two mags in the same place?
-- respawn button ( if stuck )
+- fix sight picture for 1911 (sights should be level)
 JoShadow: http://forums.wolfire.com/viewtopic.php?f=13&t=15610#p167485
 
 Medium:
