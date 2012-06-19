@@ -664,12 +664,19 @@ function HandleControls() {
 				mag_stage = HandMagStage.EMPTY;
 			}
 		}
-	}
-	if(Input.GetButtonDown("Insert")){
-		if(loose_bullets.length > 0 && mag_stage == HandMagStage.HOLD && (!gun_instance/* || aim_spring.state < 0.5*/)){
-			if(magazine_instance_in_hand.GetComponent(mag_script).AddRound()){
-				GameObject.Destroy(loose_bullets.pop());
-				loose_bullet_spring.pop();
+	} else if(mag_stage == HandMagStage.HOLD){
+		if(Input.GetButtonDown("Insert")){
+			if(loose_bullets.length > 0){
+				if(magazine_instance_in_hand.GetComponent(mag_script).AddRound()){
+					GameObject.Destroy(loose_bullets.pop());
+					loose_bullet_spring.pop();
+				}
+			}
+		}
+		if(Input.GetButtonDown("Pull Back Slide")){
+			if(magazine_instance_in_hand.GetComponent(mag_script).RemoveRoundAnimated()){
+				AddLooseBullet(true);
+				PlaySoundFromGroup(sound_bullet_grab, 0.2);
 			}
 		}
 	}
@@ -1169,6 +1176,10 @@ function CanLoadBulletsInMag() : boolean {
 	return !gun_instance && mag_stage == HandMagStage.HOLD && loose_bullets.length > 0 && !magazine_instance_in_hand.GetComponent(mag_script).IsFull();
 }
 
+function CanRemoveBulletFromMag() : boolean {
+	return !gun_instance && mag_stage == HandMagStage.HOLD && magazine_instance_in_hand.GetComponent(mag_script).NumRounds() > 0;
+}
+
 function ShouldDrawWeapon() : boolean {
 	return !gun_instance && !CanLoadBulletsInMag();
 }
@@ -1236,6 +1247,9 @@ function OnGUI() {
 		} else {
 			if(CanLoadBulletsInMag()){
 				display_text.push(new DisplayLine("Insert bullet in magazine: tap [ z ]", true));
+			}
+			if(CanRemoveBulletFromMag()){
+				display_text.push(new DisplayLine("Remove bullet from magazine: tap [ r ]", false));
 			}
 		}
 		if(mag_stage == HandMagStage.HOLD){
