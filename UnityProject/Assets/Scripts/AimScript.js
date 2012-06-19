@@ -165,7 +165,7 @@ private var dead = false;
 private var won = false;
 
 function IsAiming() : boolean {
-	return aim_spring.target_state == 1.0;
+	return (gun_instance != null && aim_spring.target_state == 1.0);
 }
 
 function IsDead() : boolean {
