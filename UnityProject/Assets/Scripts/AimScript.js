@@ -262,6 +262,10 @@ function Start() {
 	rotation_x = transform.rotation.eulerAngles.y;
 	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
+	var renderers = gun_instance.GetComponentsInChildren(Renderer);
+	for(var renderer : Renderer in renderers){
+		renderer.castShadows = false; 
+	}
 	main_camera = GameObject.Find("Main Camera").gameObject;
 	character_controller = GetComponent(CharacterController);
 	for(var i=0; i<kMaxHeadRecoil; ++i){

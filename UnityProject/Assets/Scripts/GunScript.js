@@ -75,10 +75,19 @@ function Start () {
 	safety_rel_rot = transform.FindChild("safety").localRotation;
 	magazine_instance_in_gun = Instantiate(magazine_obj);
 	magazine_instance_in_gun.transform.parent = transform;
+
+	var renderers = magazine_instance_in_gun.GetComponentsInChildren(Renderer);
+	for(var renderer : Renderer in renderers){
+		renderer.castShadows = false; 
+	}
 	if(Random.Range(0,2) == 0){
 		round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
 		round_in_chamber.transform.parent = transform;
 		round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
+		renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+		for(var renderer : Renderer in renderers){
+			renderer.castShadows = false; 
+		}
 	}
 	if(Random.Range(0,2) == 0){
 		safety_off = 0.0;
@@ -114,6 +123,10 @@ function ChamberRoundFromMag() : boolean {
 		if(!round_in_chamber){
 			MagScript().RemoveRound();
 			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_load_round").position, transform.FindChild("point_load_round").rotation);
+			var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+			for(var renderer : Renderer in renderers){
+				renderer.castShadows = false; 
+			}
 			round_in_chamber.transform.parent = transform;
 			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
 			round_in_chamber_state = RoundState.LOADING;
@@ -186,7 +199,11 @@ function ApplyPressureToTrigger() : boolean {
 			GameObject.Destroy(round_in_chamber);
 			round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
 			round_in_chamber.transform.parent = transform;
-	
+			var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+			for(var renderer : Renderer in renderers){
+				renderer.castShadows = false; 
+			}
+			
 			Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
 			var bullet = Instantiate(bullet_obj, transform.FindChild("point_muzzle").position, transform.FindChild("point_muzzle").rotation);
 			bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
