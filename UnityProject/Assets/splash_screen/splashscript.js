@@ -19,6 +19,10 @@ private var audiosource_music_a : AudioSource;
 private var audiosource_music_b : AudioSource;
 private var audiosource_effect : AudioSource;
 
+function Awake () {
+    Application.targetFrameRate = 60;
+}
+
 function Start () {
 	audiosource_music_a = gameObject.AddComponent(AudioSource);
 	audiosource_music_a.loop = true;
