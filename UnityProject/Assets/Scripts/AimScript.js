@@ -845,6 +845,7 @@ function Update() {
 	if(Input.GetButtonUp("Help Toggle")){
 		if(show_help && help_hold_time < 1.0 && !just_started_help){
 			show_help = false;
+			show_advanced_help = false;
 		}
 		just_started_help = false;
 	}
@@ -1254,7 +1255,6 @@ function OnGUI() {
 		display_text.push(new DisplayLine("", false));
 		if(show_advanced_help){
 			display_text.push(new DisplayLine("Advanced help:", false));
-			display_text.push(new DisplayLine("Reset level: hold [ l ]", false));
 			display_text.push(new DisplayLine("Toggle crouch: [ c ]", false));
 			if(aim_spring.state < 0.5){
 				display_text.push(new DisplayLine("Run: tap repeatedly [ w ]", false));
@@ -1273,6 +1273,7 @@ function OnGUI() {
 					}
 				}
 			}
+			display_text.push(new DisplayLine("Reset game: hold [ l ]", false));
 		} else {
 			display_text.push(new DisplayLine("Advanced help: Hold [ ? ]", false));
 		}
