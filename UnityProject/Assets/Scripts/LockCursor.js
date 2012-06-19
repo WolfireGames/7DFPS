@@ -12,3 +12,11 @@ function Update () {
 	    Screen.lockCursor = true;
     }
 }
+
+function OnApplicationPause() {  
+	Screen.lockCursor = false;
+}
+
+function OnApplicationFocus() {
+	Screen.lockCursor = true;
+}
