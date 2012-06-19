@@ -1,9 +1,38 @@
-- movement
--- sprint
--- crouch
--- mouse sensitivity
+Easy:
+- fix non-colliding floor in room 6
+- fix sight picture for 1911 (sights should be level)
+- make hover bots louder?
+- mouse sensitivity slider
+- mouse invert toggle
+- music/sfx/voice volume options
+- gun aim leeway options
+- inventory markers
+- remove round from magazine (for combining etc)
+- option for hold/toggle crouch
+- fix problem running with gun holstered but aimed
+- spawn empty mags on ground
+- brightness option
+- disable gun/bullet/mag shadows
+- framerate cap?
+- randomize falling damage?
+- make mouse cursor disappear when tabbing back into game
+- "night vision" light? (small blue point light that follows camera)
+- indicator that cheat code is needed for slow motion
+- indicator on screen that cheat code has been used
+- investigate jump-higher-by-crouching, possibly add to help
+- add "stop aiming to run" to help
+- problem dropping two mags in the same place?
+- respawn button ( if stuck )
+JoShadow: http://forums.wolfire.com/viewtopic.php?f=13&t=15610#p167485
 
-- aim
--- gun model
--- toggle sights
--- independent aim
+Medium:
+- flash light
+- in-game help shows remapped keys
+
+Hard:
+- background loading of new tiles
+- occlusion culling
+- new guns
+
+Control ideas:
+http://forums.wolfire.com/viewtopic.php?f=13&t=15610&start=45#p167548
