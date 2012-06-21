@@ -1,13 +1,4 @@
 Easy:
-+ fix non-colliding floor in room 6
-+ respawn button ( if stuck )
-+ make hover bots louder?
-+ fix problem running with gun holstered but aimed
-+ disable gun/bullet/mag shadows
-+ framerate cap?
-+ make mouse cursor disappear when tabbing back into game
-+ remove round from magazine (for combining etc)
-+ menu correctly fades to black on start
 - randomize falling damage?
 - indicator that cheat code is needed for slow motion
 - indicator on screen that cheat code has been used
@@ -17,6 +8,7 @@ Easy:
 - fix sight picture for 1911 (sights should be level)
 - inventory markers
 - spawn empty mags on ground
+- fix taser sound falloff
 - "night vision" light? (small blue point light that follows camera)
 JoShadow: http://forums.wolfire.com/viewtopic.php?f=13&t=15610#p167485
 
@@ -39,3 +31,14 @@ Options screen:
 
 Control ideas:
 http://forums.wolfire.com/viewtopic.php?f=13&t=15610&start=45#p167548
+
+RC4:
++ fix non-colliding floor in room 6
++ respawn button ( if stuck )
++ make hover bots louder?
++ fix problem running with gun holstered but aimed
++ disable gun/bullet/mag shadows
++ framerate cap?
++ make mouse cursor disappear when tabbing back into game
++ remove round from magazine (for combining etc)
++ menu correctly fades to black on start
