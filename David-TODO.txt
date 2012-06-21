@@ -27,7 +27,10 @@ Medium:
 Hard:
 - background loading of new tiles
 - occlusion culling
-- new guns
+- new guns (maybe Glock 17, S&W Model 10, H&K USP Tactical, Beretta M9, Colt Detective Special?)
+
+Really hard:
+- Multiplayer?
 
 Options screen:
 - mouse sensitivity slider
