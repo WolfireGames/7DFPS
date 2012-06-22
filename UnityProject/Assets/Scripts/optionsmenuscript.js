@@ -81,7 +81,7 @@ function DrawButton( text : String) : boolean {
 	return val;			
 }
 
-private var brightness = 0.3;
+//private var brightness = 0.3;
 private var master_volume = 1.0;
 private var sound_volume = 1.0;
 private var music_volume = 1.0;
@@ -91,10 +91,44 @@ private var mouse_invert = false;
 private var mouse_sensitivity = 0.2;
 private var show_advanced_sound = false;
 private var toggle_crouch = true;
-private var lock_gun_to_screen = 0.0;
 private var scroll_view_vector = Vector2(0,0);
 private var vert_scroll = 0.0;
 private var vert_scroll_pixels = 0.0;
+ 
+function RestoreDefaults() {
+	master_volume = 1.0;
+	sound_volume = 1.0;
+	music_volume = 1.0;
+	voice_volume = 1.0;
+	mouse_sensitivity = 0.2;
+	lock_gun_to_center = false;
+	mouse_invert = false;
+	toggle_crouch = true;      
+}
+
+function Start() {
+	RestoreDefaults();
+	master_volume = PlayerPrefs.GetFloat("master_volume", master_volume);
+	sound_volume = PlayerPrefs.GetFloat("sound_volume", sound_volume);
+	music_volume = PlayerPrefs.GetFloat("music_volume", music_volume);
+	voice_volume = PlayerPrefs.GetFloat("voice_volume", voice_volume);
+	mouse_sensitivity = PlayerPrefs.GetFloat("mouse_sensitivity", mouse_sensitivity);
+	lock_gun_to_center = PlayerPrefs.GetInt("lock_gun_to_center", lock_gun_to_center?1:0)==1;
+	mouse_invert = PlayerPrefs.GetInt("mouse_invert", mouse_invert?1:0)==1;
+	toggle_crouch = PlayerPrefs.GetInt("toggle_crouch", toggle_crouch?1:0)==1;      
+}
+ 
+
+function SavePrefs() {
+	PlayerPrefs.SetFloat("master_volume", master_volume);
+	PlayerPrefs.SetFloat("sound_volume", sound_volume);
+	PlayerPrefs.SetFloat("music_volume", music_volume);
+	PlayerPrefs.SetFloat("voice_volume", voice_volume);
+	PlayerPrefs.SetFloat("mouse_sensitivity", mouse_sensitivity);
+	PlayerPrefs.SetInt("lock_gun_to_center", lock_gun_to_center?1:0);
+	PlayerPrefs.SetInt("mouse_invert", mouse_invert?1:0);
+	PlayerPrefs.SetInt("toggle_crouch", toggle_crouch?1:0);    
+}
 
 function Update() {
 	if(vert_scroll != -1.0){
@@ -110,9 +144,6 @@ function WindowFunction (windowID : int) {
     	Rect (0, vert_scroll_pixels, windowRect.width, windowRect.height));
 
 	DrawCursor_Init();
-	DrawButton("Resume");
-	draw_cursor.y += line_offset * 0.3;
-	DrawCursor_NextLine();
 	mouse_invert = DrawCheckbox(mouse_invert, "Invert mouse");
 	DrawCursor_NextLine();
 	DrawLabel("Mouse sensitivity:");
@@ -123,10 +154,10 @@ function WindowFunction (windowID : int) {
 	DrawCursor_NextLine();
 	lock_gun_to_center = DrawCheckbox(lock_gun_to_center, "Lock gun to screen center");
 	DrawCursor_NextLine();
-	DrawLabel("Brightness:");
+	/*DrawLabel("Brightness:");
 	DrawCursor_NextLine();
 	brightness = DrawSlider(brightness);
-	DrawCursor_NextLine();
+	DrawCursor_NextLine();*/
 	DrawLabel("Master volume:");
 	DrawCursor_NextLine();
 	master_volume = DrawSlider(master_volume);
@@ -151,10 +182,19 @@ function WindowFunction (windowID : int) {
 		music_volume = DrawSlider(music_volume);
 		DrawCursor_NextLine();
 	}
-	DrawButton("Restore defaults");
+	if(DrawButton("Resume")){
+		SavePrefs();
+	}
+	draw_cursor.y += line_offset * 0.3;
+	DrawCursor_NextLine();
+	if(DrawButton("Restore defaults")){
+		RestoreDefaults();
+	}
 	DrawCursor_NextLine();	
 	draw_cursor.y += line_offset * 0.3;
-	DrawButton("Exit game");
+	if(DrawButton("Exit game")){
+		SavePrefs();
+	}
 	
 	var content_height = draw_cursor.y;
 	
