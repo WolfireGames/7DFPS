@@ -212,6 +212,7 @@ function UpdateStationaryTurret() {
 			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 1.0);
 			audiosource_motor.Play();
 		}
+		audiosource_motor.volume = 0.4 * PlayerPrefs.GetFloat("sound_volume", 1.0);
 		if(GetTurretLightObject().light.intensity > 0.0){
 			GetTurretLightObject().light.shadows = LightShadows.Hard;
 		} else {
@@ -643,7 +644,7 @@ function UpdateDrone() {
 	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
 	audiosource_motor.volume = rotor_speed * 0.1 * PlayerPrefs.GetFloat("sound_volume", 1.0);
 
-	audiosource_motor.volume -= Vector3.Distance(GameObject.Find("Main Camera").transform.position, transform.position) * 0.0125;
+	audiosource_motor.volume -= Vector3.Distance(GameObject.Find("Main Camera").transform.position, transform.position) * 0.0125 * PlayerPrefs.GetFloat("sound_volume", 1.0);
 
 	var line_of_sight = true;
 	if(Physics.Linecast(transform.position, GameObject.Find("Main Camera").transform.position, hit, 1<<0)){

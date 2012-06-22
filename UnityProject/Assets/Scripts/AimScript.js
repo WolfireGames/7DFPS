@@ -30,8 +30,8 @@ private var gun_instance:GameObject;
 
 // Public parameters
 
-public var sensitivity_x = 2.0;
-public var sensitivity_y = 2.0;
+private var sensitivity_x = 2.0;
+private var sensitivity_y = 2.0;
 private var min_angle_y = -89.0;
 private var max_angle_y = 89.0;
 
@@ -947,6 +947,14 @@ function Update() {
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
 	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
 	
+	if(PlayerPrefs.GetInt("lock_gun_to_center", 0)==1){
+		rotation_y_min_leeway = 0;
+		rotation_y_max_leeway = 0;
+		rotation_x_leeway = 0;
+	}
+	
+	sensitivity_x = PlayerPrefs.GetFloat("mouse_sensitivity", 1.0) * 10.0;
+	sensitivity_y = PlayerPrefs.GetFloat("mouse_sensitivity", 1.0) * 10.0;
 	if(PlayerPrefs.GetInt("mouse_invert", 0) == 1){
 		sensitivity_y = -Mathf.Abs(sensitivity_y);
 	} else {
