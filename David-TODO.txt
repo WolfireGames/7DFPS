@@ -1,5 +1,4 @@
 Easy:
-+ fix sight picture for 1911 (sights should be level)
 - randomize falling damage?
 - indicator that cheat code is needed for slow motion
 - indicator on screen that cheat code has been used
@@ -24,16 +23,18 @@ Hard:
 Really hard:
 - Multiplayer?
 
-Options screen:
-- mouse sensitivity slider
-- mouse invert toggle
-- music/sfx/voice volume options
-- gun aim leeway options
-- brightness option
-- option for hold/toggle crouch
-
 Control ideas:
 http://forums.wolfire.com/viewtopic.php?f=13&t=15610&start=45#p167548
+
+RC5:
++ fix sight picture for 1911 (sights should be level)
+Options screen:
++ mouse sensitivity slider
++ mouse invert toggle
++ music/sfx/voice volume options
++ gun aim leeway options
++ brightness option
++ option for hold/toggle crouch
 
 RC4:
 + fix non-colliding floor in room 6
