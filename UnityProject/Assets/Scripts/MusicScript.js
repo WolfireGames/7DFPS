@@ -2,6 +2,7 @@
 
 var music_layers : AudioClip[];
 private var music_sources : AudioSource[];
+private var music_volume : float[];
 private var sting_source : AudioSource;
 var death_sting : AudioClip;
 var win_sting : AudioClip;
@@ -39,6 +40,7 @@ function SetMystical(val : float) {
 
 function Start () {
 	music_sources = new AudioSource[music_layers.Length];
+	music_volume = new float[music_layers.Length];
 	target_gain = new float[music_layers.Length];
 	for(var i=0; i<music_layers.length; ++i){
 		var source : AudioSource = gameObject.AddComponent(AudioSource);
@@ -46,6 +48,7 @@ function Start () {
 		music_sources[i] = source;
 		music_sources[i].loop = true;
 		music_sources[i].volume = 0.0;
+		music_volume[i] = 0.0;
 		target_gain[i] = 0.0;
 	}
 	sting_source = gameObject.AddComponent(AudioSource);
@@ -60,6 +63,10 @@ function Start () {
 function Update() { 
 	danger = Mathf.Max(danger_level_accumulate, danger);
 	danger_level_accumulate = 0.0;
+	for(var i=0; i<music_layers.Length; ++i){
+		music_sources[i].volume = music_volume[i] * PlayerPrefs.GetFloat("music_volume");
+	}
+	sting_source.volume = PlayerPrefs.GetFloat("music_volume", 1.0);
 }
 
 function FixedUpdate () {
@@ -78,6 +85,6 @@ function FixedUpdate () {
 	}
 
 	for(var i=0; i<music_layers.Length; ++i){
-		music_sources[i].volume = Mathf.Lerp(target_gain[i], music_sources[i].volume, 0.99) * global_gain;
+		music_volume[i] = Mathf.Lerp(target_gain[i], music_volume[i], 0.99) * global_gain;
 	}
 }

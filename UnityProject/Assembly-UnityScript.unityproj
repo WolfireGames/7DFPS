@@ -53,7 +53,6 @@
      <Compile Include="Assets\Scripts\GunScript.js" />
      <Compile Include="Assets\Scripts\LevelCreatorScript.js" />
      <Compile Include="Assets\Scripts\LevelScript.js" />
-     <Compile Include="Assets\Scripts\LockCursor.js" />
      <Compile Include="Assets\Scripts\MusicScript.js" />
      <Compile Include="Assets\Scripts\PlatformInputController.js" />
      <Compile Include="Assets\Scripts\RobotScript.js" />

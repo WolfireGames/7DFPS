@@ -25,7 +25,7 @@ var useFixedUpdate : boolean = true;
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	var which_shot = Random.Range(0,group.length);
-	audio.PlayOneShot(group[which_shot], volume);
+	audio.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0));
 }
 
 // For the next variables, @System.NonSerialized tells Unity to not serialize the variable or show it in the inspector view.

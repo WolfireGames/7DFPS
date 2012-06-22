@@ -181,7 +181,7 @@ function mix( a:Quaternion, b:Quaternion, val:float ) : Quaternion{
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	var which_shot = Random.Range(0,group.length);
-	audio.PlayOneShot(group[which_shot], volume);
+	audio.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0));
 }
 
 

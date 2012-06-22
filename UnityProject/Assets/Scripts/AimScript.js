@@ -245,7 +245,7 @@ function SetDead(new_dead : boolean) {
 
 function PlaySoundFromGroup(group : Array, volume : float){
 	var which_shot = Random.Range(0,group.length);
-	audio.PlayOneShot(group[which_shot], volume);
+	audio.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0));
 }
 
 function AddLooseBullet(spring:boolean) {
@@ -694,7 +694,7 @@ function HandleControls() {
 }
 
 function StartTapePlay() {
-	audio.PlayOneShot(holder.sound_tape_start, 1.0);
+	audio.PlayOneShot(holder.sound_tape_start, 1.0 * PlayerPrefs.GetFloat("voice_volume", 1.0));
 	audiosource_tape_background.Play();
 	if(tape_in_progress && start_tape_delay == 0.0){ 
 		audiosource_audio_content.Play();
@@ -713,7 +713,7 @@ function StartTapePlay() {
 }
 
 function StopTapePlay() {
-	audio.PlayOneShot(holder.sound_tape_end, 1.0);
+	audio.PlayOneShot(holder.sound_tape_end, 1.0 * PlayerPrefs.GetFloat("voice_volume", 1.0));
 	if(tape_in_progress){
 		audiosource_tape_background.Pause();
 		audiosource_audio_content.Pause();
@@ -742,7 +742,9 @@ function Update() {
 	}
 	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
 		GetComponent(MusicScript).SetMystical((tapes_heard.length+1.0)/total_tapes.length);
+		audiosource_tape_background.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
 		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
+		audiosource_audio_content.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
 		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
 		//audiosource_audio_content.pitch = 10.0;
 		//audiosource_audio_content.volume = 0.1;
@@ -917,7 +919,9 @@ function Update() {
 		dead_fade = Mathf.Max(0.0, dead_fade - Time.deltaTime * 1.5);
 		dead_volume_fade = Mathf.Min(1.0, dead_volume_fade + Time.deltaTime * 1.5);
 	}
-	AudioListener.volume = dead_volume_fade;
+	AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0);
+		
+	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
 		
 	var offset_aim_target = false;
 	if((Input.GetButton("Hold To Aim") || aim_toggle) && !dead){
@@ -943,7 +947,13 @@ function Update() {
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
 	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
 	
-	if(!dead){
+	if(PlayerPrefs.GetInt("mouse_invert", 0) == 1){
+		sensitivity_y = -Mathf.Abs(sensitivity_y);
+	} else {
+		sensitivity_y = Mathf.Abs(sensitivity_y);
+	}
+	
+	if(!dead && !in_menu){
 		rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
 		rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
 		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
@@ -1108,7 +1118,7 @@ function Update() {
 		}
 	}
 	
-	if(!dead){
+	if(!dead && !in_menu){
 		HandleControls();
 	}
 	

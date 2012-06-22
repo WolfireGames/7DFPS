@@ -70,7 +70,7 @@ function PlaySoundFromGroup(group : Array, volume : float){
 		return;
 	}
 	var which_shot = Random.Range(0,group.length);
-	audiosource_effect.PlayOneShot(group[which_shot], volume);
+	audiosource_effect.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0));
 }
 
 function GetTurretLightObject() : GameObject {
@@ -175,7 +175,7 @@ function Start () {
 	audiosource_motor = object_audiosource_motor.AddComponent(AudioSource);
 	object_audiosource_motor.AddComponent(AudioLowPassFilter);
 	audiosource_motor.loop = true;
-	audiosource_motor.volume = 0.4;
+	audiosource_motor.volume = 0.4 * PlayerPrefs.GetFloat("sound_volume", 1.0);
 	audiosource_motor.clip = sound_engine_loop;
 	
 	switch(robot_type){
@@ -209,6 +209,7 @@ function UpdateStationaryTurret() {
 		return;
 	} else {
 		if(!audiosource_motor.isPlaying){
+			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 1.0);
 			audiosource_motor.Play();
 		}
 		if(GetTurretLightObject().light.intensity > 0.0){
@@ -306,7 +307,7 @@ function UpdateStationaryTurret() {
 			switch(ai_state){
 				case AIState.IDLE:
 					ai_state = AIState.ALERT;
-					audiosource_effect.PlayOneShot(sound_alert, 0.3);
+					audiosource_effect.PlayOneShot(sound_alert, 0.3 * PlayerPrefs.GetFloat("sound_volume", 1.0));
 					alert_delay = kAlertDelay;
 					break;
 				case AIState.AIMING:
@@ -342,7 +343,7 @@ function UpdateStationaryTurret() {
 					alert_cooldown_delay -= Time.deltaTime;
 					if(alert_cooldown_delay <= 0.0){
 						ai_state = AIState.IDLE;
-						audiosource_effect.PlayOneShot(sound_unalert, 0.3);
+						audiosource_effect.PlayOneShot(sound_unalert, 0.3 * PlayerPrefs.GetFloat("sound_volume", 1.0));
 					}
 					break;
 			}
@@ -404,6 +405,7 @@ function UpdateDrone() {
 			distance_sleep = false;
 		}
 		if(!audiosource_motor.isPlaying){
+			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 1.0);
 			audiosource_motor.Play();
 		}
 	}
@@ -473,7 +475,10 @@ function UpdateDrone() {
 	}
 	if(barrel_alive && ai_state == AIState.FIRING){
 		if(!audiosource_taser.isPlaying){
+			audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0);
 			audiosource_taser.Play();
+		} else {
+			audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0);
 		}
 		if(gun_delay <= 0.0){
 			gun_delay = 0.1;	
@@ -570,7 +575,7 @@ function UpdateDrone() {
 				case AIState.IDLE:
 					ai_state = AIState.ALERT;
 					alert_delay = kAlertDelay;
-					audiosource_effect.PlayOneShot(sound_alert, 0.3);
+					audiosource_effect.PlayOneShot(sound_alert, 0.3 * PlayerPrefs.GetFloat("sound_volume", 1.0));
 					break;
 				case AIState.AIMING:
 					target_pos = new_target;
@@ -610,7 +615,7 @@ function UpdateDrone() {
 					alert_cooldown_delay -= Time.deltaTime;
 					if(alert_cooldown_delay <= 0.0){
 						ai_state = AIState.IDLE;
-						audiosource_effect.PlayOneShot(sound_unalert, 0.3);
+						audiosource_effect.PlayOneShot(sound_unalert, 0.3 * PlayerPrefs.GetFloat("sound_volume", 1.0));
 					}
 					break;
 			}
@@ -636,7 +641,7 @@ function UpdateDrone() {
 	var target_pitch = rotor_speed * 0.2;
 	target_pitch = Mathf.Clamp(target_pitch, 0.2, 3.0);
 	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001, Time.deltaTime));
-	audiosource_motor.volume = rotor_speed * 0.1;
+	audiosource_motor.volume = rotor_speed * 0.1 * PlayerPrefs.GetFloat("sound_volume", 1.0);
 
 	audiosource_motor.volume -= Vector3.Distance(GameObject.Find("Main Camera").transform.position, transform.position) * 0.0125;
 
@@ -683,7 +688,7 @@ function OnCollisionEnter(collision : Collision) {
 			} 
 		} else {
 			var which_shot = Random.Range(0,sound_bump.length);
-			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.impactForceSum.magnitude * 0.15);
+			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.impactForceSum.magnitude * 0.15 * PlayerPrefs.GetFloat("sound_volume", 1.0));
 		}
 	}
 }

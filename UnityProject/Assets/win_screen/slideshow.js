@@ -30,7 +30,7 @@ function Start () {
 }
 
 function Update () {
-	AudioListener.volume = Mathf.Min(1.0, AudioListener.volume + Time.deltaTime * 2.0);
+	AudioListener.volume = Mathf.Min(1.0 * PlayerPrefs.GetFloat("master_volume", 1.0), AudioListener.volume + Time.deltaTime * 2.0 * PlayerPrefs.GetFloat("master_volume", 1.0));
 	if(state == SplashState.FADE_IN){
 		fade_in = Mathf.Min(1.0, fade_in + Time.deltaTime * 2.0);
 	    if(fade_in == 1.0){
@@ -74,7 +74,7 @@ function OnGUI(){
 	        Event.current.type == EventType.MouseDown)
 	    {
 	        state = SplashState.FADE_OUT;
-   			audiosource_effect.PlayOneShot(stop_sound);
+   			audiosource_effect.PlayOneShot(stop_sound, PlayerPrefs.GetFloat("sound_volume", 1.0));
 	        //audiosource_music_a.Stop();
 	        //audiosource_music_b.Stop();
 	    }

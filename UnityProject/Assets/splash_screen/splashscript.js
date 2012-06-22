@@ -28,13 +28,16 @@ function Start () {
 	audiosource_music_a = gameObject.AddComponent(AudioSource);
 	audiosource_music_a.loop = true;
 	audiosource_music_a.clip = music_a;
+	audiosource_music_a.volume = PlayerPrefs.GetFloat("music_volume");
 	audiosource_music_b = gameObject.AddComponent(AudioSource);
 	audiosource_music_b.loop = true;
 	audiosource_music_b.clip = music_b;
+	audiosource_music_b.volume = PlayerPrefs.GetFloat("music_volume");
 	audiosource_music_b.Play();
 	audiosource_music_a.Play();
 	audiosource_effect = gameObject.AddComponent(AudioSource);
-    audiosource_effect.PlayOneShot(play_sound);
+    audiosource_effect.PlayOneShot(play_sound, PlayerPrefs.GetFloat("sound_volume", 1.0));
+	audiosource_effect.volume = PlayerPrefs.GetFloat("sound_volume");
 }
 
 function Update () {
@@ -43,6 +46,7 @@ function Update () {
 		fade_out = Mathf.Min(1.0, fade_in + Time.deltaTime * 2.0);
 		fade_out_delay += Time.deltaTime;
 	}
+	AudioListener.volume = PlayerPrefs.GetFloat("master_volume", 1.0);
 }
 
 function OnGUI(){
@@ -69,7 +73,7 @@ function OnGUI(){
 	        Event.current.type == EventType.MouseDown)
 	    {
 	        state = SplashState.FADE_OUT;
-   			audiosource_effect.PlayOneShot(stop_sound);
+   			audiosource_effect.PlayOneShot(stop_sound, PlayerPrefs.GetFloat("sound_volume", 1.0));
 	        audiosource_music_a.Stop();
 	        audiosource_music_b.Stop();
 	    }

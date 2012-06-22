@@ -70,7 +70,7 @@ function Start () {
 function PlaySoundFromGroup(group : Array, volume : float){
 	if(group.length == 0){return;}
 	var which_shot = Random.Range(0,group.length);
-	audio.PlayOneShot(group[which_shot], volume);
+	audio.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0));
 }
 
 function CollisionSound() {

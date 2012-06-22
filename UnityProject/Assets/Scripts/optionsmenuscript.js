@@ -4,8 +4,28 @@ var skin:GUISkin;
 var windowRect : Rect;
 var menu_width = 300;
 var menu_height = 500;
+var show_menu = false;
+
+function OnApplicationPause() {  
+	Screen.lockCursor = false;
+}
+
+function OnApplicationFocus() {
+	Screen.lockCursor = true;
+}
+
+function ShowMenu(){
+	show_menu = true;
+}
+
+function HideMenu(){
+	show_menu = false;
+}
 
 function OnGUI () {
+	if(!show_menu){
+		return;
+	}
 	windowRect = GUI.Window (
 		0, 
 		Rect(Screen.width*0.5 - menu_width*0.5, Screen.height*0.5 - menu_height*0.5, menu_width, menu_height), 
@@ -107,6 +127,7 @@ function RestoreDefaults() {
 }
 
 function Start() {
+	Screen.lockCursor = true;
 	RestoreDefaults();
 	master_volume = PlayerPrefs.GetFloat("master_volume", master_volume);
 	sound_volume = PlayerPrefs.GetFloat("sound_volume", sound_volume);
@@ -130,10 +151,29 @@ function SavePrefs() {
 	PlayerPrefs.SetInt("toggle_crouch", toggle_crouch?1:0);    
 }
 
+function IsMenuShown() : boolean {
+	return show_menu;
+}
+
 function Update() {
 	if(vert_scroll != -1.0){
 		vert_scroll += Input.GetAxis("Mouse ScrollWheel");
 	}
+    if(Input.GetKeyDown ("escape") && !show_menu){
+        Screen.lockCursor = false;
+        ShowMenu();
+    } else if(Input.GetKeyDown ("escape") && show_menu){
+        Screen.lockCursor = true;
+        HideMenu();
+    }
+    if(Input.GetMouseButtonDown(0) && !show_menu){
+        Screen.lockCursor = true;
+    }
+    if(show_menu){
+    	Time.timeScale = 0.0;
+    } else {
+    	Time.timeScale = 1.0;
+    }
 }
 
 function WindowFunction (windowID : int) {
@@ -183,7 +223,8 @@ function WindowFunction (windowID : int) {
 		DrawCursor_NextLine();
 	}
 	if(DrawButton("Resume")){
-		SavePrefs();
+		Screen.lockCursor = true;
+		show_menu = false;
 	}
 	draw_cursor.y += line_offset * 0.3;
 	DrawCursor_NextLine();
@@ -193,7 +234,7 @@ function WindowFunction (windowID : int) {
 	DrawCursor_NextLine();	
 	draw_cursor.y += line_offset * 0.3;
 	if(DrawButton("Exit game")){
-		SavePrefs();
+		Application.Quit();
 	}
 	
 	var content_height = draw_cursor.y;
@@ -216,5 +257,6 @@ function WindowFunction (windowID : int) {
 		vert_scroll = -1.0;
 		vert_scroll_pixels = 0.0;
 	}
+	SavePrefs();
 }
 
