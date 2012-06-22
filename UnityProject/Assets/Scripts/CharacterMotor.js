@@ -389,8 +389,14 @@ function FixedUpdate () {
 }
 
 function Update () {
-	if(!GetComponent(AimScript).IsDead() && Input.GetButtonDown("Crouch Toggle")){
-		crouching = !crouching;
+	if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
+		if(!GetComponent(AimScript).IsDead() && Input.GetButtonDown("Crouch Toggle")){
+			crouching = !crouching;
+		}
+	} else {
+		if(!GetComponent(AimScript).IsDead()){
+			crouching = Input.GetButton("Crouch Toggle");
+		}
 	}	
 	if(running > 0.0){
 		crouching = false;

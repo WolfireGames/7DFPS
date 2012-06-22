@@ -11,7 +11,9 @@ function OnApplicationPause() {
 }
 
 function OnApplicationFocus() {
-	Screen.lockCursor = true;
+	if(!show_menu){
+		Screen.lockCursor = true;
+	}
 }
 
 function ShowMenu(){
