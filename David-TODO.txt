@@ -1,11 +1,11 @@
 Easy:
++ fix sight picture for 1911 (sights should be level)
 - randomize falling damage?
 - indicator that cheat code is needed for slow motion
 - indicator on screen that cheat code has been used
 - investigate jump-higher-by-crouching, possibly add to help
 - add "stop aiming to run" to help
 - problem dropping two mags in the same place?
-- fix sight picture for 1911 (sights should be level)
 - inventory markers
 - spawn empty mags on ground
 - fix taser sound falloff

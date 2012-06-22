@@ -62,6 +62,7 @@
      <Compile Include="Assets\Scripts\electricsparkscript.js" />
      <Compile Include="Assets\Scripts\mag_script.js" />
      <Compile Include="Assets\Scripts\muzzleflashscript.js" />
+     <Compile Include="Assets\Scripts\optionsmenuscript.js" />
      <Compile Include="Assets\Scripts\plasterpuffscript.js" />
      <Compile Include="Assets\Scripts\sparkeffect.js" />
      <Compile Include="Assets\Scripts\tapescript.js" />
