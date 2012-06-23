@@ -1,4 +1,8 @@
 Easy:
+- fix chamber-check round eject at low framerates
+- fix wobbling gun at low framerates
+- fix possible inaccurate gun mechanics
+--- can slide move with safety on?
 - randomize falling damage?
 - indicator that cheat code is needed for slow motion
 - indicator on screen that cheat code has been used
