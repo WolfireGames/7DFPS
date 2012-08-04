@@ -1,5 +1,9 @@
 #pragma strict
 
+
+enum GunType {AUTOMATIC, REVOLVER};
+var gun_type : GunType;
+
 var sound_gunshot_bigroom : AudioClip[];
 var sound_gunshot_smallroom : AudioClip[];
 var sound_gunshot_open : AudioClip[];
@@ -67,38 +71,52 @@ enum MagStage {OUT, INSERTING, IN, REMOVING};
 private var mag_stage : MagStage = MagStage.IN;
 private var mag_seated = 1.0;
 
+private var has_slide = false;
+private var has_safety = false;
+
 function Start () {
-	slide_rel_pos = transform.FindChild("slide").localPosition;
+	if(transform.FindChild("slide")){
+		has_slide = true;
+		slide_rel_pos = transform.FindChild("slide").localPosition;
+	}
 	hammer_rel_pos = transform.FindChild("hammer").localPosition;
 	hammer_rel_rot = transform.FindChild("hammer").localRotation;
-	safety_rel_pos = transform.FindChild("safety").localPosition;
-	safety_rel_rot = transform.FindChild("safety").localRotation;
-	magazine_instance_in_gun = Instantiate(magazine_obj);
-	magazine_instance_in_gun.transform.parent = transform;
-
-	var renderers = magazine_instance_in_gun.GetComponentsInChildren(Renderer);
-	for(var renderer : Renderer in renderers){
-		renderer.castShadows = false; 
+	if(transform.FindChild("safety")){
+		has_safety = true;
+		safety_rel_pos = transform.FindChild("safety").localPosition;
+		safety_rel_rot = transform.FindChild("safety").localRotation;
+		if(Random.Range(0,2) == 0){
+			safety_off = 0.0;
+			safety = Safety.ON;
+		}
 	}
-	if(Random.Range(0,2) == 0){
-		round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
-		round_in_chamber.transform.parent = transform;
-		round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
-		renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+	if(gun_type == GunType.AUTOMATIC){
+		magazine_instance_in_gun = Instantiate(magazine_obj);
+		magazine_instance_in_gun.transform.parent = transform;
+	
+		var renderers = magazine_instance_in_gun.GetComponentsInChildren(Renderer);
 		for(var renderer : Renderer in renderers){
 			renderer.castShadows = false; 
 		}
+		
+		if(Random.Range(0,2) == 0){
+			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
+			round_in_chamber.transform.parent = transform;
+			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
+			renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+			for(var renderer : Renderer in renderers){
+				renderer.castShadows = false; 
+			}
+		}
+		
+		if(Random.Range(0,2) == 0){
+			slide_amount = kSlideLockPosition;
+			slide_lock = true;
+		}
 	}
-	if(Random.Range(0,2) == 0){
-		safety_off = 0.0;
-		safety = Safety.ON;
-	}
+	
 	if(Random.Range(0,2) == 0){
 		hammer_cocked = 0.0;
-	}
-	if(Random.Range(0,2) == 0){
-		slide_amount = kSlideLockPosition;
-		slide_lock = true;
 	}
 }
 
