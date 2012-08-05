@@ -274,10 +274,12 @@ function Start() {
 	for(i=0; i<10; ++i){
 		weapon_slots[i] = new WeaponSlot();
 	}
-	var num_start_mags = Random.Range(0,3);
-	for(i=1; i<num_start_mags+1; ++i){
-		weapon_slots[i].type = WeaponSlotType.MAGAZINE;
-		weapon_slots[i].obj = Instantiate(magazine_obj);
+	if(GetGunScript().gun_type == GunType.AUTOMATIC){
+		var num_start_mags = Random.Range(0,3);
+		for(i=1; i<num_start_mags+1; ++i){
+			weapon_slots[i].type = WeaponSlotType.MAGAZINE;
+			weapon_slots[i].obj = Instantiate(magazine_obj);
+		}
 	}
 	loose_bullets = new Array();
 	loose_bullet_spring = new Array();

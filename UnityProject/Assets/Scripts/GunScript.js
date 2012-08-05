@@ -74,6 +74,8 @@ private var mag_seated = 1.0;
 private var has_slide = false;
 private var has_safety = false;
 
+private var yolk_pivot_rel_rot : Quaternion;
+
 function Start () {
 	if(transform.FindChild("slide")){
 		has_slide = true;
@@ -81,6 +83,9 @@ function Start () {
 	}
 	hammer_rel_pos = transform.FindChild("hammer").localPosition;
 	hammer_rel_rot = transform.FindChild("hammer").localRotation;
+	if(transform.FindChild("yolk_pivot")){
+		yolk_pivot_rel_rot = transform.FindChild("yolk_pivot").localRotation;
+	}
 	if(transform.FindChild("safety")){
 		has_safety = true;
 		safety_rel_pos = transform.FindChild("safety").localPosition;
@@ -125,6 +130,9 @@ function MagScript() : mag_script {
 }
 
 function ShouldPullSlide() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return (!round_in_chamber && magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0);
 }
 
@@ -133,10 +141,16 @@ function ShouldReleaseSlideLock() {
 }
 
 function ShouldEjectMag() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return (magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds() == 0);
 }
 
 function ChamberRoundFromMag() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	if(magazine_instance_in_gun && MagScript().NumRounds() > 0 && mag_stage == MagStage.IN){
 		if(!round_in_chamber){
 			MagScript().RemoveRound();
@@ -156,6 +170,9 @@ function ChamberRoundFromMag() : boolean {
 }
 
 function PullSlideBack() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	slide_amount = 1.0;
 	if(slide_lock && mag_stage == MagStage.IN && (!magazine_instance_in_gun || MagScript().NumRounds() == 0)){
 		return;
@@ -177,6 +194,9 @@ function PullSlideBack() {
 }
 
 function ReleaseSlideLock() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	slide_lock = false;
 }
 
@@ -247,6 +267,9 @@ function ReleasePressureFromTrigger() {
 }
 
 function MagEject() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
 	if(mag_stage != MagStage.OUT){
 		mag_stage = MagStage.REMOVING;
@@ -257,18 +280,27 @@ function MagEject() : boolean {
 }
 
 function TryToReleaseSlideLock() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	if(slide_amount == kSlideLockPosition){
 		ReleaseSlideLock();
 	}
 }
 
 function PressureOnSlideLock() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	if(slide_amount > kSlideLockPosition){
 		slide_lock = true;
 	}
 }
 
 function ToggleSafety() {
+	if(!has_safety){
+		return false;
+	}
 	PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
 	if(safety == Safety.OFF){
 		safety = Safety.ON;
@@ -278,6 +310,9 @@ function ToggleSafety() {
 }
 
 function PullBackSlide() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	if(slide_stage == SlideStage.NOTHING){
 		slide_stage = SlideStage.PULLBACK;
 		slide_lock = false;
@@ -285,6 +320,9 @@ function PullBackSlide() {
 }
 
 function ReleaseSlide() {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	slide_stage = SlideStage.NOTHING;
 }
 
@@ -310,14 +348,23 @@ function IsSafetyOn() : boolean {
 }
 
 function IsSlideLocked() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return (slide_lock);
 }
 
 function IsSlidePulledBack() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return (slide_stage != SlideStage.NOTHING);
 }
 
 function RemoveMag() : GameObject {
+	if(gun_type != GunType.AUTOMATIC){
+		return null;
+	}
 	var mag = magazine_instance_in_gun;
 	magazine_instance_in_gun = null;
 	mag.transform.parent = null;
@@ -326,14 +373,23 @@ function RemoveMag() : GameObject {
 }
 
 function IsThereAMagInGun() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return magazine_instance_in_gun;
 }
 
 function IsMagCurrentlyEjecting() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
 	return mag_stage == MagStage.REMOVING;
 }
 
 function InsertMag(mag : GameObject) {
+	if(gun_type != GunType.AUTOMATIC){
+		return;
+	}
 	if(magazine_instance_in_gun){
 		return;
 	}
@@ -382,6 +438,14 @@ function Update () {
 				mag_stage = MagStage.OUT;
 			}
 		}
+	}
+	
+	if(gun_type == GunType.REVOLVER){
+		var yolk_pivot = transform.FindChild("yolk_pivot");
+		yolk_pivot.localRotation = Quaternion.Slerp(transform.FindChild("point_yolk_pivot_open").localRotation,
+			yolk_pivot_rel_rot, Mathf.Sin(Time.time*5)*0.5+0.5);
+		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
+		cylinder_assembly.localRotation.eulerAngles.z += Time.deltaTime * 300;	
 	}
 	
 	if(has_safety){
