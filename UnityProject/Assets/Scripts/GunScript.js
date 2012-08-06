@@ -75,6 +75,12 @@ private var has_slide = false;
 private var has_safety = false;
 
 private var yolk_pivot_rel_rot : Quaternion;
+private var yolk_open = 0.0;
+enum YolkStage {CLOSED, OPENING, OPEN, CLOSING};
+private var yolk_stage : YolkStage = YolkStage.CLOSED;
+private var cylinder_rotation = 0.0;
+private var last_cylinder_rotation = 0.0;
+private var extractor_rod_rel_pos : Vector3;
 
 function Start () {
 	if(transform.FindChild("slide")){
@@ -83,9 +89,21 @@ function Start () {
 	}
 	hammer_rel_pos = transform.FindChild("hammer").localPosition;
 	hammer_rel_rot = transform.FindChild("hammer").localRotation;
-	if(transform.FindChild("yolk_pivot")){
-		yolk_pivot_rel_rot = transform.FindChild("yolk_pivot").localRotation;
+	var yolk_pivot = transform.FindChild("yolk_pivot");
+	if(yolk_pivot){
+		yolk_pivot_rel_rot = yolk_pivot.localRotation;
+		var yolk = yolk_pivot.FindChild("yolk");
+		if(yolk){
+			var cylinder_assembly = yolk.FindChild("cylinder_assembly");
+			if(cylinder_assembly){
+				var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
+				if(extractor_rod){
+					extractor_rod_rel_pos = extractor_rod.localPosition;
+				}
+			}
+		}
 	}
+	
 	if(transform.FindChild("safety")){
 		has_safety = true;
 		safety_rel_pos = transform.FindChild("safety").localPosition;
@@ -443,9 +461,14 @@ function Update () {
 	if(gun_type == GunType.REVOLVER){
 		var yolk_pivot = transform.FindChild("yolk_pivot");
 		yolk_pivot.localRotation = Quaternion.Slerp(transform.FindChild("point_yolk_pivot_open").localRotation,
-			yolk_pivot_rel_rot, Mathf.Sin(Time.time*5)*0.5+0.5);
+			yolk_pivot_rel_rot, yolk_open);
 		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
-		cylinder_assembly.localRotation.eulerAngles.z += Time.deltaTime * 300;	
+		cylinder_assembly.localRotation.eulerAngles.z = cylinder_rotation;	
+		var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
+		extractor_rod.localPosition = Vector3.Lerp(
+			extractor_rod_rel_pos, 
+			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
+		    Mathf.Sin(Time.time * 5.0)*0.5+0.5);	
 	}
 	
 	if(has_safety){
