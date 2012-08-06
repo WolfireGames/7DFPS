@@ -80,6 +80,9 @@ enum YolkStage {CLOSED, OPENING, OPEN, CLOSING};
 private var yolk_stage : YolkStage = YolkStage.CLOSED;
 private var cylinder_rotation = 0.0;
 private var last_cylinder_rotation = 0.0;
+enum ExtractorRodStage {REST, EXTRACTING};
+private var extractor_rod_stage = ExtractorRodStage.REST;
+private var extractor_rod_amount = 0.0;
 private var extractor_rod_rel_pos : Vector3;
 
 function Start () {
@@ -468,7 +471,7 @@ function Update () {
 		extractor_rod.localPosition = Vector3.Lerp(
 			extractor_rod_rel_pos, 
 			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
-		    Mathf.Sin(Time.time * 5.0)*0.5+0.5);	
+		    extractor_rod_amount);	
 	}
 	
 	if(has_safety){
