@@ -84,6 +84,8 @@ enum ExtractorRodStage {REST, EXTRACTING};
 private var extractor_rod_stage = ExtractorRodStage.REST;
 private var extractor_rod_amount = 0.0;
 private var extractor_rod_rel_pos : Vector3;
+private var cylinder_bullets : GameObject[];
+private var cylinder_capacity = 6;
 
 function Start () {
 	if(transform.FindChild("slide")){
@@ -138,6 +140,19 @@ function Start () {
 		if(Random.Range(0,2) == 0){
 			slide_amount = kSlideLockPosition;
 			slide_lock = true;
+		}
+	}
+	
+	if(gun_type == GunType.REVOLVER){
+		cylinder_bullets = new GameObject[cylinder_capacity];
+		for(var i=0; i<cylinder_capacity; ++i){
+			var name = "point_chamber_"+(i+1);
+			cylinder_bullets[i] = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
+			cylinder_bullets[i].transform.localScale = Vector3(1.0,1.0,1.0);
+			renderers = cylinder_bullets[i].GetComponentsInChildren(Renderer);
+			for(var renderer : Renderer in renderers){
+				renderer.castShadows = false; 
+			}
 		}
 	}
 	
@@ -354,6 +369,7 @@ function PressureOnHammer() {
 	if(hammer_cocked == 1.0 && old_hammer_cocked != 1.0){
 		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
 	}
+	cylinder_rotation = last_cylinder_rotation + hammer_cocked * 360/6;
 }
 
 function ReleaseHammer() {
@@ -462,9 +478,13 @@ function Update () {
 	}
 	
 	if(gun_type == GunType.REVOLVER){
+		yolk_open = 1.0;
+		extractor_rod_amount = Mathf.Sin(Time.time * 1.5) * 0.5 + 0.5;
+		//cylinder_rotation += Time.deltaTime * 360;
 		var yolk_pivot = transform.FindChild("yolk_pivot");
-		yolk_pivot.localRotation = Quaternion.Slerp(transform.FindChild("point_yolk_pivot_open").localRotation,
-			yolk_pivot_rel_rot, yolk_open);
+		yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, 
+			transform.FindChild("point_yolk_pivot_open").localRotation,
+			yolk_open);
 		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
 		cylinder_assembly.localRotation.eulerAngles.z = cylinder_rotation;	
 		var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
@@ -552,6 +572,14 @@ function Update () {
 					PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
 				}
 			}
+		}
+	}
+	if(gun_type == GunType.REVOLVER){
+		for(var i=0; i<cylinder_capacity; ++i){
+			var name = "point_chamber_"+(i+1);
+			var bullet_chamber = extractor_rod.FindChild(name);
+			cylinder_bullets[i].transform.position = bullet_chamber.position;
+			cylinder_bullets[i].transform.rotation = bullet_chamber.rotation;
 		}
 	}
 }
