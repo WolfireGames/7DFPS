@@ -478,9 +478,6 @@ function Update () {
 	}
 	
 	if(gun_type == GunType.REVOLVER){
-		yolk_open = 1.0;
-		extractor_rod_amount = Mathf.Sin(Time.time * 1.5) * 0.5 + 0.5;
-		//cylinder_rotation += Time.deltaTime * 360;
 		var yolk_pivot = transform.FindChild("yolk_pivot");
 		yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, 
 			transform.FindChild("point_yolk_pivot_open").localRotation,
