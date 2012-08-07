@@ -365,6 +365,9 @@ function ReleaseSlide() {
 function PressureOnHammer() {
 	thumb_on_hammer = Thumb.ON_HAMMER;
 	var old_hammer_cocked = hammer_cocked;
+	if(gun_type == GunType.REVOLVER && yolk_stage != YolkStage.CLOSED){
+		return;
+	}
 	hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
 	if(hammer_cocked == 1.0 && old_hammer_cocked != 1.0){
 		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
