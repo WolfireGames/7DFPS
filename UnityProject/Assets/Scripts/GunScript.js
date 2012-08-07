@@ -80,8 +80,8 @@ enum YolkStage {CLOSED, OPENING, OPEN, CLOSING};
 private var yolk_stage : YolkStage = YolkStage.CLOSED;
 private var cylinder_rotation = 0.0;
 private var last_cylinder_rotation = 0.0;
-enum ExtractorRodStage {REST, EXTRACTING};
-private var extractor_rod_stage = ExtractorRodStage.REST;
+enum ExtractorRodStage {CLOSED, OPENING, OPEN, CLOSING};
+private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
 private var extractor_rod_rel_pos : Vector3;
 private var cylinder_bullets : GameObject[];
@@ -441,6 +441,33 @@ function IsHammerCocked() : boolean {
 	return hammer_cocked == 1.0;
 }
 
+function SwingOutCylinder() : boolean {
+	if(gun_type == GunType.REVOLVER && (yolk_stage == YolkStage.CLOSED || yolk_stage == YolkStage.CLOSING)){
+		yolk_stage = YolkStage.OPENING;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function CloseCylinder() : boolean {
+	if(gun_type == GunType.REVOLVER && (extractor_rod_stage == ExtractorRodStage.CLOSED && yolk_stage == YolkStage.OPEN || yolk_stage == YolkStage.OPENING)){
+		yolk_stage = YolkStage.CLOSING;
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function ExtractorRod() : boolean {
+	if(gun_type == GunType.REVOLVER && (yolk_stage == YolkStage.OPEN && extractor_rod_stage == ExtractorRodStage.CLOSED || extractor_rod_stage == ExtractorRodStage.CLOSING)){
+		extractor_rod_stage = ExtractorRodStage.OPENING;
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function Update () {
 	if(gun_type == GunType.AUTOMATIC){
 		if(magazine_instance_in_gun){
@@ -475,20 +502,6 @@ function Update () {
 				mag_stage = MagStage.OUT;
 			}
 		}
-	}
-	
-	if(gun_type == GunType.REVOLVER){
-		var yolk_pivot = transform.FindChild("yolk_pivot");
-		yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, 
-			transform.FindChild("point_yolk_pivot_open").localRotation,
-			yolk_open);
-		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
-		cylinder_assembly.localRotation.eulerAngles.z = cylinder_rotation;	
-		var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
-		extractor_rod.localPosition = Vector3.Lerp(
-			extractor_rod_rel_pos, 
-			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
-		    extractor_rod_amount);	
 	}
 	
 	if(has_safety){
@@ -571,7 +584,52 @@ function Update () {
 			}
 		}
 	}
+	
 	if(gun_type == GunType.REVOLVER){
+		if(yolk_stage == YolkStage.CLOSING){
+			yolk_open -= Time.deltaTime * 5.0;
+			if(yolk_open <= 0.0){
+				yolk_open = 0.0;
+				yolk_stage = YolkStage.CLOSED;
+			}
+		}
+		if(yolk_stage == YolkStage.OPENING){
+			yolk_open += Time.deltaTime * 5.0;
+			if(yolk_open >= 1.0){
+				yolk_open = 1.0;
+				yolk_stage = YolkStage.OPEN;
+			}
+		}
+		if(extractor_rod_stage == ExtractorRodStage.CLOSING){
+			extractor_rod_amount -= Time.deltaTime * 10.0;
+			if(extractor_rod_amount <= 0.0){
+				extractor_rod_amount = 0.0;
+				extractor_rod_stage = ExtractorRodStage.CLOSED;
+			}
+		}
+		if(extractor_rod_stage == ExtractorRodStage.OPENING){
+			extractor_rod_amount += Time.deltaTime * 10.0;
+			if(extractor_rod_amount >= 1.0){
+				extractor_rod_amount = 1.0;
+				extractor_rod_stage = ExtractorRodStage.OPEN;
+			}
+		}
+		if(extractor_rod_stage == ExtractorRodStage.OPENING || extractor_rod_stage == ExtractorRodStage.OPEN){
+			extractor_rod_stage = ExtractorRodStage.CLOSING;
+		}
+			
+		var yolk_pivot = transform.FindChild("yolk_pivot");
+		yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, 
+			transform.FindChild("point_yolk_pivot_open").localRotation,
+			yolk_open);
+		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
+		cylinder_assembly.localRotation.eulerAngles.z = cylinder_rotation;	
+		var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
+		extractor_rod.localPosition = Vector3.Lerp(
+			extractor_rod_rel_pos, 
+			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
+		    extractor_rod_amount);	
+	
 		for(var i=0; i<cylinder_capacity; ++i){
 			var name = "point_chamber_"+(i+1);
 			var bullet_chamber = extractor_rod.FindChild(name);

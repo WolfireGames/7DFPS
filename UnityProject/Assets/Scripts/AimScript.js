@@ -593,6 +593,15 @@ function HandleControls() {
 		}
 		if(Input.GetButtonUp("Pull Back Slide")){
 			gun_script.ReleaseSlide();
+		}	
+		if(Input.GetButtonDown("Swing Out Cylinder")){
+			gun_script.SwingOutCylinder();
+		}	
+		if(Input.GetButtonDown("Close Cylinder")){
+			gun_script.CloseCylinder();
+		}	
+		if(Input.GetButton("Extractor Rod")){
+			gun_script.ExtractorRod();
 		}
 		if(Input.GetButton("Hammer")){
 			gun_script.PressureOnHammer();
