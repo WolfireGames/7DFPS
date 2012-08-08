@@ -4,6 +4,9 @@
 enum GunType {AUTOMATIC, REVOLVER};
 var gun_type : GunType;
 
+enum ActionType {DOUBLE, SINGLE};
+var action_type : ActionType;
+
 var sound_gunshot_bigroom : AudioClip[];
 var sound_gunshot_smallroom : AudioClip[];
 var sound_gunshot_open : AudioClip[];
@@ -37,6 +40,7 @@ var ready_to_remove_mag = false;
 
 enum PressureState {NONE, INITIAL, CONTINUING};
 var pressure_on_trigger = PressureState.NONE;
+var trigger_pressed = 0.0;
 
 private var round_in_chamber:GameObject;
 enum RoundState {EMPTY, READY, FIRED, LOADING, JAMMED};
@@ -79,12 +83,13 @@ private var yolk_open = 0.0;
 enum YolkStage {CLOSED, OPENING, OPEN, CLOSING};
 private var yolk_stage : YolkStage = YolkStage.CLOSED;
 private var cylinder_rotation = 0.0;
-private var last_cylinder_rotation = 0.0;
+private var active_cylinder = 0;
 enum ExtractorRodStage {CLOSED, OPENING, OPEN, CLOSING};
 private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
 private var extractor_rod_rel_pos : Vector3;
 private var cylinder_bullets : GameObject[];
+private var cylinder_loaded : boolean[];
 private var cylinder_capacity = 6;
 
 function Start () {
@@ -145,10 +150,12 @@ function Start () {
 	
 	if(gun_type == GunType.REVOLVER){
 		cylinder_bullets = new GameObject[cylinder_capacity];
+		cylinder_loaded = new boolean[cylinder_capacity];
 		for(var i=0; i<cylinder_capacity; ++i){
 			var name = "point_chamber_"+(i+1);
 			cylinder_bullets[i] = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
 			cylinder_bullets[i].transform.localScale = Vector3(1.0,1.0,1.0);
+			cylinder_loaded[i] = true;
 			renderers = cylinder_bullets[i].GetComponentsInChildren(Renderer);
 			for(var renderer : Renderer in renderers){
 				renderer.castShadows = false; 
@@ -268,38 +275,76 @@ function ApplyPressureToTrigger() : boolean {
 	} else {
 		pressure_on_trigger = PressureState.CONTINUING;
 	}
-	if(pressure_on_trigger == PressureState.INITIAL && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
+	if(yolk_stage != YolkStage.CLOSED){
+		return;
+	}
+	if((pressure_on_trigger == PressureState.INITIAL || action_type == ActionType.DOUBLE) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
 		hammer_cocked = 0.0;
-		if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
-			PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
-			round_in_chamber_state = RoundState.FIRED;
-			GameObject.Destroy(round_in_chamber);
-			round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
-			round_in_chamber.transform.parent = transform;
-			var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
-			for(var renderer : Renderer in renderers){
-				renderer.castShadows = false; 
+		trigger_pressed = 1.0;
+		if(gun_type == GunType.AUTOMATIC){
+			if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
+				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
+				round_in_chamber_state = RoundState.FIRED;
+				GameObject.Destroy(round_in_chamber);
+				round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
+				round_in_chamber.transform.parent = transform;
+				var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+				for(var renderer : Renderer in renderers){
+					renderer.castShadows = false; 
+				}
+				
+				Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
+				var bullet = Instantiate(bullet_obj, transform.FindChild("point_muzzle").position, transform.FindChild("point_muzzle").rotation);
+				bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
+				PullSlideBack();
+				rotation_transfer_y += Random.Range(1.0,2.0);
+				rotation_transfer_x += Random.Range(-1.0,1.0);
+				recoil_transfer_x -= Random.Range(150.0,300.0);
+				recoil_transfer_y += Random.Range(-200.0,200.0);
+				add_head_recoil = true;
+				return true;
+			} else {
+				PlaySoundFromGroup(sound_mag_eject_button, 0.5);
 			}
-			
-			Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
-			var bullet = Instantiate(bullet_obj, transform.FindChild("point_muzzle").position, transform.FindChild("point_muzzle").rotation);
-			bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
-			PullSlideBack();
-			rotation_transfer_y += Random.Range(1.0,2.0);
-			rotation_transfer_x += Random.Range(-1.0,1.0);
-			recoil_transfer_x -= Random.Range(150.0,300.0);
-			recoil_transfer_y += Random.Range(-200.0,200.0);
-			add_head_recoil = true;
-			return true;
-		} else {
-			PlaySoundFromGroup(sound_mag_eject_button, 0.5);
+		} else if(gun_type == GunType.REVOLVER){
+			var which_chamber = active_cylinder;
+			var round = cylinder_bullets[which_chamber];
+			if(round && cylinder_loaded[which_chamber]){
+				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
+				round_in_chamber_state = RoundState.FIRED;
+				cylinder_loaded[which_chamber] = false;
+				cylinder_bullets[which_chamber] = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
+				GameObject.Destroy(round);
+				renderers = cylinder_bullets[which_chamber].GetComponentsInChildren(Renderer);
+				for(var renderer : Renderer in renderers){
+					renderer.castShadows = false; 
+				}				
+				Instantiate(muzzle_flash, transform.FindChild("point_muzzleflash").position, transform.FindChild("point_muzzleflash").rotation);
+				bullet = Instantiate(bullet_obj, transform.FindChild("point_muzzle").position, transform.FindChild("point_muzzle").rotation);
+				bullet.GetComponent(BulletScript).SetVelocity(transform.forward * 251.0);
+				rotation_transfer_y += Random.Range(1.0,2.0);
+				rotation_transfer_x += Random.Range(-1.0,1.0);
+				recoil_transfer_x -= Random.Range(150.0,300.0);
+				recoil_transfer_y += Random.Range(-200.0,200.0);
+				add_head_recoil = true;
+				return true;
+			} else {
+				PlaySoundFromGroup(sound_mag_eject_button, 0.5);
+			}
 		}
 	}
+	
+	if(action_type == ActionType.DOUBLE && trigger_pressed < 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
+		CockHammer();
+		CockHammer();
+	}
+	
 	return false;
 }
 
 function ReleasePressureFromTrigger() {
 	pressure_on_trigger = PressureState.NONE;
+	trigger_pressed = 0.0;
 }
 
 function MagEject() : boolean {
@@ -362,22 +407,35 @@ function ReleaseSlide() {
 	slide_stage = SlideStage.NOTHING;
 }
 
-function PressureOnHammer() {
-	thumb_on_hammer = Thumb.ON_HAMMER;
+function CockHammer(){
 	var old_hammer_cocked = hammer_cocked;
-	if(gun_type == GunType.REVOLVER && yolk_stage != YolkStage.CLOSED){
-		return;
-	}
 	hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
 	if(hammer_cocked == 1.0 && old_hammer_cocked != 1.0){
 		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
+		++active_cylinder;
+		if(active_cylinder >= cylinder_capacity){
+			active_cylinder = 0;
+		}
 	}
-	cylinder_rotation = last_cylinder_rotation + hammer_cocked * 360/6;
+	if(hammer_cocked < 1.0){
+		cylinder_rotation = (active_cylinder + hammer_cocked) * 360.0 / cylinder_capacity;
+	} else {
+		cylinder_rotation = active_cylinder * 360.0 / cylinder_capacity;
+	}
+}
+
+function PressureOnHammer() {
+	thumb_on_hammer = Thumb.ON_HAMMER;
+	if(gun_type == GunType.REVOLVER && yolk_stage != YolkStage.CLOSED){
+		return;
+	}
+	CockHammer();
 }
 
 function ReleaseHammer() {
 	if((pressure_on_trigger != PressureState.NONE && safety_off == 1.0) || hammer_cocked != 1.0){
 		thumb_on_hammer = Thumb.SLOW_LOWERING;
+		trigger_pressed = 1.0;
 	} else {
 		thumb_on_hammer = Thumb.OFF_HAMMER;
 	}
@@ -523,7 +581,7 @@ function Update () {
 			PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
 		}
 	}
-	
+
 	if(has_slide){
 		if(slide_stage == SlideStage.PULLBACK || slide_stage == SlideStage.HOLD){
 			if(slide_stage == SlideStage.PULLBACK){
@@ -560,11 +618,17 @@ function Update () {
 			Quaternion.Slerp(safety_rel_rot, transform.FindChild("point_safety_off").localRotation, safety_off);
 	}
 			
-	hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
-	if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
-		hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
+	if(gun_type == GunType.AUTOMATIC){
+		hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
+		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
+			hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
+		}
+	} else {
+		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER && (pressure_on_trigger == PressureState.NONE || action_type == ActionType.SINGLE)){
+			hammer_cocked = 0.0;
+		}
 	}
-
+	
 	if(has_slide){
 		if(slide_stage == SlideStage.NOTHING){
 			var old_slide_amount = slide_amount;
