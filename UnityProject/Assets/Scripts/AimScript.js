@@ -94,6 +94,9 @@ private var kGunDistance = 0.3;
 
 private var slide_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var reload_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var inspect_cylinder_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var add_rounds_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var eject_rounds_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 
 enum GunTilt {LEFT, CENTER, RIGHT};
 private var gun_tilt : GunTilt = GunTilt.CENTER;
@@ -648,6 +651,18 @@ function HandleControls() {
 				reload_pose_spring.target_state = 1.0;
 			}
 		}
+		
+		add_rounds_pose_spring.target_state = 0.0;
+		eject_rounds_pose_spring.target_state = 0.0;
+		inspect_cylinder_pose_spring.target_state = 0.0;
+		if(gun_script.IsEjectingRounds()){
+			eject_rounds_pose_spring.target_state = 1.0;
+		//} else if(gun_script.IsAddingRounds()){
+		//	add_rounds_pose_spring.target_state = 1.0;
+		} else if(gun_script.IsCylinderOpen()){
+			inspect_cylinder_pose_spring.target_state = 1.0;
+		}
+		
 		x_recoil_spring.vel += gun_script.recoil_transfer_x;
 		y_recoil_spring.vel += gun_script.recoil_transfer_y;
 		rotation_x += gun_script.rotation_transfer_x;
@@ -744,6 +759,20 @@ function StopTapePlay() {
 function StartWin() {
 	GetComponent(MusicScript).HandleEvent(MusicEvent.WON);
 	won = true;
+}
+
+function ApplyPose(name : String, amount : float){
+	var pose = gun_instance.transform.FindChild(name);
+	if(amount == 0.0 || !pose){
+		return;
+	}
+	gun_instance.transform.position = mix(gun_instance.transform.position,
+									      pose.position,
+									      amount);
+	gun_instance.transform.rotation = mix(
+		gun_instance.transform.rotation,
+		pose.rotation,
+		amount);
 }
 
 function Update() {
@@ -1025,21 +1054,11 @@ function Update() {
 		//gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
 		//gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
 		
-		gun_instance.transform.position = mix(gun_instance.transform.position,
-										      gun_instance.transform.FindChild("pose_slide_pull").position,
-										      slide_pose_spring.state);
-										      
-		gun_instance.transform.rotation = mix(
-			gun_instance.transform.rotation,
-			gun_instance.transform.FindChild("pose_slide_pull").rotation,
-			slide_pose_spring.state);
-		gun_instance.transform.position = mix(gun_instance.transform.position,
-										      gun_instance.transform.FindChild("pose_reload").position,
-										      reload_pose_spring.state);
-		gun_instance.transform.rotation = mix(
-			gun_instance.transform.rotation,
-			gun_instance.transform.FindChild("pose_reload").rotation,
-			reload_pose_spring.state);
+		ApplyPose("pose_slide_pull", slide_pose_spring.state);
+		ApplyPose("pose_reload", reload_pose_spring.state);
+		ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
+		ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
+		ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state);
 			
 		gun_instance.transform.RotateAround(
 			gun_instance.transform.FindChild("point_recoil_rotate").position,
@@ -1150,6 +1169,9 @@ function Update() {
 	
 	slide_pose_spring.Update();
 	reload_pose_spring.Update();
+	inspect_cylinder_pose_spring.Update();
+	add_rounds_pose_spring.Update();
+	eject_rounds_pose_spring.Update();
 	x_recoil_spring.Update();
 	y_recoil_spring.Update();
 	head_recoil_spring_x.Update();

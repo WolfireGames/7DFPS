@@ -88,9 +88,31 @@ enum ExtractorRodStage {CLOSED, OPENING, OPEN, CLOSING};
 private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
 private var extractor_rod_rel_pos : Vector3;
-private var cylinder_bullets : GameObject[];
-private var cylinder_loaded : boolean[];
+
+class CylinderState {
+	var object : GameObject = null;
+	var can_fire : boolean = false;
+	var seated : float = 0.0;
+};
+
 private var cylinder_capacity = 6;
+var cylinders : CylinderState[];
+
+function IsAddingRounds() : boolean {
+	if(yolk_stage == YolkStage.OPEN){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function IsEjectingRounds() : boolean {
+	if(extractor_rod_stage != ExtractorRodStage.CLOSED){
+		return true;
+	} else {
+		return false;
+	}
+}
 
 function Start () {
 	if(transform.FindChild("slide")){
@@ -149,14 +171,14 @@ function Start () {
 	}
 	
 	if(gun_type == GunType.REVOLVER){
-		cylinder_bullets = new GameObject[cylinder_capacity];
-		cylinder_loaded = new boolean[cylinder_capacity];
+		cylinders = new CylinderState[cylinder_capacity];
 		for(var i=0; i<cylinder_capacity; ++i){
+			cylinders[i] = new CylinderState();
 			var name = "point_chamber_"+(i+1);
-			cylinder_bullets[i] = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
-			cylinder_bullets[i].transform.localScale = Vector3(1.0,1.0,1.0);
-			cylinder_loaded[i] = true;
-			renderers = cylinder_bullets[i].GetComponentsInChildren(Renderer);
+			cylinders[i].object = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
+			cylinders[i].object.transform.localScale = Vector3(1.0,1.0,1.0);
+			cylinders[i].can_fire = true;
+			renderers = cylinders[i].object.GetComponentsInChildren(Renderer);
 			for(var renderer : Renderer in renderers){
 				renderer.castShadows = false; 
 			}
@@ -308,14 +330,14 @@ function ApplyPressureToTrigger() : boolean {
 			}
 		} else if(gun_type == GunType.REVOLVER){
 			var which_chamber = active_cylinder;
-			var round = cylinder_bullets[which_chamber];
-			if(round && cylinder_loaded[which_chamber]){
+			var round = cylinders[which_chamber].object;
+			if(round && cylinders[which_chamber].can_fire){
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
 				round_in_chamber_state = RoundState.FIRED;
-				cylinder_loaded[which_chamber] = false;
-				cylinder_bullets[which_chamber] = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
+				cylinders[which_chamber].can_fire = false;
+				cylinders[which_chamber].object = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
 				GameObject.Destroy(round);
-				renderers = cylinder_bullets[which_chamber].GetComponentsInChildren(Renderer);
+				renderers = cylinders[which_chamber].object.GetComponentsInChildren(Renderer);
 				for(var renderer : Renderer in renderers){
 					renderer.castShadows = false; 
 				}				
@@ -495,6 +517,10 @@ function InsertMag(mag : GameObject) {
 	mag_seated = 0.0;
 }
 
+function IsCylinderOpen(){
+	return yolk_stage == YolkStage.OPEN || yolk_stage == YolkStage.OPENING;
+}
+
 function AddRoundToCylinder() : boolean {
 	if(gun_type != GunType.REVOLVER || yolk_stage != YolkStage.OPEN){
 		return false;
@@ -506,7 +532,7 @@ function AddRoundToCylinder() : boolean {
 	}
 	for(var i=0; i<cylinder_capacity; ++i){
 		var check = (next_shot + i)%cylinder_capacity;
-		if(!cylinder_bullets[check]){
+		if(!cylinders[check].object){
 			best_chamber = check;
 			break;
 		}
@@ -523,10 +549,10 @@ function AddRoundToCylinder() : boolean {
 				var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
 				if(extractor_rod){
 					var name = "point_chamber_"+(best_chamber+1);
-					cylinder_bullets[best_chamber] = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
-					cylinder_bullets[best_chamber].transform.localScale = Vector3(1.0,1.0,1.0);
-					cylinder_loaded[best_chamber] = true;
-					var renderers = cylinder_bullets[best_chamber].GetComponentsInChildren(Renderer);
+					cylinders[best_chamber].object = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
+					cylinders[best_chamber].object.transform.localScale = Vector3(1.0,1.0,1.0);
+					cylinders[best_chamber].can_fire = true;
+					var renderers = cylinders[best_chamber].object.GetComponentsInChildren(Renderer);
 					for(var renderer : Renderer in renderers){
 						renderer.castShadows = false; 
 					}
@@ -719,14 +745,15 @@ function Update () {
 			extractor_rod_amount += Time.deltaTime * 10.0;
 			if(extractor_rod_amount >= 1.0){
 				for(var i=0; i<cylinder_capacity; ++i){
-					if(cylinder_bullets[i]){
-						cylinder_bullets[i].AddComponent(Rigidbody);
-						cylinder_bullets[i].transform.parent = null;
-						cylinder_bullets[i].rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-						cylinder_bullets[i].rigidbody.velocity = velocity;
-						cylinder_bullets[i].rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
-						cylinder_bullets[i] = null;
-						cylinder_loaded[i] = false;
+					if(cylinders[i].object){
+						var bullet = cylinders[i].object;
+						bullet.AddComponent(Rigidbody);
+						bullet.transform.parent = null;
+						bullet.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+						bullet.rigidbody.velocity = velocity;
+						bullet.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+						cylinders[i].object = null;
+						cylinders[i].can_fire = false;
 					}
 				}
 				extractor_rod_amount = 1.0;
@@ -750,11 +777,11 @@ function Update () {
 		    extractor_rod_amount);	
 	
 		for(i=0; i<cylinder_capacity; ++i){
-			if(cylinder_bullets[i]){
+			if(cylinders[i].object){
 				var name = "point_chamber_"+(i+1);
 				var bullet_chamber = extractor_rod.FindChild(name);
-				cylinder_bullets[i].transform.position = bullet_chamber.position;
-				cylinder_bullets[i].transform.rotation = bullet_chamber.rotation;
+				cylinders[i].object.transform.position = bullet_chamber.position;
+				cylinders[i].object.transform.rotation = bullet_chamber.rotation;
 			}
 		}
 	}
