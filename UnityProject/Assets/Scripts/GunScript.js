@@ -174,6 +174,9 @@ function Start () {
 		cylinders = new CylinderState[cylinder_capacity];
 		for(var i=0; i<cylinder_capacity; ++i){
 			cylinders[i] = new CylinderState();
+			if(Random.Range(0,2) == 0){
+				continue;
+			}
 			var name = "point_chamber_"+(i+1);
 			cylinders[i].object = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
 			cylinders[i].object.transform.localScale = Vector3(1.0,1.0,1.0);
