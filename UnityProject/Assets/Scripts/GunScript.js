@@ -412,10 +412,7 @@ function CockHammer(){
 	hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
 	if(hammer_cocked == 1.0 && old_hammer_cocked != 1.0){
 		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
-		++active_cylinder;
-		if(active_cylinder >= cylinder_capacity){
-			active_cylinder = 0;
-		}
+		active_cylinder = (active_cylinder + 1)%cylinder_capacity;
 	}
 	if(hammer_cocked < 1.0){
 		cylinder_rotation = (active_cylinder + hammer_cocked) * 360.0 / cylinder_capacity;
@@ -677,6 +674,17 @@ function Update () {
 		if(extractor_rod_stage == ExtractorRodStage.OPENING){
 			extractor_rod_amount += Time.deltaTime * 10.0;
 			if(extractor_rod_amount >= 1.0){
+				for(var i=0; i<cylinder_capacity; ++i){
+					if(cylinder_bullets[i]){
+						cylinder_bullets[i].AddComponent(Rigidbody);
+						cylinder_bullets[i].transform.parent = null;
+						cylinder_bullets[i].rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+						cylinder_bullets[i].rigidbody.velocity = velocity;
+						cylinder_bullets[i].rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+						cylinder_bullets[i] = null;
+						cylinder_loaded[i] = false;
+					}
+				}
 				extractor_rod_amount = 1.0;
 				extractor_rod_stage = ExtractorRodStage.OPEN;
 			}
@@ -697,11 +705,13 @@ function Update () {
 			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
 		    extractor_rod_amount);	
 	
-		for(var i=0; i<cylinder_capacity; ++i){
-			var name = "point_chamber_"+(i+1);
-			var bullet_chamber = extractor_rod.FindChild(name);
-			cylinder_bullets[i].transform.position = bullet_chamber.position;
-			cylinder_bullets[i].transform.rotation = bullet_chamber.rotation;
+		for(i=0; i<cylinder_capacity; ++i){
+			if(cylinder_bullets[i]){
+				var name = "point_chamber_"+(i+1);
+				var bullet_chamber = extractor_rod.FindChild(name);
+				cylinder_bullets[i].transform.position = bullet_chamber.position;
+				cylinder_bullets[i].transform.rotation = bullet_chamber.rotation;
+			}
 		}
 	}
 }
