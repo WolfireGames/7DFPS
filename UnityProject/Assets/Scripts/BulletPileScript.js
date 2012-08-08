@@ -1,11 +1,10 @@
 #pragma strict
 
-var bullet_obj : GameObject;
-
 function Start () {
+	var holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
 	var num_bullets = Random.Range(1,6);
 	for(var i=0; i<num_bullets; ++i){
-		var bullet : GameObject = Instantiate(bullet_obj);
+		var bullet : GameObject = Instantiate(holder.casing_with_bullet_object);
 		bullet.transform.position = transform.position + 
 			Vector3(Random.Range(-0.1,0.1),
 					Random.Range(0.0,0.2),

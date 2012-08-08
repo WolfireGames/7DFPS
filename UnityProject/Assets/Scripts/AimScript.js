@@ -3,8 +3,8 @@
 // Prefabs 
 
 var magazine_obj:GameObject;
-var gun_obj:GameObject;
-var casing_with_bullet:GameObject;
+private var gun_obj:GameObject;
+private var casing_with_bullet:GameObject;
 var texture_death_screen : Texture;
 
 var sound_bullet_grab : AudioClip[];
@@ -262,6 +262,10 @@ function AddLooseBullet(spring:boolean) {
 }
 
 function Start() {
+	holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
+	gun_obj = holder.gun_object;
+	casing_with_bullet = holder.casing_with_bullet_object;
+
 	rotation_x = transform.rotation.eulerAngles.y;
 	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
@@ -290,7 +294,6 @@ function Start() {
 	for(i=0; i<num_start_bullets; ++i){
 		AddLooseBullet(false);
 	}
-	holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
 	audiosource_tape_background = gameObject.AddComponent(AudioSource);
 	audiosource_tape_background.loop = true;
 	audiosource_tape_background.clip = holder.sound_tape_background;
