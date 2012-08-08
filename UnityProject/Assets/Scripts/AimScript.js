@@ -27,6 +27,7 @@ private var just_started_help = false;
 // Instances
 
 private var gun_instance:GameObject;
+private var held_flashlight:GameObject = null;
 
 // Public parameters
 
@@ -389,6 +390,9 @@ function HandleControls() {
 				collider.gameObject.rigidbody.useGravity = false;
 				collider.gameObject.rigidbody.WakeUp();
 				collider.enabled = false;
+			} else if(collider.gameObject.name == "flashlight_object" && collider.gameObject.rigidbody && !held_flashlight){
+				held_flashlight = collider.gameObject;
+				Destroy(held_flashlight.rigidbody);
 			}
 		}
 		if(nearest_mag && mag_stage == HandMagStage.EMPTY){
@@ -1074,6 +1078,51 @@ function Update() {
 			y_recoil_spring.state);
 	}
 	
+	
+	if(held_flashlight){
+		var flashlight_hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,-0.01,0.15);
+		var flashlight_hold_rot = main_camera.transform.rotation;
+		
+		var flashlight_pos = flashlight_hold_pos;
+		var flashlight_rot = flashlight_hold_rot;
+	
+		held_flashlight.transform.position = flashlight_pos;
+		held_flashlight.transform.rotation = flashlight_rot;
+		
+		held_flashlight.transform.RotateAround(
+			held_flashlight.transform.FindChild("point_recoil_rotate").position,
+			held_flashlight.transform.rotation * Vector3(1,0,0),
+			x_recoil_spring.state * 0.3);
+			
+		held_flashlight.transform.RotateAround(
+			held_flashlight.transform.FindChild("point_recoil_rotate").position,
+			Vector3(0,1,0),
+			y_recoil_spring.state * 0.3);
+	
+		flashlight_pos = held_flashlight.transform.position;
+		flashlight_rot = held_flashlight.transform.rotation;
+			
+		if(gun_instance){
+			var flashlight_aim_pos = gun_instance.transform.position + gun_instance.transform.rotation*Vector3(0.07,-0.03,0.0);
+			var flashlight_aim_rot = gun_instance.transform.rotation;
+			
+			flashlight_pos = mix(flashlight_pos, flashlight_aim_pos, aim_spring.state);
+			flashlight_rot = mix(flashlight_rot, flashlight_aim_rot, aim_spring.state);
+			
+			var flashlight_mouth_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(0.0,-0.08,0.05);
+			var flashlight_mouth_rot = main_camera.transform.rotation;
+			
+			var mouthness = (inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state) * aim_spring.state;
+			
+			flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, mouthness);
+			flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, mouthness);
+		}
+		
+		
+		held_flashlight.transform.position = flashlight_pos;
+		held_flashlight.transform.rotation = flashlight_rot;
+	}
+			
 	if(magazine_instance_in_hand){
 		if(gun_instance){
 			mag_pos = gun_instance.transform.position;
