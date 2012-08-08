@@ -609,7 +609,14 @@ function HandleControls() {
 		if(Input.GetButtonUp("Hammer")){
 			gun_script.ReleaseHammer();
 		}		
-		
+		if(Input.GetButtonDown("Insert")){
+			if(loose_bullets.length > 0){
+				if(GetGunScript().AddRoundToCylinder()){
+					GameObject.Destroy(loose_bullets.pop());
+					loose_bullet_spring.pop();
+				}
+			}
+		}
 		if(slide_pose_spring.target_state < 0.1 && reload_pose_spring.target_state < 0.1){
 			gun_tilt = GunTilt.CENTER;
 		} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){

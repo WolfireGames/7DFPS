@@ -495,6 +495,50 @@ function InsertMag(mag : GameObject) {
 	mag_seated = 0.0;
 }
 
+function AddRoundToCylinder() : boolean {
+	if(gun_type != GunType.REVOLVER || yolk_stage != YolkStage.OPEN){
+		return false;
+	}
+	var best_chamber = -1;
+	var next_shot = active_cylinder;
+	if(!IsHammerCocked()){
+		next_shot = (next_shot + 1) % cylinder_capacity;
+	}
+	for(var i=0; i<cylinder_capacity; ++i){
+		var check = (next_shot + i)%cylinder_capacity;
+		if(!cylinder_bullets[check]){
+			best_chamber = check;
+			break;
+		}
+	}
+	if(best_chamber == -1){
+		return false;
+	}
+	var yolk_pivot = transform.FindChild("yolk_pivot");
+	if(yolk_pivot){
+		var yolk = yolk_pivot.FindChild("yolk");
+		if(yolk){
+			var cylinder_assembly = yolk.FindChild("cylinder_assembly");
+			if(cylinder_assembly){
+				var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
+				if(extractor_rod){
+					var name = "point_chamber_"+(best_chamber+1);
+					cylinder_bullets[best_chamber] = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
+					cylinder_bullets[best_chamber].transform.localScale = Vector3(1.0,1.0,1.0);
+					cylinder_loaded[best_chamber] = true;
+					var renderers = cylinder_bullets[best_chamber].GetComponentsInChildren(Renderer);
+					for(var renderer : Renderer in renderers){
+						renderer.castShadows = false; 
+					}
+					PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 function IsHammerCocked() : boolean {
 	return hammer_cocked == 1.0;
 }
