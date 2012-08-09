@@ -1122,10 +1122,11 @@ function Update() {
 		var flashlight_mouth_rot = main_camera.transform.rotation;
 		
 		flashlight_mouth_spring.target_state = 0.0;
-		//(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state;
 		if(magazine_instance_in_hand){
 			flashlight_mouth_spring.target_state = 1.0;
 		}
+		flashlight_mouth_spring.target_state = Mathf.Max(flashlight_mouth_spring.target_state,
+			(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state);
 		
 		flashlight_mouth_spring.Update();
 		
