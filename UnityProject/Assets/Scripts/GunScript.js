@@ -442,7 +442,9 @@ function CockHammer(){
 	var old_hammer_cocked = hammer_cocked;
 	hammer_cocked = Mathf.Min(1.0, hammer_cocked + Time.deltaTime * 10.0f);
 	if(hammer_cocked == 1.0 && old_hammer_cocked != 1.0){
-		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
+		if(thumb_on_hammer == Thumb.ON_HAMMER){
+			PlaySoundFromGroup(sound_hammer_cock, kGunMechanicVolume);
+		}
 		active_cylinder = (active_cylinder + 1)%cylinder_capacity;
 	}
 	if(hammer_cocked < 1.0){
@@ -654,7 +656,8 @@ function Update () {
 		if(hammer_cocked <= 0.0){
 			hammer_cocked = 0.0;
 			thumb_on_hammer = Thumb.OFF_HAMMER;
-			PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
+			PlaySoundFromGroup(sound_hammer_decock, kGunMechanicVolume);
+			//PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
 		}
 	}
 
