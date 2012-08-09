@@ -17,6 +17,12 @@ var sound_slide_back : AudioClip[];
 var sound_slide_front : AudioClip[];
 var sound_safety : AudioClip[];
 var sound_bullet_eject : AudioClip[];
+var sound_cylinder_open : AudioClip[];
+var sound_cylinder_close : AudioClip[];
+var sound_extractor_rod_open : AudioClip[];
+var sound_extractor_rod_close : AudioClip[];
+var sound_hammer_cock : AudioClip[];
+var sound_hammer_decock : AudioClip[];
 
 private var kGunMechanicVolume = 0.2;
 
@@ -728,6 +734,7 @@ function Update () {
 			if(yolk_open <= 0.0){
 				yolk_open = 0.0;
 				yolk_stage = YolkStage.CLOSED;
+				PlaySoundFromGroup(sound_cylinder_close, kGunMechanicVolume * 2.0);
 			}
 		}
 		if(yolk_stage == YolkStage.OPENING){
@@ -735,6 +742,7 @@ function Update () {
 			if(yolk_open >= 1.0){
 				yolk_open = 1.0;
 				yolk_stage = YolkStage.OPEN;
+				PlaySoundFromGroup(sound_cylinder_open, kGunMechanicVolume * 2.0);
 			}
 		}
 		if(extractor_rod_stage == ExtractorRodStage.CLOSING){
@@ -742,9 +750,11 @@ function Update () {
 			if(extractor_rod_amount <= 0.0){
 				extractor_rod_amount = 0.0;
 				extractor_rod_stage = ExtractorRodStage.CLOSED;
+				PlaySoundFromGroup(sound_extractor_rod_close, kGunMechanicVolume);
 			}
 		}
 		if(extractor_rod_stage == ExtractorRodStage.OPENING){
+			var old_extractor_rod_amount = extractor_rod_amount;
 			extractor_rod_amount += Time.deltaTime * 10.0;
 			if(extractor_rod_amount >= 1.0){
 				for(var i=0; i<cylinder_capacity; ++i){
@@ -761,6 +771,9 @@ function Update () {
 				}
 				extractor_rod_amount = 1.0;
 				extractor_rod_stage = ExtractorRodStage.OPEN;
+				if(old_extractor_rod_amount < 1.0){
+					PlaySoundFromGroup(sound_extractor_rod_open, kGunMechanicVolume);
+				}
 			}
 		}
 		if(extractor_rod_stage == ExtractorRodStage.OPENING || extractor_rod_stage == ExtractorRodStage.OPEN){

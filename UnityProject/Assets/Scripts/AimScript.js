@@ -27,7 +27,6 @@ private var just_started_help = false;
 // Instances
 
 private var gun_instance:GameObject;
-private var held_flashlight:GameObject = null;
 
 // Public parameters
 
@@ -67,6 +66,11 @@ private var aim_toggle = false;
 private var kAimSpringStrength = 100.0;
 private var kAimSpringDamping = 0.00001;
 private var aim_spring = new Spring(0,0,kAimSpringStrength,kAimSpringDamping);
+
+private var held_flashlight:GameObject = null;
+private var flashlight_aim_pos : Vector3;
+private var flashlight_aim_rot : Quaternion;
+private var flashlight_mouth_spring = new Spring(0,0,kAimSpringStrength,kAimSpringDamping);
 
 private var rotation_x_leeway = 0.0;
 private var rotation_y_min_leeway = 0.0;
@@ -978,7 +982,7 @@ function Update() {
 	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
 		
 	var offset_aim_target = false;
-	if((Input.GetButton("Hold To Aim") || aim_toggle) && !dead){
+	if((Input.GetButton("Hold To Aim") || aim_toggle) && !dead && gun_instance){
 		aim_spring.target_state = 1.0;
 		var hit : RaycastHit;
 		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2, hit, 1 << 0)){
@@ -1103,21 +1107,30 @@ function Update() {
 		flashlight_rot = held_flashlight.transform.rotation;
 			
 		if(gun_instance){
-			var flashlight_aim_pos = gun_instance.transform.position + gun_instance.transform.rotation*Vector3(0.07,-0.03,0.0);
-			var flashlight_aim_rot = gun_instance.transform.rotation;
+			flashlight_aim_pos = gun_instance.transform.position + gun_instance.transform.rotation*Vector3(0.07,-0.03,0.0);
+			flashlight_aim_rot = gun_instance.transform.rotation;
 			
-			flashlight_pos = mix(flashlight_pos, flashlight_aim_pos, aim_spring.state);
-			flashlight_rot = mix(flashlight_rot, flashlight_aim_rot, aim_spring.state);
+			flashlight_aim_pos -= main_camera.transform.position;
+			flashlight_aim_pos = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_pos;
+			flashlight_aim_rot = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_rot;
+		}
 			
-			var flashlight_mouth_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(0.0,-0.08,0.05);
-			var flashlight_mouth_rot = main_camera.transform.rotation;
-			
-			var mouthness = (inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state) * aim_spring.state;
-			
-			flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, mouthness);
-			flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, mouthness);
+		flashlight_pos = mix(flashlight_pos, main_camera.transform.rotation * flashlight_aim_pos + main_camera.transform.position, aim_spring.state);
+		flashlight_rot = mix(flashlight_rot, main_camera.transform.rotation * flashlight_aim_rot, aim_spring.state);
+		
+		var flashlight_mouth_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(0.0,-0.08,0.05);
+		var flashlight_mouth_rot = main_camera.transform.rotation;
+		
+		flashlight_mouth_spring.target_state = 0.0;
+		//(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state;
+		if(magazine_instance_in_hand){
+			flashlight_mouth_spring.target_state = 1.0;
 		}
 		
+		flashlight_mouth_spring.Update();
+		
+		flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, flashlight_mouth_spring.state);
+		flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, flashlight_mouth_spring.state);
 		
 		held_flashlight.transform.position = flashlight_pos;
 		held_flashlight.transform.rotation = flashlight_rot;
