@@ -786,48 +786,7 @@ function ApplyPose(name : String, amount : float){
 		amount);
 }
 
-function Update() {
-	if(!tape_in_progress && unplayed_tapes > 0){
-		--unplayed_tapes;
-		StartTapePlay();
-	}
-	if(Input.GetButtonDown("Tape Player") && tape_in_progress){
-		if(!audiosource_tape_background.isPlaying){
-			StartTapePlay();
-		} else {
-			StopTapePlay();
-		}
-	}
-	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
-		GetComponent(MusicScript).SetMystical((tapes_heard.length+1.0)/total_tapes.length);
-		audiosource_tape_background.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
-		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
-		audiosource_audio_content.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
-		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
-		//audiosource_audio_content.pitch = 10.0;
-		//audiosource_audio_content.volume = 0.1;
-		if(start_tape_delay > 0.0){
-			if(!audiosource_audio_content.isPlaying){
-				start_tape_delay = Mathf.Max(0.0, start_tape_delay - Time.deltaTime);
-				if(start_tape_delay == 0.0){
-					audiosource_audio_content.Play();
-				}
-			}
-		} else if(stop_tape_delay > 0.0){
-			stop_tape_delay = Mathf.Max(0.0, stop_tape_delay - Time.deltaTime);
-			if(stop_tape_delay == 0.0){
-				tape_in_progress = false;
-				tapes_heard.push(audiosource_audio_content.clip);
-				StopTapePlay();
-				if(tapes_heard.length == total_tapes.length){
-					StartWin();
-				}
-			}
-		} else if(!audiosource_audio_content.isPlaying){
-			stop_tape_delay = Random.Range(0.5,3.0);
-		}
-	}
-
+function UpdateCheats() {
 	if(iddqd_progress == 0 && Input.GetKeyDown('i')){
 		++iddqd_progress; cheat_delay = 1.0;
 	} else if(iddqd_progress == 1 && Input.GetKeyDown('d')){
@@ -886,10 +845,52 @@ function Update() {
 			slomo_progress = 0;
 		}
 	}
+}
 
-	if(transform.position.y < -1){
-		InstaKill();
+function UpdateTape() {
+	if(!tape_in_progress && unplayed_tapes > 0){
+		--unplayed_tapes;
+		StartTapePlay();
 	}
+	if(Input.GetButtonDown("Tape Player") && tape_in_progress){
+		if(!audiosource_tape_background.isPlaying){
+			StartTapePlay();
+		} else {
+			StopTapePlay();
+		}
+	}
+	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
+		GetComponent(MusicScript).SetMystical((tapes_heard.length+1.0)/total_tapes.length);
+		audiosource_tape_background.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
+		audiosource_tape_background.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
+		audiosource_audio_content.volume = PlayerPrefs.GetFloat("voice_volume", 1.0);
+		audiosource_audio_content.pitch = Mathf.Min(1.0,audiosource_audio_content.pitch + Time.deltaTime * 3.0);
+		//audiosource_audio_content.pitch = 10.0;
+		//audiosource_audio_content.volume = 0.1;
+		if(start_tape_delay > 0.0){
+			if(!audiosource_audio_content.isPlaying){
+				start_tape_delay = Mathf.Max(0.0, start_tape_delay - Time.deltaTime);
+				if(start_tape_delay == 0.0){
+					audiosource_audio_content.Play();
+				}
+			}
+		} else if(stop_tape_delay > 0.0){
+			stop_tape_delay = Mathf.Max(0.0, stop_tape_delay - Time.deltaTime);
+			if(stop_tape_delay == 0.0){
+				tape_in_progress = false;
+				tapes_heard.push(audiosource_audio_content.clip);
+				StopTapePlay();
+				if(tapes_heard.length == total_tapes.length){
+					StartWin();
+				}
+			}
+		} else if(!audiosource_audio_content.isPlaying){
+			stop_tape_delay = Random.Range(0.5,3.0);
+		}
+	}
+}
+
+function UpdateHealth() {
 	if(dying){
 		health -= Time.deltaTime;
 	}
@@ -898,7 +899,9 @@ function Update() {
 		SetDead(true);
 		dying = false;
 	}
+}
 
+function UpdateHelpToggle() {
 	if(Input.GetButton("Help Toggle")){
 		help_hold_time += Time.deltaTime;
 		if(show_help && help_hold_time >= 1.0){
@@ -920,11 +923,9 @@ function Update() {
 		}
 		just_started_help = false;
 	}
+}
 
-
-/*	if(Input.GetKeyDown("p")){
-		SetDead(!dead);
-	}*/	
+function UpdateLevelResetButton() {
 	if(Input.GetButtonDown("Level Reset")){
 		level_reset_hold = 0.01;
 	}
@@ -939,13 +940,9 @@ function Update() {
 	} else {
 		level_reset_hold = 0.0;
 	}
-	if((dead && dead_volume_fade <= 0.0)){ 
-		Application.LoadLevel(Application.loadedLevel);
-	}
-	if(won && dead_volume_fade <= 0.0){ 
-		Application.LoadLevel("winscene");
-	}
+}
 
+function UpdateLevelEndEffects() {
 	if(won){
 		win_fade = Mathf.Min(1.0, win_fade + Time.deltaTime * 0.1);
 		dead_volume_fade = Mathf.Max(0.0, dead_volume_fade - Time.deltaTime * 0.1);
@@ -977,10 +974,24 @@ function Update() {
 		dead_fade = Mathf.Max(0.0, dead_fade - Time.deltaTime * 1.5);
 		dead_volume_fade = Mathf.Min(1.0, dead_volume_fade + Time.deltaTime * 1.5);
 	}
-	AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0);
-		
-	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
-		
+}
+
+function UpdateLevelChange() {
+	if((dead && dead_volume_fade <= 0.0)){ 
+		Application.LoadLevel(Application.loadedLevel);
+	}
+	if(won && dead_volume_fade <= 0.0){ 
+		Application.LoadLevel("winscene");
+	}
+}
+
+function UpdateFallOffMapDeath() {
+	if(transform.position.y < -1){
+		InstaKill();
+	}
+}
+
+function UpdateAimSpring() {
 	var offset_aim_target = false;
 	if((Input.GetButton("Hold To Aim") || aim_toggle) && !dead && gun_instance){
 		aim_spring.target_state = 1.0;
@@ -995,12 +1006,13 @@ function Update() {
 	} else {
 		aim_spring.target_state = 0.0;
 	}
-	
 	aim_spring.Update();
 	if(offset_aim_target){
 		aim_spring.target_state = 1.0;
 	}
-	
+}
+
+function UpdateCameraRotationControls() {
 	rotation_y_min_leeway = Mathf.Lerp(0.0,kRotationYMinLeeway,aim_spring.state);
 	rotation_y_max_leeway = Mathf.Lerp(0.0,kRotationYMaxLeeway,aim_spring.state);
 	rotation_x_leeway = Mathf.Lerp(0.0,kRotationXLeeway,aim_spring.state);
@@ -1019,6 +1031,7 @@ function Update() {
 		sensitivity_y = Mathf.Abs(sensitivity_y);
 	}
 	
+	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
 	if(!dead && !in_menu){
 		rotation_x += Input.GetAxis("Mouse X") * sensitivity_x;
 		rotation_y += Input.GetAxis("Mouse Y") * sensitivity_y;
@@ -1036,6 +1049,21 @@ function Update() {
 			rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
 		}
 	}
+}
+
+function Update() {
+	UpdateTape();
+	UpdateCheats();
+	UpdateFallOffMapDeath();
+	UpdateHealth();
+	UpdateHelpToggle();	
+	UpdateLevelResetButton();
+	UpdateLevelChange();
+	UpdateLevelEndEffects();
+	AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0);
+	UpdateAimSpring();
+	UpdateCameraRotationControls();
+	
 	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, head_tilt);
 	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
@@ -1222,6 +1250,7 @@ function Update() {
 		}
 	}
 	
+	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
 	if(!dead && !in_menu){
 		HandleControls();
 	}
