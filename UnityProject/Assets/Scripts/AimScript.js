@@ -1051,138 +1051,123 @@ function UpdateCameraRotationControls() {
 	}
 }
 
-function Update() {
-	UpdateTape();
-	UpdateCheats();
-	UpdateFallOffMapDeath();
-	UpdateHealth();
-	UpdateHelpToggle();	
-	UpdateLevelResetButton();
-	UpdateLevelChange();
-	UpdateLevelEndEffects();
-	AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0);
-	UpdateAimSpring();
-	UpdateCameraRotationControls();
-	
+function UpdateCameraAndPlayerTransformation() {
 	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, head_tilt);
 	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	main_camera.transform.position = transform.position;
 	main_camera.transform.position.y += character_controller.height * character_controller.transform.localScale.y - 0.1;
 	main_camera.transform.position.y += head_fall;
-	
+}
+
+function UpdateGunTransformation() {
 	var aim_dir = AimDir();
 	var aim_pos = AimPos();	
 	
 	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
 	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
 	
-	//var holstered_dir = (transform.forward*0.1 + Vector3(0,-1,0)).normalized;
-	//var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
-		
-	var i = 0;
+	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
+	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
 	
+	ApplyPose("pose_slide_pull", slide_pose_spring.state);
+	ApplyPose("pose_reload", reload_pose_spring.state);
+	ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
+	ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
+	ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state);
+		
+	gun_instance.transform.RotateAround(
+		gun_instance.transform.FindChild("point_recoil_rotate").position,
+		gun_instance.transform.rotation * Vector3(1,0,0),
+		x_recoil_spring.state);
+		
+	gun_instance.transform.RotateAround(
+		gun_instance.transform.FindChild("point_recoil_rotate").position,
+		Vector3(0,1,0),
+		y_recoil_spring.state);
+}
+
+function UpdateFlashlightTransformation() {
+	var flashlight_hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,-0.01,0.15);
+	var flashlight_hold_rot = main_camera.transform.rotation;
+	
+	var flashlight_pos = flashlight_hold_pos;
+	var flashlight_rot = flashlight_hold_rot;
+
+	held_flashlight.transform.position = flashlight_pos;
+	held_flashlight.transform.rotation = flashlight_rot;
+	
+	held_flashlight.transform.RotateAround(
+		held_flashlight.transform.FindChild("point_recoil_rotate").position,
+		held_flashlight.transform.rotation * Vector3(1,0,0),
+		x_recoil_spring.state * 0.3);
+		
+	held_flashlight.transform.RotateAround(
+		held_flashlight.transform.FindChild("point_recoil_rotate").position,
+		Vector3(0,1,0),
+		y_recoil_spring.state * 0.3);
+
+	flashlight_pos = held_flashlight.transform.position;
+	flashlight_rot = held_flashlight.transform.rotation;
+		
 	if(gun_instance){
-		gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
-		gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
+		flashlight_aim_pos = gun_instance.transform.position + gun_instance.transform.rotation*Vector3(0.07,-0.03,0.0);
+		flashlight_aim_rot = gun_instance.transform.rotation;
 		
-		ApplyPose("pose_slide_pull", slide_pose_spring.state);
-		ApplyPose("pose_reload", reload_pose_spring.state);
-		ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
-		ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
-		ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state);
-			
-		gun_instance.transform.RotateAround(
-			gun_instance.transform.FindChild("point_recoil_rotate").position,
-			gun_instance.transform.rotation * Vector3(1,0,0),
-			x_recoil_spring.state);
-			
-		gun_instance.transform.RotateAround(
-			gun_instance.transform.FindChild("point_recoil_rotate").position,
-			Vector3(0,1,0),
-			y_recoil_spring.state);
+		flashlight_aim_pos -= main_camera.transform.position;
+		flashlight_aim_pos = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_pos;
+		flashlight_aim_rot = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_rot;
 	}
+		
+	flashlight_pos = mix(flashlight_pos, main_camera.transform.rotation * flashlight_aim_pos + main_camera.transform.position, aim_spring.state);
+	flashlight_rot = mix(flashlight_rot, main_camera.transform.rotation * flashlight_aim_rot, aim_spring.state);
 	
+	var flashlight_mouth_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(0.0,-0.08,0.05);
+	var flashlight_mouth_rot = main_camera.transform.rotation;
 	
-	if(held_flashlight){
-		var flashlight_hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,-0.01,0.15);
-		var flashlight_hold_rot = main_camera.transform.rotation;
-		
-		var flashlight_pos = flashlight_hold_pos;
-		var flashlight_rot = flashlight_hold_rot;
-	
-		held_flashlight.transform.position = flashlight_pos;
-		held_flashlight.transform.rotation = flashlight_rot;
-		
-		held_flashlight.transform.RotateAround(
-			held_flashlight.transform.FindChild("point_recoil_rotate").position,
-			held_flashlight.transform.rotation * Vector3(1,0,0),
-			x_recoil_spring.state * 0.3);
-			
-		held_flashlight.transform.RotateAround(
-			held_flashlight.transform.FindChild("point_recoil_rotate").position,
-			Vector3(0,1,0),
-			y_recoil_spring.state * 0.3);
-	
-		flashlight_pos = held_flashlight.transform.position;
-		flashlight_rot = held_flashlight.transform.rotation;
-			
-		if(gun_instance){
-			flashlight_aim_pos = gun_instance.transform.position + gun_instance.transform.rotation*Vector3(0.07,-0.03,0.0);
-			flashlight_aim_rot = gun_instance.transform.rotation;
-			
-			flashlight_aim_pos -= main_camera.transform.position;
-			flashlight_aim_pos = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_pos;
-			flashlight_aim_rot = Quaternion.Inverse(main_camera.transform.rotation) * flashlight_aim_rot;
-		}
-			
-		flashlight_pos = mix(flashlight_pos, main_camera.transform.rotation * flashlight_aim_pos + main_camera.transform.position, aim_spring.state);
-		flashlight_rot = mix(flashlight_rot, main_camera.transform.rotation * flashlight_aim_rot, aim_spring.state);
-		
-		var flashlight_mouth_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(0.0,-0.08,0.05);
-		var flashlight_mouth_rot = main_camera.transform.rotation;
-		
-		flashlight_mouth_spring.target_state = 0.0;
-		if(magazine_instance_in_hand){
-			flashlight_mouth_spring.target_state = 1.0;
-		}
-		flashlight_mouth_spring.target_state = Mathf.Max(flashlight_mouth_spring.target_state,
-			(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state);
-		
-		flashlight_mouth_spring.Update();
-		
-		flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, flashlight_mouth_spring.state);
-		flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, flashlight_mouth_spring.state);
-		
-		held_flashlight.transform.position = flashlight_pos;
-		held_flashlight.transform.rotation = flashlight_rot;
-	}
-			
+	flashlight_mouth_spring.target_state = 0.0;
 	if(magazine_instance_in_hand){
-		if(gun_instance){
-			mag_pos = gun_instance.transform.position;
-			mag_rot = gun_instance.transform.rotation;
-			mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
-					    gun_instance.transform.FindChild("point_mag_inserted").position);
-	    }
-	   if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
-			var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
-			var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
-	   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
-	   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
-	   		if(hold_pose_spring.state != 1.0){ 
-		   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
-				magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
-			} else {
-		   		magazine_instance_in_hand.transform.position = hold_pos;
-				magazine_instance_in_hand.transform.rotation = hold_rot;
-			}
-		} else {
-			magazine_instance_in_hand.transform.position = mag_pos;
-			magazine_instance_in_hand.transform.rotation = mag_rot;
-		}
+		flashlight_mouth_spring.target_state = 1.0;
 	}
+	flashlight_mouth_spring.target_state = Mathf.Max(flashlight_mouth_spring.target_state,
+		(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state);
 	
+	flashlight_mouth_spring.Update();
+	
+	flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, flashlight_mouth_spring.state);
+	flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, flashlight_mouth_spring.state);
+	
+	held_flashlight.transform.position = flashlight_pos;
+	held_flashlight.transform.rotation = flashlight_rot;
+}
+
+function UpdateMagazineTransformation() {
+	if(gun_instance){
+		mag_pos = gun_instance.transform.position;
+		mag_rot = gun_instance.transform.rotation;
+		mag_pos += (gun_instance.transform.FindChild("point_mag_to_insert").position - 
+				    gun_instance.transform.FindChild("point_mag_inserted").position);
+    }
+   if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
+		var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
+		var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
+   		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
+   		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
+   		if(hold_pose_spring.state != 1.0){ 
+	   		magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, hold_pose_spring.state);
+			magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, hold_pose_spring.state);
+		} else {
+	   		magazine_instance_in_hand.transform.position = hold_pos;
+			magazine_instance_in_hand.transform.rotation = hold_rot;
+		}
+	} else {
+		magazine_instance_in_hand.transform.position = mag_pos;
+		magazine_instance_in_hand.transform.rotation = mag_rot;
+	}
+}
+
+function UpdateInventoryTransformation() {
+	var i = 0;
 	for(i=0; i<10; ++i){
 		var slot = weapon_slots[i];
 		if(slot.type == WeaponSlotType.EMPTY){
@@ -1223,7 +1208,9 @@ function Update() {
 		}
 		slot.spring.Update();
 	}
-	
+}
+
+function UpdateLooseBulletDisplay() {
 	if((mag_stage == HandMagStage.HOLD && !gun_instance) || picked_up_bullet_delay > 0.0){
 		show_bullet_spring.target_state = 1.0;
 		picked_up_bullet_delay = Mathf.Max(0.0, picked_up_bullet_delay - Time.deltaTime);
@@ -1232,7 +1219,7 @@ function Update() {
 	}
 	show_bullet_spring.Update();
 	
-	for(i=0; i<loose_bullets.length; ++i){
+	for(var i=0; i<loose_bullets.length; ++i){
 		var spring : Spring = loose_bullet_spring[i];
 		spring.Update();
 		var bullet : GameObject = loose_bullets[i];
@@ -1244,17 +1231,14 @@ function Update() {
 		bullet.transform.localScale.y = spring.state;
 		bullet.transform.localScale.z = spring.state;
 		bullet.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(-1,0,0));
-		renderers = bullet.GetComponentsInChildren(Renderer);
+		var renderers = bullet.GetComponentsInChildren(Renderer);
 		for(var renderer : Renderer in renderers){
 			renderer.castShadows = false; 
 		}
 	}
-	
-	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
-	if(!dead && !in_menu){
-		HandleControls();
-	}
-	
+}
+
+function UpdateSprings() {	
 	slide_pose_spring.Update();
 	reload_pose_spring.Update();
 	inspect_cylinder_pose_spring.Update();
@@ -1264,14 +1248,15 @@ function Update() {
 	y_recoil_spring.Update();
 	head_recoil_spring_x.Update();
 	head_recoil_spring_y.Update();
-
 	if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
 		hold_pose_spring.Update();
 		mag_ground_pose_spring.Update();
 	}
-	
+}
+
+function UpdatePickupMagnet() {
 	var attract_pos = transform.position - Vector3(0,character_controller.height * 0.2,0);
-	for(i=0; i<collected_rounds.length; ++i){
+	for(var i=0; i<collected_rounds.length; ++i){
 		var round = collected_rounds[i] as GameObject;
 		if(!round){
 			continue;
@@ -1291,6 +1276,38 @@ function Update() {
 		}
 	}
 	collected_rounds.remove(null);
+}
+
+function Update() {
+	UpdateTape();
+	UpdateCheats();
+	UpdateFallOffMapDeath();
+	UpdateHealth();
+	UpdateHelpToggle();	
+	UpdateLevelResetButton();
+	UpdateLevelChange();
+	UpdateLevelEndEffects();
+	AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0);
+	UpdateAimSpring();
+	UpdateCameraRotationControls();
+	UpdateCameraAndPlayerTransformation();	
+	if(gun_instance){
+		UpdateGunTransformation();
+	}
+	if(held_flashlight){
+		UpdateFlashlightTransformation();
+	}				
+	if(magazine_instance_in_hand){
+		UpdateMagazineTransformation();
+	}
+	UpdateInventoryTransformation();
+	UpdateLooseBulletDisplay();
+	var in_menu = GameObject.Find("gui_skin_holder").GetComponent(optionsmenuscript).IsMenuShown();
+	if(!dead && !in_menu){
+		HandleControls();
+	}
+	UpdateSprings();	
+	UpdatePickupMagnet();
 }
 
 function FixedUpdate() {
