@@ -286,16 +286,18 @@ function Start() {
 	for(i=0; i<10; ++i){
 		weapon_slots[i] = new WeaponSlot();
 	}
+	var num_start_bullets = Random.Range(0,10);
 	if(GetGunScript().gun_type == GunType.AUTOMATIC){
 		var num_start_mags = Random.Range(0,3);
 		for(i=1; i<num_start_mags+1; ++i){
 			weapon_slots[i].type = WeaponSlotType.MAGAZINE;
 			weapon_slots[i].obj = Instantiate(magazine_obj);
 		}
+	} else {
+		num_start_bullets += Random.Range(0,20);
 	}
 	loose_bullets = new Array();
 	loose_bullet_spring = new Array();
-	var num_start_bullets = Random.Range(0,10);
 	for(i=0; i<num_start_bullets; ++i){
 		AddLooseBullet(false);
 	}
@@ -1211,7 +1213,8 @@ function UpdateInventoryTransformation() {
 }
 
 function UpdateLooseBulletDisplay() {
-	if((mag_stage == HandMagStage.HOLD && !gun_instance) || picked_up_bullet_delay > 0.0){
+	var revolver_open = (gun_instance && gun_instance.GetComponent(GunScript).IsCylinderOpen());
+	if((mag_stage == HandMagStage.HOLD && !gun_instance) || picked_up_bullet_delay > 0.0 || revolver_open){
 		show_bullet_spring.target_state = 1.0;
 		picked_up_bullet_delay = Mathf.Max(0.0, picked_up_bullet_delay - Time.deltaTime);
 	} else {	
