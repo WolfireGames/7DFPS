@@ -801,6 +801,7 @@ function Update () {
 				var bullet_chamber = extractor_rod.FindChild(name);
 				cylinders[i].object.transform.position = bullet_chamber.position;
 				cylinders[i].object.transform.rotation = bullet_chamber.rotation;
+				cylinders[i].object.transform.localScale = transform.localScale;
 			}
 		}
 	}

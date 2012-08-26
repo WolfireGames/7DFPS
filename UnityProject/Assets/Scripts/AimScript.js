@@ -1053,17 +1053,10 @@ function Update() {
 	//var holstered_pos = transform.position + transform.rotation * Vector3(0.5,-character_controller.height * 0.3,0.0);
 		
 	var i = 0;
-	var holstered_pos = main_camera.transform.position + main_camera.camera.ScreenPointToRay(Vector3(main_camera.camera.pixelWidth * (0.05 + i*0.15), main_camera.camera.pixelHeight * 0.17,0)).direction * 0.3;
-	var holstered_scale = Vector3(0.3,0.3,0.3); 
-	var holstered_rot = main_camera.transform.rotation * Quaternion.AngleAxis(90, Vector3(0,1,0));
-		
+	
 	if(gun_instance){
 		gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
 		gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
-		
-		//gun_instance.transform.position = mix(gun_instance.transform.position, holstered_pos, holster_spring.state);
-		//gun_instance.transform.rotation = mix(gun_instance.transform.rotation, holstered_rot, holster_spring.state);
-		//gun_instance.transform.localScale = mix(Vector3(1.0,1.0,1.0), holstered_scale, holster_spring.state);
 		
 		ApplyPose("pose_slide_pull", slide_pose_spring.state);
 		ApplyPose("pose_reload", reload_pose_spring.state);
