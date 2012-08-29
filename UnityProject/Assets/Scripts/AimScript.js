@@ -155,7 +155,7 @@ private var slomo_progress = 0;
 private var cheat_delay = 0.0;
 private var level_reset_hold = 0.0;
 
-enum WeaponSlotType {GUN, MAGAZINE, EMPTY, EMPTYING};
+enum WeaponSlotType {GUN, MAGAZINE, FLASHLIGHT, EMPTY, EMPTYING};
 
 class WeaponSlot {
 	var obj:GameObject = null;
@@ -501,6 +501,25 @@ function HandleControls() {
 			mag_stage = HandMagStage.HOLD;
 			hold_pose_spring.state = 1.0;
 			hold_pose_spring.target_state = 1.0;
+			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
+			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
+			weapon_slots[target_weapon_slot].spring.state = 1.0;
+			target_weapon_slot = -2;
+		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY && held_flashlight){
+			// Put flashlight away
+			held_flashlight.GetComponent(FlashlightScript).TurnOff();
+			weapon_slots[target_weapon_slot].type = WeaponSlotType.FLASHLIGHT;
+			weapon_slots[target_weapon_slot].obj = held_flashlight;
+			weapon_slots[target_weapon_slot].spring.state = 0.0;
+			weapon_slots[target_weapon_slot].spring.target_state = 1.0;
+			weapon_slots[target_weapon_slot].start_pos = held_flashlight.transform.position - main_camera.transform.position;
+			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
+			held_flashlight = null;
+			target_weapon_slot = -2;
+		}  else if (target_weapon_slot != -1 && !held_flashlight && weapon_slots[target_weapon_slot].type == WeaponSlotType.FLASHLIGHT){
+			// Take flashlight from inventory
+			held_flashlight = weapon_slots[target_weapon_slot].obj;
+			held_flashlight.GetComponent(FlashlightScript).TurnOn();
 			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
 			weapon_slots[target_weapon_slot].spring.target_state = 0.0;
 			weapon_slots[target_weapon_slot].spring.state = 1.0;
