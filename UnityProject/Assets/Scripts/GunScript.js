@@ -607,6 +607,20 @@ function ExtractorRod() : boolean {
 	}
 }
 
+function RotateCylinder(how_many : int) {
+	while(how_many != 0){
+		if(how_many > 0){
+			active_cylinder = (active_cylinder + 1)%cylinder_capacity;
+			--how_many;
+		}
+		if(how_many < 0){
+			active_cylinder = (active_cylinder - 1)%cylinder_capacity;
+			++how_many;
+		}
+	}
+	cylinder_rotation = active_cylinder * 360.0 / cylinder_capacity;
+}
+
 function Update () {
 	if(gun_type == GunType.AUTOMATIC){
 		if(magazine_instance_in_gun){
