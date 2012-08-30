@@ -21,6 +21,7 @@ var sound_cylinder_open : AudioClip[];
 var sound_cylinder_close : AudioClip[];
 var sound_extractor_rod_open : AudioClip[];
 var sound_extractor_rod_close : AudioClip[];
+var sound_cylinder_rotate : AudioClip[];
 var sound_hammer_cock : AudioClip[];
 var sound_hammer_decock : AudioClip[];
 
@@ -89,7 +90,9 @@ private var yolk_open = 0.0;
 enum YolkStage {CLOSED, OPENING, OPEN, CLOSING};
 private var yolk_stage : YolkStage = YolkStage.CLOSED;
 private var cylinder_rotation = 0.0;
+private var cylinder_rotation_vel = 0.0;
 private var active_cylinder = 0;
+private var target_cylinder_offset = 0;
 enum ExtractorRodStage {CLOSED, OPENING, OPEN, CLOSING};
 private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
@@ -341,7 +344,10 @@ function ApplyPressureToTrigger() : boolean {
 				PlaySoundFromGroup(sound_mag_eject_button, 0.5);
 			}
 		} else if(gun_type == GunType.REVOLVER){
-			var which_chamber = active_cylinder;
+			var which_chamber = active_cylinder % cylinder_capacity;
+			if(which_chamber < 0){
+				which_chamber += cylinder_capacity;
+			}
 			var round = cylinders[which_chamber].object;
 			if(round && cylinders[which_chamber].can_fire){
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
@@ -449,12 +455,12 @@ function CockHammer(){
 		if(thumb_on_hammer == Thumb.ON_HAMMER){
 			PlaySoundFromGroup(sound_hammer_cock, kGunMechanicVolume);
 		}
-		active_cylinder = (active_cylinder + 1)%cylinder_capacity;
+		++active_cylinder;
+		cylinder_rotation = active_cylinder * 360.0 / cylinder_capacity;
 	}
 	if(hammer_cocked < 1.0){
 		cylinder_rotation = (active_cylinder + hammer_cocked) * 360.0 / cylinder_capacity;
-	} else {
-		cylinder_rotation = active_cylinder * 360.0 / cylinder_capacity;
+		target_cylinder_offset = 0.0;
 	}
 }
 
@@ -547,6 +553,9 @@ function AddRoundToCylinder() : boolean {
 	}
 	for(var i=0; i<cylinder_capacity; ++i){
 		var check = (next_shot + i)%cylinder_capacity;
+		if(check < 0){
+			check += cylinder_capacity;
+		}
 		if(!cylinders[check].object){
 			best_chamber = check;
 			break;
@@ -616,7 +625,7 @@ function ExtractorRod() : boolean {
 }
 
 function RotateCylinder(how_many : int) {
-	while(how_many != 0){
+	/*while(how_many != 0){
 		if(how_many > 0){
 			active_cylinder = (active_cylinder + 1)%cylinder_capacity;
 			--how_many;
@@ -625,8 +634,9 @@ function RotateCylinder(how_many : int) {
 			active_cylinder = (cylinder_capacity + active_cylinder - 1)%cylinder_capacity;
 			++how_many;
 		}
-	}
-	cylinder_rotation = active_cylinder * 360.0 / cylinder_capacity;
+	}*/
+	target_cylinder_offset += how_many * (Mathf.Max(1,Mathf.Abs(target_cylinder_offset)));
+	target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, target_cylinder_offset));
 }
 
 function Update () {
@@ -754,12 +764,31 @@ function Update () {
 	}
 	
 	if(gun_type == GunType.REVOLVER){
+		if(target_cylinder_offset != 0.0){
+			var target_cylinder_rotation = ((active_cylinder + target_cylinder_offset) * 360.0 / cylinder_capacity);
+			cylinder_rotation = Mathf.Lerp(target_cylinder_rotation, cylinder_rotation, Mathf.Pow(0.2,Time.deltaTime));
+			if(cylinder_rotation > (active_cylinder + 0.5)  * 360.0 / cylinder_capacity){
+				++active_cylinder;
+				--target_cylinder_offset;
+				if(yolk_stage == YolkStage.CLOSED){
+					PlaySoundFromGroup(sound_cylinder_rotate, kGunMechanicVolume);
+				}
+			}
+			if(cylinder_rotation < (active_cylinder - 0.5)  * 360.0 / cylinder_capacity){
+				--active_cylinder;
+				++target_cylinder_offset;
+				if(yolk_stage == YolkStage.CLOSED){
+					PlaySoundFromGroup(sound_cylinder_rotate, kGunMechanicVolume);
+				}
+			}
+		}
 		if(yolk_stage == YolkStage.CLOSING){
 			yolk_open -= Time.deltaTime * 5.0;
 			if(yolk_open <= 0.0){
 				yolk_open = 0.0;
 				yolk_stage = YolkStage.CLOSED;
 				PlaySoundFromGroup(sound_cylinder_close, kGunMechanicVolume * 2.0);
+				target_cylinder_offset = 0;
 			}
 		}
 		if(yolk_stage == YolkStage.OPENING){
