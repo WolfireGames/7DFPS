@@ -93,12 +93,14 @@ private var active_cylinder = 0;
 enum ExtractorRodStage {CLOSED, OPENING, OPEN, CLOSING};
 private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
+private var extracted = false;
 private var extractor_rod_rel_pos : Vector3;
 
 class CylinderState {
 	var object : GameObject = null;
 	var can_fire : boolean = false;
 	var seated : float = 0.0;
+	var falling : boolean = false;
 };
 
 private var cylinder_capacity = 6;
@@ -187,6 +189,7 @@ function Start () {
 			cylinders[i].object = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
 			cylinders[i].object.transform.localScale = Vector3(1.0,1.0,1.0);
 			cylinders[i].can_fire = true;
+			cylinders[i].seated = Random.Range(0.0,0.5);
 			renderers = cylinders[i].object.GetComponentsInChildren(Renderer);
 			for(var renderer : Renderer in renderers){
 				renderer.castShadows = false; 
@@ -344,6 +347,7 @@ function ApplyPressureToTrigger() : boolean {
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
 				round_in_chamber_state = RoundState.FIRED;
 				cylinders[which_chamber].can_fire = false;
+				cylinders[which_chamber].seated += Random.Range(0.0,0.5);
 				cylinders[which_chamber].object = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
 				GameObject.Destroy(round);
 				renderers = cylinders[which_chamber].object.GetComponentsInChildren(Renderer);
@@ -563,6 +567,7 @@ function AddRoundToCylinder() : boolean {
 					cylinders[best_chamber].object = Instantiate(casing_with_bullet, extractor_rod.FindChild(name).position, extractor_rod.FindChild(name).rotation);
 					cylinders[best_chamber].object.transform.localScale = Vector3(1.0,1.0,1.0);
 					cylinders[best_chamber].can_fire = true;
+					cylinders[best_chamber].seated = Random.Range(0.0,1.0);
 					var renderers = cylinders[best_chamber].object.GetComponentsInChildren(Renderer);
 					for(var renderer : Renderer in renderers){
 						renderer.castShadows = false; 
@@ -601,6 +606,9 @@ function CloseCylinder() : boolean {
 function ExtractorRod() : boolean {
 	if(gun_type == GunType.REVOLVER && (yolk_stage == YolkStage.OPEN && extractor_rod_stage == ExtractorRodStage.CLOSED || extractor_rod_stage == ExtractorRodStage.CLOSING)){
 		extractor_rod_stage = ExtractorRodStage.OPENING;
+		if(extractor_rod_amount < 1.0){
+			extracted = false;
+		}
 		return true;
 	} else {
 		return false;
@@ -614,7 +622,7 @@ function RotateCylinder(how_many : int) {
 			--how_many;
 		}
 		if(how_many < 0){
-			active_cylinder = (active_cylinder - 1)%cylinder_capacity;
+			active_cylinder = (cylinder_capacity + active_cylinder - 1)%cylinder_capacity;
 			++how_many;
 		}
 	}
@@ -769,21 +777,42 @@ function Update () {
 				extractor_rod_stage = ExtractorRodStage.CLOSED;
 				PlaySoundFromGroup(sound_extractor_rod_close, kGunMechanicVolume);
 			}
+			for(var i=0; i<cylinder_capacity; ++i){
+				if(cylinders[i].object){
+					cylinders[i].falling = false;
+				}
+			}
 		}
 		if(extractor_rod_stage == ExtractorRodStage.OPENING){
 			var old_extractor_rod_amount = extractor_rod_amount;
 			extractor_rod_amount += Time.deltaTime * 10.0;
 			if(extractor_rod_amount >= 1.0){
-				for(var i=0; i<cylinder_capacity; ++i){
-					if(cylinders[i].object){
-						var bullet = cylinders[i].object;
-						bullet.AddComponent(Rigidbody);
-						bullet.transform.parent = null;
-						bullet.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-						bullet.rigidbody.velocity = velocity;
-						bullet.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
-						cylinders[i].object = null;
-						cylinders[i].can_fire = false;
+				if(!extracted){
+					for(i=0; i<cylinder_capacity; ++i){
+						if(cylinders[i].object){
+							if(Random.Range(0.0,3.0) > cylinders[i].seated){
+								cylinders[i].falling = true;
+								cylinders[i].seated -= Random.Range(0.0,0.5);
+							} else {
+								cylinders[i].falling = false;
+							}
+						}
+					}
+					extracted = true;
+				}
+				for(i=0; i<cylinder_capacity; ++i){
+					if(cylinders[i].object && cylinders[i].falling){
+						cylinders[i].seated -= Time.deltaTime * 5.0;
+						if(cylinders[i].seated <= 0.0){
+							var bullet = cylinders[i].object;
+							bullet.AddComponent(Rigidbody);
+							bullet.transform.parent = null;
+							bullet.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+							bullet.rigidbody.velocity = velocity;
+							bullet.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+							cylinders[i].object = null;
+							cylinders[i].can_fire = false;
+						}
 					}
 				}
 				extractor_rod_amount = 1.0;

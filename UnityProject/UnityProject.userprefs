@@ -1,12 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GunScript.js">
-    <Files>
-      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\FlashlightScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GunScript.js" Line="766" Column="3" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
