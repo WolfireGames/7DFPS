@@ -271,6 +271,11 @@ function Start() {
 	gun_obj = holder.gun_object;
 	casing_with_bullet = holder.casing_with_bullet_object;
 
+	held_flashlight = Instantiate(holder.flashlight_object);
+	Destroy(held_flashlight.rigidbody);
+	held_flashlight.GetComponent(FlashlightScript).TurnOn();
+	holder.has_flashlight = true;
+			
 	rotation_x = transform.rotation.eulerAngles.y;
 	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
@@ -395,9 +400,11 @@ function HandleGetControl(){
 			collider.gameObject.rigidbody.useGravity = false;
 			collider.gameObject.rigidbody.WakeUp();
 			collider.enabled = false;
-		} else if(collider.gameObject.name == "flashlight_object" && collider.gameObject.rigidbody && !held_flashlight){
+		} else if(collider.gameObject.name == "flashlight_object(Clone)" && collider.gameObject.rigidbody && !held_flashlight){
 			held_flashlight = collider.gameObject;
 			Destroy(held_flashlight.rigidbody);
+			held_flashlight.GetComponent(FlashlightScript).TurnOn();
+			holder.has_flashlight = true;
 		}
 	}
 	if(nearest_mag && mag_stage == HandMagStage.EMPTY){
