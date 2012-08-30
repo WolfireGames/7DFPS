@@ -155,7 +155,7 @@ function WasShot(obj : GameObject, pos : Vector3, vel : Vector3) {
 		rotation_x.vel += Vector3.Dot(x_plane_vel, x_plane_pos) * 10.0;
 	}
 	if(robot_type == RobotType.SHOCK_DRONE){
-		if(Random.Range(0.0,1.0) < 0.3){
+		if(Random.Range(0.0,1.0) < 0.5){
 			Damage(transform.FindChild("battery").gameObject);
 		}
 	}
