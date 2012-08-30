@@ -11,6 +11,7 @@ var win_sting : AudioClip;
 var gun_object : GameObject;
 var casing_with_bullet_object : GameObject;
 var casing_object : GameObject;
+var flashlight_object : GameObject;
 
 function Start () {
 }

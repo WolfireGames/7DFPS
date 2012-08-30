@@ -174,7 +174,9 @@ function Update() {
     if(show_menu){
     	Time.timeScale = 0.0;
     } else {
-    	Time.timeScale = 1.0;
+    	if(Time.timeScale == 0.0){
+	    	Time.timeScale = 1.0;
+    	}
     }
 }
 

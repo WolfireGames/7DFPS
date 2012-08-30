@@ -21,6 +21,15 @@ function Start () {
 					Random.Range(-0.1,0.1));
 		tape.transform.rotation = BulletScript.RandomOrientation();		
 	}
+	if(Random.Range(0,4) == 0){
+		var flashlight : GameObject = Instantiate(GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder).flashlight_object);
+		flashlight.transform.position = transform.position + 
+			Vector3(Random.Range(-0.1,0.1),
+					Random.Range(0.0,0.2),
+					Random.Range(-0.1,0.1));
+		flashlight.transform.rotation = BulletScript.RandomOrientation();
+		flashlight.AddComponent(Rigidbody);		
+	}
 }
 
 function Update () {
