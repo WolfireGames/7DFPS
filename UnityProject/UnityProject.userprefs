@@ -1,6 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\AimScript.js">
+    <Files>
+      <File FileName="Assets\Scripts\GunScript.js" Line="333" Column="29" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="274" Column="17" />
+      <File FileName="Assets\Scripts\FlashlightScript.js" Line="34" Column="4" />
+      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="15" Column="19" />
+      <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="28" Column="4" />
+      <File FileName="Assets\Scripts\BulletPileScript.js" Line="21" Column="5" />
+      <File FileName="Assets\Scripts\optionsmenuscript.js" Line="179" Column="7" />
+      <File FileName="Assets\Scripts\RobotScript.js" Line="177" Column="17" />
+      <File FileName="Assets\Scripts\tapescript.js" Line="10" Column="21" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

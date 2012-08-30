@@ -36,6 +36,7 @@ private var min_angle_y = -89.0;
 private var max_angle_y = 89.0;
 
 private var holder : GUISkinHolder;
+private var weapon_holder : WeaponHolder;
 
 // Private variables
 
@@ -268,14 +269,17 @@ function AddLooseBullet(spring:boolean) {
 
 function Start() {
 	holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
-	gun_obj = holder.gun_object;
-	casing_with_bullet = holder.casing_with_bullet_object;
+	weapon_holder = holder.weapon.GetComponent(WeaponHolder);
+	gun_obj = weapon_holder.gun_object;
+	casing_with_bullet = weapon_holder.bullet_object;
 
-	held_flashlight = Instantiate(holder.flashlight_object);
-	Destroy(held_flashlight.rigidbody);
-	held_flashlight.GetComponent(FlashlightScript).TurnOn();
-	holder.has_flashlight = true;
-			
+	if(Random.Range(0.0,1.0) < 0.35){
+		held_flashlight = Instantiate(holder.flashlight_object);
+		Destroy(held_flashlight.rigidbody);
+		held_flashlight.GetComponent(FlashlightScript).TurnOn();
+		holder.has_flashlight = true;
+	}
+	
 	rotation_x = transform.rotation.eulerAngles.y;
 	view_rotation_x = transform.rotation.eulerAngles.y;
 	gun_instance = Instantiate(gun_obj);
