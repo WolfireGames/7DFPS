@@ -1,17 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\BulletPileScript.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\FlashlightScript.js">
     <Files>
-      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="17" Column="48" />
-      <File FileName="Assets\Scripts\GunScript.js" Line="301" Column="24" />
-      <File FileName="Assets\Scripts\AimScript.js" Line="272" Column="58" />
-      <File FileName="Assets\Scripts\FlashlightScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\FlashlightScript.js" Line="37" Column="133" />
+      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\BulletPileScript.js" Line="5" Column="36" />
       <File FileName="Assets\Scripts\optionsmenuscript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\RobotScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\tapescript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\WeaponHolder.js" Line="5" Column="18" />
+      <File FileName="Assets\Scripts\WeaponHolder.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
