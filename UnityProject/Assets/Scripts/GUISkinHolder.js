@@ -14,7 +14,7 @@ var flashlight_object : GameObject;
 var has_flashlight = false;
 
 function Awake () {
-	weapon = weapons[Random.Range(0,weapons.length)];
+	weapon = weapons[2];//weapons[Random.Range(0,weapons.length)];
 }
 
 function Start () {

@@ -84,6 +84,7 @@ private var mag_seated = 1.0;
 
 private var has_slide = false;
 private var has_safety = false;
+private var has_hammer = false;
 
 private var yolk_pivot_rel_rot : Quaternion;
 private var yolk_open = 0.0;
@@ -130,8 +131,11 @@ function Start () {
 		has_slide = true;
 		slide_rel_pos = transform.FindChild("slide").localPosition;
 	}
-	hammer_rel_pos = transform.FindChild("hammer").localPosition;
-	hammer_rel_rot = transform.FindChild("hammer").localRotation;
+	if(transform.FindChild("hammer")){
+		has_hammer = true;
+		hammer_rel_pos = transform.FindChild("hammer").localPosition;
+		hammer_rel_rot = transform.FindChild("hammer").localRotation;
+	}
 	var yolk_pivot = transform.FindChild("yolk_pivot");
 	if(yolk_pivot){
 		yolk_pivot_rel_rot = yolk_pivot.localRotation;
@@ -717,10 +721,12 @@ function Update () {
 			 transform.FindChild("point_slide_start").localPosition) * slide_amount;
 	}
 	
-	transform.FindChild("hammer").localPosition = 
-		Vector3.Lerp(hammer_rel_pos, transform.FindChild("point_hammer_cocked").localPosition, hammer_cocked);
-	transform.FindChild("hammer").localRotation = 
-		Quaternion.Slerp(hammer_rel_rot, transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
+	if(has_hammer){
+		transform.FindChild("hammer").localPosition = 
+			Vector3.Lerp(hammer_rel_pos, transform.FindChild("point_hammer_cocked").localPosition, hammer_cocked);
+		transform.FindChild("hammer").localRotation = 
+			Quaternion.Slerp(hammer_rel_rot, transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
+	}
 	
 	if(has_safety){
 		transform.FindChild("safety").localPosition = 
