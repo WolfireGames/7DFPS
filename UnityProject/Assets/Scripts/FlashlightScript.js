@@ -1,6 +1,9 @@
 #pragma strict
 
 var battery_curve : AnimationCurve;
+var sound_turn_on : AudioClip;
+var sound_turn_off : AudioClip;
+private var kSoundVolume = 0.3;
 private var switch_on = false;
 private var max_battery_life = 60*60*5.5;
 private var battery_life_remaining = max_battery_life;
@@ -19,11 +22,17 @@ function Start () {
 }
 
 function TurnOn(){
-	switch_on = true;
+	if(!switch_on){
+		switch_on = true;
+		audio.PlayOneShot(sound_turn_on, kSoundVolume * PlayerPrefs.GetFloat("sound_volume", 1.0));
+	}
 }
 
 function TurnOff(){
-	switch_on = false;
+	if(switch_on){
+		switch_on = false;
+		audio.PlayOneShot(sound_turn_off, kSoundVolume * PlayerPrefs.GetFloat("sound_volume", 1.0));
+	}
 }
 
 function Update () {
