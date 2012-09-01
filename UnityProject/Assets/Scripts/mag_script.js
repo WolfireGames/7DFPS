@@ -5,6 +5,8 @@ var kMaxRounds = 8;
 private var round_pos : Vector3[];
 private var round_rot : Quaternion[];
 private var old_pos : Vector3;
+var hold_offset : Vector3;
+var hold_rotation : Vector3;
 var collided = false;
 var sound_add_round : AudioClip[];
 var sound_mag_bounce : AudioClip[];

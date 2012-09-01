@@ -389,7 +389,7 @@ function HandleGetControl(){
 	var nearest_mag_dist = 0.0;
 	var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
 	for(var collider in colliders){
-		if(collider.gameObject.name == magazine_obj.name+"(Clone)" && collider.gameObject.rigidbody){
+		if(magazine_obj && collider.gameObject.name == magazine_obj.name+"(Clone)" && collider.gameObject.rigidbody){
 			var dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
 			if(!nearest_mag || dist < nearest_mag_dist){	
 				nearest_mag_dist = dist;
@@ -1189,10 +1189,9 @@ function UpdateMagazineTransformation() {
 				    gun_instance.transform.FindChild("point_mag_inserted").position);
     }
    if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
-		//var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.15,0.05,0.2);
-		//var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(45, Vector3(0,1,0)) * Quaternion.AngleAxis(-55, Vector3(1,0,0));
-   		var hold_pos = main_camera.transform.position + main_camera.transform.rotation*Vector3(-0.1,0.05,0.25);
-		var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(0, Vector3(0,1,0)) * Quaternion.AngleAxis(-25, Vector3(1,0,0));
+   		var mag_script = magazine_instance_in_hand.GetComponent(mag_script);
+   		var hold_pos = main_camera.transform.position + main_camera.transform.rotation*mag_script.hold_offset;
+		var hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(mag_script.hold_rotation.x, Vector3(0,1,0)) * Quaternion.AngleAxis(mag_script.hold_rotation.y, Vector3(1,0,0));
    		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
    		hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
    		if(hold_pose_spring.state != 1.0){ 
