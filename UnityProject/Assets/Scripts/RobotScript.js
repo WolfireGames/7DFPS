@@ -158,6 +158,10 @@ function WasShot(obj : GameObject, pos : Vector3, vel : Vector3) {
 		if(Random.Range(0.0,1.0) < 0.5){
 			Damage(transform.FindChild("battery").gameObject);
 		}
+	} else {
+		if(Random.Range(0.0,1.0) < 0.25){
+			Damage(transform.FindChild("battery").gameObject);
+		}
 	}
 	Damage(obj);
 }
