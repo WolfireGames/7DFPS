@@ -82,9 +82,16 @@ enum MagStage {OUT, INSERTING, IN, REMOVING};
 private var mag_stage : MagStage = MagStage.IN;
 private var mag_seated = 1.0;
 
+enum AutoModStage {ENABLED, DISABLED};
+private var auto_mod_stage : AutoModStage = AutoModStage.DISABLED;
+private var auto_mod_amount = 0.0;
+private var auto_mod_rel_pos : Vector3;
+private var fired_once_this_pull = false;
+
 private var has_slide = false;
 private var has_safety = false;
 private var has_hammer = false;
+private var has_auto_mod = false;
 
 private var yolk_pivot_rel_rot : Quaternion;
 private var yolk_open = 0.0;
@@ -128,8 +135,17 @@ function IsEjectingRounds() : boolean {
 
 function Start () {
 	if(transform.FindChild("slide")){
+		var slide = transform.FindChild("slide");
 		has_slide = true;
-		slide_rel_pos = transform.FindChild("slide").localPosition;
+		slide_rel_pos = slide.localPosition;
+		if(slide.FindChild("auto mod toggle")){
+			has_auto_mod = true;
+			auto_mod_rel_pos = slide.FindChild("auto mod toggle").localPosition;
+			if(Random.Range(0,2) == 0){
+				auto_mod_amount = 1.0;
+				auto_mod_stage = AutoModStage.ENABLED;
+			}
+		}
 	}
 	if(transform.FindChild("hammer")){
 		has_hammer = true;
@@ -160,6 +176,7 @@ function Start () {
 			safety = Safety.ON;
 		}
 	}
+	
 	if(gun_type == GunType.AUTOMATIC){
 		magazine_instance_in_gun = Instantiate(magazine_obj);
 		magazine_instance_in_gun.transform.parent = transform;
@@ -204,7 +221,7 @@ function Start () {
 		}
 	}
 	
-	if(Random.Range(0,2) == 0){
+	if(Random.Range(0,2) == 0 && has_hammer){
 		hammer_cocked = 0.0;
 	}
 }
@@ -313,17 +330,19 @@ function PlaySoundFromGroup(group : Array, volume : float){
 function ApplyPressureToTrigger() : boolean {
 	if(pressure_on_trigger == PressureState.NONE){
 		pressure_on_trigger = PressureState.INITIAL;
+		fired_once_this_pull = false;
 	} else {
 		pressure_on_trigger = PressureState.CONTINUING;
 	}
 	if(yolk_stage != YolkStage.CLOSED){
 		return;
 	}
-	if((pressure_on_trigger == PressureState.INITIAL || action_type == ActionType.DOUBLE) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0){
-		hammer_cocked = 0.0;
+	if((pressure_on_trigger == PressureState.INITIAL || action_type == ActionType.DOUBLE) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0 && safety_off == 1.0 && (auto_mod_stage == AutoModStage.ENABLED || !fired_once_this_pull)){
 		trigger_pressed = 1.0;
-		if(gun_type == GunType.AUTOMATIC){
-			if(round_in_chamber && slide_amount == 0.0 && round_in_chamber_state == RoundState.READY){
+		if(gun_type == GunType.AUTOMATIC && slide_amount == 0.0){
+			hammer_cocked = 0.0;
+			if(round_in_chamber && round_in_chamber_state == RoundState.READY){
+				fired_once_this_pull = true;
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
 				round_in_chamber_state = RoundState.FIRED;
 				GameObject.Destroy(round_in_chamber);
@@ -348,6 +367,7 @@ function ApplyPressureToTrigger() : boolean {
 				PlaySoundFromGroup(sound_mag_eject_button, 0.5);
 			}
 		} else if(gun_type == GunType.REVOLVER){
+			hammer_cocked = 0.0;
 			var which_chamber = active_cylinder % cylinder_capacity;
 			if(which_chamber < 0){
 				which_chamber += cylinder_capacity;
@@ -380,6 +400,7 @@ function ApplyPressureToTrigger() : boolean {
 	}
 	
 	if(action_type == ActionType.DOUBLE && trigger_pressed < 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
+		Debug.Log("Cocking hammer");
 		CockHammer();
 		CockHammer();
 	}
@@ -435,6 +456,18 @@ function ToggleSafety() {
 	}
 }
 
+function ToggleAutoMod() {
+	if(!has_auto_mod){
+		return false;
+	}
+	PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
+	if(auto_mod_stage == AutoModStage.DISABLED){
+		auto_mod_stage = AutoModStage.ENABLED;
+	} else if(auto_mod_stage == AutoModStage.ENABLED){
+		auto_mod_stage = AutoModStage.DISABLED;
+	}
+}
+
 function PullBackSlide() {
 	if(gun_type != GunType.AUTOMATIC){
 		return false;
@@ -469,6 +502,9 @@ function CockHammer(){
 }
 
 function PressureOnHammer() {
+	if(!has_hammer){
+		return;
+	}
 	thumb_on_hammer = Thumb.ON_HAMMER;
 	if(gun_type == GunType.REVOLVER && yolk_stage != YolkStage.CLOSED){
 		return;
@@ -477,6 +513,9 @@ function PressureOnHammer() {
 }
 
 function ReleaseHammer() {
+	if(!has_hammer){
+		return;
+	}
 	if((pressure_on_trigger != PressureState.NONE && safety_off == 1.0) || hammer_cocked != 1.0){
 		thumb_on_hammer = Thumb.SLOW_LOWERING;
 		trigger_pressed = 1.0;
@@ -646,7 +685,7 @@ function RotateCylinder(how_many : int) {
 function Update () {
 	if(gun_type == GunType.AUTOMATIC){
 		if(magazine_instance_in_gun){
-			var mag_pos = transform.position;
+			var mag_pos = transform.FindChild("point_mag_inserted").position;
 			var mag_rot = transform.rotation;
 			mag_pos += (transform.FindChild("point_mag_to_insert").position - 
 					    transform.FindChild("point_mag_inserted").position) * 
@@ -684,6 +723,14 @@ function Update () {
 			safety_off = Mathf.Min(1.0, safety_off + Time.deltaTime * 10.0);
 		} else if(safety == Safety.ON){
 			safety_off = Mathf.Max(0.0, safety_off - Time.deltaTime * 10.0);
+		}
+	}
+	
+	if(has_auto_mod){
+		if(auto_mod_stage == AutoModStage.ENABLED){
+			auto_mod_amount = Mathf.Min(1.0, auto_mod_amount + Time.deltaTime * 10.0);
+		} else if(auto_mod_stage == AutoModStage.DISABLED){
+			auto_mod_amount = Mathf.Max(0.0, auto_mod_amount - Time.deltaTime * 10.0);
 		}
 	}
 	
@@ -727,18 +774,25 @@ function Update () {
 		transform.FindChild("hammer").localRotation = 
 			Quaternion.Slerp(hammer_rel_rot, transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
 	}
-	
+		
 	if(has_safety){
 		transform.FindChild("safety").localPosition = 
 			Vector3.Lerp(safety_rel_pos, transform.FindChild("point_safety_off").localPosition, safety_off);
 		transform.FindChild("safety").localRotation = 
 			Quaternion.Slerp(safety_rel_rot, transform.FindChild("point_safety_off").localRotation, safety_off);
 	}
+	
+	if(has_auto_mod){
+		var slide = transform.FindChild("slide");
+		slide.FindChild("auto mod toggle").localPosition = 
+			Vector3.Lerp(auto_mod_rel_pos, slide.FindChild("point_auto_mod_enabled").localPosition, auto_mod_amount);
+	}
 			
 	if(gun_type == GunType.AUTOMATIC){
 		hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
-		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
+		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER  && (pressure_on_trigger == PressureState.NONE || action_type == ActionType.SINGLE)){
 			hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
+			Debug.Log("Hammer releasing to slide: "+slide_amount);
 		}
 	} else {
 		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER && (pressure_on_trigger == PressureState.NONE || action_type == ActionType.SINGLE)){

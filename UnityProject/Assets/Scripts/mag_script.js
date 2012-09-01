@@ -1,8 +1,9 @@
 #pragma strict
 
 private var num_rounds = 8;
-private var kMaxRounds = 8;
+var kMaxRounds = 8;
 private var round_pos : Vector3[];
+private var round_rot : Quaternion[];
 private var old_pos : Vector3;
 var collided = false;
 var sound_add_round : AudioClip[];
@@ -56,9 +57,11 @@ function Start () {
 	old_pos = transform.position;
 	num_rounds = Random.Range(0,kMaxRounds);
 	round_pos = new Vector3[kMaxRounds];
+	round_rot = new Quaternion[kMaxRounds];
 	for(var i=0; i<kMaxRounds; ++i){
 		var round = transform.FindChild("round_"+(i+1));
 		round_pos[i] = round.localPosition;
+		round_rot[i] = round.localRotation;
 		if(i < num_rounds){
 			round.renderer.enabled = true;
 		} else {
@@ -115,6 +118,7 @@ function Update() {
 				for(var i=0; i<num_rounds; ++i){
 					var obj = transform.FindChild("round_"+(i+1));
 					obj.localPosition = round_pos[i];
+					obj.localRotation = round_rot[i];
 				}
 			}
 			break;
@@ -127,6 +131,7 @@ function Update() {
 				for(i=0; i<num_rounds; ++i){
 					obj = transform.FindChild("round_"+(i+1));
 					obj.localPosition = round_pos[i];
+					obj.localRotation = round_rot[i];
 				}
 			}
 			break;
@@ -150,6 +155,7 @@ function Update() {
 			for(i=1; i<num_rounds; ++i){
 				obj = transform.FindChild("round_"+(i+1));
 				obj.localPosition = Vector3.Lerp(round_pos[i-1], round_pos[i], mag_load_progress);
+				obj.localRotation = Quaternion.Slerp(round_rot[i-1], round_rot[i], mag_load_progress);
 			}
 			break;
 		case MagLoadStage.ADDING_ROUND:
@@ -158,7 +164,7 @@ function Update() {
 											 round_pos[0], 
 											 mag_load_progress);
 			obj.localRotation = Quaternion.Slerp(transform.FindChild("point_load").localRotation, 
-												 Quaternion.identity, 
+												 round_rot[0], 
 												 mag_load_progress);
 			for(i=1; i<num_rounds; ++i){
 				obj = transform.FindChild("round_"+(i+1));
@@ -176,6 +182,7 @@ function Update() {
 			for(i=1; i<num_rounds; ++i){
 				obj = transform.FindChild("round_"+(i+1));
 				obj.localPosition = Vector3.Lerp(round_pos[i-1], round_pos[i], mag_load_progress);
+				obj.localRotation = Quaternion.Slerp(round_rot[i-1], round_rot[i], mag_load_progress);
 			}
 			break;
 		case MagLoadStage.REMOVING_ROUND:
@@ -184,11 +191,12 @@ function Update() {
 											 round_pos[0], 
 											 1.0-mag_load_progress);
 			obj.localRotation = Quaternion.Slerp(transform.FindChild("point_load").localRotation, 
-												 Quaternion.identity, 
+												 round_rot[0], 
 												 1.0-mag_load_progress);
 			for(i=1; i<num_rounds; ++i){
 				obj = transform.FindChild("round_"+(i+1));
 				obj.localPosition = round_pos[i];
+				obj.localRotation = round_rot[i];
 			}
 			break;
 	}
