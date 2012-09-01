@@ -400,7 +400,6 @@ function ApplyPressureToTrigger() : boolean {
 	}
 	
 	if(action_type == ActionType.DOUBLE && trigger_pressed < 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER){
-		Debug.Log("Cocking hammer");
 		CockHammer();
 		CockHammer();
 	}
@@ -792,7 +791,6 @@ function Update () {
 		hammer_cocked = Mathf.Max(hammer_cocked, slide_amount);
 		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER  && (pressure_on_trigger == PressureState.NONE || action_type == ActionType.SINGLE)){
 			hammer_cocked = Mathf.Min(hammer_cocked, slide_amount);
-			Debug.Log("Hammer releasing to slide: "+slide_amount);
 		}
 	} else {
 		if(hammer_cocked != 1.0 && thumb_on_hammer == Thumb.OFF_HAMMER && (pressure_on_trigger == PressureState.NONE || action_type == ActionType.SINGLE)){

@@ -72,6 +72,9 @@ private var held_flashlight:GameObject = null;
 private var flashlight_aim_pos : Vector3;
 private var flashlight_aim_rot : Quaternion;
 private var flashlight_mouth_spring = new Spring(0,0,kAimSpringStrength,kAimSpringDamping);
+private var flash_ground_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var flash_ground_pos : Vector3;
+private var flash_ground_rot : Quaternion;
 
 private var rotation_x_leeway = 0.0;
 private var rotation_y_min_leeway = 0.0;
@@ -414,6 +417,10 @@ function HandleGetControl(){
 			Destroy(held_flashlight.rigidbody);
 			held_flashlight.GetComponent(FlashlightScript).TurnOn();
 			holder.has_flashlight = true;
+			flash_ground_pos = held_flashlight.transform.position;
+			flash_ground_rot = held_flashlight.transform.rotation;
+			flash_ground_pose_spring.state = 1.0;
+			flash_ground_pose_spring.vel = 1.0;
 		}
 	}
 	if(nearest_mag && mag_stage == HandMagStage.EMPTY){
@@ -1181,6 +1188,9 @@ function UpdateFlashlightTransformation() {
 	flashlight_pos = mix(flashlight_pos, flashlight_mouth_pos, flashlight_mouth_spring.state);
 	flashlight_rot = mix(flashlight_rot, flashlight_mouth_rot, flashlight_mouth_spring.state);
 	
+	flashlight_pos = mix(flashlight_pos, flash_ground_pos, flash_ground_pose_spring.state);
+   	flashlight_rot = mix(flashlight_rot, flash_ground_rot, flash_ground_pose_spring.state);
+   		
 	held_flashlight.transform.position = flashlight_pos;
 	held_flashlight.transform.rotation = flashlight_rot;
 }
@@ -1298,6 +1308,7 @@ function UpdateSprings() {
 		hold_pose_spring.Update();
 		mag_ground_pose_spring.Update();
 	}
+	flash_ground_pose_spring.Update();
 }
 
 function UpdatePickupMagnet() {
