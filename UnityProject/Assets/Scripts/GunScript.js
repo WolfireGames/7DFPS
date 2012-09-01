@@ -133,6 +133,22 @@ function IsEjectingRounds() : boolean {
 	}
 }
 
+function GetHammer() : Transform {
+	var hammer = transform.FindChild("hammer");
+	if(!hammer){
+		hammer = transform.FindChild("hammer_pivot");
+	}
+	return hammer;
+}
+
+function GetHammerCocked() : Transform {
+	var hammer = transform.FindChild("point_hammer_cocked");
+	if(!hammer){
+		hammer = transform.FindChild("hammer_pivot");
+	}
+	return hammer;
+}
+
 function Start () {
 	if(transform.FindChild("slide")){
 		var slide = transform.FindChild("slide");
@@ -147,10 +163,11 @@ function Start () {
 			}
 		}
 	}
-	if(transform.FindChild("hammer")){
+	var hammer = GetHammer();
+	if(hammer){
 		has_hammer = true;
-		hammer_rel_pos = transform.FindChild("hammer").localPosition;
-		hammer_rel_rot = transform.FindChild("hammer").localRotation;
+		hammer_rel_pos = hammer.localPosition;
+		hammer_rel_rot = hammer.localRotation;
 	}
 	var yolk_pivot = transform.FindChild("yolk_pivot");
 	if(yolk_pivot){
@@ -768,10 +785,12 @@ function Update () {
 	}
 	
 	if(has_hammer){
-		transform.FindChild("hammer").localPosition = 
-			Vector3.Lerp(hammer_rel_pos, transform.FindChild("point_hammer_cocked").localPosition, hammer_cocked);
-		transform.FindChild("hammer").localRotation = 
-			Quaternion.Slerp(hammer_rel_rot, transform.FindChild("point_hammer_cocked").localRotation, hammer_cocked);
+		var hammer = GetHammer();
+		var point_hammer_cocked = transform.FindChild("point_hammer_cocked");
+		hammer.localPosition = 
+			Vector3.Lerp(hammer_rel_pos, point_hammer_cocked.localPosition, hammer_cocked);
+		hammer.localRotation = 
+			Quaternion.Slerp(hammer_rel_rot, point_hammer_cocked.localRotation, hammer_cocked);
 	}
 		
 	if(has_safety){

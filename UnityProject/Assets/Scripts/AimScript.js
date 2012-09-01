@@ -1181,7 +1181,7 @@ function UpdateFlashlightTransformation() {
 		flashlight_mouth_spring.target_state = 1.0;
 	}
 	flashlight_mouth_spring.target_state = Mathf.Max(flashlight_mouth_spring.target_state,
-		(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + reload_pose_spring.state + slide_pose_spring.state) * aim_spring.state);
+		(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + (reload_pose_spring.state/0.7) + slide_pose_spring.state) * aim_spring.state);
 	
 	flashlight_mouth_spring.Update();
 	
