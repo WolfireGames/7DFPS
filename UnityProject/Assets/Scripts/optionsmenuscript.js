@@ -116,6 +116,7 @@ private var toggle_crouch = true;
 private var scroll_view_vector = Vector2(0,0);
 private var vert_scroll = 0.0;
 private var vert_scroll_pixels = 0.0;
+private var gun_distance = 1.0;
  
 function RestoreDefaults() {
 	master_volume = 1.0;
@@ -139,6 +140,7 @@ function Start() {
 	lock_gun_to_center = PlayerPrefs.GetInt("lock_gun_to_center", lock_gun_to_center?1:0)==1;
 	mouse_invert = PlayerPrefs.GetInt("mouse_invert", mouse_invert?1:0)==1;
 	toggle_crouch = PlayerPrefs.GetInt("toggle_crouch", toggle_crouch?1:0)==1;      
+	gun_distance = PlayerPrefs.GetFloat("gun_distance", 1.0);       
 }
  
 
@@ -151,6 +153,7 @@ function SavePrefs() {
 	PlayerPrefs.SetInt("lock_gun_to_center", lock_gun_to_center?1:0);
 	PlayerPrefs.SetInt("mouse_invert", mouse_invert?1:0);
 	PlayerPrefs.SetInt("toggle_crouch", toggle_crouch?1:0);    
+	PlayerPrefs.SetFloat("gun_distance", gun_distance);    
 }
 
 function IsMenuShown() : boolean {
@@ -193,6 +196,10 @@ function WindowFunction (windowID : int) {
 	DrawLabel("Mouse sensitivity:");
 	DrawCursor_NextLine();
 	mouse_sensitivity = DrawSlider(mouse_sensitivity);
+	DrawCursor_NextLine();
+	DrawLabel("Distance from eye to gun:");
+	DrawCursor_NextLine();
+	gun_distance = DrawSlider(gun_distance);
 	DrawCursor_NextLine();
 	toggle_crouch = DrawCheckbox(toggle_crouch, "Toggle crouch");
 	DrawCursor_NextLine();

@@ -333,9 +333,13 @@ function Start() {
 	}
 }
 
+function GunDist() {
+	return kGunDistance * (0.5 + PlayerPrefs.GetFloat("gun_distance", 1.0)*0.5);
+}
+
 function AimPos() : Vector3 {
 	var aim_dir = AimDir();
-	return main_camera.transform.position + aim_dir*kGunDistance;
+	return main_camera.transform.position + aim_dir*GunDist();
 }
 
 function AimDir() : Vector3 {
@@ -1038,7 +1042,7 @@ function UpdateAimSpring() {
 		var hit : RaycastHit;
 		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2, hit, 1 << 0)){
 			aim_spring.target_state = Mathf.Clamp(
-				1.0 - (Vector3.Distance(hit.point, main_camera.transform.position)/(kGunDistance + 0.2)),
+				1.0 - (Vector3.Distance(hit.point, main_camera.transform.position)/(GunDist() + 0.2)),
 				0.0,
 				1.0);
 			offset_aim_target = true;
@@ -1105,7 +1109,7 @@ function UpdateGunTransformation() {
 	var aim_pos = AimPos();	
 	
 	var unaimed_dir = (transform.forward + Vector3(0,-1,0)).normalized;
-	var unaimed_pos = main_camera.transform.position + unaimed_dir*kGunDistance;
+	var unaimed_pos = main_camera.transform.position + unaimed_dir*GunDist();
 	
 	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
 	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
