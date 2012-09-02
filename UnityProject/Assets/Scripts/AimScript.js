@@ -1431,6 +1431,28 @@ function ShouldPutMagInInventory() : boolean {
 	return false;
 }
 
+function GetEmptySlot() : int {
+	var empty_slot = -1;
+	for(var i=0; i<10; ++i){
+		if(weapon_slots[i].type == WeaponSlotType.EMPTY){
+			empty_slot = i+1;
+			break;
+		}
+	}
+	return empty_slot;
+}
+
+function GetFlashlightSlot() : int {
+	var flashlight_slot = -1;
+	for(var i=0; i<10; ++i){
+		if(weapon_slots[i].type == WeaponSlotType.FLASHLIGHT){
+			flashlight_slot = i+1;
+			break;
+		}
+	}
+	return flashlight_slot;
+}
+
 function OnGUI() {
 	var display_text = new Array();
 	var gun_script : GunScript = null;
@@ -1447,10 +1469,28 @@ function OnGUI() {
 			display_text.push(new DisplayLine("Pause/Resume tape player: [ x ]", false));
 		}
 		
+		display_text.push(new DisplayLine("Look: [ move mouse ]", false));
+		display_text.push(new DisplayLine("Move: [ WASD ]", false));
+		display_text.push(new DisplayLine("Jump: [ space ]", false));
+		display_text.push(new DisplayLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby()));
+		if(held_flashlight){
+			var empty_slot = GetEmptySlot();
+			if(empty_slot != -1){
+				var str = "Put flashlight in inventory: tap [ ";
+				str += empty_slot;
+				str += " ]";
+				display_text.push(new DisplayLine(str, false));
+			}
+		} else {
+			var flashlight_slot = GetFlashlightSlot();
+			if(flashlight_slot != -1){
+				str = "Equip flashlight: tap [ ";
+				str += flashlight_slot;
+				str += " ]";
+				display_text.push(new DisplayLine(str, true));
+			}
+		}
 		if(gun_instance){
-			display_text.push(new DisplayLine("Look: [ move mouse ]", false));
-			display_text.push(new DisplayLine("Move: [ WASD ]", false));
-			display_text.push(new DisplayLine("Jump: [ space ]", false));
 			display_text.push(new DisplayLine("Fire weapon: tap [ left mouse button ]", false));
 			var should_aim = (aim_spring.state < 0.5);			
 			display_text.push(new DisplayLine("Aim weapon: hold [ right mouse button ]", should_aim));
@@ -1481,7 +1521,7 @@ function OnGUI() {
 					display_text.push(new DisplayLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings()?true:false));
 					display_text.push(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.length!=0)?true:false));
 				}
-				display_text.push(new DisplayLine("Spin cylinder: tap [ mousewheel ]", false));
+				display_text.push(new DisplayLine("Spin cylinder: [ mousewheel ]", false));
 			}
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
 				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() >= 1);
@@ -1503,22 +1543,15 @@ function OnGUI() {
 			}
 		}
 		if(mag_stage == HandMagStage.HOLD){
-			var empty_slot = -1;
-			for(var i=0; i<10; ++i){
-				if(weapon_slots[i].type == WeaponSlotType.EMPTY){
-					empty_slot = i+1;
-					break;
-				}
-			}
+			empty_slot = GetEmptySlot();
 			if(empty_slot != -1){
-				var str = "Put magazine in inventory: tap [ ";
+				str = "Put magazine in inventory: tap [ ";
 				str += empty_slot;
 				str += " ]";
 				display_text.push(new DisplayLine(str, ShouldPutMagInInventory()));
 			}
-				display_text.push(new DisplayLine("Drop magazine: tap [ e ]", false));
+			display_text.push(new DisplayLine("Drop magazine: tap [ e ]", false));
 		}
-		display_text.push(new DisplayLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby()));
 		
 		display_text.push(new DisplayLine("", false));
 		if(show_advanced_help){
