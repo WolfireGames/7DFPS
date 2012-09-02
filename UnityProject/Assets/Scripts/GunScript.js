@@ -649,6 +649,50 @@ function AddRoundToCylinder() : boolean {
 	return false;
 }
 
+function ShouldOpenCylinder() : boolean {
+	var num_firable_bullets = 0;
+	for(var i=0; i<cylinder_capacity; ++i){
+		if(cylinders[i].can_fire){
+			++num_firable_bullets;
+		}
+	}
+	return num_firable_bullets != cylinder_capacity;
+}
+
+function ShouldCloseCylinder() : boolean {
+	var num_firable_bullets = 0;
+	for(var i=0; i<cylinder_capacity; ++i){
+		if(cylinders[i].can_fire){
+			++num_firable_bullets;
+		}
+	}
+	return num_firable_bullets == cylinder_capacity;
+}
+
+function ShouldExtractCasings() : boolean {
+	var num_fired_bullets = 0;
+	for(var i=0; i<cylinder_capacity; ++i){
+		if(cylinders[i].object && !cylinders[i].can_fire){
+			++num_fired_bullets;
+		}
+	}
+	return num_fired_bullets > 0;
+}
+
+function ShouldInsertBullet() : boolean {
+	var num_empty_chambers = 0;
+	for(var i=0; i<cylinder_capacity; ++i){
+		if(!cylinders[i].object){
+			++num_empty_chambers;
+		}
+	}
+	return num_empty_chambers > 0;
+}
+
+function HasSlide() : boolean {
+	return has_safety;
+}
+
 function HasSafety() : boolean {
 	return has_safety;
 }
@@ -670,7 +714,7 @@ function IsHammerCocked() : boolean {
 }
 
 function ShouldPullBackHammer() : boolean {
-	return hammer_cocked != 1.0 && has_hammer;
+	return hammer_cocked != 1.0 && has_hammer && action_type == ActionType.SINGLE;
 }
 
 function SwingOutCylinder() : boolean {

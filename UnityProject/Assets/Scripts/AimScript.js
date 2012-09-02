@@ -1448,8 +1448,10 @@ function OnGUI() {
 			display_text.push(new DisplayLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon()));
 		}
 		if(gun_instance){
-			display_text.push(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()?true:false));
-			display_text.push(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()?true:false));
+			if(gun_script.HasSlide()){
+				display_text.push(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()?true:false));
+				display_text.push(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()?true:false));
+			}
 			if(gun_script.HasSafety()){
 				display_text.push(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
 			}
@@ -1458,6 +1460,15 @@ function OnGUI() {
 			}
 			if(gun_script.HasHammer()){
 				display_text.push(new DisplayLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer()?true:false));
+			}
+			if(gun_script.gun_type == GunType.REVOLVER){
+				if(!gun_script.IsCylinderOpen()){
+					display_text.push(new DisplayLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.length!=0)?true:false));
+				} else {
+					display_text.push(new DisplayLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.length==0)?true:false));
+					display_text.push(new DisplayLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings()?true:false));
+					display_text.push(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.length!=0)?true:false));
+				}
 			}
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
 				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() > 1);
