@@ -16,19 +16,23 @@ Easy:
 JoShadow: http://forums.wolfire.com/viewtopic.php?f=13&t=15610#p167485
 
 Medium:
-- flash light
 - in-game help shows remapped keys
 
 Hard:
 - background loading of new tiles
 - occlusion culling
-- new guns (maybe Glock 17, S&W Model 10, H&K USP Tactical, Beretta M9, Colt Detective Special?)
+- new guns (maybe H&K USP Tactical, Beretta M9, Colt Detective Special?)
 
 Really hard:
 - Multiplayer?
 
 Control ideas:
 http://forums.wolfire.com/viewtopic.php?f=13&t=15610&start=45#p167548
+
+RC6:
++ added flashlight
++ added S&W Model 10 revolver
++ added Glock 17 with auto mod
 
 RC5:
 + fix sight picture for 1911 (sights should be level)
