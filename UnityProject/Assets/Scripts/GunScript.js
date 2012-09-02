@@ -649,8 +649,28 @@ function AddRoundToCylinder() : boolean {
 	return false;
 }
 
+function HasSafety() : boolean {
+	return has_safety;
+}
+
+function HasHammer() : boolean {
+	return has_hammer;
+}
+
+function HasAutoMod() : boolean {
+	return has_auto_mod;
+}
+
+function ShouldToggleAutoMod() : boolean {
+	return auto_mod_stage == AutoModStage.ENABLED;
+}
+
 function IsHammerCocked() : boolean {
 	return hammer_cocked == 1.0;
+}
+
+function ShouldPullBackHammer() : boolean {
+	return hammer_cocked != 1.0 && has_hammer;
 }
 
 function SwingOutCylinder() : boolean {

@@ -380,7 +380,7 @@ function ShouldPickUpNearby() : boolean {
 	var nearest_mag_dist = 0.0;
 	var colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0, 1 << 8);
 	for(var collider in colliders){
-		if(collider.gameObject.name == magazine_obj.name+"(Clone)" && collider.gameObject.rigidbody){
+		if(magazine_obj && collider.gameObject.name == magazine_obj.name+"(Clone)" && collider.gameObject.rigidbody){
 			if(mag_stage == HandMagStage.EMPTY){
 				return true;
 			}	
@@ -1450,9 +1450,15 @@ function OnGUI() {
 		if(gun_instance){
 			display_text.push(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()?true:false));
 			display_text.push(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()?true:false));
-			display_text.push(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
-			display_text.push(new DisplayLine("Pull back hammer: hold [ f ]", !gun_script.IsHammerCocked()?true:false));
-			
+			if(gun_script.HasSafety()){
+				display_text.push(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
+			}
+			if(gun_script.HasAutoMod()){
+				display_text.push(new DisplayLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod()?true:false));
+			}
+			if(gun_script.HasHammer()){
+				display_text.push(new DisplayLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer()?true:false));
+			}
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
 				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() > 1);
 				display_text.push(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));
