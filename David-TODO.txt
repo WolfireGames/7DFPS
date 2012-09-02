@@ -33,6 +33,8 @@ RC6:
 + added flashlight
 + added S&W Model 10 revolver
 + added Glock 17 with auto mod
++ added option to bring guns closer to eye
++ added a small chance to disable robots with non-vital hits
 
 RC5:
 + fix sight picture for 1911 (sights should be level)
