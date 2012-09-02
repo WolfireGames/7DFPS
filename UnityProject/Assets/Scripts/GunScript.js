@@ -690,7 +690,7 @@ function ShouldInsertBullet() : boolean {
 }
 
 function HasSlide() : boolean {
-	return has_safety;
+	return has_slide;
 }
 
 function HasSafety() : boolean {
