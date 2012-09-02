@@ -1419,6 +1419,18 @@ function GetMostLoadedMag() : int {
 	return max_rounds_slot;
 }
 
+function ShouldPutMagInInventory() : boolean {
+	var rounds = magazine_instance_in_hand.GetComponent(mag_script).NumRounds();
+	var most_loaded = GetMostLoadedMag();
+	if(most_loaded == -1){
+		return false;
+	}
+	if(weapon_slots[most_loaded-1].obj.GetComponent(mag_script).NumRounds() > rounds){
+		return true;
+	}
+	return false;
+}
+
 function OnGUI() {
 	var display_text = new Array();
 	var gun_script : GunScript = null;
@@ -1469,9 +1481,10 @@ function OnGUI() {
 					display_text.push(new DisplayLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings()?true:false));
 					display_text.push(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.length!=0)?true:false));
 				}
+				display_text.push(new DisplayLine("Spin cylinder: tap [ mousewheel ]", false));
 			}
 			if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
-				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() > 1);
+				var should_insert_mag = (magazine_instance_in_hand.GetComponent(mag_script).NumRounds() >= 1);
 				display_text.push(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));
 			} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
 				display_text.push(new DisplayLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag()?true:false));
@@ -1501,7 +1514,7 @@ function OnGUI() {
 				var str = "Put magazine in inventory: tap [ ";
 				str += empty_slot;
 				str += " ]";
-				display_text.push(new DisplayLine(str, false));
+				display_text.push(new DisplayLine(str, ShouldPutMagInInventory()));
 			}
 				display_text.push(new DisplayLine("Drop magazine: tap [ e ]", false));
 		}
