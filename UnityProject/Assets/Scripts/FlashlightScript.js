@@ -12,7 +12,7 @@ private var initial_pointlight_intensity : float;
 private var initial_spotlight_intensity : float;
 
 function Awake() {
-	switch_on = Random.Range(0.0,1.0) < 0.5;
+	switch_on = false;// Random.Range(0.0,1.0) < 0.5;
 }
 
 function Start () {
@@ -44,11 +44,14 @@ function Update () {
 		var battery_curve_eval = battery_curve.Evaluate(1.0-battery_life_remaining/max_battery_life);
 		transform.FindChild("Pointlight").gameObject.GetComponent(Light).intensity = initial_pointlight_intensity * battery_curve_eval * 8.0;
 		transform.FindChild("Spotlight").gameObject.GetComponent(Light).intensity = initial_spotlight_intensity * battery_curve_eval * 3.0;
+		transform.FindChild("Pointlight").gameObject.GetComponent(Light).enabled = true;
+		transform.FindChild("Spotlight").gameObject.GetComponent(Light).enabled = true;
 	} else {
-		transform.FindChild("Pointlight").gameObject.GetComponent(Light).intensity = 0.0;
-		transform.FindChild("Spotlight").gameObject.GetComponent(Light).intensity = 0.0;
+		transform.FindChild("Pointlight").gameObject.GetComponent(Light).enabled = false;
+		transform.FindChild("Spotlight").gameObject.GetComponent(Light).enabled = false;
 	}
 	if(rigidbody){
+		transform.FindChild("Pointlight").light.enabled = true;
 		transform.FindChild("Pointlight").light.intensity = 1.0 + Mathf.Sin(Time.time * 2.0);
 		transform.FindChild("Pointlight").light.range = 1.0;
 	} else {
