@@ -186,16 +186,6 @@ function Start () {
 		}
 	}
 	
-	if(transform.FindChild("safety")){
-		has_safety = true;
-		safety_rel_pos = transform.FindChild("safety").localPosition;
-		safety_rel_rot = transform.FindChild("safety").localRotation;
-		if(Random.Range(0,2) == 0){
-			safety_off = 0.0;
-			safety = Safety.ON;
-		}
-	}
-	
 	if(gun_type == GunType.AUTOMATIC){
 		magazine_instance_in_gun = Instantiate(magazine_obj);
 		magazine_instance_in_gun.transform.parent = transform;
@@ -243,6 +233,19 @@ function Start () {
 	if(Random.Range(0,2) == 0 && has_hammer){
 		hammer_cocked = 0.0;
 	}
+	
+	if(transform.FindChild("safety")){
+		has_safety = true;
+		safety_rel_pos = transform.FindChild("safety").localPosition;
+		safety_rel_rot = transform.FindChild("safety").localRotation;
+		if(Random.Range(0,4) == 0){
+			safety_off = 0.0;
+			safety = Safety.ON;
+			slide_amount = 0.0;
+			slide_lock = false;
+		}
+	}
+	
 }
 
 function MagScript() : mag_script {
@@ -479,11 +482,14 @@ function ToggleSafety() {
 	if(!has_safety){
 		return false;
 	}
-	PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
 	if(safety == Safety.OFF){
-		safety = Safety.ON;
+		if(slide_amount == 0.0 && hammer_cocked == 1.0){
+			safety = Safety.ON;
+			PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
+		}
 	} else if(safety == Safety.ON){
 		safety = Safety.OFF;
+		PlaySoundFromGroup(sound_safety, kGunMechanicVolume);
 	}
 }
 
