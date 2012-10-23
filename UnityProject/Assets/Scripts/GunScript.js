@@ -936,6 +936,9 @@ function Update () {
 	}
 	
 	if(gun_type == GunType.REVOLVER){
+		if(yolk_stage == YolkStage.CLOSED && hammer_cocked == 1.0){
+			target_cylinder_offset = 0;
+		}
 		if(target_cylinder_offset != 0.0){
 			var target_cylinder_rotation = ((active_cylinder + target_cylinder_offset) * 360.0 / cylinder_capacity);
 			cylinder_rotation = Mathf.Lerp(target_cylinder_rotation, cylinder_rotation, Mathf.Pow(0.2,Time.deltaTime));
