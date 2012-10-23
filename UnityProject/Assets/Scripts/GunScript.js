@@ -509,7 +509,7 @@ function PullBackSlide() {
 	if(gun_type != GunType.AUTOMATIC){
 		return false;
 	}
-	if(slide_stage != SlideStage.PULLBACK){
+	if(slide_stage != SlideStage.PULLBACK && safety == Safety.OFF){
 		slide_stage = SlideStage.PULLBACK;
 		slide_lock = false;
 	}
