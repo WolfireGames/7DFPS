@@ -103,6 +103,7 @@ private var kGunDistance = 0.3;
 
 private var slide_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var reload_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
+private var press_check_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var inspect_cylinder_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var add_rounds_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
 private var eject_rounds_pose_spring = new Spring(0,0,kAimSpringStrength, kAimSpringDamping);
@@ -595,6 +596,9 @@ function HandleGunControls(insert_mag_with_number_key : boolean) {
 	if(Input.GetButtonDown("Slide Lock")){
 		gun_script.ReleaseSlideLock();
 	}
+	if(Input.GetButtonUp("Slide Lock")){
+		gun_script.ReleasePressureOnSlideLock();
+	}
 	if(Input.GetButton("Slide Lock")){
 		gun_script.PressureOnSlideLock();
 	}
@@ -646,6 +650,7 @@ function HandleGunControls(insert_mag_with_number_key : boolean) {
 	
 	slide_pose_spring.target_state = 0.0;
 	reload_pose_spring.target_state = 0.0;
+	press_check_pose_spring.target_state = 0.0;
 	
 	if(gun_script.IsSafetyOn()){
 		reload_pose_spring.target_state = 0.2;
@@ -666,6 +671,11 @@ function HandleGunControls(insert_mag_with_number_key : boolean) {
 		} else {
 			reload_pose_spring.target_state = 1.0;
 		}
+	}
+	if(gun_script.IsPressCheck()){
+		slide_pose_spring.target_state = 0.0;
+		reload_pose_spring.target_state = 0.0;
+		press_check_pose_spring.target_state = 0.6;
 	}
 	
 	add_rounds_pose_spring.target_state = 0.0;
@@ -1123,6 +1133,7 @@ function UpdateGunTransformation() {
 	
 	ApplyPose("pose_slide_pull", slide_pose_spring.state);
 	ApplyPose("pose_reload", reload_pose_spring.state);
+	ApplyPose("pose_press_check", press_check_pose_spring.state);
 	ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
 	ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
 	ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state);
@@ -1181,7 +1192,7 @@ function UpdateFlashlightTransformation() {
 		flashlight_mouth_spring.target_state = 1.0;
 	}
 	flashlight_mouth_spring.target_state = Mathf.Max(flashlight_mouth_spring.target_state,
-		(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + (reload_pose_spring.state/0.7) + slide_pose_spring.state) * aim_spring.state);
+		(inspect_cylinder_pose_spring.state + eject_rounds_pose_spring.state + (press_check_pose_spring.state/0.6) + (reload_pose_spring.state/0.7) + slide_pose_spring.state) * aim_spring.state);
 	
 	flashlight_mouth_spring.Update();
 	
@@ -1297,6 +1308,7 @@ function UpdateLooseBulletDisplay() {
 function UpdateSprings() {	
 	slide_pose_spring.Update();
 	reload_pose_spring.Update();
+	press_check_pose_spring.Update();
 	inspect_cylinder_pose_spring.Update();
 	add_rounds_pose_spring.Update();
 	eject_rounds_pose_spring.Update();

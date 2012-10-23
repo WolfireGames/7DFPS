@@ -56,6 +56,7 @@ private var round_in_chamber_state = RoundState.READY;
 private var magazine_instance_in_gun:GameObject;
 private var mag_offset = 0.0;
 
+private var slide_pressure = false;
 private var slide_rel_pos : Vector3;
 private var slide_amount = 0.0;
 private var slide_lock = false;
@@ -75,7 +76,8 @@ private var safety_off = 1.0;
 enum Safety{OFF, ON};
 private var safety = Safety.OFF;
 
-private var kSlideLockPosition = 0.8;
+private var kSlideLockPosition = 0.9;
+private var kPressCheckPosition = 0.4;
 private var kSlideLockSpeed = 20.0;
 
 enum MagStage {OUT, INSERTING, IN, REMOVING};
@@ -455,8 +457,21 @@ function PressureOnSlideLock() {
 	if(gun_type != GunType.AUTOMATIC){
 		return false;
 	}
-	if(slide_amount > kSlideLockPosition){
+	if(slide_amount > kPressCheckPosition && slide_stage == SlideStage.PULLBACK){
 		slide_lock = true;
+	} else if(slide_amount > kSlideLockPosition){// && slide_stage == SlideStage.NOTHING){
+		slide_lock = true;
+	}
+}
+
+function ReleasePressureOnSlideLock() {
+	if(slide_amount == kPressCheckPosition){
+		slide_lock = false;
+		if(slide_pressure){
+			slide_stage = SlideStage.PULLBACK;
+		}
+	} else if(slide_amount == 1.0){
+		slide_lock = false;
 	}
 }
 
@@ -488,10 +503,11 @@ function PullBackSlide() {
 	if(gun_type != GunType.AUTOMATIC){
 		return false;
 	}
-	if(slide_stage == SlideStage.NOTHING){
+	if(slide_stage != SlideStage.PULLBACK){
 		slide_stage = SlideStage.PULLBACK;
 		slide_lock = false;
 	}
+	slide_pressure = true;
 }
 
 function ReleaseSlide() {
@@ -499,6 +515,7 @@ function ReleaseSlide() {
 		return false;
 	}
 	slide_stage = SlideStage.NOTHING;
+	slide_pressure = false;
 }
 
 function CockHammer(){
@@ -762,6 +779,14 @@ function RotateCylinder(how_many : int) {
 	target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, target_cylinder_offset));
 }
 
+function IsPressCheck() : boolean {
+	if(gun_type != GunType.AUTOMATIC){
+		return false;
+	}
+	return slide_amount <= kPressCheckPosition && 
+		((slide_stage == SlideStage.PULLBACK && slide_lock) || (slide_stage == SlideStage.HOLD));
+}
+
 function Update () {
 	if(gun_type == GunType.AUTOMATIC){
 		if(magazine_instance_in_gun){
@@ -833,6 +858,12 @@ function Update () {
 					slide_stage = SlideStage.HOLD;
 					PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
 				}
+				if(slide_amount >= kPressCheckPosition && slide_lock){
+					slide_amount = kPressCheckPosition;
+					slide_stage = SlideStage.HOLD;
+					slide_lock = false;
+					PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
+				}
 				if(slide_amount >= 1.0){
 					PullSlideBack();
 					slide_amount = 1.0;
@@ -895,7 +926,7 @@ function Update () {
 			if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
 				round_in_chamber_state = RoundState.READY;
 			}
-			if(slide_lock){
+			if(slide_lock && old_slide_amount >= kSlideLockPosition){
 				slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
 				if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
 					PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
