@@ -1,0 +1,35 @@
+RC7 changelog:
+- More realistic 1911 safety (locks slide, only engages when slide is closed and hammer cocked)
+- Cannot rotate revolver cylinder when it is closed and hammer is cocked
+- 1911 magazine holds seven shots instead of eight
+- More realistic press-check to see if a round is in the chamber (hold t, then hold r), does not engage slide lock anymore
+- 1911 and Glock slides move back farther
+- Fixed Glock magazine floorplate visible even when gun is empty
+
+RC6 changelog:
+- Added Mini Maglite flashlight
+- Added Glock 17 with auto mod
+- Added Smith & Wesson Model 10 Victory revolver
+- Added option to bring guns closer to eye
+- Added a small chance to disable robots with non-vital hits
+
+RC5 changelog:
+- In-game options menu when you press escape
+--- separate volume controls for master/sound/voice/music
+--- mouse invert
+--- mouse sensitivity
+--- lock gun to center
+--- hold/toggle crouch
+- Fixed gun sight picture so all sights are level
+
+RC4 changelog:
+- Fixed problem with falling through the floor in one of the rooms
+- You can now remove rounds from a magazine with 'r' when gun is holstered (e.g. to combine two half-full magazines)
+- Made hover bots louder so they are easier to detect
+- Added a restart-game button in case you get stuck (hold 'L')
+- Fixed problem inability to run when gun is holstered
+- Disabled gun shadow (players report that it is weird to see a gun shadow without a body shadow)
+- Mouse cursor disappears automatically when alt-tabbing into the game
+- Splash screen correctly fades to black when starting new game
+- More descriptive input names in configuration window
+- Brighter muzzle flash illumination

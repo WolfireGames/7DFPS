@@ -2,11 +2,11 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GUISkinHolder.js">
     <Files>
-      <File FileName="Assets\Scripts\GunScript.js" Line="536" Column="3" />
+      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="22" Column="2" />
+      <File FileName="Assets\Scripts\GunScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\LevelCreatorScript.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\AimScript.js" Line="1134" Column="28" />
-      <File FileName="Assets\Scripts\GUISkinHolder.js" Line="17" Column="4" />
-      <File FileName="Assets\Scripts\FlashlightScript.js" Line="16" Column="2" />
+      <File FileName="Assets\Scripts\AimScript.js" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\FlashlightScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\BulletPileScript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\optionsmenuscript.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\RobotScript.js" Line="1" Column="1" />
