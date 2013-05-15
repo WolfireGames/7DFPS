@@ -49,9 +49,9 @@ enum PressureState {NONE, INITIAL, CONTINUING};
 var pressure_on_trigger = PressureState.NONE;
 var trigger_pressed = 0.0;
 
-private var round_in_chamber:GameObject;
+private var active_round:GameObject;
 enum RoundState {EMPTY, READY, FIRED, LOADING, JAMMED};
-private var round_in_chamber_state = RoundState.READY;
+private var active_round_state = RoundState.READY;
 
 private var magazine_instance_in_gun:GameObject;
 private var mag_offset = 0.0;
@@ -196,16 +196,17 @@ function Start () {
 		}
 		
 		if(Random.Range(0,2) == 0){
-			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
-			round_in_chamber.transform.parent = transform;
-			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
-			renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+			active_round = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
+			active_round.transform.parent = transform;
+			active_round.transform.localScale = Vector3(1.0,1.0,1.0);
+			renderers = active_round.GetComponentsInChildren(Renderer);
 			for(var renderer : Renderer in renderers){
 				renderer.castShadows = false; 
 			}
 		}
 		
-		if(Random.Range(0,2) == 0){
+		if(Random.Range(0,2) == 0 && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0){
+			active_round_state = RoundState.LOADING;
 			slide_amount = kSlideLockPosition;
 			slide_lock = true;
 		}
@@ -256,11 +257,11 @@ function ShouldPullSlide() {
 	if(gun_type != GunType.AUTOMATIC){
 		return false;
 	}
-	return (!round_in_chamber && magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0);
+	return (!active_round && magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0);
 }
 
 function ShouldReleaseSlideLock() {
-	return (round_in_chamber && slide_lock);
+	return (active_round && slide_lock);
 }
 
 function ShouldEjectMag() {
@@ -275,16 +276,15 @@ function ChamberRoundFromMag() : boolean {
 		return false;
 	}
 	if(magazine_instance_in_gun && MagScript().NumRounds() > 0 && mag_stage == MagStage.IN){
-		if(!round_in_chamber){
-			MagScript().RemoveRound();
-			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_load_round").position, transform.FindChild("point_load_round").rotation);
-			var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+		if(!active_round){
+			active_round = Instantiate(casing_with_bullet, transform.FindChild("point_load_round").position, transform.FindChild("point_load_round").rotation);
+			var renderers = active_round.GetComponentsInChildren(Renderer);
 			for(var renderer : Renderer in renderers){
 				renderer.castShadows = false; 
 			}
-			round_in_chamber.transform.parent = transform;
-			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
-			round_in_chamber_state = RoundState.LOADING;
+			active_round.transform.parent = transform;
+			active_round.transform.localScale = Vector3(1.0,1.0,1.0);
+			active_round_state = RoundState.LOADING;
 		}
 		return true;
 	} else {
@@ -301,15 +301,15 @@ function PullSlideBack() {
 		return;
 	}
 	slide_lock = false;
-	if(round_in_chamber && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
-		round_in_chamber.AddComponent(Rigidbody);
+	if(active_round && (active_round_state == RoundState.FIRED || active_round_state == RoundState.READY)){
+		active_round.AddComponent(Rigidbody);
 		PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
-		round_in_chamber.transform.parent = null;
-		round_in_chamber.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-		round_in_chamber.rigidbody.velocity = velocity;
-		round_in_chamber.rigidbody.velocity += transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
-		round_in_chamber.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
-		round_in_chamber = null;
+		active_round.transform.parent = null;
+		active_round.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+		active_round.rigidbody.velocity = velocity;
+		active_round.rigidbody.velocity += transform.rotation * Vector3(Random.Range(2.0,4.0),Random.Range(1.0,2.0),Random.Range(-1.0,-3.0));
+		active_round.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
+		active_round = null;
 	}
 	if(!ChamberRoundFromMag() && mag_stage == MagStage.IN){
 		slide_lock = true;
@@ -363,14 +363,14 @@ function ApplyPressureToTrigger() : boolean {
 		trigger_pressed = 1.0;
 		if(gun_type == GunType.AUTOMATIC && slide_amount == 0.0){
 			hammer_cocked = 0.0;
-			if(round_in_chamber && round_in_chamber_state == RoundState.READY){
+			if(active_round && active_round_state == RoundState.READY){
 				fired_once_this_pull = true;
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
-				round_in_chamber_state = RoundState.FIRED;
-				GameObject.Destroy(round_in_chamber);
-				round_in_chamber = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
-				round_in_chamber.transform.parent = transform;
-				var renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+				active_round_state = RoundState.FIRED;
+				GameObject.Destroy(active_round);
+				active_round = Instantiate(shell_casing, transform.FindChild("point_chambered_round").position, transform.rotation);
+				active_round.transform.parent = transform;
+				var renderers = active_round.GetComponentsInChildren(Renderer);
 				for(var renderer : Renderer in renderers){
 					renderer.castShadows = false; 
 				}
@@ -397,7 +397,6 @@ function ApplyPressureToTrigger() : boolean {
 			var round = cylinders[which_chamber].object;
 			if(round && cylinders[which_chamber].can_fire){
 				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0);
-				round_in_chamber_state = RoundState.FIRED;
 				cylinders[which_chamber].can_fire = false;
 				cylinders[which_chamber].seated += Random.Range(0.0,0.5);
 				cylinders[which_chamber].object = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
@@ -439,6 +438,10 @@ function MagEject() : boolean {
 		return false;
 	}
 	PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
+	if(active_round_state == RoundState.LOADING){
+		GameObject.Destroy(active_round);
+		active_round_state = RoundState.EMPTY;
+	}
 	if(mag_stage != MagStage.OUT){
 		mag_stage = MagStage.REMOVING;
 		PlaySoundFromGroup(sound_mag_ejection, kGunMechanicVolume);
@@ -872,7 +875,6 @@ function Update () {
 				}
 				if(slide_amount >= 1.0){
 					PullSlideBack();
-					slide_amount = 1.0;
 					slide_stage = SlideStage.HOLD;
 					PlaySoundFromGroup(sound_slide_back, kGunMechanicVolume);
 				}
@@ -924,13 +926,14 @@ function Update () {
 			slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
 			if(!slide_lock && slide_amount == 0.0 && old_slide_amount != 0.0){
 				PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
-				if(round_in_chamber){
-					round_in_chamber.transform.position = transform.FindChild("point_chambered_round").position;
-					round_in_chamber.transform.rotation = transform.FindChild("point_chambered_round").rotation;
+				if(active_round){
+					active_round.transform.position = transform.FindChild("point_chambered_round").position;
+					active_round.transform.rotation = transform.FindChild("point_chambered_round").rotation;
 				}
 			}
-			if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
-				round_in_chamber_state = RoundState.READY;
+			if(slide_amount == 0.0 && active_round_state == RoundState.LOADING){
+				MagScript().RemoveRound();
+				active_round_state = RoundState.READY;
 			}
 			if(slide_lock && old_slide_amount >= kSlideLockPosition){
 				slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
