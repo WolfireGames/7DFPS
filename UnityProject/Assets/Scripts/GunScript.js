@@ -77,6 +77,7 @@ enum Safety{OFF, ON};
 private var safety = Safety.OFF;
 
 private var kSlideLockPosition = 0.9;
+private var kFeedPosition = 0.6;
 private var kPressCheckPosition = 0.4;
 private var kSlideLockSpeed = 20.0;
 
@@ -196,18 +197,20 @@ function Start () {
 		}
 		
 		if(Random.Range(0,2) == 0){
-			round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
-			round_in_chamber.transform.parent = transform;
-			round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
-			renderers = round_in_chamber.GetComponentsInChildren(Renderer);
-			for(var renderer : Renderer in renderers){
-				renderer.castShadows = false; 
-			}
-		}
-		
-		if(Random.Range(0,2) == 0){
 			slide_amount = kSlideLockPosition;
 			slide_lock = true;
+		}
+		
+		if(!slide_lock){
+			if(Random.Range(0,2) == 0){
+				round_in_chamber = Instantiate(casing_with_bullet, transform.FindChild("point_chambered_round").position, transform.FindChild("point_chambered_round").rotation);
+				round_in_chamber.transform.parent = transform;
+				round_in_chamber.transform.localScale = Vector3(1.0,1.0,1.0);
+				renderers = round_in_chamber.GetComponentsInChildren(Renderer);
+				for(var renderer : Renderer in renderers){
+					renderer.castShadows = false; 
+				}
+			}
 		}
 	}
 	
@@ -230,7 +233,7 @@ function Start () {
 		}
 	}
 	
-	if(Random.Range(0,2) == 0 && has_hammer){
+	if(Random.Range(0,2) == 0 && has_hammer && !slide_lock){
 		hammer_cocked = 0.0;
 	}
 	
@@ -260,7 +263,7 @@ function ShouldPullSlide() {
 }
 
 function ShouldReleaseSlideLock() {
-	return (round_in_chamber && slide_lock);
+	return (slide_lock && magazine_instance_in_gun && magazine_instance_in_gun.GetComponent(mag_script).NumRounds()>0);
 }
 
 function ShouldEjectMag() {
@@ -311,7 +314,7 @@ function PullSlideBack() {
 		round_in_chamber.rigidbody.angularVelocity = Vector3(Random.Range(-40.0,40.0),Random.Range(-40.0,40.0),Random.Range(-40.0,40.0));
 		round_in_chamber = null;
 	}
-	if(!ChamberRoundFromMag() && mag_stage == MagStage.IN){
+	if(magazine_instance_in_gun && MagScript().NumRounds() == 0 && mag_stage == MagStage.IN){
 		slide_lock = true;
 	}
 }
@@ -810,9 +813,6 @@ function Update () {
 			if(mag_seated >= 1.0){
 				mag_seated = 1.0;
 				mag_stage = MagStage.IN;
-				if(slide_amount > 0.7){
-					ChamberRoundFromMag();
-				}
 				recoil_transfer_y += Random.Range(-40.0,40.0);
 				recoil_transfer_x += Random.Range(50.0,300.0);
 				rotation_transfer_x += Random.Range(-0.4,0.4);
@@ -921,22 +921,29 @@ function Update () {
 	if(has_slide){
 		if(slide_stage == SlideStage.NOTHING){
 			var old_slide_amount = slide_amount;
-			slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
-			if(!slide_lock && slide_amount == 0.0 && old_slide_amount != 0.0){
-				PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
-				if(round_in_chamber){
-					round_in_chamber.transform.position = transform.FindChild("point_chambered_round").position;
-					round_in_chamber.transform.rotation = transform.FindChild("point_chambered_round").rotation;
+			if(slide_lock){
+				var new_slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+				if(old_slide_amount >= kSlideLockPosition){
+					slide_amount = Mathf.Max(kSlideLockPosition, new_slide_amount);
+					if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
+						PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
+					}
+				}
+			} else {
+				slide_amount = Mathf.Max(0.0, slide_amount - Time.deltaTime * kSlideLockSpeed);
+				if(slide_amount < kFeedPosition && old_slide_amount >= kFeedPosition){
+					ChamberRoundFromMag();
+				}
+				if(slide_amount == 0.0 && old_slide_amount != 0.0){
+					PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume*1.5);
+					if(round_in_chamber){
+						round_in_chamber.transform.position = transform.FindChild("point_chambered_round").position;
+						round_in_chamber.transform.rotation = transform.FindChild("point_chambered_round").rotation;
+					}
 				}
 			}
 			if(slide_amount == 0.0 && round_in_chamber_state == RoundState.LOADING){
 				round_in_chamber_state = RoundState.READY;
-			}
-			if(slide_lock && old_slide_amount >= kSlideLockPosition){
-				slide_amount = Mathf.Max(kSlideLockPosition, slide_amount);
-				if(old_slide_amount != kSlideLockPosition && slide_amount == kSlideLockPosition){
-					PlaySoundFromGroup(sound_slide_front, kGunMechanicVolume);
-				}
 			}
 		}
 	}
