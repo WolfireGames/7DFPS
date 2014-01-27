@@ -38,7 +38,8 @@ private var max_angle_y = 89.0;
 private var holder : GUISkinHolder;
 private var weapon_holder : WeaponHolder;
 
-var disable_springs = true;
+var disable_springs = false; 
+var disable_recoil = true;
 
 // Private variables
 
@@ -47,9 +48,9 @@ public class Spring {
 	var target_state : float;
 	var vel : float;
 	var strength : float;
-	var damping : float;
+	var damping : float; 
 	public function Spring(state : float, target_state : float, strength : float, damping : float){
-		this.Set(state, target_state, strength, damping);
+		this.Set(state, target_state, strength, damping); 
 	}
 	public function Set(state : float, target_state : float, strength : float, damping : float){
 		this.state = state;
@@ -58,10 +59,15 @@ public class Spring {
 		this.damping = damping;
 		this.vel = 0.0;		
 	}
-	public function Update() {
-		this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
-		this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
-		this.state += this.vel * Time.deltaTime;	
+	public function Update() {  
+		var linear_springs = true;
+		if(linear_springs){
+			this.state = Mathf.MoveTowards(this.state, this.target_state, this.strength * Time.deltaTime * 0.05);
+		} else {	 
+			this.vel += (this.target_state - this.state) * this.strength * Time.deltaTime;
+			this.vel *= Mathf.Pow(this.damping, Time.deltaTime);
+			this.state += this.vel * Time.deltaTime;
+		}
 	}
 };
 
@@ -273,7 +279,9 @@ function AddLooseBullet(spring:boolean) {
 	}
 }
 
-function Start() {
+function Start() { 
+	disable_springs = false; 
+	disable_recoil = true;
 	holder = GameObject.Find("gui_skin_holder").GetComponent(GUISkinHolder);
 	weapon_holder = holder.weapon.GetComponent(WeaponHolder);
 	magazine_obj = weapon_holder.mag_object;
@@ -1116,7 +1124,9 @@ function UpdateCameraRotationControls() {
 
 function UpdateCameraAndPlayerTransformation() {
 	main_camera.transform.localEulerAngles = Vector3(-view_rotation_y, view_rotation_x, head_tilt);
-	main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0);
+	if(!disable_recoil){
+		main_camera.transform.localEulerAngles += Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0); 
+	}
 	character_controller.transform.localEulerAngles.y = view_rotation_x;
 	main_camera.transform.position = transform.position;
 	main_camera.transform.position.y += character_controller.height * character_controller.transform.localScale.y - 0.1;
@@ -1153,16 +1163,18 @@ function UpdateGunTransformation() {
 		ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
 		ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state); 
 	}
+	
+	if(!disable_recoil){		
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			gun_instance.transform.rotation * Vector3(1,0,0),
+			x_recoil_spring.state);
 			
-	gun_instance.transform.RotateAround(
-		gun_instance.transform.FindChild("point_recoil_rotate").position,
-		gun_instance.transform.rotation * Vector3(1,0,0),
-		x_recoil_spring.state);
-		
-	gun_instance.transform.RotateAround(
-		gun_instance.transform.FindChild("point_recoil_rotate").position,
-		Vector3(0,1,0),
-		y_recoil_spring.state);
+		gun_instance.transform.RotateAround(
+			gun_instance.transform.FindChild("point_recoil_rotate").position,
+			Vector3(0,1,0),
+			y_recoil_spring.state); 
+	}
 }
 
 function UpdateFlashlightTransformation() {

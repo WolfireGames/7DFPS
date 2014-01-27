@@ -108,7 +108,7 @@ private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
 private var extracted = false;
 private var extractor_rod_rel_pos : Vector3;
-var disable_springs = true;
+var disable_springs = false;
 
 class CylinderState {
 	var object : GameObject = null;
@@ -153,6 +153,7 @@ function GetHammerCocked() : Transform {
 }
 
 function Start () {
+	disable_springs = false;
 	if(transform.FindChild("slide")){
 		var slide = transform.FindChild("slide");
 		has_slide = true;
@@ -1060,17 +1061,23 @@ function Update () {
 			extractor_rod_stage = ExtractorRodStage.CLOSING;
 		}
 			
+		var yolk_open_display = yolk_open;
+		var extractor_rod_amount_display = extractor_rod_amount;
+		if(disable_springs){
+			yolk_open_display = Mathf.Floor(yolk_open_display + 0.5);
+			extractor_rod_amount_display = Mathf.Floor(extractor_rod_amount_display + 0.5);
+		}
 		var yolk_pivot = transform.FindChild("yolk_pivot");
 		yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, 
 			transform.FindChild("point_yolk_pivot_open").localRotation,
-			yolk_open);
+			yolk_open_display);
 		var cylinder_assembly = yolk_pivot.FindChild("yolk").FindChild("cylinder_assembly");
 		cylinder_assembly.localRotation.eulerAngles.z = cylinder_rotation;	
 		var extractor_rod = cylinder_assembly.FindChild("extractor_rod");
 		extractor_rod.localPosition = Vector3.Lerp(
 			extractor_rod_rel_pos, 
 			cylinder_assembly.FindChild("point_extractor_rod_extended").localPosition,
-		    extractor_rod_amount);	
+		    extractor_rod_amount_display);	
 	
 		for(i=0; i<cylinder_capacity; ++i){
 			if(cylinders[i].object){
