@@ -108,6 +108,7 @@ private var extractor_rod_stage = ExtractorRodStage.CLOSED;
 private var extractor_rod_amount = 0.0;
 private var extracted = false;
 private var extractor_rod_rel_pos : Vector3;
+var disable_springs = true;
 
 class CylinderState {
 	var object : GameObject = null;
@@ -798,9 +799,13 @@ function Update () {
 		if(magazine_instance_in_gun){
 			var mag_pos = transform.FindChild("point_mag_inserted").position;
 			var mag_rot = transform.rotation;
+			var mag_seated_display = mag_seated;
+			if(disable_springs){
+				mag_seated_display = Mathf.Floor(mag_seated_display + 0.5);
+			}
 			mag_pos += (transform.FindChild("point_mag_to_insert").position - 
 					    transform.FindChild("point_mag_inserted").position) * 
-					   (1.0 - mag_seated);
+					   (1.0 - mag_seated_display);
 		   magazine_instance_in_gun.transform.position = mag_pos;
 		   magazine_instance_in_gun.transform.rotation = mag_rot;
 		}
@@ -879,32 +884,51 @@ function Update () {
 			}
 		}	
 		
+		var slide_amount_display = slide_amount;
+		if(disable_springs){
+			slide_amount_display = Mathf.Floor(slide_amount_display + 0.5);
+			if(slide_amount == kPressCheckPosition){
+				slide_amount_display = kPressCheckPosition;
+			}
+		}
 		transform.FindChild("slide").localPosition = 
 			slide_rel_pos + 
 			(transform.FindChild("point_slide_end").localPosition - 
-			 transform.FindChild("point_slide_start").localPosition) * slide_amount;
+			 transform.FindChild("point_slide_start").localPosition) * slide_amount_display;
 	}
 	
 	if(has_hammer){
 		var hammer = GetHammer();
 		var point_hammer_cocked = transform.FindChild("point_hammer_cocked");
+		var hammer_cocked_display = hammer_cocked;
+		if(disable_springs){
+			hammer_cocked_display = Mathf.Floor(hammer_cocked_display + 0.5);
+		}
 		hammer.localPosition = 
-			Vector3.Lerp(hammer_rel_pos, point_hammer_cocked.localPosition, hammer_cocked);
+			Vector3.Lerp(hammer_rel_pos, point_hammer_cocked.localPosition, hammer_cocked_display);
 		hammer.localRotation = 
-			Quaternion.Slerp(hammer_rel_rot, point_hammer_cocked.localRotation, hammer_cocked);
+			Quaternion.Slerp(hammer_rel_rot, point_hammer_cocked.localRotation, hammer_cocked_display);
 	}
 		
 	if(has_safety){
+		var safety_off_display = safety_off;
+		if(disable_springs){
+			safety_off_display = Mathf.Floor(safety_off_display + 0.5);
+		}
 		transform.FindChild("safety").localPosition = 
-			Vector3.Lerp(safety_rel_pos, transform.FindChild("point_safety_off").localPosition, safety_off);
+			Vector3.Lerp(safety_rel_pos, transform.FindChild("point_safety_off").localPosition, safety_off_display);
 		transform.FindChild("safety").localRotation = 
-			Quaternion.Slerp(safety_rel_rot, transform.FindChild("point_safety_off").localRotation, safety_off);
+			Quaternion.Slerp(safety_rel_rot, transform.FindChild("point_safety_off").localRotation, safety_off_display);
 	}
 	
 	if(has_auto_mod){
+		var auto_mod_amount_display = auto_mod_amount;
+		if(disable_springs){
+			auto_mod_amount_display = Mathf.Floor(auto_mod_amount_display + 0.5);
+		}
 		var slide = transform.FindChild("slide");
 		slide.FindChild("auto mod toggle").localPosition = 
-			Vector3.Lerp(auto_mod_rel_pos, slide.FindChild("point_auto_mod_enabled").localPosition, auto_mod_amount);
+			Vector3.Lerp(auto_mod_rel_pos, slide.FindChild("point_auto_mod_enabled").localPosition, auto_mod_amount_display);
 	}
 			
 	if(gun_type == GunType.AUTOMATIC){
