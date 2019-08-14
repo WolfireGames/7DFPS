@@ -1,0 +1,159 @@
+fileFormatVersion: 2
+guid: e7b4a4b7cbdf22946a66b89250cf6235
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: slide
+    100002: magazine release
+    100004: recoil spring plug
+    100006: //RootNode
+    100008: trigger
+    100010: reciever
+    100012: stock
+    100014: slide stop
+    100016: grip safety
+    100018: hammer
+    100020: recoil spring
+    100022: plunger tube
+    100024: safety
+    100026: recoil spring guide
+    100028: barrel bushing
+    100030: barrel
+    400000: slide
+    400002: magazine release
+    400004: recoil spring plug
+    400006: //RootNode
+    400008: trigger
+    400010: reciever
+    400012: stock
+    400014: slide stop
+    400016: grip safety
+    400018: hammer
+    400020: recoil spring
+    400022: plunger tube
+    400024: safety
+    400026: recoil spring guide
+    400028: barrel bushing
+    400030: barrel
+    2300000: slide
+    2300002: magazine release
+    2300004: recoil spring plug
+    2300006: trigger
+    2300008: reciever
+    2300010: stock
+    2300012: slide stop
+    2300014: grip safety
+    2300016: hammer
+    2300018: recoil spring
+    2300020: plunger tube
+    2300022: safety
+    2300024: recoil spring guide
+    2300026: barrel bushing
+    2300028: barrel
+    3300000: slide
+    3300002: magazine release
+    3300004: recoil spring plug
+    3300006: trigger
+    3300008: reciever
+    3300010: stock
+    3300012: slide stop
+    3300014: grip safety
+    3300016: hammer
+    3300018: recoil spring
+    3300020: plunger tube
+    3300022: safety
+    3300024: recoil spring guide
+    3300026: barrel bushing
+    3300028: barrel
+    4300000: reciever
+    4300002: hammer
+    4300004: trigger
+    4300006: slide
+    4300008: barrel
+    4300010: slide stop
+    4300012: safety
+    4300014: magazine release
+    4300016: barrel bushing
+    4300018: grip safety
+    4300020: stock
+    4300022: recoil spring guide
+    4300024: recoil spring
+    4300026: recoil spring plug
+    4300028: plunger tube
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

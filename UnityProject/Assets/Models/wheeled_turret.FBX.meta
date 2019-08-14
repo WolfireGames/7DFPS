@@ -1,0 +1,209 @@
+fileFormatVersion: 2
+guid: c3169f247a631684d8109701740fc67a
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: Cylinder12
+    100002: battery
+    100004: base
+    100006: Box02
+    100008: Box04
+    100010: Cylinder13
+    100012: Cylinder10
+    100014: Cylinder15
+    100016: camera
+    100018: camera armor
+    100020: gun pivot
+    100022: gun
+    100024: Cylinder11
+    100026: Cylinder14
+    100028: //RootNode
+    100030: Tube04
+    100032: ammo box
+    100034: Tube03
+    100036: Tube01
+    100038: motion sensor
+    100040: motor
+    100042: Cylinder01
+    100044: Box03
+    100046: power cable
+    100048: motor battery
+    100050: Box01
+    400000: Cylinder12
+    400002: battery
+    400004: base
+    400006: Box02
+    400008: Box04
+    400010: Cylinder13
+    400012: Cylinder10
+    400014: Cylinder15
+    400016: camera
+    400018: camera armor
+    400020: gun pivot
+    400022: gun
+    400024: Cylinder11
+    400026: Cylinder14
+    400028: //RootNode
+    400030: Tube04
+    400032: ammo box
+    400034: Tube03
+    400036: Tube01
+    400038: motion sensor
+    400040: motor
+    400042: Cylinder01
+    400044: Box03
+    400046: power cable
+    400048: motor battery
+    400050: Box01
+    2300000: Cylinder12
+    2300002: battery
+    2300004: base
+    2300006: Box02
+    2300008: Box04
+    2300010: Cylinder13
+    2300012: Cylinder10
+    2300014: Cylinder15
+    2300016: camera
+    2300018: camera armor
+    2300020: gun pivot
+    2300022: gun
+    2300024: Cylinder11
+    2300026: Cylinder14
+    2300028: Tube04
+    2300030: ammo box
+    2300032: Tube03
+    2300034: Tube01
+    2300036: motion sensor
+    2300038: motor
+    2300040: Cylinder01
+    2300042: Box03
+    2300044: power cable
+    2300046: motor battery
+    2300048: Box01
+    3300000: Cylinder12
+    3300002: battery
+    3300004: base
+    3300006: Box02
+    3300008: Box04
+    3300010: Cylinder13
+    3300012: Cylinder10
+    3300014: Cylinder15
+    3300016: camera
+    3300018: camera armor
+    3300020: gun pivot
+    3300022: gun
+    3300024: Cylinder11
+    3300026: Cylinder14
+    3300028: Tube04
+    3300030: ammo box
+    3300032: Tube03
+    3300034: Tube01
+    3300036: motion sensor
+    3300038: motor
+    3300040: Cylinder01
+    3300042: Box03
+    3300044: power cable
+    3300046: motor battery
+    3300048: Box01
+    4300000: ammo box
+    4300002: gun
+    4300004: camera armor
+    4300006: camera
+    4300008: gun pivot
+    4300010: motion sensor
+    4300012: base
+    4300014: power cable
+    4300016: Cylinder10
+    4300018: battery
+    4300020: Tube01
+    4300022: Tube03
+    4300024: Box01
+    4300026: Box02
+    4300028: Box03
+    4300030: Cylinder01
+    4300032: Cylinder11
+    4300034: Cylinder12
+    4300036: Cylinder13
+    4300038: Box04
+    4300040: Cylinder14
+    4300042: Cylinder15
+    4300044: Tube04
+    4300046: motor
+    4300048: motor battery
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

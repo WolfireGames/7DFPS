@@ -12,6 +12,7 @@ Shader "Example/Custom Vertex Data" {
       };
       void vert (inout appdata_full v, out Input o) {
           o.customColor = abs(v.color);
+		  o.uv_MainTex = float2(0,0);
       }
       sampler2D _MainTex;
       void surf (Input IN, inout SurfaceOutput o) {

@@ -1,0 +1,138 @@
+fileFormatVersion: 2
+guid: 0722fb132b7b691429429d642a4e0d5a
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: two_tank_roof08
+    100002: glass 2 bed 2 bath01
+    100004: glass 1 bed 1 bath01
+    100006: //RootNode
+    100008: ramp02
+    100010: metal
+    100012: alcove steamtunnel01
+    100014: Object04
+    100016: 1 bed 1 bath01
+    100018: ' 1'
+    100020: Object02
+    100022: Object01
+    400000: two_tank_roof08
+    400002: glass 2 bed 2 bath01
+    400004: glass 1 bed 1 bath01
+    400006: //RootNode
+    400008: ramp02
+    400010: metal
+    400012: alcove steamtunnel01
+    400014: Object04
+    400016: 1 bed 1 bath01
+    400018: ' 1'
+    400020: Object02
+    400022: Object01
+    2300000: two_tank_roof08
+    2300002: glass 2 bed 2 bath01
+    2300004: glass 1 bed 1 bath01
+    2300006: ramp02
+    2300008: metal
+    2300010: alcove steamtunnel01
+    2300012: Object04
+    2300014: 1 bed 1 bath01
+    2300016: ' 1'
+    2300018: Object02
+    2300020: Object01
+    3300000: two_tank_roof08
+    3300002: glass 2 bed 2 bath01
+    3300004: glass 1 bed 1 bath01
+    3300006: ramp02
+    3300008: metal
+    3300010: alcove steamtunnel01
+    3300012: Object04
+    3300014: 1 bed 1 bath01
+    3300016: ' 1'
+    3300018: Object02
+    3300020: Object01
+    4300000: alcove steamtunnel01
+    4300002: 1 bed 1 bath01
+    4300004: glass 1 bed 1 bath01
+    4300006: two_tank_roof08
+    4300010: Object04
+    4300012: glass 2 bed 2 bath01
+    4300014: ramp02
+    4300016: metal
+    4300018: Object01
+    4300020: Object02
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

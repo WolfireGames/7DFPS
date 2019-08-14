@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 279e08473d2f17b4c9aa874900c4c352
+timeCreated: 18446744011573954816
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - destroy_effect: {fileID: 100002, guid: 25b4c9337037a8344976cf5a8529c6a0, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

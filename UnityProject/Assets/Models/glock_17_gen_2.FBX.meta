@@ -1,0 +1,144 @@
+fileFormatVersion: 2
+guid: 1ff3bf5998d0f7d42ab2b4c91aff887f
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: trigger
+    100002: frame
+    100004: slide
+    100006: auto mod toggle
+    100008: spring
+    100010: safety
+    100012: //RootNode
+    100014: slide lock
+    100016: barrel
+    100018: extractor
+    100020: slide release switches
+    100022: magazine release
+    100024: auto mod
+    400000: trigger
+    400002: frame
+    400004: slide
+    400006: auto mod toggle
+    400008: spring
+    400010: safety
+    400012: //RootNode
+    400014: slide lock
+    400016: barrel
+    400018: extractor
+    400020: slide release switches
+    400022: magazine release
+    400024: auto mod
+    2300000: trigger
+    2300002: frame
+    2300004: slide
+    2300006: auto mod toggle
+    2300008: spring
+    2300010: safety
+    2300012: slide lock
+    2300014: barrel
+    2300016: extractor
+    2300018: slide release switches
+    2300020: magazine release
+    2300022: auto mod
+    3300000: trigger
+    3300002: frame
+    3300004: slide
+    3300006: auto mod toggle
+    3300008: spring
+    3300010: safety
+    3300012: slide lock
+    3300014: barrel
+    3300016: extractor
+    3300018: slide release switches
+    3300020: magazine release
+    3300022: auto mod
+    4300000: slide
+    4300002: barrel
+    4300004: extractor
+    4300006: trigger
+    4300008: safety
+    4300010: magazine release
+    4300012: slide lock
+    4300014: auto mod
+    4300016: auto mod toggle
+    4300018: slide release switches
+    4300020: spring
+    4300022: frame
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,164 @@
+fileFormatVersion: 2
+guid: 6d26d7a5bb922064a851191baf99cba8
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: 1 bed 1 bath03
+    100002: Object08
+    100004: glass 1 bed loft 01
+    100006: two_tank_roof13
+    100008: //RootNode
+    100010: two_tank_roof17
+    100012: Object07
+    100014: glass 1 bed 1 bath03
+    100016: glass 1 bed 1 bath02
+    100018: metal02
+    100020: 1 bed 1 bath02
+    100022: glass 1 bed loft 02
+    100024: 1 bed loft02
+    100026: two_tank_roof16
+    100028: ramp01
+    100030: 1 bed loft01
+    100032: two_tank_roof07
+    400000: 1 bed 1 bath03
+    400002: Object08
+    400004: glass 1 bed loft 01
+    400006: two_tank_roof13
+    400008: //RootNode
+    400010: two_tank_roof17
+    400012: Object07
+    400014: glass 1 bed 1 bath03
+    400016: glass 1 bed 1 bath02
+    400018: metal02
+    400020: 1 bed 1 bath02
+    400022: glass 1 bed loft 02
+    400024: 1 bed loft02
+    400026: two_tank_roof16
+    400028: ramp01
+    400030: 1 bed loft01
+    400032: two_tank_roof07
+    2300000: 1 bed 1 bath03
+    2300002: Object08
+    2300004: glass 1 bed loft 01
+    2300006: two_tank_roof13
+    2300008: two_tank_roof17
+    2300010: Object07
+    2300012: glass 1 bed 1 bath03
+    2300014: glass 1 bed 1 bath02
+    2300016: metal02
+    2300018: 1 bed 1 bath02
+    2300020: glass 1 bed loft 02
+    2300022: 1 bed loft02
+    2300024: two_tank_roof16
+    2300026: ramp01
+    2300028: 1 bed loft01
+    2300030: two_tank_roof07
+    3300000: 1 bed 1 bath03
+    3300002: Object08
+    3300004: glass 1 bed loft 01
+    3300006: two_tank_roof13
+    3300008: two_tank_roof17
+    3300010: Object07
+    3300012: glass 1 bed 1 bath03
+    3300014: glass 1 bed 1 bath02
+    3300016: metal02
+    3300018: 1 bed 1 bath02
+    3300020: glass 1 bed loft 02
+    3300022: 1 bed loft02
+    3300024: two_tank_roof16
+    3300026: ramp01
+    3300028: 1 bed loft01
+    3300030: two_tank_roof07
+    4300000: two_tank_roof07
+    4300002: 1 bed loft01
+    4300004: glass 1 bed loft 01
+    4300006: two_tank_roof13
+    4300008: 1 bed 1 bath02
+    4300010: glass 1 bed 1 bath02
+    4300012: glass 1 bed 1 bath03
+    4300014: 1 bed 1 bath03
+    4300016: 1 bed loft02
+    4300018: glass 1 bed loft 02
+    4300020: two_tank_roof16
+    4300022: Object07
+    4300024: Object08
+    4300026: two_tank_roof17
+    4300028: ramp01
+    4300030: metal02
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

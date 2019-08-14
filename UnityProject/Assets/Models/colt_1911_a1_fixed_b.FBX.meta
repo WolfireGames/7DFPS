@@ -1,0 +1,159 @@
+fileFormatVersion: 2
+guid: bc62637c7d4815c4b88d258d2c0c1774
+timeCreated: 18446744011573954816
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: recoil spring guide
+    100002: plunger tube
+    100004: barrel bushing
+    100006: magazine release
+    100008: recoil spring plug
+    100010: barrel
+    100012: grip safety
+    100014: safety
+    100016: hammer
+    100018: trigger
+    100020: //RootNode
+    100022: stock
+    100024: reciever
+    100026: slide stop
+    100028: slide
+    100030: recoil spring
+    400000: recoil spring guide
+    400002: plunger tube
+    400004: barrel bushing
+    400006: magazine release
+    400008: recoil spring plug
+    400010: barrel
+    400012: grip safety
+    400014: safety
+    400016: hammer
+    400018: trigger
+    400020: //RootNode
+    400022: stock
+    400024: reciever
+    400026: slide stop
+    400028: slide
+    400030: recoil spring
+    2300000: recoil spring guide
+    2300002: plunger tube
+    2300004: barrel bushing
+    2300006: magazine release
+    2300008: recoil spring plug
+    2300010: barrel
+    2300012: grip safety
+    2300014: safety
+    2300016: hammer
+    2300018: trigger
+    2300020: stock
+    2300022: reciever
+    2300024: slide stop
+    2300026: slide
+    2300028: recoil spring
+    3300000: recoil spring guide
+    3300002: plunger tube
+    3300004: barrel bushing
+    3300006: magazine release
+    3300008: recoil spring plug
+    3300010: barrel
+    3300012: grip safety
+    3300014: safety
+    3300016: hammer
+    3300018: trigger
+    3300020: stock
+    3300022: reciever
+    3300024: slide stop
+    3300026: slide
+    3300028: recoil spring
+    4300000: slide
+    4300002: trigger
+    4300004: hammer
+    4300006: barrel
+    4300008: recoil spring
+    4300010: recoil spring plug
+    4300012: recoil spring guide
+    4300014: stock
+    4300016: reciever
+    4300018: barrel bushing
+    4300020: safety
+    4300022: slide stop
+    4300024: plunger tube
+    4300026: magazine release
+    4300028: grip safety
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
