@@ -1,8 +1,36 @@
-UnityProject/Temp/*
-UnityProject/Library/cache/*
-UnityProject/Library/previews/*
-UnityProject/Library/ScriptAssemblies/*
-*.suo
-*.user
-*.pidb
+
+# OS Generated
+# ============
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Visual Studio / MonoDevelop generated
+# =====================================
+[Ee]xported[Oo]bj/
 *.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+
+# Unity generated
+# ===============
+/UnityProject/[Tt]emp/
+/UnityProject/[Oo]bj/
+/UnityProject/[Bb]uild
+/UnityProject/[Bb]uilds/
+/UnityProject/[Ll]ibrary/
+/UnityProject/sysinfo.txt
+/UnityProject/*.stackdump
+/UnityProject/.vs/
+
+# Temp volder
