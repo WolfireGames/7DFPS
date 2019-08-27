@@ -41,7 +41,7 @@ public class ShellCasingScript:MonoBehaviour{
     			transform.position = hit.point;
     			transform.GetComponent<Rigidbody>().velocity *= -0.3f;
     		}
-    		if(life_time > 2.0f){
+    		if(life_time > 3.0f){
     			GetComponent<Rigidbody>().Sleep();
     		}
     	}
