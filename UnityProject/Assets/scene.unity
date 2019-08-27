@@ -222,7 +222,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1064218108}
   - component: {fileID: 1064218109}
-  - component: {fileID: 1064218111}
   - component: {fileID: 1064218112}
   - component: {fileID: 1064218110}
   - component: {fileID: 1064218113}
@@ -298,15 +297,6 @@ Camera:
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 8100000, guid: 9d4133d5d30b644bd87802a347eaccbe,
-    type: 2}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064218107}
-  m_Enabled: 1
---- !u!92 &1064218111
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 9200000, guid: 9d4133d5d30b644bd87802a347eaccbe,
     type: 2}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
