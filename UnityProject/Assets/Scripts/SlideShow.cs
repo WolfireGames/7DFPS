@@ -49,6 +49,7 @@ public class SlideShow : MonoBehaviour {
             if(fade_out == 1.0){
                 ++cur_slide;
                 if(cur_slide == slides.Length){
+                    Application.Quit();
                     UnityEngine.SceneManagement.SceneManager.LoadScene("splashscreen");
                 }
                 state = SplashState.FADE_IN;
