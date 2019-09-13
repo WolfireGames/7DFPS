@@ -21,6 +21,16 @@ public class RobotScript:MonoBehaviour{
     public AudioClip sound_unalert;
     public AudioClip sound_engine_loop;
     public AudioClip sound_damaged_engine_loop;
+
+    // Track bullet holes attached to robot
+    // We do this instead of parenting the transform to avoid scaling issues
+    class HoleAttachment {
+        public Transform hole_transform;
+        public Transform attached_part_transform;
+        public Vector3 local_position;
+        public Quaternion local_rotation;
+    }
+    List<HoleAttachment> attached_holes = new List<HoleAttachment>();
     
     AudioSource audiosource_taser;
     AudioSource audiosource_motor;
@@ -230,7 +240,16 @@ public class RobotScript:MonoBehaviour{
     	initial_pos = transform.position;	
     	target_pos = initial_pos;
     }
-    
+
+    internal void AttachHole(Transform hole_transform, Transform part_transform) {
+        var hole_attachment = new HoleAttachment();
+        hole_attachment.hole_transform = hole_transform;
+        hole_attachment.attached_part_transform = part_transform;
+        hole_attachment.local_position = part_transform.InverseTransformPoint(hole_transform.position);
+        hole_attachment.local_rotation = Quaternion.Inverse(part_transform.transform.rotation) * hole_transform.rotation;
+        attached_holes.Add(hole_attachment);
+    }
+
     public void UpdateStationaryTurret() {
     	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
     		GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;		
@@ -719,6 +738,12 @@ public class RobotScript:MonoBehaviour{
     			UpdateDrone();
     			break;
     	}
+        foreach(var hole in attached_holes){
+            if(hole.attached_part_transform != null && hole.hole_transform != null){
+                hole.hole_transform.position = hole.attached_part_transform.TransformPoint(hole.local_position);
+                hole.hole_transform.rotation = hole.attached_part_transform.rotation * hole.local_rotation;
+            }
+        }
     }
     
     public void OnCollisionEnter(Collision collision) {

@@ -340,7 +340,9 @@ public class GunScript:MonoBehaviour{
     	if((round_in_chamber != null) && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
     		round_in_chamber.AddComponent<Rigidbody>();
     		PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
-            round_in_chamber.transform.parent = level_creator.GetPositionTileItemParent(round_in_chamber.transform.position);
+            if(level_creator != null){
+                round_in_chamber.transform.parent = level_creator.GetPositionTileItemParent(round_in_chamber.transform.position);
+            }
     		round_in_chamber.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
     		round_in_chamber.GetComponent<Rigidbody>().velocity = velocity;
     		round_in_chamber.GetComponent<Rigidbody>().velocity += transform.rotation * new Vector3(UnityEngine.Random.Range(2.0f,4.0f),UnityEngine.Random.Range(1.0f,2.0f),UnityEngine.Random.Range(-1.0f,-3.0f));

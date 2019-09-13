@@ -110,8 +110,8 @@ public class BulletScript:MonoBehaviour{
     					}
     				}					
     			}
-    			if(hit_transform_obj.GetComponent<Rigidbody>()){
-    				hit_transform_obj.GetComponent<Rigidbody>().AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
+    			if(turret_script && turret_script.GetComponent<Rigidbody>()){
+    				turret_script.GetComponent<Rigidbody>().AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
     			}
     			if(light_script){
     				light_script.WasShot(hit_obj, hit.point, velocity);
@@ -123,7 +123,8 @@ public class BulletScript:MonoBehaviour{
                     GameObject hole = null;
                     GameObject effect;
     				if(turret_script){
-    					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0f : 0.8f);
+    					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0f : 0.8f);                        
+					    hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
     					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
     					turret_script.WasShot(hit_obj, hit.point, velocity);
     				} else if(aim_script){
@@ -145,12 +146,15 @@ public class BulletScript:MonoBehaviour{
     					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
     				}
     				effect.transform.position += hit.normal * 0.05f;
-    				if(hole && aim_script){
-    					hole.transform.parent = aim_script.main_camera.transform;
-    				}
-
-                    if(hole != null && level_creator != null) {
-                        hole.transform.parent = level_creator.GetPositionTileDecalsParent(hole.transform.position);
+                    if(hole != null){
+    				    if(aim_script){
+    					    hole.transform.parent = aim_script.main_camera.transform;
+    				    } else if(level_creator != null) {
+                            hole.transform.parent = level_creator.GetPositionTileDecalsParent(hole.transform.position);
+                        }
+                        if(turret_script){
+                            turret_script.AttachHole(hole.transform, hit.transform);
+                        }
                     }
     			}
     			hit_something = true;
