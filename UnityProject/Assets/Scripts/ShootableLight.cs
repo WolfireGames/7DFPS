@@ -14,7 +14,8 @@ public class ShootableLight:MonoBehaviour{
     
     float light_amount = 1.0f;
     
-    public void WasShot(GameObject obj,Vector3 pos,Vector3 vel) {
+    public bool WasShot(GameObject obj,Vector3 pos,Vector3 vel) {
+        bool broke_glass = false;
     	if(!destroyed){
     		destroyed = true;
     		light_amount = 0.0f;
@@ -23,7 +24,9 @@ public class ShootableLight:MonoBehaviour{
     	}
     	if((obj != null) && (obj.GetComponent<Collider>() != null) && obj.GetComponent<Collider>().material.name == "glass (Instance)"){
     		GameObject.Destroy(obj);
+            broke_glass = true;
     	}
+        return broke_glass;
     }
     
     public void UpdateLightColors() {

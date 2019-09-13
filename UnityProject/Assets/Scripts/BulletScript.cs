@@ -113,8 +113,9 @@ public class BulletScript:MonoBehaviour{
     			if(turret_script && turret_script.GetComponent<Rigidbody>()){
     				turret_script.GetComponent<Rigidbody>().AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
     			}
+                bool broke_glass = false;
     			if(light_script){
-    				light_script.WasShot(hit_obj, hit.point, velocity);
+    				broke_glass = light_script.WasShot(hit_obj, hit.point, velocity);
     				if(hit.collider.material.name == "glass (Instance)"){
     					PlaySoundFromGroup(sound_glass_break, 1.0f);
     				}
@@ -138,7 +139,9 @@ public class BulletScript:MonoBehaviour{
     					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
     				} else if(hit.collider.material.name == "glass (Instance)"){
     					PlaySoundFromGroup(sound_hit_glass, hostile ? 1.0f : 0.4f);
-    					hole = Instantiate(glass_bullet_hole_obj, hit.point, RandomOrientation());
+                        if(!broke_glass){ // Don't make bullet hole if glass is no longer there
+        					hole = Instantiate(glass_bullet_hole_obj, hit.point, RandomOrientation());
+                        }
     					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
     				} else {
     					PlaySoundFromGroup(sound_hit_concrete, hostile ? 1.0f : 0.4f);
