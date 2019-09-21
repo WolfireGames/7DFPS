@@ -523,7 +523,6 @@ GameObject:
   - component: {fileID: 2106325457}
   - component: {fileID: 2106325458}
   - component: {fileID: 2106325459}
-  - component: {fileID: 2106325460}
   m_Layer: 0
   m_Name: gui_skin_holder
   m_TagString: Untagged
@@ -686,31 +685,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!114 &2106325460
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2106325456}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8161f8d515d0172428125ac4c557179d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  show_menu: 0
-  menu: {fileID: 0}
-  menuOptions: {fileID: 0}
-  settings:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  postProcessVolume: {fileID: 1064218114}
