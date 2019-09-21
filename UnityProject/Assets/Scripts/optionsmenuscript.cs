@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-
 public class optionsmenuscript:MonoBehaviour{
-    public bool show_menu = false;
+    public static bool show_menu = false;
 
 	public GameObject menu;
 	public GameObject menuOptions;
-
-	public Component[] settings = new Component[0];
+    public GameObject optionsContent;
+    
+    private PostProcessVolume postProcessVolume;
     
     public void OnApplicationPause() {  
         Cursor.lockState = CursorLockMode.None;
@@ -26,6 +26,8 @@ public class optionsmenuscript:MonoBehaviour{
     public void Start() {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
 
         if(PlayerPrefs.GetInt("set_defaults", 1) == 1)
             RestoreDefaults();
@@ -66,7 +68,7 @@ public class optionsmenuscript:MonoBehaviour{
 		menu.SetActive(false);
     }
 
-    public bool IsMenuShown() {
+    public static bool IsMenuShown() {
     	return show_menu;
     }
     
@@ -79,13 +81,21 @@ public class optionsmenuscript:MonoBehaviour{
 	}
 
     public void UpdateUIValues() {
-		//Set UI values from preferences
-		foreach (var component in settings) {
-            if(component.GetType() == typeof(Slider))
-                ((Slider)component).value = PlayerPrefs.GetFloat(component.name, 1f);
-            else if(component.GetType() == typeof(Toggle))
-                ((Toggle)component).isOn = (PlayerPrefs.GetInt(component.name, 0) == 1);
-		}
+        foreach(Transform transform in optionsContent.transform) {
+            var gameObject = transform.gameObject;
+
+            // Update Sliders
+            var slider = gameObject.GetComponent<Slider>();
+            if(slider != null) {
+                slider.value = PlayerPrefs.GetFloat(slider.name, 1f);
+                continue; // Don't need to check for other Setting types
+            }
+
+            // Update toggles
+            var toggle = gameObject.GetComponent<Toggle>();
+            if(toggle != null)
+                toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
+        }
     }
 
     public void RestoreDefaults() {
@@ -110,7 +120,6 @@ public class optionsmenuscript:MonoBehaviour{
 		UnityEngine.Application.Quit();
 	}
 
-    public PostProcessVolume postProcessVolume;
     public void SetPostProcessingWeight(float weight) {
         postProcessVolume.weight = weight;
     }
