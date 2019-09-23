@@ -16,6 +16,8 @@ public class GUISkinHolder:MonoBehaviour{
     public GameObject weapon;
     public GameObject flashlight_object;
     public bool has_flashlight = false;
+
+    public GameObject pause_menu;
     
     public void Awake() {
     	//weapon = weapons[2];
@@ -23,6 +25,7 @@ public class GUISkinHolder:MonoBehaviour{
     }
     
     public void Start() {
+        Instantiate(pause_menu);
     }
     
     public void Update() {

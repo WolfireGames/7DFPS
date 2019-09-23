@@ -1317,7 +1317,7 @@ public class AimScript:MonoBehaviour{
     		sensitivity_y = Mathf.Abs(sensitivity_y);
     	}
     	
-    	bool in_menu = GameObject.Find("gui_skin_holder").GetComponent<optionsmenuscript>().IsMenuShown();
+    	bool in_menu = optionsmenuscript.IsMenuShown();
     	if(!dead && !in_menu){
     		rotation_x += character_input.GetAxis("Mouse X") * sensitivity_x;
     		rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
@@ -1623,7 +1623,7 @@ public class AimScript:MonoBehaviour{
     	}
     	UpdateInventoryTransformation();
     	UpdateLooseBulletDisplay();
-    	bool in_menu = GameObject.Find("gui_skin_holder").GetComponent<optionsmenuscript>().IsMenuShown();
+    	bool in_menu = optionsmenuscript.IsMenuShown();
     	if(!dead && !in_menu){
     		HandleControls();
     	}
