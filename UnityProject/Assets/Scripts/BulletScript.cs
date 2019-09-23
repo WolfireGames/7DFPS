@@ -152,12 +152,12 @@ public class BulletScript:MonoBehaviour{
                     if(hole != null){
     				    if(aim_script){
     					    hole.transform.parent = aim_script.main_camera.transform;
+                        } else if(turret_script){
+                            hole.transform.parent = turret_script.transform;
+                            turret_script.AttachHole(hole.transform, hit.transform);
     				    } else if(level_creator != null) {
                             hole.transform.parent = level_creator.GetPositionTileDecalsParent(hole.transform.position);
-                        }
-                        if(turret_script){
-                            turret_script.AttachHole(hole.transform, hit.transform);
-                        }
+                        } 
                     }
     			}
     			hit_something = true;
