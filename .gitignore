@@ -10,7 +10,7 @@ ehthumbs.db
 [Tt]humbs.db
 [Dd]esktop.ini
 
-# Visual Studio / MonoDevelop generated
+# Visual Studio / Visual Studio Code / MonoDevelop generated
 # =====================================
 [Ee]xported[Oo]bj/
 *.userprefs
@@ -21,6 +21,7 @@ ehthumbs.db
 *.user
 *.unityproj
 *.booproj
+/UnityProject/.vscode/
 
 # Unity generated
 # ===============
@@ -33,4 +34,8 @@ ehthumbs.db
 /UnityProject/*.stackdump
 /UnityProject/.vs/
 
-# Temp volder
+# Mod bundles
+# ===============
+/UnityProject/Assets/Mods/*/
+
+# Temp folder
