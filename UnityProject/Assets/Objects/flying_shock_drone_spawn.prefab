@@ -209,6 +209,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 400008}
+  - component: {fileID: 2415708851158524872}
   m_Layer: 10
   m_Name: flying_shock_drone_spawn
   m_TagString: Untagged
@@ -239,6 +240,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -369.50458, z: 0}
+--- !u!114 &2415708851158524872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adcf7a52e1efef64dab2f2a57ac6e6cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 0, b: 0, a: 1}
+  size: {x: 0.5, y: 0.4, z: 0.5}
+  offset: {x: 0, y: 0.2, z: 0}
 --- !u!1 &100010
 GameObject:
   m_ObjectHideFlags: 0
