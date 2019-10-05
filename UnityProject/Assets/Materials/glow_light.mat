@@ -29,5 +29,5 @@ Material:
     m_Floats:
     - _EmissionLM: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.15686275, g: 0.15686275, b: 0.15686275, a: 1}
     - _Illum: {r: 1, g: 1, b: 1, a: 1}
