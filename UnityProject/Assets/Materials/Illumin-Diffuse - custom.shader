@@ -1,31 +1,29 @@
 Shader "Self-Illumin/Diffuse" {
-Properties {
-	_Color ("Main Color", Color) = (1,1,1,1)
-	_Illum ("Illumin (A)", Color) = (1,1,1,1)
-}
-SubShader {
-	Tags { "RenderType"="Opaque" }
-	LOD 200
-	
-CGPROGRAM
-#pragma surface surf Lambert
+	Properties {
+		_Color ("Main Color", Color) = (.15,.15,.15,.15)
+		_Illum ("Illumin (A)", Color) = (1,1,1,1)
+	}
 
-sampler2D _MainTex;
-fixed4 _Illum;
-fixed4 _Color;
+	SubShader {
+		Tags { "RenderType"="Opaque" }
+		LOD 200
+		
+		CGPROGRAM
+		#pragma surface surf Lambert
 
-struct Input {
-	float2 uv_MainTex;
-};
+		fixed4 _Illum;
+		fixed4 _Color;
 
-void surf (Input IN, inout SurfaceOutput o) {
-	fixed4 tex = tex2D(_MainTex, IN.uv_MainTex);
-	fixed4 c = tex * _Color;
-	o.Albedo = c.rgb;
-	o.Emission = _Illum;
-	o.Alpha = c.a;
-}
-ENDCG
-} 
-FallBack "Self-Illumin/VertexLit"
+		struct Input {
+			float2 uv;
+		};
+
+		void surf (Input IN, inout SurfaceOutput o) {
+			o.Albedo = _Color.rgb;
+			o.Emission = _Illum;
+			o.Alpha = _Color.a;
+		}
+		ENDCG
+	} 
+	FallBack "Self-Illumin/VertexLit"
 }
