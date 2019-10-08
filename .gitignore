@@ -37,5 +37,7 @@ ehthumbs.db
 # Mod bundles
 # ===============
 /UnityProject/Assets/Mods/*/
+/UnityProject/Assets/Modding
+/UnityProject/Assets/Modding.meta
 
 # Temp folder

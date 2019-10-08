@@ -20,6 +20,7 @@ public class ModManager : MonoBehaviour {
                 LoadMod(mod);
         }
 
+        /*
         // Instantiate all custom mods
         foreach (var mod in loadedCustomMods) {
             var scriptHolder = Instantiate(mod.mainAsset);
@@ -27,7 +28,7 @@ public class ModManager : MonoBehaviour {
             scriptHolder.name = mod.name;
 
             scriptHolder.AddComponent(mod.GetScript());
-        }
+        } */
 
         // Insert all gun mods
         var guns = new List<GameObject>(guiSkinHolder.weapons);
@@ -112,15 +113,17 @@ public class ModManager : MonoBehaviour {
                     var assetPath = Path.Combine(path, bundleName);
                     Debug.Log($" - {bundleName}");
 
+                    /*
                     // Check if this mod has a custom script inside
                     var modBundle = AssetBundle.LoadFromFile(assetPath);
                     var hasScript = modBundle.Contains("scripts.bytes");
                     modBundle.Unload(true);
+                    */
 
                     // Generate Mod Object
                     var mod = new Mod(GetMainAssetName(modType), assetPath, modType);
                     mod.name = bundleName;
-                    mod.hasCustomScript = hasScript;
+                    //mod.hasCustomScript = hasScript;
 
                     availableMods.Add(mod);
                 }

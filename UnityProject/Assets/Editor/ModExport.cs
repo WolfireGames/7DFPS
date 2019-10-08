@@ -14,7 +14,7 @@ public class ModExport : MonoBehaviour {
         ExportBundle(ModType.LevelTile);
     }
 
-    [MenuItem("Wolfire/Modding/Export Custom Mod")]
+    //[MenuItem("Wolfire/Modding/Export Custom Mod")]
     public static void ExportCustom () {
         ExportBundle(ModType.Custom);
     }
