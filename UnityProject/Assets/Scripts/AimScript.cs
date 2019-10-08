@@ -1016,13 +1016,14 @@ public class AimScript:MonoBehaviour{
     	}
     	if(character_input.GetButtonDown("Slow Motion Toggle")){
     		if(slomo_mode) {
-				if(Time.timeScale == 1.0f)
-					Time.timeScale = 0.1f;
-				else
-					Time.timeScale = 1.0f;
-			} else {
-				slomoWarningDuration = 1f;
-			}
+    			if(Time.timeScale == 1.0f) {
+    				Time.timeScale = 0.1f;
+    			} else {
+    				Time.timeScale = 1.0f;
+    			}
+    		} else {
+    			slomoWarningDuration = 1f;
+    		}
     	}
     }
     
