@@ -6,7 +6,7 @@ public class LevelGizmoScript : MonoBehaviour {
     public Vector3 offset = Vector3.zero;
 
     public void OnDrawGizmos() {
-		Gizmos.color = color;
-		Gizmos.DrawWireCube(transform.position + offset, size);
-	}
+        Gizmos.color = color;
+        Gizmos.DrawWireCube(transform.position + offset, size);
+    }
 }
