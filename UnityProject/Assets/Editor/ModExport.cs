@@ -20,7 +20,7 @@ public class ModExport : MonoBehaviour {
     }
 
     public static void ExportBundle (ModType modType) {
-        var pathIn = EditorUtility.OpenFolderPanel("Select \"{modType.ToString()}\" Mod Folder", "Assets/", "");
+        var pathIn = EditorUtility.OpenFolderPanel($"Select \"{modType.ToString()}\" Mod Folder", "Assets/", "");
         var pathOut = $"Assets/Mods/{modType.ToString()}/modfile_{Path.GetFileName(pathIn)}";
         
         if(pathIn == "") // Happens when the user aborts path selection

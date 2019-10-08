@@ -14,6 +14,11 @@ public class ModManager : MonoBehaviour {
     public GUISkinHolder guiSkinHolder;
 
     public void Awake() {
+        //Make sure these folders are generated if they don't exist
+        Directory.CreateDirectory(Path.Combine(Application.dataPath, "Mods"));
+        GetModsFolder(ModType.Gun);
+        GetModsFolder(ModType.LevelTile);
+
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
             foreach (var mod in availableMods)
