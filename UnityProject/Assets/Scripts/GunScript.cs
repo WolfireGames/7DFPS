@@ -240,9 +240,9 @@ public class GunScript:MonoBehaviour{
     		}
     		
     		if(UnityEngine.Random.Range(0,2) == 0){
-				if(MagScript() && MagScript().NumRounds() > 0) {
-					round_in_chamber_state = RoundState.LOADING;
-				}
+    			if(MagScript() && MagScript().NumRounds() > 0) {
+    				round_in_chamber_state = RoundState.LOADING;
+    			}
     			slide_amount = kSlideLockPosition;
     			slide_lock = true;
     		}
@@ -485,10 +485,10 @@ public class GunScript:MonoBehaviour{
     		return false;
     	}
     	PlaySoundFromGroup(sound_mag_eject_button, kGunMechanicVolume);
-		if(round_in_chamber_state == RoundState.LOADING) {
-			GameObject.Destroy(round_in_chamber);
-			round_in_chamber_state = RoundState.EMPTY;
-		}
+    	if(round_in_chamber_state == RoundState.LOADING) {
+    		GameObject.Destroy(round_in_chamber);
+    		round_in_chamber_state = RoundState.EMPTY;
+    	}
     	if(mag_stage != MagStage.OUT){
     		mag_stage = MagStage.REMOVING;
     		PlaySoundFromGroup(sound_mag_ejection, kGunMechanicVolume);
@@ -983,7 +983,7 @@ public class GunScript:MonoBehaviour{
     				}
     			}
     			if(slide_amount == 0.0f && round_in_chamber_state == RoundState.LOADING){
-					MagScript().RemoveRound();
+    				MagScript().RemoveRound();
     				round_in_chamber_state = RoundState.READY;
     			}
     			if(slide_lock && old_slide_amount >= kSlideLockPosition){
