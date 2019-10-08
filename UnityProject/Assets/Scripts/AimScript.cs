@@ -1875,13 +1875,13 @@ public class AimScript:MonoBehaviour{
     			}
     			style.fontSize = 18;
     			style.normal.textColor = new Color(0.0f,0.0f,0.0f);
-    			GUI.Label(new Rect(width+0.5f,offset+0.5f,width+0.5f,offset+20+0.5f),line.str, style);
+    			GUI.Label(new Rect(width - 4f,offset+0.5f,width+0.5f,offset+20+0.5f),line.str, style);
     			if(line.bold){
     				style.normal.textColor = new Color(1.0f,1.0f,1.0f);
     			} else {
     				style.normal.textColor = new Color(0.7f,0.7f,0.7f);
     			}
-    			GUI.Label(new Rect(width,(float)offset,width,(float)(offset+30)),line.str, style);
+    			GUI.Label(new Rect(width - 4.5f,(float)offset,width,(float)(offset+30)),line.str, style);
     			offset += 20;
     		}
     		if(dead_fade > 0.0f){
