@@ -320,7 +320,7 @@ public class AimScript:MonoBehaviour{
     int unplayed_tapes = 0;
     
     // Cheats
-	bool hasCheated = false;
+    bool hasCheated = false;
     bool god_mode = false;
     bool slomo_mode = false;
     int iddqd_progress = 0;
@@ -1089,7 +1089,7 @@ public class AimScript:MonoBehaviour{
     	} else if(iddqd_progress == 4 && Input.GetKeyDown("d")){
     		iddqd_progress = 0;
     		god_mode = !god_mode;
-			hasCheated = true;
+    		hasCheated = true;
     		PlaySoundFromGroup(holder.sound_scream, 1.0f);
     	}
     	if(idkfa_progress == 0 && Input.GetKeyDown("i")){
@@ -1102,7 +1102,7 @@ public class AimScript:MonoBehaviour{
     		++idkfa_progress; cheat_delay = 1.0f;
     	} else if(idkfa_progress == 4 && Input.GetKeyDown("a")){
     		idkfa_progress = 0;
-			hasCheated = true;
+    		hasCheated = true;
     		if(loose_bullets.Count < 30){
     			PlaySoundFromGroup(sound_bullet_grab, 0.2f);
     		}
@@ -1122,7 +1122,7 @@ public class AimScript:MonoBehaviour{
     	} else if(slomo_progress == 4 && Input.GetKeyDown("o")){
     		slomo_progress = 0;
     		slomo_mode = true;
-			hasCheated = true;
+    		hasCheated = true;
     		if(Time.timeScale == 1.0f){
     			Time.timeScale = 0.1f;
     		} else {
@@ -1848,21 +1848,20 @@ public class AimScript:MonoBehaviour{
     			}
     		}
 
-			if(hasCheated) {
-				display_text.Add(new DisplayLine("", false));
-				display_text.Add(new DisplayLine("Cheats used", true));
+    		if(hasCheated) {
+    			display_text.Add(new DisplayLine("", false));
+    			display_text.Add(new DisplayLine("Cheats used", true));
 
-				if(god_mode)
-					display_text.Add(new DisplayLine("God Mode enabled", true));
-				
-				if(slomo_mode)
-					display_text.Add(new DisplayLine("Slomo Mode enabled", Time.timeScale == 0.1f));
-			}
+    			if(god_mode)
+    				display_text.Add(new DisplayLine("God Mode enabled", true));
+    			if(slomo_mode)
+    				display_text.Add(new DisplayLine("Slomo Mode enabled", Time.timeScale == 0.1f));
+    		}
 
-			if(slomoWarningDuration > 0) {
-				display_text.Add(new DisplayLine("Slomo button requires slomo cheat!", false));
-				slomoWarningDuration -= Time.deltaTime * 0.2f;
-			}
+    		if(slomoWarningDuration > 0) {
+    			display_text.Add(new DisplayLine("Slomo button requires slomo cheat!", false));
+    			slomoWarningDuration -= Time.deltaTime * 0.2f;
+    		}
 
     		GUIStyle style = holder.gui_skin.label;
     		float width = Screen.width * 0.5f;
