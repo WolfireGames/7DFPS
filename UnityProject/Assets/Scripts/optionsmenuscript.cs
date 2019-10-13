@@ -114,6 +114,7 @@ public class optionsmenuscript:MonoBehaviour{
             Dropdown dropdown = transform.GetComponent<Dropdown>();
             if(dropdown != null) {
                 dropdown.value = PlayerPrefs.GetInt(dropdown.name, 0);
+                dropdown.RefreshShownValue();
                 continue;
             }
         }
