@@ -13,6 +13,7 @@ public class optionsmenuscript:MonoBehaviour{
     private PostProcessVolume postProcessVolume;
     private AutoExposure autoExposure;
     private Bloom bloom;
+    private Vignette vignette;
     private AmbientOcclusion ambientOcclusion;
 
     public void OnApplicationPause() {  
@@ -32,6 +33,7 @@ public class optionsmenuscript:MonoBehaviour{
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
         autoExposure = postProcessVolume.profile.GetSetting<AutoExposure>();
         bloom = postProcessVolume.profile.GetSetting<Bloom>();
+        vignette = postProcessVolume.profile.GetSetting<Vignette>();
         ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
 
         if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
@@ -178,5 +180,9 @@ public class optionsmenuscript:MonoBehaviour{
  
     public void SetAAMode(int mode) {
         postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
+    }
+
+    public void SetVignette(bool enabled) {
+        vignette.active = enabled;
     }
 }
