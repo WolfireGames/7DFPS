@@ -101,22 +101,24 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
-                slider.value = PlayerPrefs.GetFloat(slider.name, 1f);
+                slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
+                slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
             }
 
             // Update Toggles
             Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
-                toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                toggle.onValueChanged.Invoke(toggle.isOn);
                 continue;
             }
 
             // Update Dropdowns
             Dropdown dropdown = transform.GetComponent<Dropdown>();
             if(dropdown != null) {
-                dropdown.value = PlayerPrefs.GetInt(dropdown.name, 0);
-                dropdown.RefreshShownValue();
+                dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
+                dropdown.onValueChanged.Invoke(dropdown.value);
                 continue;
             }
         }
