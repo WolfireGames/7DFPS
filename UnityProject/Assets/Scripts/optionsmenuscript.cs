@@ -10,6 +10,9 @@ public class optionsmenuscript:MonoBehaviour{
     public GameObject optionsContent;
 
     private PostProcessVolume postProcessVolume;
+    private AutoExposure autoExposure;
+    private Bloom bloom;
+    private AmbientOcclusion ambientOcclusion;
 
     public void OnApplicationPause() {  
         UnlockCursor();
@@ -25,6 +28,9 @@ public class optionsmenuscript:MonoBehaviour{
         LockCursor();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
+        autoExposure = postProcessVolume.profile.GetSetting<AutoExposure>();
+        bloom = postProcessVolume.profile.GetSetting<Bloom>();
+        ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
 
         if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
@@ -81,6 +87,10 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetFloat(slider.name, slider.value);
     }
 
+    public void UpdateSwitch(Dropdown dropdown) {
+        PlayerPrefs.SetInt(dropdown.name, dropdown.value);
+    }
+
     public void UpdateUIValues() {
         foreach(Transform transform in optionsContent.transform) {
 
@@ -91,10 +101,11 @@ public class optionsmenuscript:MonoBehaviour{
                 continue; // Don't need to check for other Setting types
             }
 
-            // Update toggles
+            // Update Toggles
             Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
                 toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                continue;
             }
         }
     }
@@ -111,9 +122,13 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetInt("mouse_invert", 0);
         PlayerPrefs.SetInt("toggle_crouch", 1);
 
-        PlayerPrefs.SetFloat("fov", 60f);
         PlayerPrefs.SetFloat("post_processing", 1f);
-        PlayerPrefs.SetInt("auto_exposure", 1);
+        PlayerPrefs.SetFloat("ambient_intensity", 0.44f);
+        PlayerPrefs.SetFloat("bloom_intensity", 1f);
+
+        PlayerPrefs.SetFloat("auto_exposure_min_luminance", -3.3f);
+        PlayerPrefs.SetFloat("auto_exposure_max_luminance", 2.8f);
+        PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
     }
 
     // Functionality
@@ -129,7 +144,23 @@ public class optionsmenuscript:MonoBehaviour{
         postProcessVolume.weight = weight;
     }
 
-    public void SetAutoExposure(bool autoExposure) {
-        postProcessVolume.profile.GetSetting<AutoExposure>().enabled.Override(autoExposure);
+    public void SetAmbientIntensity(float intensity) {
+        ambientOcclusion.intensity.Override(intensity);
+    }
+
+    public void SetBloomIntensity(float intensity) {
+        bloom.intensity.Override(intensity);
+    }
+
+    public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
+          autoExposure.minLuminance.Override(autoExposureMinLuminance);
+    }
+
+    public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
+          autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
+    }
+
+    public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
+          autoExposure.keyValue.Override(autoExposureExposureCompensation);
     }
 }
