@@ -3311,9 +3311,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2866556412847085606}
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 7163399577596914369}
+        m_MethodName: ToggleOptions
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

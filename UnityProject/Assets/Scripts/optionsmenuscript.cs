@@ -64,7 +64,6 @@ public class optionsmenuscript:MonoBehaviour{
     
     public void HideMenu() {
     	show_menu = false;
-		menuOptions.SetActive(false);
 		menu.SetActive(false);
     }
 
@@ -116,6 +115,10 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     // Functionality
+    public void ToggleOptions() {
+        menuOptions.SetActive(!menuOptions.activeSelf);
+    }
+
 	public void ExitGame() {
 		UnityEngine.Application.Quit();
 	}
