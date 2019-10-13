@@ -130,6 +130,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetFloat("music_volume", 1.0f);
         PlayerPrefs.SetFloat("voice_volume", 1.0f);
         PlayerPrefs.SetFloat("mouse_sensitivity", 0.2f);
+        PlayerPrefs.SetFloat("gun_distance", 1f);
         PlayerPrefs.SetInt("lock_gun_to_center", 0);
         PlayerPrefs.SetInt("mouse_invert", 0);
         PlayerPrefs.SetInt("toggle_crouch", 1);
@@ -143,6 +144,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
         
         PlayerPrefs.SetInt("antialiasing_mode", 3);
+        PlayerPrefs.SetInt("vignette", 0);
     }
 
     // Functionality
