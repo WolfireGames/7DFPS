@@ -85,14 +85,14 @@ public class optionsmenuscript:MonoBehaviour{
         foreach(Transform transform in optionsContent.transform) {
 
             // Update Sliders
-            Slider slider = GetComponent<Slider>();
+            Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
                 slider.value = PlayerPrefs.GetFloat(slider.name, 1f);
                 continue; // Don't need to check for other Setting types
             }
 
             // Update toggles
-            Toggle toggle = GetComponent<Toggle>();
+            Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
                 toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
             }
