@@ -949,7 +949,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Master volume:'
+  m_Text: 'Master volume*:'
 --- !u!114 &4095050115519172830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1041,7 +1041,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Exposure Min Luminance:'
+  m_Text: 'Exposure Min Luminance*:'
 --- !u!114 &6271920076092234615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5001,7 +5001,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Lock gun to screen center
+  m_Text: Lock gun to screen center*
 --- !u!1 &2866556413838650865
 GameObject:
   m_ObjectHideFlags: 0
@@ -8399,7 +8399,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Exposure Compensation:'
+  m_Text: 'Exposure Compensation*:'
 --- !u!114 &5335133033646257879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8713,7 +8713,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Post Processing Weight:'
+  m_Text: 'Post Processing Weight*:'
 --- !u!114 &1044627126454305591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9451,7 +9451,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Exposure Max Luminance:'
+  m_Text: 'Exposure Max Luminance*:'
 --- !u!114 &630107566962208556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10764,7 +10764,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Music volume:'
+  m_Text: 'Music volume*:'
 --- !u!114 &7874256844064698792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11055,7 +11055,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Voice volume:'
+  m_Text: 'Voice volume*:'
 --- !u!114 &9035185784165860010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11263,7 +11263,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Sound volume:'
+  m_Text: 'Sound volume*:'
 --- !u!114 &2179309139620641456
 MonoBehaviour:
   m_ObjectHideFlags: 0
