@@ -9,6 +9,7 @@ public class optionsmenuscript:MonoBehaviour{
     public GameObject menuOptions;
     public GameObject optionsContent;
 
+    private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
     private AutoExposure autoExposure;
     private Bloom bloom;
@@ -28,6 +29,7 @@ public class optionsmenuscript:MonoBehaviour{
         LockCursor();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
+        postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
         autoExposure = postProcessVolume.profile.GetSetting<AutoExposure>();
         bloom = postProcessVolume.profile.GetSetting<Bloom>();
         ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
@@ -107,6 +109,13 @@ public class optionsmenuscript:MonoBehaviour{
                 toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
                 continue;
             }
+
+            // Update Dropdowns
+            Dropdown dropdown = transform.GetComponent<Dropdown>();
+            if(dropdown != null) {
+                dropdown.value = PlayerPrefs.GetInt(dropdown.name, 0);
+                continue;
+            }
         }
     }
 
@@ -129,6 +138,8 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetFloat("auto_exposure_min_luminance", -3.3f);
         PlayerPrefs.SetFloat("auto_exposure_max_luminance", 2.8f);
         PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
+        
+        PlayerPrefs.SetInt("antialiasing_mode", 3);
     }
 
     // Functionality
@@ -162,5 +173,9 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
           autoExposure.keyValue.Override(autoExposureExposureCompensation);
+    }
+ 
+    public void SetAAMode(int mode) {
+        postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
     }
 }
