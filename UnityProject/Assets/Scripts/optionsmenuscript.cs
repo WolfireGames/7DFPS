@@ -158,6 +158,10 @@ public class optionsmenuscript:MonoBehaviour{
         UnityEngine.Application.Quit();
     }
 
+    public void SetPostProcessingEnabled(Toggle toggle) {
+        postProcessLayer.enabled = toggle.isOn;
+    }
+    
     public void SetPostProcessingWeight(float weight) {
         postProcessVolume.weight = weight;
     }
