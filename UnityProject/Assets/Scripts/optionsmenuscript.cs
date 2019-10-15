@@ -5,126 +5,192 @@ using UnityEngine.Rendering.PostProcessing;
 public class optionsmenuscript:MonoBehaviour{
     public static bool show_menu = false;
 
-	public GameObject menu;
-	public GameObject menuOptions;
+    public GameObject menu;
+    public GameObject menuOptions;
     public GameObject optionsContent;
-    
+
+    private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
-    
+    private AutoExposure autoExposure;
+    private Bloom bloom;
+    private Vignette vignette;
+    private AmbientOcclusion ambientOcclusion;
+
     public void OnApplicationPause() {  
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        UnlockCursor();
     }
-    
+
     public void OnApplicationFocus() {
-    	if(!show_menu){
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-    	}
+        if(!show_menu) {
+            LockCursor();
+        }
     }
-    
+
     public void Start() {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        LockCursor();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
+        postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
+        autoExposure = postProcessVolume.profile.GetSetting<AutoExposure>();
+        bloom = postProcessVolume.profile.GetSetting<Bloom>();
+        vignette = postProcessVolume.profile.GetSetting<Vignette>();
+        ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
 
-        if(PlayerPrefs.GetInt("set_defaults", 1) == 1)
+        if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
+        }
 
         UpdateUIValues();
     }
 
     public void Update() {
-        if(Input.GetKeyDown ("escape") && !show_menu) {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+        if(Input.GetKeyDown("escape") && !show_menu) {
             ShowMenu();
-        } else if(Input.GetKeyDown ("escape") && show_menu) {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+        } else if(Input.GetKeyDown("escape") && show_menu) {
             HideMenu();
         }
-        
-		if(Input.GetMouseButtonDown(0) && !show_menu) {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
 
-        if(show_menu)
-        	Time.timeScale = 0.0f;
-        else if(Time.timeScale == 0.0f)
-        	Time.timeScale = 1.0f;
+        if(Input.GetMouseButtonDown(0) && !show_menu) {
+            LockCursor();
+        }
     }
-    
+
+    private void LockCursor() {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void UnlockCursor() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     public void ShowMenu() {
-    	show_menu = true;
-		menu.SetActive(true);
+        show_menu = true;
+        menu.SetActive(true);
+        UnlockCursor();
+        Time.timeScale = 0.0f;
     }
     
     public void HideMenu() {
-    	show_menu = false;
-		menuOptions.SetActive(false);
-		menu.SetActive(false);
+        show_menu = false;
+        menu.SetActive(false);
+        LockCursor();
+        Time.timeScale = 1.0f;
     }
 
     public static bool IsMenuShown() {
-    	return show_menu;
+        return show_menu;
     }
     
-	public void UpdateInt(Toggle toggle) {
-		PlayerPrefs.SetInt(toggle.name, toggle.isOn ? 1 : 0);
-	}
+    public void UpdateInt(Toggle toggle) {
+        PlayerPrefs.SetInt(toggle.name, toggle.isOn ? 1 : 0);
+    }
 
-	public void UpdateFloat(Slider slider) {
-		PlayerPrefs.SetFloat(slider.name, slider.value);
-	}
+    public void UpdateFloat(Slider slider) {
+        PlayerPrefs.SetFloat(slider.name, slider.value);
+    }
+
+    public void UpdateSwitch(Dropdown dropdown) {
+        PlayerPrefs.SetInt(dropdown.name, dropdown.value);
+    }
 
     public void UpdateUIValues() {
         foreach(Transform transform in optionsContent.transform) {
-            var gameObject = transform.gameObject;
 
             // Update Sliders
-            var slider = gameObject.GetComponent<Slider>();
+            Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
-                slider.value = PlayerPrefs.GetFloat(slider.name, 1f);
+                slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
+                slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
             }
 
-            // Update toggles
-            var toggle = gameObject.GetComponent<Toggle>();
-            if(toggle != null)
-                toggle.isOn = (PlayerPrefs.GetInt(toggle.name, 0) == 1);
+            // Update Toggles
+            Toggle toggle = transform.GetComponent<Toggle>();
+            if(toggle != null) {
+                toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                toggle.onValueChanged.Invoke(toggle.isOn);
+                continue;
+            }
+
+            // Update Dropdowns
+            Dropdown dropdown = transform.GetComponent<Dropdown>();
+            if(dropdown != null) {
+                dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
+                dropdown.onValueChanged.Invoke(dropdown.value);
+                continue;
+            }
         }
     }
 
     public void RestoreDefaults() {
-    	PlayerPrefs.SetInt("set_defaults", 0);
-        
-        PlayerPrefs.SetFloat("master_volume", 1.0f);
-    	PlayerPrefs.SetFloat("sound_volume", 1.0f);
-    	PlayerPrefs.SetFloat("music_volume", 1.0f);
-    	PlayerPrefs.SetFloat("voice_volume", 1.0f);
-    	PlayerPrefs.SetFloat("mouse_sensitivity", 0.2f);
-    	PlayerPrefs.SetInt("lock_gun_to_center", 0);
-    	PlayerPrefs.SetInt("mouse_invert", 0);
-    	PlayerPrefs.SetInt("toggle_crouch", 1);
+        PlayerPrefs.SetInt("set_defaults", 0);
 
-        PlayerPrefs.SetFloat("fov", 60f);
+        PlayerPrefs.SetFloat("master_volume", 1.0f);
+        PlayerPrefs.SetFloat("sound_volume", 1.0f);
+        PlayerPrefs.SetFloat("music_volume", 1.0f);
+        PlayerPrefs.SetFloat("voice_volume", 1.0f);
+        PlayerPrefs.SetFloat("mouse_sensitivity", 0.2f);
+        PlayerPrefs.SetFloat("gun_distance", 1f);
+        PlayerPrefs.SetInt("lock_gun_to_center", 0);
+        PlayerPrefs.SetInt("mouse_invert", 0);
+        PlayerPrefs.SetInt("toggle_crouch", 1);
+
         PlayerPrefs.SetFloat("post_processing", 1f);
-        PlayerPrefs.SetInt("auto_exposure", 1);
+        PlayerPrefs.SetFloat("ambient_intensity", 0.44f);
+        PlayerPrefs.SetFloat("bloom_intensity", 1f);
+
+        PlayerPrefs.SetFloat("auto_exposure_min_luminance", -3.3f);
+        PlayerPrefs.SetFloat("auto_exposure_max_luminance", 2.8f);
+        PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
+        
+        PlayerPrefs.SetInt("antialiasing_mode", 3);
+        PlayerPrefs.SetInt("vignette", 0);
     }
 
     // Functionality
-	public void ExitGame() {
-		UnityEngine.Application.Quit();
-	}
+    public void ToggleOptions() {
+        menuOptions.SetActive(!menuOptions.activeSelf);
+    }
 
+    public void ExitGame() {
+        UnityEngine.Application.Quit();
+    }
+
+    public void SetPostProcessingEnabled(Toggle toggle) {
+        postProcessLayer.enabled = toggle.isOn;
+    }
+    
     public void SetPostProcessingWeight(float weight) {
         postProcessVolume.weight = weight;
     }
 
-    public void SetAutoExposure(bool autoExposure) {
-        postProcessVolume.profile.GetSetting<AutoExposure>().enabled.Override(autoExposure);
+    public void SetAmbientIntensity(float intensity) {
+        ambientOcclusion.intensity.Override(intensity);
+    }
+
+    public void SetBloomIntensity(float intensity) {
+        bloom.intensity.Override(intensity);
+    }
+
+    public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
+          autoExposure.minLuminance.Override(autoExposureMinLuminance);
+    }
+
+    public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
+          autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
+    }
+
+    public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
+          autoExposure.keyValue.Override(autoExposureExposureCompensation);
+    }
+ 
+    public void SetAAMode(int mode) {
+        postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
+    }
+
+    public void SetVignette(bool enabled) {
+        vignette.active = enabled;
     }
 }
