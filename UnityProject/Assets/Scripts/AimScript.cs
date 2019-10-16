@@ -1134,6 +1134,10 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateTape() {
+    	if(tapes_heard.Count + unplayed_tapes + (tape_in_progress ? 1 : 0) >= total_tapes.Count) {
+    		GetComponent<SpeedrunTimer>().StopTimer();
+    	}
+    
     	if(!tape_in_progress && unplayed_tapes > 0){
     		--unplayed_tapes;
     		StartTapePlay();
