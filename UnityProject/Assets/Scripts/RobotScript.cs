@@ -86,6 +86,8 @@ public class RobotScript:MonoBehaviour{
     public float camera_pivot_angle = 0.0f;
 
     LevelCreatorScript level_creator = null;
+    Light lightObject;
+    LensFlare lensFlareObject;
 
     int tile_parent_position = 0;
     
@@ -96,7 +98,7 @@ public class RobotScript:MonoBehaviour{
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
     	audiosource_effect.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
     }
-    
+    /*
     public GameObject GetTurretLightObject() {
     	return transform.Find("gun pivot").Find("camera").Find("light").gameObject;
     }
@@ -108,6 +110,7 @@ public class RobotScript:MonoBehaviour{
     public GameObject GetDroneLensFlareObject() {
     	return transform.Find("camera_pivot").Find("camera").Find("lens flare").gameObject;
     }
+     */
     
     
     public Quaternion RandomOrientation() {
@@ -190,6 +193,21 @@ public class RobotScript:MonoBehaviour{
     	Damage(obj);
     }
     
+    public void Awake() {
+    	// Assign light objects
+    	switch(robot_type) {
+    		case RobotType.MOBILE_TURRET:
+    		case RobotType.STATIONARY_TURRET:
+    			lightObject = transform.Find("gun pivot").Find("camera").Find("light").GetComponent<Light>();
+    			break;
+    		case RobotType.GUN_DRONE:
+    		case RobotType.SHOCK_DRONE:
+    			lightObject = transform.Find("camera_pivot").Find("camera").Find("light").GetComponent<Light>();
+    			lensFlareObject = transform.Find("camera_pivot").Find("camera").Find("lens flare").GetComponent<LensFlare>();
+    			break;
+    	}
+    }
+
     public void Start() {
         GameObject level_object = GameObject.Find("LevelObject");
 
@@ -258,7 +276,7 @@ public class RobotScript:MonoBehaviour{
 
     public void UpdateStationaryTurret() {
     	if(Vector3.Distance(target.position, transform.position) > kSleepDistance){
-    		GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;		
+    		lightObject.shadows = LightShadows.None;		
     		if(audiosource_motor.isPlaying){
     			audiosource_motor.Stop();
     		}
@@ -269,10 +287,10 @@ public class RobotScript:MonoBehaviour{
     			audiosource_motor.Play();
     		}
     		audiosource_motor.volume = 0.4f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
-    		if(GetTurretLightObject().GetComponent<Light>().intensity > 0.0f){
-    			GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.Hard;
+    		if(lightObject.intensity > 0.0f){
+    			lightObject.shadows = LightShadows.Hard;
     		} else {
-    			GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    			lightObject.shadows = LightShadows.None;
     		}
     	}
     	Vector3 rel_pos = Vector3.zero;
@@ -407,20 +425,20 @@ public class RobotScript:MonoBehaviour{
     		}
     		switch(ai_state){
     			case AIState.IDLE:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(0.0f,0.0f,1.0f);
+    				lightObject.color = new Color(0.0f,0.0f,1.0f);
     				break;
     			case AIState.AIMING:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(1.0f,0.0f,0.0f);
+    				lightObject.color = new Color(1.0f,0.0f,0.0f);
     				break;
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(1.0f,1.0f,0.0f);
+    				lightObject.color = new Color(1.0f,1.0f,0.0f);
     				break;
     		}
     	}
     	target.GetComponent<MusicScript>().AddDangerLevel(danger);
     	if(!camera_alive){
-    		GetTurretLightObject().GetComponent<Light>().intensity *= Mathf.Pow(0.01f, Time.deltaTime);
+    		lightObject.intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
     	float target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 2.0f);
@@ -442,7 +460,7 @@ public class RobotScript:MonoBehaviour{
     
     public void UpdateDrone() {
     	if(Vector3.Distance(target.position, transform.position) > kSleepDistance){
-    		GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    		lightObject.shadows = LightShadows.None;
     		if(motor_alive){
     			distance_sleep = true;
     			GetComponent<Rigidbody>().Sleep();
@@ -452,10 +470,10 @@ public class RobotScript:MonoBehaviour{
     		}
     		return;
     	} else {
-    		if(GetDroneLightObject().GetComponent<Light>().intensity > 0.0f){
-    			GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.Hard;
+    		if(lightObject.intensity > 0.0f){
+    			lightObject.shadows = LightShadows.Hard;
     		} else {
-    			GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    			lightObject.shadows = LightShadows.None;
     		}
     		if(motor_alive && distance_sleep){
     			GetComponent<Rigidbody>().WakeUp();
@@ -693,22 +711,22 @@ public class RobotScript:MonoBehaviour{
     		}
     		switch(ai_state){
     			case AIState.IDLE:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(0.0f,0.0f,1.0f);
+    				lightObject.color = new Color(0.0f,0.0f,1.0f);
     				break;
     			case AIState.AIMING:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(1.0f,0.0f,0.0f);
+    				lightObject.color = new Color(1.0f,0.0f,0.0f);
     				break;
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(1.0f,1.0f,0.0f);
+    				lightObject.color = new Color(1.0f,1.0f,0.0f);
     				break;
     		}
     	}
     	if(!camera_alive){
-    		GetDroneLightObject().GetComponent<Light>().intensity *= Mathf.Pow(0.01f, Time.deltaTime);
+    		lightObject.intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
-    	(GetDroneLensFlareObject().GetComponent<LensFlare>()).color = GetDroneLightObject().GetComponent<Light>().color;
-    	(GetDroneLensFlareObject().GetComponent<LensFlare>()).brightness = GetDroneLightObject().GetComponent<Light>().intensity;
+    	lensFlareObject.color = lightObject.color;
+    	lensFlareObject.brightness = lightObject.intensity;
     	float target_pitch = rotor_speed * 0.2f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 3.0f);
     	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001f, Time.deltaTime));
