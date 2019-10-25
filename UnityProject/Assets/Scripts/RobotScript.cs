@@ -10,6 +10,8 @@ public enum CameraPivotState {DOWN, WAIT_UP, UP, WAIT_DOWN};
 
 public class RobotScript:MonoBehaviour{
     
+    public static Transform target;
+
     public List<AudioClip> sound_gunshot;
     public List<AudioClip> sound_damage_camera;
     public List<AudioClip> sound_damage_gun;
@@ -191,6 +193,10 @@ public class RobotScript:MonoBehaviour{
     public void Start() {
         GameObject level_object = GameObject.Find("LevelObject");
 
+        if(target == null) {
+            target = GameObject.Find("Player").transform;
+        }
+
         if(level_object != null) {
             level_creator = level_object.GetComponent<LevelCreatorScript>();
         }
@@ -251,7 +257,7 @@ public class RobotScript:MonoBehaviour{
     }
 
     public void UpdateStationaryTurret() {
-    	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+    	if(Vector3.Distance(target.position, transform.position) > kSleepDistance){
     		GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;		
     		if(audiosource_motor.isPlaying){
     			audiosource_motor.Stop();
@@ -330,8 +336,7 @@ public class RobotScript:MonoBehaviour{
     		}
     	}
     	float danger = 0.0f;
-    	GameObject player = GameObject.Find("Player");
-    	float dist = Vector3.Distance(player.transform.position, transform.position);
+    	float dist = Vector3.Distance(target.position, transform.position);
     	if(battery_alive){
     		danger += Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     	}
@@ -347,11 +352,11 @@ public class RobotScript:MonoBehaviour{
     		}
     		
     		Transform camera = transform.Find("gun pivot").Find("camera");
-    		rel_pos = player.transform.position - camera.position;
+    		rel_pos = target.position - camera.position;
     		bool sees_target = false;
     		if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     			RaycastHit hit = new RaycastHit();
-    			if(!Physics.Linecast(camera.position, player.transform.position, out hit, 1<<0)){
+    			if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
     				sees_target = true;
     			}
     		}
@@ -366,17 +371,17 @@ public class RobotScript:MonoBehaviour{
     					if(Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.9f){
     						ai_state = AIState.FIRING;
     					}
-    					target_pos = player.transform.position;
+    					target_pos = target.position;
     					break;					
     				case AIState.FIRING:
-    					target_pos = player.transform.position;
+    					target_pos = target.position;
     					break;
     				case AIState.ALERT:
     					alert_delay -= Time.deltaTime;
     					if(alert_delay <= 0.0f){
     						ai_state = AIState.AIMING;
     					}
-    					target_pos = player.transform.position;
+    					target_pos = target.position;
     					break;
     				case AIState.ALERT_COOLDOWN:
     					ai_state = AIState.ALERT;
@@ -413,7 +418,7 @@ public class RobotScript:MonoBehaviour{
     				break;
     		}
     	}
-    	player.GetComponent<MusicScript>().AddDangerLevel(danger);
+    	target.GetComponent<MusicScript>().AddDangerLevel(danger);
     	if(!camera_alive){
     		GetTurretLightObject().GetComponent<Light>().intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
@@ -436,7 +441,7 @@ public class RobotScript:MonoBehaviour{
     }
     
     public void UpdateDrone() {
-    	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
+    	if(Vector3.Distance(target.position, transform.position) > kSleepDistance){
     		GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.None;
     		if(motor_alive){
     			distance_sleep = true;
@@ -543,8 +548,8 @@ public class RobotScript:MonoBehaviour{
     		if(gun_delay <= 0.0f){
     			gun_delay = 0.1f;	
     			Instantiate(muzzle_flash, transform.Find("point_spark").position, RandomOrientation());
-    			if(Vector3.Distance(transform.Find("point_spark").position, GameObject.Find("Player").transform.position) < 1){
-    				GameObject.Find("Player").GetComponent<AimScript>().Shock();
+    			if(Vector3.Distance(transform.Find("point_spark").position, target.position) < 1){
+    				target.GetComponent<AimScript>().Shock();
     			}
     		}
     	} else {
@@ -612,8 +617,7 @@ public class RobotScript:MonoBehaviour{
     		var tmp_cs3 = cam_pivot.localEulerAngles;
             tmp_cs3.x = camera_pivot_angle;
             cam_pivot.localEulerAngles = tmp_cs3;
-    		GameObject player = GameObject.Find("Player");
-    		float dist = Vector3.Distance(player.transform.position, transform.position);
+    		float dist = Vector3.Distance(target.position, transform.position);
     		float danger = Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     		if(danger > 0.0f){
     			danger = Mathf.Min(0.2f, danger);
@@ -624,20 +628,20 @@ public class RobotScript:MonoBehaviour{
     		if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
     			danger += 0.5f;
     		}
-    		player.GetComponent<MusicScript>().AddDangerLevel(danger);
+    		target.GetComponent<MusicScript>().AddDangerLevel(danger);
     		
     		Transform camera = transform.Find("camera_pivot").Find("camera");
-    		rel_pos = player.transform.position - camera.position;
+    		rel_pos = target.position - camera.position;
     		bool sees_target = false;
     		if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     			hit = new RaycastHit();
-    			if(!Physics.Linecast(camera.position, player.transform.position, out hit, 1<<0)){
+    			if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
     				sees_target = true;
     			}
     		}
     		if(sees_target){
-    			Vector3 new_target = player.transform.position + player.GetComponent<AimScript>().GetVelocity() * 
-    							Mathf.Clamp(Vector3.Distance(player.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
+    			Vector3 new_target = target.position + target.GetComponent<AimScript>().GetVelocity() * 
+    							Mathf.Clamp(Vector3.Distance(target.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
     			switch(ai_state){
     				case AIState.IDLE:
     					ai_state = AIState.ALERT;
@@ -710,10 +714,10 @@ public class RobotScript:MonoBehaviour{
     	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001f, Time.deltaTime));
     	audiosource_motor.volume = rotor_speed * 0.1f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
     
-    	audiosource_motor.volume -= Vector3.Distance(GameObject.Find("Main Camera").transform.position, transform.position) * 0.0125f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume -= Vector3.Distance(Camera.main.transform.position, transform.position) * 0.0125f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
     
     	bool line_of_sight = true;
-    	if(Physics.Linecast(transform.position, GameObject.Find("Main Camera").transform.position, out hit, 1<<0)){
+    	if(Physics.Linecast(transform.position, Camera.main.transform.position, out hit, 1<<0)){
     		line_of_sight = false;
     	}
     	if(line_of_sight){
