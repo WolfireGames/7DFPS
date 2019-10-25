@@ -212,7 +212,7 @@ public class LevelCreatorScript:MonoBehaviour{
     }
     
     public void Update() {
-    	Transform main_camera = GameObject.Find("Main Camera").transform;
+    	Transform main_camera = Camera.main.transform;
     	int tile_x = (int)(main_camera.position.z / 20.0f + 0.5f);
 
         for(int i = tiles.Count-1; i >= 0; i--) {
