@@ -236,6 +236,8 @@ public class LevelCreatorScript:MonoBehaviour{
     		CreateTileIfNeeded(tile_x+i);
     	}
 
+        if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0)
+            return;
 
     	foreach(Light light in shadowed_lights){
     		if(light == null){
