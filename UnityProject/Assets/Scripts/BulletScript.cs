@@ -56,7 +56,6 @@ public class BulletScript:MonoBehaviour{
     	line_renderer = GetComponent<LineRenderer>();
     	line_renderer.SetPosition(0, transform.position);
     	line_renderer.SetPosition(1, transform.position);
-    	old_pos = transform.position;
     }
     
     public MonoBehaviour RecursiveHasScript(GameObject obj,Type script,int depth) {
@@ -84,6 +83,7 @@ public class BulletScript:MonoBehaviour{
     		if(life_time > 1.5f){
     			hit_something = true;
     		}
+    		old_pos = transform.position;
     		transform.position += velocity * Time.deltaTime;
     		velocity += Physics.gravity * Time.deltaTime;
     		RaycastHit hit = new RaycastHit();
