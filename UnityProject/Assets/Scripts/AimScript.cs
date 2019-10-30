@@ -464,11 +464,8 @@ public class AimScript:MonoBehaviour{
     
     	if(UnityEngine.Random.Range(0.0f,1.0f) < 0.35f){
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
-    		Destroy(held_flashlight.GetComponent<Rigidbody>());
-    		held_flashlight.GetComponent<FlashlightScript>().TurnOn();
-            if(level_creator != null) {
-                held_flashlight.transform.parent = level_creator.GetPlayerInventoryTransform();
-            }
+			held_flashlight.GetComponent<InventoryItem>().Pickup();
+    		
     		holder.has_flashlight = true;
     	}
     	
@@ -620,13 +617,8 @@ public class AimScript:MonoBehaviour{
     		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null) && (held_flashlight == null)){
     			// Flashlight
     			held_flashlight = collider.gameObject;
-    			Destroy(held_flashlight.GetComponent<Rigidbody>());
-                if(level_creator != null) {
-                    held_flashlight.transform.parent = level_creator.GetPlayerInventoryTransform();
-                } else {
-                    held_flashlight.transform.parent = null; //Move flashlight out of tile
-                }
-    			held_flashlight.GetComponent<FlashlightScript>().TurnOn();
+    			held_flashlight.GetComponent<InventoryItem>().Pickup();
+    			
     			holder.has_flashlight = true;
     			flash_ground_pos = held_flashlight.transform.position;
     			flash_ground_rot = held_flashlight.transform.rotation;
@@ -972,6 +964,11 @@ public class AimScript:MonoBehaviour{
                 }
 
     			magazine_instance_in_hand = null;
+    			queue_drop = false;
+    		} else if(mag_stage == HandMagStage.EMPTY && gun_instance == null && held_flashlight != null) {
+    			held_flashlight.GetComponent<InventoryItem>().Drop(character_controller.velocity);
+
+    			held_flashlight = null;
     			queue_drop = false;
     		}
     	}

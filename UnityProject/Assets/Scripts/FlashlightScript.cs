@@ -1,8 +1,7 @@
 using UnityEngine;
-using System;
 
 
-public class FlashlightScript:MonoBehaviour{
+public class FlashlightScript : MonoBehaviour, InventoryItem.InventoryItemListener {
     
     public AnimationCurve battery_curve;
     public AudioClip sound_turn_on;
@@ -61,5 +60,14 @@ public class FlashlightScript:MonoBehaviour{
     	} else {
     		transform.Find("Pointlight").GetComponent<Light>().range = 10.0f;
     	}
+    }
+    
+    // Inventory Item interface
+    public void OnDrop() {
+    	TurnOff();
+    }
+    
+    public void OnPickup() {
+    	TurnOn();
     }
 }
