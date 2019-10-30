@@ -13,10 +13,8 @@ public class mag_script:MonoBehaviour{
     Vector3 old_pos;
     public Vector3 hold_offset;
     public Vector3 hold_rotation;
-    public bool collided = false;
     public List<AudioClip> sound_add_round;
     public List<AudioClip> sound_mag_bounce;
-    public float life_time = 0.0f;
 
     public MagLoadStage mag_load_stage = MagLoadStage.NONE;
     public float mag_load_progress = 0.0f;
@@ -84,31 +82,6 @@ public class mag_script:MonoBehaviour{
     		int which_shot = UnityEngine.Random.Range(0,group.Count);
     		GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
     	}
-    }
-    
-    public void CollisionSound() {
-    	if(!collided){
-    		collided = true;
-    		PlaySoundFromGroup(sound_mag_bounce, 0.3f);
-    	}
-    }
-    
-    public void FixedUpdate() {
-    	if((GetComponent<Rigidbody>() != null) && !GetComponent<Rigidbody>().IsSleeping() && (GetComponent<Collider>() != null) && GetComponent<Collider>().enabled){
-    		life_time += Time.deltaTime;
-    		RaycastHit hit = new RaycastHit();
-    		if(Physics.Linecast(old_pos, transform.position, out hit, 1)){
-    			transform.position = hit.point;
-    			transform.GetComponent<Rigidbody>().velocity *= -0.3f;
-    		}
-    		if(life_time > 2.0f){
-    			GetComponent<Rigidbody>().Sleep();
-    		}
-    	} else if(GetComponent<Rigidbody>() == null){
-    		life_time = 0.0f;
-    		collided = false;
-    	}
-    	old_pos = transform.position;
     }
     
     public void Update() {
@@ -215,9 +188,5 @@ public class mag_script:MonoBehaviour{
     			}
     			break;
     	}
-    }
-    
-    public void OnCollisionEnter(Collision collision) {
-    	CollisionSound();
     }
 }

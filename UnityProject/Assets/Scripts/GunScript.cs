@@ -222,6 +222,7 @@ public class GunScript:MonoBehaviour{
     	Renderer[] renderers = null;
         if(gun_type == GunType.AUTOMATIC){
     		magazine_instance_in_gun = (GameObject)Instantiate(magazine_obj);
+    		magazine_instance_in_gun.GetComponent<InventoryItem>().Pickup();
     		magazine_instance_in_gun.transform.parent = transform;
     	
     		renderers = magazine_instance_in_gun.GetComponentsInChildren<Renderer>();

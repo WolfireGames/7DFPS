@@ -501,6 +501,7 @@ public class AimScript:MonoBehaviour{
                 if(level_creator != null) {
                     weapon_slots[i].obj.transform.parent = level_creator.GetPlayerInventoryTransform();
                 }
+    			weapon_slots[i].obj.GetComponent<InventoryItem>().Pickup();
     		}
     	} else {
     		num_start_bullets += UnityEngine.Random.Range(0,20);
@@ -629,12 +630,8 @@ public class AimScript:MonoBehaviour{
     	// Picking up magazine
     	if((nearest_mag != null) && mag_stage == HandMagStage.EMPTY){
     		magazine_instance_in_hand = nearest_mag;
-    		Destroy(magazine_instance_in_hand.GetComponent<Rigidbody>());
-            if(level_creator != null) { 
-                magazine_instance_in_hand.transform.parent = level_creator.GetPlayerInventoryTransform(); //Move item out of tile into player inventory
-            } else {
-                magazine_instance_in_hand.transform.parent = null; //Move item out of tile
-            }
+			
+			magazine_instance_in_hand.GetComponent<InventoryItem>().Pickup();
     		mag_ground_pos = magazine_instance_in_hand.transform.position;
     		mag_ground_rot = magazine_instance_in_hand.transform.rotation;
     		mag_ground_pose_spring.state = 1.0f;
@@ -955,19 +952,13 @@ public class AimScript:MonoBehaviour{
     	if(character_input.GetButtonDown("Eject/Drop") || queue_drop){
     		if(mag_stage == HandMagStage.HOLD){
     			mag_stage = HandMagStage.EMPTY;
-    			magazine_instance_in_hand.AddComponent<Rigidbody>();
-    			magazine_instance_in_hand.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-    			magazine_instance_in_hand.GetComponent<Rigidbody>().velocity = character_controller.velocity;
-
-                if(level_creator != null) {
-                    magazine_instance_in_hand.transform.parent = level_creator.GetPositionTileItemParent(magazine_instance_in_hand.transform.position);
-                }
-
+    			magazine_instance_in_hand.GetComponent<InventoryItem>().Drop(character_controller.velocity);
+    			
     			magazine_instance_in_hand = null;
     			queue_drop = false;
     		} else if(mag_stage == HandMagStage.EMPTY && gun_instance == null && held_flashlight != null) {
     			held_flashlight.GetComponent<InventoryItem>().Drop(character_controller.velocity);
-
+    			
     			held_flashlight = null;
     			queue_drop = false;
     		}
