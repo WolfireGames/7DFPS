@@ -78,7 +78,7 @@ public class LevelCreatorScript:MonoBehaviour{
     			int j=0;
     			foreach(Transform child in players){
     				if(j == save){
-    					child_obj = (GameObject)Instantiate(player_obj, new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation);
+    					child_obj = (GameObject)Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation);
     					child_obj.transform.parent = this.gameObject.transform;
     					child_obj.name = "Player";
 
