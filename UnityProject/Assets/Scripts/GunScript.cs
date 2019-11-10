@@ -55,6 +55,7 @@ public class GunScript:MonoBehaviour{
     public List<AudioClip> sound_cylinder_rotate;
     public List<AudioClip> sound_hammer_cock;
     public List<AudioClip> sound_hammer_decock;
+    public List<AudioClip> sound_trigger_reset;
     
     float kGunMechanicVolume = 0.2f;
     
@@ -402,12 +403,12 @@ public class GunScript:MonoBehaviour{
     	}
     	if((pressure_on_trigger == PressureState.INITIAL || action_type == ActionType.DOUBLE) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1.0f && safety_off == 1.0f && (auto_mod_stage == AutoModStage.ENABLED || !fired_once_this_pull)){
     		trigger_pressed = 1.0f;
+    		fired_once_this_pull = true;
     		Renderer[] renderers = null;
             GameObject bullet = null;
             if(gun_type == GunType.AUTOMATIC && slide_amount == 0.0f){
     			hammer_cocked = 0.0f;
     			if((round_in_chamber != null) && round_in_chamber_state == RoundState.READY){
-    				fired_once_this_pull = true;
     				PlaySoundFromGroup(sound_gunshot_smallroom, 1.0f);
     				round_in_chamber_state = RoundState.FIRED;
     				GameObject.Destroy(round_in_chamber);
@@ -474,6 +475,9 @@ public class GunScript:MonoBehaviour{
     }
     
     public void ReleasePressureFromTrigger() {
+    	if(fired_once_this_pull && pressure_on_trigger == PressureState.CONTINUING)
+    		PlaySoundFromGroup(sound_trigger_reset, 0.07f);
+
     	pressure_on_trigger = PressureState.NONE;
     	trigger_pressed = 0.0f;
     }
