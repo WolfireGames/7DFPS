@@ -21,7 +21,7 @@ public class BulletScript:MonoBehaviour{
     public GameObject metal_bullet_hole_decal_obj;
     public GameObject spark_effect;
     public GameObject puff_effect;
-    Vector3 old_pos;
+    Vector3 old_pos = Vector3.zero;
     bool hit_something = false;
     LineRenderer line_renderer; 
     Vector3 velocity;
