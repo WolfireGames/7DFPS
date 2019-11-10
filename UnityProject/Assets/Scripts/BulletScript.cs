@@ -21,7 +21,6 @@ public class BulletScript:MonoBehaviour{
     public GameObject metal_bullet_hole_decal_obj;
     public GameObject spark_effect;
     public GameObject puff_effect;
-    Vector3 old_pos = Vector3.zero;
     bool hit_something = false;
     LineRenderer line_renderer; 
     Vector3 velocity;
@@ -83,7 +82,7 @@ public class BulletScript:MonoBehaviour{
     		if(life_time > 1.5f){
     			hit_something = true;
     		}
-    		old_pos = transform.position;
+    		Vector3 old_pos = transform.position;
     		transform.position += velocity * Time.deltaTime;
     		velocity += Physics.gravity * Time.deltaTime;
     		RaycastHit hit = new RaycastHit();
