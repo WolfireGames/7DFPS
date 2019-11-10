@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 #if UNITY_EDITOR
@@ -11,6 +12,20 @@ public class LevelScriptEditor : Editor {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
+
+        if(GUILayout.Button("Ground Player spawns")) {
+            var player_spawn = ((LevelScript)target).transform.Find("player_spawn");
+            var scene = player_spawn.gameObject.scene.GetPhysicsScene();
+
+            Undo.RegisterCompleteObjectUndo(player_spawn.Cast<Transform>().ToArray(), "Undo player spawn grounding");
+            foreach (Transform spawnPoint in player_spawn) {
+                RaycastHit hit;
+                if(scene.Raycast(spawnPoint.position + Vector3.up * 0.001f, Vector3.down, out hit, 10))
+                    spawnPoint.position = new Vector3(spawnPoint.position.x, hit.point.y, spawnPoint.position.z);
+                else
+                    Debug.LogAssertion("No ground found under player object, skipped it while grounding");
+            }
+        }
 
         if(GUILayout.Button("Fix spawn objects")) {
             LevelScript ls = (LevelScript)target;
