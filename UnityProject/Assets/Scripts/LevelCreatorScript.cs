@@ -236,24 +236,23 @@ public class LevelCreatorScript:MonoBehaviour{
     		CreateTileIfNeeded(tile_x+i);
     	}
 
-        if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0)
-            return;
-
-    	foreach(Light light in shadowed_lights){
-    		if(light == null){
-    			Debug.Log("LIGHT IS MISSING");
-    		}
-    		if(light != null){
-    			float shadowed_amount = Vector3.Distance(main_camera.position, light.gameObject.transform.position);
-    			float shadow_threshold = Mathf.Min(30.0f,light.range*2.0f);
-    			float fade_threshold = shadow_threshold * 0.75f;
-    			if(shadowed_amount < shadow_threshold){
-    				light.shadows = LightShadows.Hard;
-    				light.shadowStrength = Mathf.Min(1.0f, 1.0f-(fade_threshold - shadowed_amount) / (fade_threshold - shadow_threshold));
-    			} else {
-    				light.shadows = LightShadows.None;
+    	if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
+    		foreach(Light light in shadowed_lights){
+    			if(light == null){
+    				Debug.Log("LIGHT IS MISSING");
+    			}
+    			if(light != null){
+    				float shadowed_amount = Vector3.Distance(main_camera.position, light.gameObject.transform.position);
+    				float shadow_threshold = Mathf.Min(30.0f,light.range*2.0f);
+    				float fade_threshold = shadow_threshold * 0.75f;
+    				if(shadowed_amount < shadow_threshold){
+    					light.shadows = LightShadows.Hard;
+    					light.shadowStrength = Mathf.Min(1.0f, 1.0f-(fade_threshold - shadowed_amount) / (fade_threshold - shadow_threshold));
+    				} else {
+    					light.shadows = LightShadows.None;
+    				}
     			}
     		}
-    	}
+        }
     }
 }
