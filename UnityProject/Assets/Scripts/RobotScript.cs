@@ -96,7 +96,7 @@ public class RobotScript:MonoBehaviour{
     		return;
     	}
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
-    	audiosource_effect.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    	audiosource_effect.PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
     
     public Quaternion RandomOrientation() {
@@ -217,7 +217,7 @@ public class RobotScript:MonoBehaviour{
     	audiosource_motor = object_audiosource_motor.AddComponent<AudioSource>();
     	object_audiosource_motor.AddComponent<AudioLowPassFilter>();
     	audiosource_motor.loop = true;
-    	audiosource_motor.volume = 0.4f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume = 0.4f * Preferences.sound_volume;
     	audiosource_motor.clip = sound_engine_loop;
     	audiosource_motor.spatialBlend = 1.0f;
     	
@@ -280,10 +280,10 @@ public class RobotScript:MonoBehaviour{
     		return;
     	} else {
     		if(!audiosource_motor.isPlaying){
-    			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 0.0f);
+    			audiosource_motor.volume = Preferences.sound_volume;
     			audiosource_motor.Play();
     		}
-    		audiosource_motor.volume = 0.4f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    		audiosource_motor.volume = 0.4f * Preferences.sound_volume;
     		if(lightObject.intensity > 0.0f){
     			lightObject.shadows = LightShadows.Hard;
     		} else {
@@ -383,7 +383,7 @@ public class RobotScript:MonoBehaviour{
     				switch(ai_state){
     					case AIState.IDLE:
     						ai_state = AIState.ALERT;
-    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * Preferences.sound_volume);
     						alert_delay = kAlertDelay;
     						break;
     					case AIState.AIMING:
@@ -419,7 +419,7 @@ public class RobotScript:MonoBehaviour{
     						alert_cooldown_delay -= Time.deltaTime;
     						if(alert_cooldown_delay <= 0.0f){
     							ai_state = AIState.IDLE;
-    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * Preferences.sound_volume);
     						}
     						break;
     				}
@@ -482,7 +482,7 @@ public class RobotScript:MonoBehaviour{
     			distance_sleep = false;
     		}
     		if(!audiosource_motor.isPlaying){
-    			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    			audiosource_motor.volume = Preferences.sound_volume;
     			audiosource_motor.Play();
     		}
 
@@ -622,10 +622,10 @@ public class RobotScript:MonoBehaviour{
     			// Taser
     			if(barrel_alive && ai_state == AIState.FIRING){
     				if(!audiosource_taser.isPlaying){
-    					audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    					audiosource_taser.volume = Preferences.sound_volume;
     					audiosource_taser.Play();
     				} else {
-    					audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    					audiosource_taser.volume = Preferences.sound_volume;
     				}
     				if(gun_delay <= 0.0f){
     					gun_delay = 0.1f;	
@@ -676,7 +676,7 @@ public class RobotScript:MonoBehaviour{
     					case AIState.IDLE:
     						ai_state = AIState.ALERT;
     						alert_delay = kAlertDelay;
-    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * Preferences.sound_volume);
     						break;
     					case AIState.AIMING:
     						target_pos = new_target;
@@ -716,7 +716,7 @@ public class RobotScript:MonoBehaviour{
     						alert_cooldown_delay -= Time.deltaTime;
     						if(alert_cooldown_delay <= 0.0f){
     							ai_state = AIState.IDLE;
-    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * Preferences.sound_volume);
     						}
     						break;
     				}
@@ -743,9 +743,9 @@ public class RobotScript:MonoBehaviour{
     	float target_pitch = rotor_speed * 0.2f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 3.0f);
     	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001f, Time.deltaTime));
-    	audiosource_motor.volume = rotor_speed * 0.1f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume = rotor_speed * 0.1f * Preferences.sound_volume;
     
-    	audiosource_motor.volume -= Vector3.Distance(Camera.main.transform.position, transform.position) * 0.0125f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume -= Vector3.Distance(Camera.main.transform.position, transform.position) * 0.0125f * Preferences.sound_volume;
     
     	bool line_of_sight = true;
     	if(Physics.Linecast(transform.position, Camera.main.transform.position, out hit, 1<<0)){
@@ -796,7 +796,7 @@ public class RobotScript:MonoBehaviour{
     			} 
     		} else {
     			int which_shot = UnityEngine.Random.Range(0,sound_bump.Count);
-    			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.relativeVelocity.magnitude * 0.15f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.relativeVelocity.magnitude * 0.15f * Preferences.sound_volume);
     		}
     	}
     }

@@ -33,14 +33,14 @@ public class FlashlightScript:MonoBehaviour{
     public void TurnOn(){
     	if(!switch_on){
     		switch_on = true;
-    		GetComponent<AudioSource>().PlayOneShot(sound_turn_on, kSoundVolume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    		GetComponent<AudioSource>().PlayOneShot(sound_turn_on, kSoundVolume * Preferences.sound_volume);
     	}
     }
     
     public void TurnOff(){
     	if(switch_on){
     		switch_on = false;
-    		GetComponent<AudioSource>().PlayOneShot(sound_turn_off, kSoundVolume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    		GetComponent<AudioSource>().PlayOneShot(sound_turn_off, kSoundVolume * Preferences.sound_volume);
     	}
     }
     

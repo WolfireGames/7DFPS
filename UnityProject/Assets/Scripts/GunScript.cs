@@ -388,7 +388,7 @@ public class GunScript:MonoBehaviour{
     		return;
     	}
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
-    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
     
     

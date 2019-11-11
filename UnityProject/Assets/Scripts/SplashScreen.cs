@@ -39,16 +39,16 @@ public class SplashScreen : MonoBehaviour {
         audiosource_music_a = gameObject.AddComponent<AudioSource>();
         audiosource_music_a.loop = true;
         audiosource_music_a.clip = music_a;
-        audiosource_music_a.volume = PlayerPrefs.GetFloat("music_volume");
+        audiosource_music_a.volume = Preferences.music_volume;
         audiosource_music_b = gameObject.AddComponent<AudioSource>();
         audiosource_music_b.loop = true;
         audiosource_music_b.clip = music_b;
-        audiosource_music_b.volume = PlayerPrefs.GetFloat("music_volume");
+        audiosource_music_b.volume = Preferences.music_volume;
         audiosource_music_b.Play();
         audiosource_music_a.Play();
         audiosource_effect = gameObject.AddComponent<AudioSource>();
-        audiosource_effect.PlayOneShot(play_sound, PlayerPrefs.GetFloat("sound_volume", 1.0f));
-        audiosource_effect.volume = PlayerPrefs.GetFloat("sound_volume");
+        audiosource_effect.PlayOneShot(play_sound, Preferences.sound_volume);
+        audiosource_effect.volume = Preferences.sound_volume;
 	}
 	
 	// Update is called once per frame
@@ -58,7 +58,7 @@ public class SplashScreen : MonoBehaviour {
             fade_out = Mathf.Min(1.0f, fade_in + Time.deltaTime * 2.0f);
             fade_out_delay += Time.deltaTime;
         }
-        AudioListener.volume = PlayerPrefs.GetFloat("master_volume", 1.0f);
+        AudioListener.volume = Preferences.master_volume;
 	}
 
     private void OnGUI() {
@@ -86,7 +86,7 @@ public class SplashScreen : MonoBehaviour {
                 Event.current.type == EventType.MouseDown)
             {
                 state = SplashState.FADE_OUT;
-                audiosource_effect.PlayOneShot(stop_sound, PlayerPrefs.GetFloat("sound_volume", 1.0f));
+                audiosource_effect.PlayOneShot(stop_sound, Preferences.sound_volume);
                 audiosource_music_a.Stop();
                 audiosource_music_b.Stop();
             }

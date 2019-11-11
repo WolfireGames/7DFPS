@@ -15,7 +15,7 @@ public class ShellCasingScript:MonoBehaviour{
     
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
-    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
     
     public void Start() {
