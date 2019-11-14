@@ -1,0 +1,33 @@
+If you are reading this message it means you have interest in creating a mod for receiver.
+
+To create a gun mod:
+    - Make a new folder and give it a unique name including your username
+    - Copy "1911_holder" and "colt_1911_ai" from "Assets/Objects"
+
+    - Rename "1911_holder" to "gun_holder"
+    - Make adjustments to the gun as you like, you can give it a new model or change it's stats
+
+    - At the top Navigate to Wolfire -> Modding -> Export Gun Mod
+    Your mod will be Inside "Mods/Gun" ready to be inserted into the game.
+
+
+To create a tile mod:
+    - Make a new folder and give it a unique name including your username
+    - Create an empty object in your scene, call it "tiles_holder".
+    - From your scene, drag it into your mod folder.
+
+    - Take the provided "LevelTileGuide.blend" and build the level geometry, the floors in this file aid in lining up doors with other tiles.
+    - Once you created your Level Tile, drag it into the the scene view
+    - You will likely need to right click your level tile and "unpack prefab"
+    
+    - Attach the "Level Script" Component
+    - Add three empty gameobjects to your new tile. "enemies", "player_spawn" and "items"
+    - Inside "Assets/Objects/LevelMarkers" are various objects you can now place into your tile.
+    - Make sure you remove extra "_1" added to the objects you have added.
+    - Make sure to put item_piles into the items gameobject
+
+    - Make a prefab out of your level tile
+    - Open the prefab view of your "tiles_holder", add your tile prefab to it.
+
+    - At the top Navigate to Wolfire -> Modding -> Export Level Tile Mod
+    Your mod will be Inside "Mods/LevelTile" ready to be inserted into the game.
