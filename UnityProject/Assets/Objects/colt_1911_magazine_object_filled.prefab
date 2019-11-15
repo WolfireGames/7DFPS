@@ -1093,6 +1093,7 @@ MonoBehaviour:
   soundCollision:
   - {fileID: 8300000, guid: 5eff84a00b17cb44089285a889398969, type: 3}
   - {fileID: 8300000, guid: d917c1a79bbf8dc45a8265b0bf968621, type: 3}
+  itemType: 3
 --- !u!54 &-2128609016270033513
 Rigidbody:
   m_ObjectHideFlags: 0

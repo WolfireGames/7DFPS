@@ -23,16 +23,18 @@ public enum GunTilt {LEFT, CENTER, RIGHT};
 
 public enum HandMagStage {HOLD, HOLD_TO_INSERT, EMPTY};
 
-public enum WeaponSlotType {GUN, MAGAZINE, FLASHLIGHT, EMPTY, EMPTYING};
-
 [System.Serializable]
-public class WeaponSlot {
-	public GameObject obj = null;
-	public WeaponSlotType type = WeaponSlotType.EMPTY;
-	public Vector3 start_pos = new Vector3(0.0f,0.0f,0.0f);
+public class ItemSlot {
+	public bool emptying = false;
+	public InventoryItem item = null;
+	public Vector3 start_pos = new Vector3(0f, 0f, 0f);
 	public Quaternion start_rot = Quaternion.identity;
-	public Spring spring = new Spring(1.0f,1.0f,100.0f,0.000001f);
-};
+	public Spring spring = new Spring(1f, 1f, 100f, 0.000001f);
+
+	public bool TypeEquals(ItemType itemType) {
+		return item != null && item.itemType == itemType;
+	}
+}
 
 [System.Serializable]
 public class DisplayLine {
@@ -332,15 +334,14 @@ public class AimScript:MonoBehaviour{
     
     // Inventory slots
     int target_weapon_slot = -2;
-
-    WeaponSlot[] weapon_slots = new WeaponSlot[10];
+    ItemSlot[] itemSlots = new ItemSlot[10];
     
     // Player state
     float health = 1.0f;
     bool dying = false;
     bool dead = false;
     bool won = false;
-
+    
     //Level Creator
     LevelCreatorScript level_creator = null;
     
@@ -432,7 +433,7 @@ public class AimScript:MonoBehaviour{
     
     public void AddLooseBullet(bool spring) {
         GameObject round = Instantiate(casing_with_bullet);
-
+    
         if(level_creator != null) {
             round.transform.parent = level_creator.GetPlayerInventoryTransform();
         }
@@ -448,15 +449,15 @@ public class AimScript:MonoBehaviour{
     
     public void Start() { 
         GameObject level_object = GameObject.Find("LevelObject");
-
+    
         if(level_object != null) {
             level_creator = level_object.GetComponent<LevelCreatorScript>();
         }
-
+    
         if(level_creator == null) {
             Debug.LogWarning("We're missing a LevelCreatorScript in AimScript, this might mean that some world-interactions don't work correctly.");
         }
-
+    
     	holder = GameObject.Find("gui_skin_holder").GetComponent<GUISkinHolder>();
     	weapon_holder = holder.weapon.GetComponent<WeaponHolder>();
     	magazine_obj = weapon_holder.mag_object;
@@ -466,7 +467,7 @@ public class AimScript:MonoBehaviour{
     
     	if(UnityEngine.Random.Range(0.0f,1.0f) < 0.35f){
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
-			held_flashlight.GetComponent<InventoryItem>().Pickup();
+    		held_flashlight.GetComponent<InventoryItem>().Pickup();
     		
     		holder.has_flashlight = true;
     	}
@@ -474,6 +475,8 @@ public class AimScript:MonoBehaviour{
     	rotation_x = transform.rotation.eulerAngles.y;
     	view_rotation_x = transform.rotation.eulerAngles.y;
     	gun_instance = (GameObject)Instantiate(gun_obj);
+    	gun_instance.GetComponent<InventoryItem>().Pickup();
+    
         if(level_creator != null) {
             gun_instance.transform.parent = level_creator.GetPlayerInventoryTransform();
         }
@@ -492,18 +495,17 @@ public class AimScript:MonoBehaviour{
     		head_recoil_delay[i] = -1.0f;
     	}
     	for(int i=0; i<10; ++i){
-    		weapon_slots[i] = new WeaponSlot();
+    		itemSlots[i] = new ItemSlot();
     	}
     	int num_start_bullets = UnityEngine.Random.Range(0,10);
     	if(GetGunScript().gun_type == GunType.AUTOMATIC){
     		int num_start_mags = UnityEngine.Random.Range(0,3);
     		for(int i=1; i<num_start_mags+1; ++i){
-    			weapon_slots[i].type = WeaponSlotType.MAGAZINE;
-    			weapon_slots[i].obj = (GameObject)Instantiate(magazine_obj);
+    			itemSlots[i].item = Instantiate(magazine_obj).GetComponent<InventoryItem>();
                 if(level_creator != null) {
-                    weapon_slots[i].obj.transform.parent = level_creator.GetPlayerInventoryTransform();
+                    itemSlots[i].item.transform.parent = level_creator.GetPlayerInventoryTransform();
                 }
-    			weapon_slots[i].obj.GetComponent<InventoryItem>().Pickup();
+    			itemSlots[i].item.Pickup();
     		}
     	} else {
     		num_start_bullets += UnityEngine.Random.Range(0,20);
@@ -598,26 +600,30 @@ public class AimScript:MonoBehaviour{
     	// Detect all nearby colliders on correct physics layer
     	Collider[] colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0f, 1 << 8);
     	foreach(Collider collider in colliders){
-    		if((magazine_obj != null) && collider.gameObject.name == magazine_obj.name+"(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null)){
+    		if(collider.gameObject.GetComponent<Rigidbody>() == null) {
+    			continue; // Items on the ground will always have a Rigidbody
+    		}
+    
+    		if((magazine_obj != null) && collider.gameObject.name == magazine_obj.name+"(Clone)"){
     			// Magazine
     			float dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
     			if(nearest_mag == null || dist < nearest_mag_dist){	
     				nearest_mag_dist = dist;
     				nearest_mag = collider.gameObject;
     			}					
-    		} else if((collider.gameObject.name == casing_with_bullet.name || collider.gameObject.name == casing_with_bullet.name+"(Clone)") && (collider.gameObject.GetComponent<Rigidbody>() != null)){
+    		} else if((collider.gameObject.name == casing_with_bullet.name || collider.gameObject.name == casing_with_bullet.name+"(Clone)")){
     			// Unfired bullet
     			items_being_picked_up.Add(collider.gameObject);			
     			collider.gameObject.GetComponent<Rigidbody>().useGravity = false;
     			collider.gameObject.GetComponent<Rigidbody>().WakeUp();
-    			collider.enabled = false;
-    		} else if(collider.gameObject.name == "cassette_tape(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null)){
+    			//collider.enabled = false;
+    		} else if(collider.gameObject.name == "cassette_tape(Clone)"){
     			// Cassette tape
     			items_being_picked_up.Add(collider.gameObject);			
     			collider.gameObject.GetComponent<Rigidbody>().useGravity = false;
     			collider.gameObject.GetComponent<Rigidbody>().WakeUp();
-    			collider.enabled = false;
-    		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null) && (held_flashlight == null)){
+    			//collider.enabled = false;
+    		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (held_flashlight == null)){
     			// Flashlight
     			held_flashlight = collider.gameObject;
     			held_flashlight.GetComponent<InventoryItem>().Pickup();
@@ -627,13 +633,18 @@ public class AimScript:MonoBehaviour{
     			flash_ground_rot = held_flashlight.transform.rotation;
     			flash_ground_pose_spring.state = 1.0f;
     			flash_ground_pose_spring.vel = 1.0f;
+    		} else if (collider.gameObject.GetComponent<Rigidbody>() != null) {
+    			print($"Picking up {collider.name}...");
+    			InventoryItem item = collider.GetComponent<InventoryItem>();
+    			if(item != null && AddToInventory(item)) {
+    				item.Pickup();
+    			}
     		}
     	}
     	// Picking up magazine
     	if((nearest_mag != null) && mag_stage == HandMagStage.EMPTY){
     		magazine_instance_in_hand = nearest_mag;
-			
-			magazine_instance_in_hand.GetComponent<InventoryItem>().Pickup();
+    		magazine_instance_in_hand.GetComponent<InventoryItem>().Pickup();
     		mag_ground_pos = magazine_instance_in_hand.transform.position;
     		mag_ground_rot = magazine_instance_in_hand.transform.rotation;
     		mag_ground_pose_spring.state = 1.0f;
@@ -643,6 +654,33 @@ public class AimScript:MonoBehaviour{
     		hold_pose_spring.target_state = 1.0f;
     		mag_stage = HandMagStage.HOLD;
     	}
+    }
+    
+    public bool AddToInventory(InventoryItem item, int preferedSlot = -1) {
+    	ItemSlot slot = null;
+    	print(preferedSlot);
+    	if(preferedSlot == -1) { // Find first empty slot
+    		for(int i = 0;i < itemSlots.Length; ++i) {
+    			if(itemSlots[i].item == null) {
+    				slot = itemSlots[i];
+    				break;
+    			}
+    		}
+    	} else if(preferedSlot >= 0 && preferedSlot < itemSlots.Length) {
+    		slot = itemSlots[preferedSlot];
+    	}
+    
+    	if(slot == null) {
+    		Debug.LogWarning($"Couldn't store {item.name}, the chosen slot is occupied!");
+    		return false;
+    	}
+    
+    	slot.item = item;
+    	slot.spring.state = 0.0f;
+    	slot.spring.target_state = 1.0f;
+    	slot.start_pos = item.transform.position - main_camera.transform.position;
+    	slot.start_rot = Quaternion.Inverse(main_camera.transform.rotation) * item.transform.rotation;
+    	return true;
     }
     
     public bool HandleInventoryControls() {	
@@ -690,101 +728,96 @@ public class AimScript:MonoBehaviour{
     	if(target_weapon_slot != -2 && !mag_ejecting && (mag_stage == HandMagStage.EMPTY || mag_stage == HandMagStage.HOLD)){
     		if(target_weapon_slot == -1 && (gun_instance == null)){
     			for(int i=0; i<10; ++i){
-    				if(weapon_slots[i].type == WeaponSlotType.GUN){
+    				if(itemSlots[i].TypeEquals(ItemType.Gun)){
     					target_weapon_slot = i;
     					break;
     				}
     			}
     		}
-    		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+    		if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && itemSlots[target_weapon_slot].item == null){
     			// Put held mag in empty slot
     			for(int i=0; i<10; ++i){
-    				if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand){
-    					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+    				if(itemSlots[target_weapon_slot].item != null && itemSlots[target_weapon_slot].item.gameObject == magazine_instance_in_hand){
+    					itemSlots[target_weapon_slot].item = null;
     				}
     			}
-    			weapon_slots[target_weapon_slot].type = WeaponSlotType.MAGAZINE;
-    			weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
-    			weapon_slots[target_weapon_slot].spring.state = 0.0f;
-    			weapon_slots[target_weapon_slot].spring.target_state = 1.0f;
-    			weapon_slots[target_weapon_slot].start_pos = magazine_instance_in_hand.transform.position - main_camera.transform.position;
-    			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * magazine_instance_in_hand.transform.rotation;
+    			AddToInventory(magazine_instance_in_hand.GetComponent<InventoryItem>(), target_weapon_slot);
+    			
     			magazine_instance_in_hand = null;
     			mag_stage = HandMagStage.EMPTY;
     			target_weapon_slot = -2;
-    		} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTYING && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand && (gun_instance != null) && !gun_instance.GetComponent<GunScript>().IsThereAMagInGun()){
+    		} else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && itemSlots[target_weapon_slot].emptying && itemSlots[target_weapon_slot].item.gameObject == magazine_instance_in_hand && (gun_instance != null) && !gun_instance.GetComponent<GunScript>().IsThereAMagInGun()){
     			insert_mag_with_number_key = true;
     			target_weapon_slot = -2;
-    		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
+    		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && itemSlots[target_weapon_slot].TypeEquals(ItemType.Mag)){
     			// Take mag from inventory
-    			magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
+    			magazine_instance_in_hand = itemSlots[target_weapon_slot].item.gameObject;
     			mag_stage = HandMagStage.HOLD;
     			hold_pose_spring.state = 1.0f;
     			hold_pose_spring.target_state = 1.0f;
-    			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
-    			weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
-    			weapon_slots[target_weapon_slot].spring.state = 1.0f;
+    			itemSlots[target_weapon_slot].emptying = true;
+    			itemSlots[target_weapon_slot].spring.target_state = 0.0f;
+    			itemSlots[target_weapon_slot].spring.state = 1.0f;
     			target_weapon_slot = -2;
-    		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY && (held_flashlight != null)){
+    		} else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && itemSlots[target_weapon_slot].item == null && (held_flashlight != null)){
     			// Put flashlight away
     			held_flashlight.GetComponent<FlashlightScript>().TurnOff();
-    			weapon_slots[target_weapon_slot].type = WeaponSlotType.FLASHLIGHT;
-    			weapon_slots[target_weapon_slot].obj = held_flashlight;
-    			weapon_slots[target_weapon_slot].spring.state = 0.0f;
-    			weapon_slots[target_weapon_slot].spring.target_state = 1.0f;
-    			weapon_slots[target_weapon_slot].start_pos = held_flashlight.transform.position - main_camera.transform.position;
-    			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
+    			itemSlots[target_weapon_slot].item = held_flashlight.GetComponent<InventoryItem>();
+    			itemSlots[target_weapon_slot].spring.state = 0.0f;
+    			itemSlots[target_weapon_slot].spring.target_state = 1.0f;
+    			itemSlots[target_weapon_slot].start_pos = held_flashlight.transform.position - main_camera.transform.position;
+    			itemSlots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
     			held_flashlight = null;
     			target_weapon_slot = -2;
-    		}  else if (target_weapon_slot != -1 && (held_flashlight == null) && weapon_slots[target_weapon_slot].type == WeaponSlotType.FLASHLIGHT){
+    		}  else if (target_weapon_slot != -1 && (held_flashlight == null) && itemSlots[target_weapon_slot].TypeEquals(ItemType.Flashlight)){
     			// Take flashlight from inventory
-    			held_flashlight = weapon_slots[target_weapon_slot].obj;
+    			held_flashlight = itemSlots[target_weapon_slot].item.gameObject;
     			held_flashlight.GetComponent<FlashlightScript>().TurnOn();
-    			weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
-    			weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
-    			weapon_slots[target_weapon_slot].spring.state = 1.0f;
+    			itemSlots[target_weapon_slot].emptying = true;
+    			itemSlots[target_weapon_slot].spring.target_state = 0.0f;
+    			itemSlots[target_weapon_slot].spring.state = 1.0f;
     			target_weapon_slot = -2;
     		} else if((gun_instance != null) && target_weapon_slot == -1){
     			// Put gun away
     			if(target_weapon_slot == -1){
     				for(int i=0; i<10; ++i){
-    					if(weapon_slots[i].type == WeaponSlotType.EMPTY){
+    					if(itemSlots[i].item == null){
     						target_weapon_slot = i;
     						break;
     					}
     				}
     			}
-    			if(target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+    			if(target_weapon_slot != -1 && itemSlots[target_weapon_slot].item == null){
     				for(int i=0; i<10; ++i){
-    					if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == gun_instance){
-    						weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
+    					if(itemSlots[target_weapon_slot].item != null && itemSlots[target_weapon_slot].item.gameObject == gun_instance){
+    						itemSlots[target_weapon_slot].item = null;
     					}
     				}
-    				weapon_slots[target_weapon_slot].type = WeaponSlotType.GUN;
-    				weapon_slots[target_weapon_slot].obj = gun_instance;
-    				weapon_slots[target_weapon_slot].spring.state = 0.0f;
-    				weapon_slots[target_weapon_slot].spring.target_state = 1.0f;
-    				weapon_slots[target_weapon_slot].start_pos = gun_instance.transform.position - main_camera.transform.position;
-    				weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * gun_instance.transform.rotation;
+    				
+    				itemSlots[target_weapon_slot].item = gun_instance.GetComponent<InventoryItem>();
+    				itemSlots[target_weapon_slot].spring.state = 0.0f;
+    				itemSlots[target_weapon_slot].spring.target_state = 1.0f;
+    				itemSlots[target_weapon_slot].start_pos = gun_instance.transform.position - main_camera.transform.position;
+    				itemSlots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * gun_instance.transform.rotation;
     				gun_instance = null;
     				target_weapon_slot = -2;
     			}
     		} else if(target_weapon_slot >= 0 && (gun_instance == null)){
-    			if(weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
+    			if(itemSlots[target_weapon_slot].item == null){
     				target_weapon_slot = -2;
     			} else {
-    				if(weapon_slots[target_weapon_slot].type == WeaponSlotType.GUN){
-    					gun_instance = weapon_slots[target_weapon_slot].obj;
-    					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
-    					weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
-    					weapon_slots[target_weapon_slot].spring.state = 1.0f;
+    				if(itemSlots[target_weapon_slot].TypeEquals(ItemType.Gun)){
+    					gun_instance = itemSlots[target_weapon_slot].item.gameObject;
+    					itemSlots[target_weapon_slot].emptying = true;
+    					itemSlots[target_weapon_slot].spring.target_state = 0.0f;
+    					itemSlots[target_weapon_slot].spring.state = 1.0f;
     					target_weapon_slot = -2;
-    				} else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE && mag_stage == HandMagStage.EMPTY){
-    					magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
+    				} else if(itemSlots[target_weapon_slot].TypeEquals(ItemType.Mag) && mag_stage == HandMagStage.EMPTY){
+    					magazine_instance_in_hand = itemSlots[target_weapon_slot].item.gameObject;
     					mag_stage = HandMagStage.HOLD;
-    					weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
-    					weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
-    					weapon_slots[target_weapon_slot].spring.state = 1.0f;
+    					itemSlots[target_weapon_slot].emptying = true;
+    					itemSlots[target_weapon_slot].spring.target_state = 0.0f;
+    					itemSlots[target_weapon_slot].spring.state = 1.0f;
     					target_weapon_slot = -2;
     				}
     			}
@@ -998,7 +1031,6 @@ public class AimScript:MonoBehaviour{
     			}
     		}
     	}
-
     	if(character_input.GetButtonDown("Aim Toggle")){
     		aim_toggle = !aim_toggle;
     	}
@@ -1465,51 +1497,55 @@ public class AimScript:MonoBehaviour{
     
     public void UpdateInventoryTransformation() {
     	int i = 0;
-    	WeaponSlot slot = null;
+    	ItemSlot slot = null;
         for(i=0; i<10; ++i){
-    		slot = weapon_slots[i];
-    		if(slot.type == WeaponSlotType.EMPTY){
+    		slot = itemSlots[i];
+    		if(slot.item == null){
     			continue;
     		}
-    		slot.obj.transform.localScale = new Vector3(1.0f,1.0f,1.0f); 
+    		slot.item.transform.localScale = new Vector3(1.0f,1.0f,1.0f); 
     	}
     	for(i=0; i<10; ++i){
-    		slot = weapon_slots[i];
-    		if(slot.type == WeaponSlotType.EMPTY){
+    		slot = itemSlots[i];
+    		if(slot.item == null){
     			continue;
     		}
     		Vector3 start_pos = main_camera.transform.position + slot.start_pos;
     		Quaternion start_rot = main_camera.transform.rotation * slot.start_rot;
-    		if(slot.type == WeaponSlotType.EMPTYING){
-    			start_pos = slot.obj.transform.position;
-    			start_rot = slot.obj.transform.rotation;
+    		if(slot.emptying){
+    			start_pos = slot.item.transform.position;
+    			start_rot = slot.item.transform.rotation;
     			if(Mathf.Abs(slot.spring.vel) <= 0.01f && slot.spring.state <= 0.01f){
-    				slot.type = WeaponSlotType.EMPTY;
+    				slot.item = null;
+    				slot.emptying = false;
     				slot.spring.state = 0.0f;
     			}
     		} 
-    		float scale = 0.0f;
-    		Vector3 target_pos = main_camera.transform.position;
-    		if(main_camera.GetComponent<Camera>() != null){
-    			target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f + i*0.15f), main_camera.GetComponent<Camera>().pixelHeight * 0.17f,0.0f)).direction * 0.3f;
-    		}
-    		slot.obj.transform.position = mix(
-    			start_pos, 
-    			target_pos, 
-    			slot.spring.state);
-    		scale = 0.3f * slot.spring.state + (1.0f - slot.spring.state);
-    		var tmp_cs3 = slot.obj.transform.localScale;
-            tmp_cs3.x *= scale;
-            tmp_cs3.y *= scale;
-            tmp_cs3.z *= scale;
-            slot.obj.transform.localScale = tmp_cs3; 
-    		slot.obj.transform.rotation = mix(
-    			start_rot, 
-    			main_camera.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(0.0f,1.0f,0.0f)), 
-    			slot.spring.state);
-    		Renderer[] renderers = slot.obj.GetComponentsInChildren<Renderer>();
-    		foreach(Renderer renderer in renderers){
-                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    
+    		if(slot.item != null) {
+    			float scale = 0.0f;
+    			Vector3 target_pos = main_camera.transform.position;
+    			if(main_camera.GetComponent<Camera>() != null){
+    				target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f + i*0.15f), main_camera.GetComponent<Camera>().pixelHeight * 0.17f,0.0f)).direction * 0.3f;
+    			}
+    			slot.item.transform.position = mix(
+    				start_pos, 
+    				target_pos, 
+    				slot.spring.state);
+    			scale = 0.3f * slot.spring.state + (1.0f - slot.spring.state);
+    			var tmp_cs3 = slot.item.transform.localScale;
+    			tmp_cs3.x *= scale;
+    			tmp_cs3.y *= scale;
+    			tmp_cs3.z *= scale;
+    			slot.item.transform.localScale = tmp_cs3; 
+    			slot.item.transform.rotation = mix(
+    				start_rot, 
+    				main_camera.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(0.0f,1.0f,0.0f)), 
+    				slot.spring.state);
+    			Renderer[] renderers = slot.item.GetComponentsInChildren<Renderer>();
+    			foreach(Renderer renderer in renderers){
+    				renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+    			}
     		}
     		slot.spring.Update();
     	}
@@ -1665,8 +1701,8 @@ public class AimScript:MonoBehaviour{
     	int max_rounds = 0;
     	int max_rounds_slot = -1;
     	for(int i=0; i<10; ++i){
-    		if(weapon_slots[i].type == WeaponSlotType.MAGAZINE){
-    			int rounds = weapon_slots[i].obj.GetComponent<mag_script>().NumRounds();
+    		if(itemSlots[i].TypeEquals(ItemType.Mag)){
+    			int rounds = itemSlots[i].item.GetComponent<mag_script>().NumRounds();
     			if(rounds > max_rounds){
     				max_rounds_slot = i+1;
     				max_rounds = rounds;
@@ -1682,7 +1718,7 @@ public class AimScript:MonoBehaviour{
     	if(most_loaded == -1){
     		return false;
     	}
-    	if(weapon_slots[most_loaded-1].obj.GetComponent<mag_script>().NumRounds() > rounds){
+    	if(itemSlots[most_loaded-1].item.GetComponent<mag_script>().NumRounds() > rounds){
     		return true;
     	}
     	return false;
@@ -1691,7 +1727,7 @@ public class AimScript:MonoBehaviour{
     public int GetEmptySlot() {
     	int empty_slot = -1;
     	for(int i=0; i<10; ++i){
-    		if(weapon_slots[i].type == WeaponSlotType.EMPTY){
+    		if(itemSlots[i].item == null){
     			empty_slot = i+1;
     			break;
     		}
@@ -1702,7 +1738,7 @@ public class AimScript:MonoBehaviour{
     public int GetFlashlightSlot() {
     	int flashlight_slot = -1;
     	for(int i=0; i<10; ++i){
-    		if(weapon_slots[i].type == WeaponSlotType.FLASHLIGHT){
+    		if(itemSlots[i].TypeEquals(ItemType.Flashlight)){
     			flashlight_slot = i+1;
     			break;
     		}

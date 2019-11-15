@@ -10,6 +10,8 @@ public class InventoryItem : MonoBehaviour {
     private static LevelCreatorScript levelCreatorScript;
     new private Rigidbody rigidbody = null;
 
+    public ItemType itemType = ItemType.None;
+
     private float rigidbodyMass = 0f;
     private float rigidbodyDrag = 0f;
     private float rigidbodyAngularDrag = 0f;
@@ -62,7 +64,7 @@ public class InventoryItem : MonoBehaviour {
     }
 
     public void OnCollisionEnter(Collision collision) {
-        if(!rigidbody.IsSleeping())
+        if(rigidbody != null && !rigidbody.IsSleeping())
             PlaySoundFromGroup(soundCollision, 0.3f);
     }
 
@@ -90,4 +92,13 @@ public class InventoryItem : MonoBehaviour {
         void OnDrop();
         void OnPickup();
     }
+}
+
+public enum ItemType {
+    None,
+    Gun,
+    Flashlight,
+    Mag,
+    Tape,
+    Bullet,
 }

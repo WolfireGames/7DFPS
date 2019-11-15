@@ -20,8 +20,8 @@ public class GUISkinHolder:MonoBehaviour{
     public GameObject pause_menu;
     
     public void Awake() {
-    	//weapon = weapons[2];
-    	weapon = weapons[UnityEngine.Random.Range(0,weapons.Length)];
+    	weapon = weapons[0];
+    	//weapon = weapons[UnityEngine.Random.Range(0,weapons.Length)];
     }
     
     public void Start() {
