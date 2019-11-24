@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InventoryItem : MonoBehaviour {
     private Vector3 oldPos = Vector3.zero;
 
-    public AudioClip[] soundCollision;
+    public AudioClip[] soundCollision = new AudioClip[0];
 
     private static LevelCreatorScript levelCreatorScript;
     new private Rigidbody rigidbody = null;
@@ -35,6 +33,8 @@ public class InventoryItem : MonoBehaviour {
         InventoryItem item = gameObject.GetComponent<InventoryItem>();
         if(item) {
             item.Drop(velocity);
+        } else {
+            Debug.LogWarning("Attempted to Drop item without an InventoryItem script, ignoring..");
         }
     }
 
@@ -42,6 +42,8 @@ public class InventoryItem : MonoBehaviour {
         InventoryItem item = gameObject.GetComponent<InventoryItem>();
         if(item) {
             item.Pickup();
+        } else {
+            Debug.LogWarning("Attempted to pickup item without an InventoryItem script, ignoring..");
         }
     }
 
