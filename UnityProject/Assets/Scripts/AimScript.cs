@@ -600,46 +600,50 @@ public class AimScript:MonoBehaviour{
     	// Detect all nearby colliders on correct physics layer
     	Collider[] colliders = Physics.OverlapSphere(main_camera.transform.position, 2.0f, 1 << 8);
     	foreach(Collider collider in colliders){
-    		if(collider.gameObject.GetComponent<Rigidbody>() == null) {
+    		Rigidbody otherRigidbody = collider.gameObject.GetComponent<Rigidbody>();
+			if(!otherRigidbody) {
     			continue; // Items on the ground will always have a Rigidbody
     		}
     
-    		if((magazine_obj != null) && collider.gameObject.name == magazine_obj.name+"(Clone)"){
-    			// Magazine
-    			float dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
-    			if(nearest_mag == null || dist < nearest_mag_dist){	
-    				nearest_mag_dist = dist;
-    				nearest_mag = collider.gameObject;
-    			}					
-    		} else if((collider.gameObject.name == casing_with_bullet.name || collider.gameObject.name == casing_with_bullet.name+"(Clone)")){
-    			// Unfired bullet
-    			items_being_picked_up.Add(collider.gameObject);			
-    			collider.gameObject.GetComponent<Rigidbody>().useGravity = false;
-    			collider.gameObject.GetComponent<Rigidbody>().WakeUp();
-    			//collider.enabled = false;
-    		} else if(collider.gameObject.name == "cassette_tape(Clone)"){
-    			// Cassette tape
-    			items_being_picked_up.Add(collider.gameObject);			
-    			collider.gameObject.GetComponent<Rigidbody>().useGravity = false;
-    			collider.gameObject.GetComponent<Rigidbody>().WakeUp();
-    			//collider.enabled = false;
-    		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (held_flashlight == null)){
-    			// Flashlight
-    			held_flashlight = collider.gameObject;
-    			held_flashlight.GetComponent<InventoryItem>().Pickup();
-    			
-    			holder.has_flashlight = true;
-    			flash_ground_pos = held_flashlight.transform.position;
-    			flash_ground_rot = held_flashlight.transform.rotation;
-    			flash_ground_pose_spring.state = 1.0f;
-    			flash_ground_pose_spring.vel = 1.0f;
-    		} else if (collider.gameObject.GetComponent<Rigidbody>() != null) {
-    			print($"Picking up {collider.name}...");
-    			InventoryItem item = collider.GetComponent<InventoryItem>();
-    			if(item != null && AddToInventory(item)) {
-    				item.Pickup();
-    			}
-    		}
+			InventoryItem item = collider.GetComponent<InventoryItem>();
+			if(!item) {
+				continue; // Collider is not an item you can pick up
+			}
+
+			switch (item.itemType) {
+				case ItemType.Flashlight:
+					if(held_flashlight == null) {
+						held_flashlight = collider.gameObject;
+						held_flashlight.GetComponent<InventoryItem>().Pickup();
+						
+						holder.has_flashlight = true;
+						flash_ground_pos = held_flashlight.transform.position;
+						flash_ground_rot = held_flashlight.transform.rotation;
+						flash_ground_pose_spring.state = 1.0f;
+						flash_ground_pose_spring.vel = 1.0f;
+					}
+					break;
+				case ItemType.Mag:
+					if(magazine_obj != null) {
+						float dist = Vector3.Distance(collider.transform.position, main_camera.transform.position);
+						if(nearest_mag == null || dist < nearest_mag_dist){	
+							nearest_mag_dist = dist;
+							nearest_mag = collider.gameObject;
+						}
+					}
+					break;
+				case ItemType.Tape:
+				case ItemType.Bullet:
+					items_being_picked_up.Add(collider.gameObject);			
+					otherRigidbody.useGravity = false;
+					otherRigidbody.WakeUp();
+					break;
+				default: // Directly store inside inventory
+					if(AddToInventory(item)) {
+						item.Pickup();
+					}
+					break;
+			}
     	}
     	// Picking up magazine
     	if((nearest_mag != null) && mag_stage == HandMagStage.EMPTY){
@@ -658,7 +662,6 @@ public class AimScript:MonoBehaviour{
     
     public bool AddToInventory(InventoryItem item, int preferedSlot = -1) {
     	ItemSlot slot = null;
-    	print(preferedSlot);
     	if(preferedSlot == -1) { // Find first empty slot
     		for(int i = 0;i < itemSlots.Length; ++i) {
     			if(itemSlots[i].item == null) {
