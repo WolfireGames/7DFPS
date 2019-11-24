@@ -12,20 +12,16 @@ public class InventoryItem : MonoBehaviour {
 
     public ItemType itemType = ItemType.None;
 
-    private float rigidbodyMass = 0f;
-    private float rigidbodyDrag = 0f;
-    private float rigidbodyAngularDrag = 0f;
+    public float rigidbodyMass = 1f;
+    public float rigidbodyDrag = 0f;
+    public float rigidbodyAngularDrag = 0.05f;
 
     public void Awake() {
         if(levelCreatorScript == null) {
             levelCreatorScript = GameObject.Find("LevelObject").GetComponent<LevelCreatorScript>();
         }
 
-        // Get rigidbody values
-        rigidbody = GetComponent<Rigidbody>();
-        rigidbodyMass = rigidbody.mass;
-        rigidbodyDrag = rigidbody.drag;
-        rigidbodyAngularDrag = rigidbody.angularDrag;
+        SetRigidbodyActive(true);
     }
 
     private void PlaySoundFromGroup(AudioClip[] group, float volume) {

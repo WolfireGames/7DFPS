@@ -1132,7 +1132,6 @@ GameObject:
   - component: {fileID: 11100000}
   - component: {fileID: 11400000}
   - component: {fileID: 8200000}
-  - component: {fileID: 2612129580571421412}
   - component: {fileID: 8329999623338349197}
   m_Layer: 0
   m_Name: sw_victory
@@ -1352,22 +1351,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
---- !u!54 &2612129580571421412
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100052}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &8329999623338349197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1382,3 +1365,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundCollision: []
   itemType: 1
+  rigidbodyMass: 1
+  rigidbodyDrag: 0
+  rigidbodyAngularDrag: 0.05

@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 11400000}
   - component: {fileID: 8200000}
   - component: {fileID: -3071968916384315512}
-  - component: {fileID: 3556094706453551694}
   m_Layer: 8
   m_Name: glock_17_magazine_object_filled
   m_TagString: Untagged
@@ -223,22 +222,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5eff84a00b17cb44089285a889398969, type: 3}
   - {fileID: 8300000, guid: d917c1a79bbf8dc45a8265b0bf968621, type: 3}
   itemType: 3
---- !u!54 &3556094706453551694
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 1
+  rigidbodyMass: 1
+  rigidbodyDrag: 0
+  rigidbodyAngularDrag: 0.05
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
