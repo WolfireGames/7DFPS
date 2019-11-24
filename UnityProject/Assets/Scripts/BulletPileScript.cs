@@ -26,8 +26,6 @@ public class BulletPileScript : MonoBehaviour{
     					UnityEngine.Random.Range(0.0f,0.2f),
     					UnityEngine.Random.Range(-0.1f,0.1f));
     		bullet.transform.rotation = BulletScript.RandomOrientation();
-    		bullet.AddComponent<Rigidbody>();
-    		bullet.GetComponent<ShellCasingScript>().collided = true;
     	}
     	if(UnityEngine.Random.Range(0,4) == 0){
     		GameObject tape = (GameObject)Instantiate(holder.tape_object);

@@ -11,6 +11,7 @@ public class InventoryItem : MonoBehaviour {
     new private Rigidbody rigidbody = null;
 
     public ItemType itemType = ItemType.None;
+    public bool pickupable = true;
 
     public float rigidbodyMass = 1f;
     public float rigidbodyDrag = 0f;
@@ -27,6 +28,20 @@ public class InventoryItem : MonoBehaviour {
     private void PlaySoundFromGroup(AudioClip[] group, float volume) {
         if(group.Length != 0){
             GetComponent<AudioSource>().PlayOneShot(group[Random.Range(0, group.Length)], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+        }
+    }
+
+    public static void SetDropped(GameObject gameObject, Vector3 velocity) {
+        InventoryItem item = gameObject.GetComponent<InventoryItem>();
+        if(item) {
+            item.Drop(velocity);
+        }
+    }
+
+    public static void SetPickedUp(GameObject gameObject) {
+        InventoryItem item = gameObject.GetComponent<InventoryItem>();
+        if(item) {
+            item.Pickup();
         }
     }
 
@@ -72,7 +87,10 @@ public class InventoryItem : MonoBehaviour {
 
     private void SetRigidbodyActive(bool active) {
         if(active) {
-            rigidbody = gameObject.AddComponent<Rigidbody>();
+            rigidbody = GetComponent<Rigidbody>();
+            if(!rigidbody)
+                rigidbody = gameObject.AddComponent<Rigidbody>();
+
             rigidbody.mass = rigidbodyMass;
             rigidbody.drag = rigidbodyDrag;
             rigidbody.angularDrag = rigidbodyAngularDrag;

@@ -437,6 +437,12 @@ public class AimScript:MonoBehaviour{
         if(level_creator != null) {
             round.transform.parent = level_creator.GetPlayerInventoryTransform();
         }
+
+		InventoryItem item = round.GetComponent<InventoryItem>();
+        if(item) {
+            item.Pickup();
+        }
+
            
     	loose_bullets.Add(round);
     	Spring new_spring = new Spring(0.3f,0.3f,kAimSpringStrength,kAimSpringDamping);
@@ -606,7 +612,7 @@ public class AimScript:MonoBehaviour{
     		}
     
 			InventoryItem item = collider.GetComponent<InventoryItem>();
-			if(!item) {
+			if(!item || !item.pickupable) {
 				continue; // Collider is not an item you can pick up
 			}
 
@@ -634,9 +640,11 @@ public class AimScript:MonoBehaviour{
 					break;
 				case ItemType.Tape:
 				case ItemType.Bullet:
-					items_being_picked_up.Add(collider.gameObject);			
-					otherRigidbody.useGravity = false;
-					otherRigidbody.WakeUp();
+					if(!items_being_picked_up.Contains(collider.gameObject)) {
+						items_being_picked_up.Add(collider.gameObject);
+						otherRigidbody.useGravity = false;
+						otherRigidbody.WakeUp();
+					}
 					break;
 				default: // Directly store inside inventory
 					if(AddToInventory(item)) {

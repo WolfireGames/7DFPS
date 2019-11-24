@@ -232,6 +232,7 @@ public class GunScript:MonoBehaviour{
     		
     		if(UnityEngine.Random.Range(0,2) == 0){
     			round_in_chamber = (GameObject)Instantiate(casing_with_bullet, transform.Find("point_chambered_round").position, transform.Find("point_chambered_round").rotation);
+				InventoryItem.SetPickedUp(round_in_chamber);
     			round_in_chamber.transform.parent = transform;
     			round_in_chamber.transform.localScale = new Vector3(1.0f,1.0f,1.0f);
     			renderers = round_in_chamber.GetComponentsInChildren<Renderer>();
@@ -263,6 +264,7 @@ public class GunScript:MonoBehaviour{
                 cylinders[i].game_object.transform.parent = chamber_transform;
     			cylinders[i].can_fire = true;
     			cylinders[i].seated = UnityEngine.Random.Range(0.0f,0.5f);
+				InventoryItem.SetPickedUp(cylinders[i].game_object);
     			renderers = cylinders[i].game_object.GetComponentsInChildren<Renderer>();
     			foreach(Renderer renderer in renderers){
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -317,6 +319,7 @@ public class GunScript:MonoBehaviour{
     	if((magazine_instance_in_gun != null) && MagScript().NumRounds() > 0 && mag_stage == MagStage.IN){
     		if(round_in_chamber == null){
     			round_in_chamber = (GameObject)Instantiate(casing_with_bullet, transform.Find("point_load_round").position, transform.Find("point_load_round").rotation);
+				InventoryItem.SetPickedUp(round_in_chamber);
     			Renderer[] renderers = round_in_chamber.GetComponentsInChildren<Renderer>();
     			foreach(Renderer renderer in renderers){
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -341,14 +344,12 @@ public class GunScript:MonoBehaviour{
     	}
     	slide_lock = false;
     	if((round_in_chamber != null) && (round_in_chamber_state == RoundState.FIRED || round_in_chamber_state == RoundState.READY)){
-    		round_in_chamber.AddComponent<Rigidbody>();
     		PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
             if(level_creator != null){
                 round_in_chamber.transform.parent = level_creator.GetPositionTileItemParent(round_in_chamber.transform.position);
             }
-    		round_in_chamber.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-    		round_in_chamber.GetComponent<Rigidbody>().velocity = velocity;
-    		round_in_chamber.GetComponent<Rigidbody>().velocity += transform.rotation * new Vector3(UnityEngine.Random.Range(2.0f,4.0f),UnityEngine.Random.Range(1.0f,2.0f),UnityEngine.Random.Range(-1.0f,-3.0f));
+
+    		InventoryItem.SetDropped(round_in_chamber, velocity + transform.rotation * new Vector3(UnityEngine.Random.Range(2.0f,4.0f),UnityEngine.Random.Range(1.0f,2.0f),UnityEngine.Random.Range(-1.0f,-3.0f)));
     		round_in_chamber.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f,40.0f),UnityEngine.Random.Range(-40.0f,40.0f),UnityEngine.Random.Range(-40.0f,40.0f));
     		round_in_chamber = null;
 
@@ -708,6 +709,7 @@ public class GunScript:MonoBehaviour{
                         cylinders[best_chamber].game_object.transform.parent = chamber_transform;
     					cylinders[best_chamber].can_fire = true;
     					cylinders[best_chamber].seated = UnityEngine.Random.Range(0.0f,1.0f);
+						InventoryItem.SetPickedUp(cylinders[best_chamber].game_object);
     					Renderer[] renderers = cylinders[best_chamber].game_object.GetComponentsInChildren<Renderer>();
     					foreach(Renderer renderer in renderers){
                             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
