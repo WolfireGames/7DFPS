@@ -260,11 +260,11 @@ public class GunScript:MonoBehaviour{
     			string name = "point_chamber_"+(i+1);
                 Transform chamber_transform = extractor_rod.Find(name);
     			cylinders[i].game_object = (GameObject)Instantiate(casing_with_bullet, chamber_transform.position, chamber_transform.rotation);
+    			InventoryItem.SetPickedUp(cylinders[i].game_object);
     			cylinders[i].game_object.transform.localScale = new Vector3(1.0f,1.0f,1.0f);
                 cylinders[i].game_object.transform.parent = chamber_transform;
     			cylinders[i].can_fire = true;
     			cylinders[i].seated = UnityEngine.Random.Range(0.0f,0.5f);
-				InventoryItem.SetPickedUp(cylinders[i].game_object);
     			renderers = cylinders[i].game_object.GetComponentsInChildren<Renderer>();
     			foreach(Renderer renderer in renderers){
                     renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -448,6 +448,7 @@ public class GunScript:MonoBehaviour{
     				cylinders[which_chamber].can_fire = false;
     				cylinders[which_chamber].seated += UnityEngine.Random.Range(0.0f,0.5f);
     				cylinders[which_chamber].game_object = (GameObject)Instantiate(shell_casing, round.transform.position, round.transform.rotation);
+    				InventoryItem.SetPickedUp(cylinders[which_chamber].game_object);
                     cylinders[which_chamber].game_object.transform.parent = round.transform.parent;
     				GameObject.Destroy(round);
     				renderers = cylinders[which_chamber].game_object.GetComponentsInChildren<Renderer>();
@@ -705,11 +706,11 @@ public class GunScript:MonoBehaviour{
     					string name = "point_chamber_"+(best_chamber+1);
                         Transform chamber_transform = extractor_rod.Find(name);
     					cylinders[best_chamber].game_object = (GameObject)Instantiate(casing_with_bullet, chamber_transform.position, chamber_transform.rotation);
+						InventoryItem.SetPickedUp(cylinders[best_chamber].game_object);
     					cylinders[best_chamber].game_object.transform.localScale = new Vector3(1.0f,1.0f,1.0f);
                         cylinders[best_chamber].game_object.transform.parent = chamber_transform;
     					cylinders[best_chamber].can_fire = true;
     					cylinders[best_chamber].seated = UnityEngine.Random.Range(0.0f,1.0f);
-						InventoryItem.SetPickedUp(cylinders[best_chamber].game_object);
     					Renderer[] renderers = cylinders[best_chamber].game_object.GetComponentsInChildren<Renderer>();
     					foreach(Renderer renderer in renderers){
                             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -1072,16 +1073,8 @@ public class GunScript:MonoBehaviour{
     						cylinders[i].seated -= Time.deltaTime * 5.0f;
     						if(cylinders[i].seated <= 0.0f){
     							GameObject bullet = cylinders[i].game_object;
-    							bullet.AddComponent<Rigidbody>();
-    							bullet.transform.parent = null;
-    							bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-    							bullet.GetComponent<Rigidbody>().velocity = velocity;
+    							InventoryItem.SetDropped(bullet, velocity);
     							bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f,40.0f),UnityEngine.Random.Range(-40.0f,40.0f),UnityEngine.Random.Range(-40.0f,40.0f));
-
-                                if(level_creator != null) {
-                                    bullet.transform.parent = level_creator.GetPositionTileItemParent(bullet.transform.position);
-                                }
-
     							cylinders[i].game_object = null;
     							cylinders[i].can_fire = false;
     						}
