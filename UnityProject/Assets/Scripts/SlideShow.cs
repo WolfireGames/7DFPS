@@ -37,7 +37,7 @@ public class SlideShow : MonoBehaviour {
 	}
 	
 	void Update () {
-        AudioListener.volume = Mathf.Min(1.0f * PlayerPrefs.GetFloat("master_volume", 1.0f), AudioListener.volume + Time.deltaTime * 2.0f * PlayerPrefs.GetFloat("master_volume", 1.0f));
+        AudioListener.volume = Mathf.Min(1.0f * Preferences.master_volume, AudioListener.volume + Time.deltaTime * 2.0f * Preferences.master_volume);
         if(state == SplashState.FADE_IN){
             fade_in = Mathf.Min(1.0f, fade_in + Time.deltaTime * 2.0f);
             if(fade_in == 1.0){
@@ -81,7 +81,7 @@ public class SlideShow : MonoBehaviour {
                 Event.current.type == EventType.MouseDown)
             {
                 state = SplashState.FADE_OUT;
-                audiosource_effect.PlayOneShot(stop_sound, PlayerPrefs.GetFloat("sound_volume", 1.0f));
+                audiosource_effect.PlayOneShot(stop_sound, Preferences.sound_volume);
                 //audiosource_music_a.Stop();
                 //audiosource_music_b.Stop();
             }
