@@ -1913,7 +1913,7 @@ public class AimScript:MonoBehaviour{
     	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), 0.0f, character_input.GetAxis("Vertical"));
     	
     	if(old_vert_axis < 0.9f && character_input.GetAxis("Vertical") >= 0.9f){
-    		if(forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
+    		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
     		}
