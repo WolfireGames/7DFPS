@@ -24,7 +24,11 @@ public class ModManager : MonoBehaviour {
             foreach (var mod in availableMods)
                 LoadMod(mod);
         }
+        
+        InsertMods();
+    }
 
+    public void InsertMods() {
         /*
         // Instantiate all custom mods
         foreach (var mod in loadedCustomMods) {
@@ -37,12 +41,18 @@ public class ModManager : MonoBehaviour {
 
         // Insert all gun mods
         var guns = new List<GameObject>(guiSkinHolder.weapons);
+        if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
+            guns.Clear();
+
         foreach (var mod in loadedGunMods)
             guns.Add(mod.mainAsset);
         guiSkinHolder.weapons = guns.ToArray();
 
         // Insert all Level Tile mods
         var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+        if(loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
+            tiles.Clear();
+
         foreach (var mod in loadedLevelMods)
             foreach(Transform child in mod.mainAsset.transform)
                 tiles.Add(child.gameObject);

@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public enum RobotType {SHOCK_DRONE, STATIONARY_TURRET, MOBILE_TURRET, GUN_DRONE};
@@ -151,7 +150,7 @@ public class RobotScript:MonoBehaviour{
     	Damage(obj);
     }
     
-    public void WasShot(GameObject obj,Vector3 pos,Vector3 vel) {
+    public void WasShot(GameObject obj, Vector3 pos, Vector3 vel, float damage = 1f) {
     	if((transform.parent != null) && transform.parent.gameObject.name == "gun pivot"){
     		Vector3 x_axis = transform.Find("point_pivot").rotation * new Vector3(1.0f,0.0f,0.0f);
     		Vector3 y_axis = transform.Find("point_pivot").rotation * new Vector3(0.0f,1.0f,0.0f);
@@ -167,14 +166,13 @@ public class RobotScript:MonoBehaviour{
     		Vector3 x_plane_pos = new Vector3(-Vector3.Dot(rel_pos, z_axis), 0.0f, Vector3.Dot(rel_pos, y_axis));
     		rotation_x.vel += Vector3.Dot(x_plane_vel, x_plane_pos) * 10.0f;
     	}
-    	if(robot_type == RobotType.SHOCK_DRONE){
-    		if(UnityEngine.Random.Range(0.0f,1.0f) < 0.5f){
+    	
+    	if(robot_type == RobotType.SHOCK_DRONE) {
+    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.5f, damage))
     			Damage(transform.Find("battery").gameObject);
-    		}
     	} else {
-    		if(UnityEngine.Random.Range(0.0f,1.0f) < 0.25f){
+    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.75f, damage))
     			Damage(transform.Find("battery").gameObject);
-    		}
     	}
     	Damage(obj);
     }

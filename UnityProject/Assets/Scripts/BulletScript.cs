@@ -21,9 +21,11 @@ public class BulletScript:MonoBehaviour{
     public GameObject metal_bullet_hole_decal_obj;
     public GameObject spark_effect;
     public GameObject puff_effect;
+    public float damageMultiplier = 1f;
     bool hit_something = false;
     LineRenderer line_renderer; 
     Vector3 velocity;
+    public float velocityFalloff = 0f;
     float life_time = 0.0f;
     float death_time = 0.0f;
     int segment = 1;
@@ -82,6 +84,7 @@ public class BulletScript:MonoBehaviour{
     		if(life_time > 1.5f){
     			hit_something = true;
     		}
+    		velocity -= velocity * velocityFalloff * Time.deltaTime;
     		Vector3 old_pos = transform.position;
     		transform.position += velocity * Time.deltaTime;
     		velocity += Physics.gravity * Time.deltaTime;
@@ -126,7 +129,7 @@ public class BulletScript:MonoBehaviour{
     					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0f : 0.8f);                        
 					    hole = Instantiate(metal_bullet_hole_obj, hit.point, RandomOrientation());
     					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
-    					turret_script.WasShot(hit_obj, hit.point, velocity);
+    					turret_script.WasShot(hit_obj, hit.point, velocity, damageMultiplier);
     				} else if(aim_script){
     					hole = Instantiate(bullet_hole_obj, hit.point, RandomOrientation());
     					effect = Instantiate(puff_effect, hit.point, RandomOrientation());

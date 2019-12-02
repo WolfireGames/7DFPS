@@ -1197,6 +1197,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gun_type: 1
   action_type: 0
+  magazineType: 1
+  handed: 0
+  lockSlideWhenEmpty: 1
+  slideSpringsAfterRelease: 1
+  hasSlideLock: 1
+  slideInteractionNeedsHand: 1
+  projectileVelocity: 251
+  projectilePerDischarge: 1
+  projectileInaccuracy: 0
   sound_gunshot_bigroom: []
   sound_gunshot_smallroom:
   - {fileID: 8300000, guid: 0584cfb15940bf64ab0165891d57d218, type: 3}
@@ -1256,6 +1265,8 @@ MonoBehaviour:
   ready_to_remove_mag: 0
   pressure_on_trigger: 0
   trigger_pressed: 0
+  slide_lock: 0
+  kPressCheckPosition: 0.4
   cylinders: []
 --- !u!82 &8200000
 AudioSource:

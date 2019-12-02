@@ -150,6 +150,9 @@ public class optionsmenuscript:MonoBehaviour{
         
         PlayerPrefs.SetInt("antialiasing_mode", 3);
         PlayerPrefs.SetInt("vignette", 0);
+
+        PlayerPrefs.SetInt("ignore_vanilla_guns", 0);
+        PlayerPrefs.SetInt("ignore_vanilla_tiles", 0);
     }
 
     // Functionality
