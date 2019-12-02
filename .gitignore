@@ -36,7 +36,8 @@ ehthumbs.db
 
 # Mod bundles
 # ===============
-/UnityProject/Assets/Mods/*/
+/UnityProject/Assets/Mods/*/*
+!UnityProject/Assets/Mods/*/.gitkeep
 /UnityProject/Assets/Modding
 /UnityProject/Assets/Modding.meta
 
