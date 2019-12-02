@@ -1247,6 +1247,9 @@ MonoBehaviour:
   sound_hammer_decock:
   - {fileID: 8300000, guid: c979bc703f1d9c042a858f796c7e6437, type: 3}
   - {fileID: 8300000, guid: a4f5c20a2f873d4448edf72164923ad7, type: 3}
+  sound_trigger_reset:
+  - {fileID: 8300000, guid: 00fd98c994a0de344a3ae700a824e765, type: 3}
+  - {fileID: 8300000, guid: 0ce646016a114b64485a4c10371463bd, type: 3}
   add_head_recoil: 0
   recoil_transfer_x: 0
   recoil_transfer_y: 0

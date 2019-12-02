@@ -40,6 +40,7 @@ public class optionsmenuscript:MonoBehaviour{
             RestoreDefaults();
         }
 
+        Preferences.UpdatePreferences();
         UpdateUIValues();
     }
 
@@ -77,6 +78,8 @@ public class optionsmenuscript:MonoBehaviour{
         menu.SetActive(false);
         LockCursor();
         Time.timeScale = 1.0f;
+
+        Preferences.UpdatePreferences();
     }
 
     public static bool IsMenuShown() {

@@ -69,6 +69,7 @@ public class GunScript:MonoBehaviour{
     public List<AudioClip> sound_cylinder_rotate;
     public List<AudioClip> sound_hammer_cock;
     public List<AudioClip> sound_hammer_decock;
+    public List<AudioClip> sound_trigger_reset;
     
     float kGunMechanicVolume = 0.2f;
     [HideInInspector] public bool add_head_recoil = false;
@@ -393,7 +394,7 @@ public class GunScript:MonoBehaviour{
             return;
         }
         int which_shot = Random.Range(0, group.Count);
-        GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1f));
+        GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
 
     public void Discharge() {
@@ -429,17 +430,17 @@ public class GunScript:MonoBehaviour{
             return false;
         }
 
-            if(action_type == ActionType.BOLT && IsBoltOpen()) {
-                return false;
-            }
+        if(action_type == ActionType.BOLT && IsBoltOpen()) {
+            return false;
+        }
 
         if((pressure_on_trigger == PressureState.INITIAL || action_type == ActionType.DOUBLE) && !slide_lock && thumb_on_hammer == Thumb.OFF_HAMMER && hammer_cocked == 1f && safety_off == 1f && (auto_mod_stage == AutoModStage.ENABLED || !fired_once_this_pull)) {
             trigger_pressed = 1f;
+            fired_once_this_pull = true;
 
             if(gun_type == GunType.AUTOMATIC && slide_amount == 0f) {
                 hammer_cocked = 0f;
                 if(round_in_chamber && round_in_chamber_state == RoundState.READY) {
-                    fired_once_this_pull = true;
                     PlaySoundFromGroup(sound_gunshot_smallroom, 1f);
                     round_in_chamber_state = RoundState.FIRED;
 
@@ -494,6 +495,9 @@ public class GunScript:MonoBehaviour{
     }
     
     public void ReleasePressureFromTrigger() {
+        if(fired_once_this_pull && pressure_on_trigger == PressureState.CONTINUING)
+            PlaySoundFromGroup(sound_trigger_reset, 0.07f);
+
         pressure_on_trigger = PressureState.NONE;
         trigger_pressed = 0f;
     }

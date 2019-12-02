@@ -427,7 +427,7 @@ public class AimScript:MonoBehaviour{
     
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
-    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
     
     public void AddLooseBullet(bool spring) {
@@ -1041,7 +1041,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void StartTapePlay() {
-    	GetComponent<AudioSource>().PlayOneShot(holder.sound_tape_start, 1.0f * PlayerPrefs.GetFloat("voice_volume", 1.0f));
+    	GetComponent<AudioSource>().PlayOneShot(holder.sound_tape_start, 1.0f * Preferences.voice_volume);
     	audiosource_tape_background.Play();
     	if(tape_in_progress && start_tape_delay == 0.0f){ 
     		audiosource_audio_content.Play();
@@ -1060,7 +1060,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void StopTapePlay() {
-    	GetComponent<AudioSource>().PlayOneShot(holder.sound_tape_end, 1.0f * PlayerPrefs.GetFloat("voice_volume", 1.0f));
+    	GetComponent<AudioSource>().PlayOneShot(holder.sound_tape_end, 1.0f * Preferences.voice_volume);
     	if(tape_in_progress){
     		audiosource_tape_background.Pause();
     		audiosource_audio_content.Pause();
@@ -1173,9 +1173,9 @@ public class AimScript:MonoBehaviour{
     	}
     	if(tape_in_progress && audiosource_tape_background.isPlaying){ 
     		GetComponent<MusicScript>().SetMystical((tapes_heard.Count+1.0f)/total_tapes.Count);
-    		audiosource_tape_background.volume = PlayerPrefs.GetFloat("voice_volume", 1.0f);
+    		audiosource_tape_background.volume = Preferences.voice_volume;
     		audiosource_tape_background.pitch = Mathf.Min(1.0f,audiosource_audio_content.pitch + Time.deltaTime * 3.0f);
-    		audiosource_audio_content.volume = PlayerPrefs.GetFloat("voice_volume", 1.0f);
+    		audiosource_audio_content.volume = Preferences.voice_volume;
     		audiosource_audio_content.pitch = Mathf.Min(1.0f,audiosource_audio_content.pitch + Time.deltaTime * 3.0f);
     		//audiosource_audio_content.pitch = 10.0;
     		//audiosource_audio_content.volume = 0.1;
@@ -1335,8 +1335,8 @@ public class AimScript:MonoBehaviour{
     		rotation_x_leeway = 0.0f;
     	}
     	
-    	sensitivity_x = PlayerPrefs.GetFloat("mouse_sensitivity", 1.0f) * 10.0f;
-    	sensitivity_y = PlayerPrefs.GetFloat("mouse_sensitivity", 1.0f) * 10.0f;
+    	sensitivity_x = Preferences.mouse_sensitivity * 10.0f;
+    	sensitivity_y = Preferences.mouse_sensitivity * 10.0f;
     	if(PlayerPrefs.GetInt("mouse_invert", 0) == 1){
     		sensitivity_y = -Mathf.Abs(sensitivity_y);
     	} else {
@@ -1631,7 +1631,7 @@ public class AimScript:MonoBehaviour{
     	}
     	UpdateLevelEndEffects();
     	if(main_client_control){
-    		AudioListener.volume = dead_volume_fade * PlayerPrefs.GetFloat("master_volume", 1.0f);
+    		AudioListener.volume = dead_volume_fade * Preferences.master_volume;
     	}
     	FPSInputControllerUpdate();
     	PlatformInputControllerUpdate();
@@ -1950,7 +1950,7 @@ public class AimScript:MonoBehaviour{
     	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), 0.0f, character_input.GetAxis("Vertical"));
     	
     	if(old_vert_axis < 0.9f && character_input.GetAxis("Vertical") >= 0.9f){
-    		if(forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
+    		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
     		}
