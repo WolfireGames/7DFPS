@@ -492,6 +492,11 @@ public class RobotScript:MonoBehaviour{
                 }
             }
     	}
+
+    	if(audiosource_taser.isPlaying && (!barrel_alive || ai_state != AIState.FIRING)) { // Turn off taser if we no longer fire
+    		audiosource_taser.Stop();
+    	}
+
     	Vector3 rel_pos = target_pos - transform.position;
     	if(motor_alive){		
     		float kFlyDeadZone = 0.2f;
@@ -632,8 +637,6 @@ public class RobotScript:MonoBehaviour{
     						target.GetComponent<AimScript>().Shock();
     					}
     				}
-    			} else {
-    				audiosource_taser.Stop();
     			}
     			gun_delay = Mathf.Max(0.0f, gun_delay - Time.deltaTime);
 
