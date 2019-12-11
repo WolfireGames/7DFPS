@@ -48,6 +48,7 @@ public class GunScript:MonoBehaviour{
     public bool hasSlideLock = true;
     public bool slideInteractionNeedsHand = true;
 
+    [Header("Projectile")]
     public float projectileVelocity = 251f;
     public int projectilePerDischarge = 1;
     public float projectileInaccuracy = 0f;
@@ -81,8 +82,9 @@ public class GunScript:MonoBehaviour{
     [HideInInspector] public Vector3 old_pos;
     [HideInInspector] public Vector3 velocity;
     
-    public GameObject magazine_obj;
+    [Header("Objects")]
     public GameObject bullet_obj;
+    public GameObject magazine_obj;
     public GameObject muzzle_flash;
     public GameObject shell_casing;
     public GameObject casing_with_bullet;
@@ -100,6 +102,7 @@ public class GunScript:MonoBehaviour{
     Vector3 slide_rel_pos;
     float slide_amount = 0f;
     float bolt_amount = 0f;
+    [Header("Misc")]
     public bool slide_lock = false;
 
     SlideStage slide_stage = SlideStage.NOTHING;
