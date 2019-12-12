@@ -10,8 +10,11 @@ public class tapescript:MonoBehaviour{
     Light lightObject;
     
     public void Awake() {
-    	old_pos = transform.position;
     	lightObject = transform.Find("light_obj").GetComponent<Light>();
+    }
+
+    public void Start() {
+        old_pos = transform.position;
     }
     
     public void Update() {
