@@ -318,6 +318,7 @@ public class AimScript:MonoBehaviour{
     List<AudioClip> total_tapes = new List<AudioClip>();
     bool tape_in_progress = false;
     int unplayed_tapes = 0;
+    int tape_count = 11;
     
     // Cheats
     bool hasCheated = false;
@@ -521,20 +522,14 @@ public class AimScript:MonoBehaviour{
     	audiosource_audio_content = gameObject.AddComponent<AudioSource>();
     	audiosource_audio_content.loop = false;
     	
-    	//int count = 0;
-    	foreach(AudioClip tape in holder.sound_tape_content){
-    		total_tapes.Add(tape);
-    		/*++count;
-    		if(count >= 2){
-    			break;
-    		}*/
-    	}
-    	List<AudioClip> temp_total_tapes = new List<AudioClip>(total_tapes);
-    	while(temp_total_tapes.Count > 0){
-    		int rand_tape_id = UnityEngine.Random.Range(0,temp_total_tapes.Count);
+    	List<AudioClip> temp_total_tapes = new List<AudioClip>(holder.sound_tape_content);
+    	while(temp_total_tapes.Count > 0 && tapes_remaining.Count < tape_count) {
+    		int rand_tape_id = UnityEngine.Random.Range(0, temp_total_tapes.Count);
     		tapes_remaining.Add(temp_total_tapes[rand_tape_id]);
     		temp_total_tapes.RemoveAt(rand_tape_id);
     	}
+    
+    	total_tapes = new List<AudioClip>(tapes_remaining);
     }
     
     public float GunDist() {
