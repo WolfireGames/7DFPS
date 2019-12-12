@@ -100,6 +100,8 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void UpdateUIValues() {
         foreach(Transform transform in optionsContent.transform) {
+            if(transform.name.StartsWith("_")) // Don't default settings that start with _
+                continue;
 
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
