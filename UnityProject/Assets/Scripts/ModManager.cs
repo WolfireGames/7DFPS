@@ -7,6 +7,7 @@ public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
     public static List<Mod> loadedCustomMods = new List<Mod>();
+    public static List<Mod> loadedTapeMods = new List<Mod>();
 
     public static List<Mod> availableMods;
 
@@ -57,6 +58,14 @@ public class ModManager : MonoBehaviour {
             foreach(Transform child in mod.mainAsset.transform)
                 tiles.Add(child.gameObject);
         levelCreatorScript.level_tiles = tiles.ToArray();
+
+        // Insert all Tape mods
+        if(loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
+            guiSkinHolder.sound_tape_content.Clear();
+
+        foreach (var mod in loadedTapeMods)
+            foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+                guiSkinHolder.sound_tape_content.Add(tape);
     }
 
     public void LoadMod(Mod mod) {
@@ -72,6 +81,7 @@ public class ModManager : MonoBehaviour {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
             case ModType.Custom: return loadedCustomMods;
+            case ModType.Tapes: return loadedTapeMods;
 
             default:
                 throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
@@ -83,6 +93,7 @@ public class ModManager : MonoBehaviour {
             case ModType.Gun: return "gun_holder.prefab";
             case ModType.LevelTile: return "tiles_holder.prefab";
             case ModType.Custom: return "script_holder.prefab";
+            case ModType.Tapes: return "tape_holder.prefab";
 
             default:
                 throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
@@ -153,6 +164,7 @@ public class ModManager : MonoBehaviour {
 public enum ModType {
     Custom,
     Gun,
+    Tapes,
     LevelTile
 }
 
