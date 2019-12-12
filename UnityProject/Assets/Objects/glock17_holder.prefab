@@ -3,9 +3,10 @@
 --- !u!1 &100000
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 400000}
   - component: {fileID: 11400000}
@@ -18,9 +19,10 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &400000
 Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -55.284286, y: 80.52129, z: -3.9986339}
@@ -31,27 +33,18 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11400000
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b460fefe00e609041bcf2dce32ecfa67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun_object: {fileID: 100000, guid: bdc99ed9f6b6277429f202078ce85831, type: 2}
-  mag_object: {fileID: 100000, guid: bec8b09fecaa1d445b37085d3a499672, type: 2}
-  bullet_object: {fileID: 100002, guid: 7abc52798abbf9145a6a57ed3b957f2d, type: 2}
-  casing_object: {fileID: 100000, guid: 14ea0df9eb17c7d4b9020e4875203113, type: 2}
---- !u!1001 &100100000
-Prefab:
-  m_ObjectHideFlags: 1
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications: []
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 100000}
-  m_IsPrefabParent: 1
+  display_name: Glock 17
+  gun_object: {fileID: 100000, guid: bdc99ed9f6b6277429f202078ce85831, type: 3}
+  mag_object: {fileID: 100000, guid: bec8b09fecaa1d445b37085d3a499672, type: 3}
+  bullet_object: {fileID: 100002, guid: 7abc52798abbf9145a6a57ed3b957f2d, type: 3}
+  casing_object: {fileID: 100000, guid: 14ea0df9eb17c7d4b9020e4875203113, type: 3}
