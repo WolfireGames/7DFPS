@@ -14,6 +14,11 @@ public class ModExport : MonoBehaviour {
         ExportBundle(ModType.LevelTile);
     }
 
+    [MenuItem("Wolfire/Modding/Export Tape Pack Mod")]
+    public static void ExportTapes () {
+        ExportBundle(ModType.Tapes);
+    }
+
     //[MenuItem("Wolfire/Modding/Export Custom Mod")]
     public static void ExportCustom () {
         ExportBundle(ModType.Custom);
