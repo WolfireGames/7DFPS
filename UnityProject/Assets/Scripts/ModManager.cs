@@ -115,11 +115,13 @@ public class ModManager : MonoBehaviour {
         availableMods = new List<Mod>();
         
         foreach (var folder in rootFolders) {
-            var modType = (ModType) Enum.Parse(typeof(ModType), Path.GetFileName(folder));
-            var modFolders = Directory.GetDirectories(folder);
+            ModType modType;
+            if(!Enum.TryParse<ModType>(Path.GetFileName(folder), out modType))
+                continue; // This is not a folder for a supported mod
 
             Debug.Log($"Importing \"{modType}\" mods..");
 
+            var modFolders = Directory.GetDirectories(folder);
             foreach(var path in modFolders) {            
                 var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
                 var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
