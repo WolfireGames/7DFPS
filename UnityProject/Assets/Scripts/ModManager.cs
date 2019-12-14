@@ -19,6 +19,7 @@ public class ModManager : MonoBehaviour {
         Directory.CreateDirectory(Path.Combine(Application.dataPath, "Mods"));
         GetModsFolder(ModType.Gun);
         GetModsFolder(ModType.LevelTile);
+        GetModsFolder(ModType.Tapes);
 
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
