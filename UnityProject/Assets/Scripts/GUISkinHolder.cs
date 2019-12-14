@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public class GUISkinHolder:MonoBehaviour{
@@ -20,9 +19,16 @@ public class GUISkinHolder:MonoBehaviour{
     public GameObject pause_menu;
     
     public void Awake() {
-    	//weapon = weapons[2];
-    	weapon = weapons[UnityEngine.Random.Range(0,weapons.Length)];
+        weapon = GetGunHolder();
     }
+
+    private GameObject GetGunHolder() {
+        int selected_gun = PlayerPrefs.GetInt("selected_gun_index", -1);
+
+        if(selected_gun < 0 || selected_gun >= weapons.Length)
+            return weapons[Random.Range(0, weapons.Length)];
+        return weapons[selected_gun];
+    } 
     
     public void Start() {
         Instantiate(pause_menu);
