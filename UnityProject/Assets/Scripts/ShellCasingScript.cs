@@ -35,10 +35,8 @@ public class ShellCasingScript:MonoBehaviour{
     
     public void FixedUpdate() {
     	Rigidbody rigidbody = GetComponent<Rigidbody>();
-    	if(rigidbody == null)
-    		return;
 
-    	if(!rigidbody.IsSleeping()){
+    	if(rigidbody && !rigidbody.IsSleeping()) {
     		Collider collider = GetComponent<Collider>();
     		if(collider != null && collider.enabled) {
     			life_time += Time.deltaTime;
@@ -51,7 +49,7 @@ public class ShellCasingScript:MonoBehaviour{
     				rigidbody.Sleep();
     			}
     		}
-    	} else if(glint_light != null) {
+    	} else if(rigidbody && glint_light != null) {
     		if(glint_delay == 0.0f){
     			glint_delay = UnityEngine.Random.Range(1.0f,5.0f);
     		}
