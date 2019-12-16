@@ -208,9 +208,20 @@ public class Mod {
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(mainAssetName);
 
+        if(modType == ModType.Gun)
+            SetupGun();
+    }
+
+    private void SetupGun() {
+        WeaponHolder weaponHolder = mainAsset.GetComponent<WeaponHolder>();
+
+        // Set the display name to the bundle name if no custom name is provided
+        if(weaponHolder.display_name == "My Gun")
+            weaponHolder.display_name = name;
+
         // Attach script for gun mods
-        if(hasCustomScript && modType == ModType.Gun)
-            mainAsset.GetComponent<WeaponHolder>().gun_object.AddComponent(GetScript());
+        if(hasCustomScript)
+            weaponHolder.gun_object.AddComponent(GetScript());
     }
     
     public void Unload() {
