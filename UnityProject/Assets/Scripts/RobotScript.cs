@@ -192,6 +192,8 @@ public class RobotScript:MonoBehaviour{
     	}
     }
 
+    CharacterController targetController;
+
     public void Start() {
         GameObject level_object = GameObject.Find("LevelObject");
 
@@ -202,6 +204,8 @@ public class RobotScript:MonoBehaviour{
         if(level_creator == null) {
             Debug.LogWarning("We're missing a LevelCreatorScript in AimScript, this might mean that some world-interactions don't work correctly.");
         }
+
+
 
     	audiosource_effect = gameObject.AddComponent<AudioSource>();
     	audiosource_effect.rolloffMode = AudioRolloffMode.Linear;
@@ -257,8 +261,11 @@ public class RobotScript:MonoBehaviour{
     public Transform GetTarget() {
     	if(RobotScript._target == null) {
     		RobotScript._target = GameObject.Find("Player").transform;
-    	}
-    	return RobotScript._target;
+            targetController = RobotScript._target.GetComponent<CharacterController>();
+
+        }
+        targetController = RobotScript._target.GetComponent<CharacterController>();
+        return RobotScript._target;
     }
 
     public bool ShouldSleep() {
@@ -351,7 +358,8 @@ public class RobotScript:MonoBehaviour{
 
     	// Target interactions
     	Transform target = GetTarget();
-    	if(target != null) {
+        Vector3 offsetPos = (targetController.transform.rotation * targetController.center) + new Vector3(0,VRInputController.instance.Head.transform.localPosition.y / 3f,0);//Need to use the character controller to account for local playspace offsets.
+        if (target != null) {
     		float danger = 0.0f;
     		float dist = Vector3.Distance(target.position, transform.position);
     		if(battery_alive){
@@ -369,11 +377,11 @@ public class RobotScript:MonoBehaviour{
     			}
     			
     			Transform camera = transform.Find("gun pivot").Find("camera");
-    			rel_pos = target.position - camera.position;
+    			rel_pos = (target.position + offsetPos) - camera.position;
     			bool sees_target = false;
     			if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     				RaycastHit hit = new RaycastHit();
-    				if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
+    				if(!Physics.Linecast(camera.position, VRInputController.instance.Head.transform.position, out hit, 1<<0)){
     					sees_target = true;
     				}
     			}
@@ -388,17 +396,17 @@ public class RobotScript:MonoBehaviour{
     						if(Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.9f){
     							ai_state = AIState.FIRING;
     						}
-    						target_pos = target.position;
+    						target_pos = target.position + offsetPos;
     						break;					
     					case AIState.FIRING:
-    						target_pos = target.position;
+    						target_pos = target.position + offsetPos;
     						break;
     					case AIState.ALERT:
     						alert_delay -= Time.deltaTime;
     						if(alert_delay <= 0.0f){
     							ai_state = AIState.AIMING;
     						}
-    						target_pos = target.position;
+    						target_pos = target.position + offsetPos;
     						break;
     					case AIState.ALERT_COOLDOWN:
     						ai_state = AIState.ALERT;
@@ -496,8 +504,7 @@ public class RobotScript:MonoBehaviour{
     	if(audiosource_taser.isPlaying && (!barrel_alive || ai_state != AIState.FIRING)) { // Turn off taser if we no longer fire
     		audiosource_taser.Stop();
     	}
-
-    	Vector3 rel_pos = target_pos - transform.position;
+        Vector3 rel_pos = target_pos - transform.position;
     	if(motor_alive){		
     		float kFlyDeadZone = 0.2f;
     		float kFlySpeed = 10.0f;
@@ -621,7 +628,8 @@ public class RobotScript:MonoBehaviour{
 
     		// Target interactions
     		var target = GetTarget();
-    		if(target != null) {
+            Vector3 offsetPos = (targetController.transform.rotation*targetController.center) + new Vector3(0, VRInputController.instance.Head.transform.localPosition.y / 3f, 0);
+            if (target != null) {
     			// Taser
     			if(barrel_alive && ai_state == AIState.FIRING){
     				if(!audiosource_taser.isPlaying){
@@ -633,7 +641,7 @@ public class RobotScript:MonoBehaviour{
     				if(gun_delay <= 0.0f){
     					gun_delay = 0.1f;	
     					Instantiate(muzzle_flash, transform.Find("point_spark").position, RandomOrientation());
-    					if(Vector3.Distance(transform.Find("point_spark").position, target.position) < 1){
+    					if(Vector3.Distance(transform.Find("point_spark").position, target.position + offsetPos) < 1){
     						target.GetComponent<AimScript>().Shock();
     					}
     				}
@@ -645,7 +653,7 @@ public class RobotScript:MonoBehaviour{
     			var tmp_cs3 = cam_pivot.localEulerAngles;
     			tmp_cs3.x = camera_pivot_angle;
     			cam_pivot.localEulerAngles = tmp_cs3;
-    			float dist = Vector3.Distance(target.position, transform.position);
+    			float dist = Vector3.Distance(target.position, transform.position + offsetPos);
     			float danger = Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     			if(danger > 0.0f){
     				danger = Mathf.Min(0.2f, danger);
@@ -660,19 +668,19 @@ public class RobotScript:MonoBehaviour{
     			
     			// Target finding
     			Transform camera = transform.Find("camera_pivot").Find("camera");
-    			rel_pos = target.position - camera.position;
+    			rel_pos = (target.position + offsetPos) - camera.position;
     			bool sees_target = false;
     			if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     				hit = new RaycastHit();
-    				if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
+    				if(!Physics.Linecast(camera.position, VRInputController.instance.Head.transform.position, out hit, 1<<0)){
     					sees_target = true;
     				}
     			}
 
     			// Attacking
     			if(sees_target){
-    				Vector3 new_target = target.position + target.GetComponent<AimScript>().GetVelocity() * 
-    								Mathf.Clamp(Vector3.Distance(target.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
+    				Vector3 new_target = (target.position + offsetPos) + target.GetComponent<AimScript>().GetVelocity() * 
+    								Mathf.Clamp(Vector3.Distance(target.position + offsetPos, transform.position) * 0.1f, 0.5f, 1.0f);
     				switch(ai_state){
     					case AIState.IDLE:
     						ai_state = AIState.ALERT;
@@ -681,14 +689,14 @@ public class RobotScript:MonoBehaviour{
     						break;
     					case AIState.AIMING:
     						target_pos = new_target;
-    						if(Vector3.Distance(transform.position, target_pos) < 4){
+    						if(Vector3.Distance(transform.position + offsetPos, target_pos) < 4){
     							ai_state = AIState.FIRING;
     						}
     						target_pos.y += 1.0f;
     						break;					
     					case AIState.FIRING:
     						target_pos = new_target;
-    						if(Vector3.Distance(transform.position, target_pos) > 4){
+    						if(Vector3.Distance(transform.position + offsetPos, target_pos) > 4){
     							ai_state = AIState.AIMING;
     						}
     						break;

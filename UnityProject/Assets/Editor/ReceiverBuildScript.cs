@@ -133,7 +133,7 @@ public class ReceiverBuildScript {
     }
 
     static string[] base_scenes = {
-            "Assets/splashscreen.unity",
+            //"Assets/splashscreen.unity",
             "Assets/scene.unity",
             "Assets/winscene.unity"
     };

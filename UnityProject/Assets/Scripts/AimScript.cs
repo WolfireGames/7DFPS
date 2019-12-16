@@ -5,17 +5,17 @@ using System.Collections;
 
 [System.Serializable]
 public class CharacterInput {
-	public bool GetButtonDown(string input_str) {
-		return Input.GetButtonDown(input_str);
+	public bool GetButtonDown(string input_str, HandSide hand) {
+		return VRInputBridge.instance.GetButtonDown(input_str, hand);
 	}
-	public bool GetButton(string input_str) {
-		return Input.GetButton(input_str);
+	public bool GetButton(string input_str, HandSide hand) {
+		return VRInputBridge.instance.GetButton(input_str, hand);
 	}
-	public bool GetButtonUp(string input_str) {
-		return Input.GetButtonUp(input_str);
+	public bool GetButtonUp(string input_str, HandSide hand) {
+		return VRInputBridge.instance.GetButtonUp(input_str, hand);
 	}
-	public float GetAxis(string input_str) {
-		return Input.GetAxis(input_str);
+	public float GetAxis(string input_str, HandSide hand) {
+		return VRInputBridge.instance.GetAxis(input_str, hand);
 	}
 };
 
@@ -187,7 +187,7 @@ public class CharacterMotorSliding {
 [RequireComponent(typeof(CharacterController))]
 
 public class AimScript:MonoBehaviour{
-    
+    public HandSide primaryHand, secondaryHand;
     // Networking
     public bool main_client_control = true;
     
@@ -346,7 +346,7 @@ public class AimScript:MonoBehaviour{
     LevelCreatorScript level_creator = null;
     
     public bool IsAiming() {
-    	return (gun_instance != null && aim_spring.target_state == 1.0f);
+    	return (VRInputController.instance.GetAimDir(primaryHand).y > -0.5f);
     }
     
     public bool IsDead() {
@@ -446,6 +446,10 @@ public class AimScript:MonoBehaviour{
     		picked_up_bullet_delay = 2.0f;
     	}
     }
+
+    public Vector3 startOffset;
+    public Transform graphics;
+    public CapsuleCollider playerCollider;
     
     public void Start() { 
         GameObject level_object = GameObject.Find("LevelObject");
@@ -492,7 +496,13 @@ public class AimScript:MonoBehaviour{
     		GetComponent<MusicScript>().enabled = false;
     	}
     	character_controller = GetComponent<CharacterController>();
-    	for(int i=0; i<kMaxHeadRecoil; ++i){
+
+        startOffset = main_camera.transform.localPosition;
+
+
+        main_camera.transform.parent.position = transform.position - (Vector3.up * ((character_controller.height / 2) - head_fall)) - new Vector3(startOffset.x,0,startOffset.z);
+
+        for (int i=0; i<kMaxHeadRecoil; ++i){
     		head_recoil_delay[i] = -1.0f;
     	}
     	for(int i=0; i<10; ++i){
@@ -536,15 +546,15 @@ public class AimScript:MonoBehaviour{
     	return kGunDistance * (0.5f + PlayerPrefs.GetFloat("gun_distance", 1.0f)*0.5f);
     }
     
-    public Vector3 AimPos() {
+    public Vector3 AimPos() {//TODO: Make gun aimpos based on controller position
     	Vector3 aim_dir = AimDir();
-    	return main_camera.transform.position + aim_dir*GunDist();
+        return VRInputController.instance.GetAimPos(primaryHand);// + aim_dir;
     }
     
     public Vector3 AimDir() {
-    	Quaternion aim_rot = new Quaternion();
-        aim_rot = Quaternion.Euler(-rotation_y, rotation_x, 0.0f);
-    	return aim_rot * new Vector3(0.0f,0.0f,1.0f);
+    	//Quaternion aim_rot = new Quaternion();
+       // aim_rot = VRInputController.instance.GetAimDir(primaryHand);//Quaternion.Euler(-rotation_y, rotation_x, 0.0f);
+        return VRInputController.instance.GetAimDir(primaryHand); //* new Vector3(0.0f,0.0f,1.0f);
     }
     
     public GunScript GetGunScript() {
@@ -652,37 +662,38 @@ public class AimScript:MonoBehaviour{
     }
     
     public bool HandleInventoryControls() {	
-    	if(character_input.GetButtonDown("Holster")){
+    	/*if(character_input.GetButtonDown("Holster")){
     		target_weapon_slot = -1;
-    	}
-    	if(character_input.GetButtonDown("Inventory 1")){
+    	}*/
+
+    	if(character_input.GetButtonDown("Inventory 1",secondaryHand)){
     		target_weapon_slot = 0;
     	}
-    	if(character_input.GetButtonDown("Inventory 2")){
+    	if(character_input.GetButtonDown("Inventory 2", secondaryHand)){
     		target_weapon_slot = 1;
     	}
-    	if(character_input.GetButtonDown("Inventory 3")){
+    	if(character_input.GetButtonDown("Inventory 3", secondaryHand)){
     		target_weapon_slot = 2;
     	}
-    	if(character_input.GetButtonDown("Inventory 4")){
+    	if(character_input.GetButtonDown("Inventory 4", secondaryHand)){
     		target_weapon_slot = 3;
     	}
-    	if(character_input.GetButtonDown("Inventory 5")){
+    	if(character_input.GetButtonDown("Inventory 5", secondaryHand)){
     		target_weapon_slot = 4;
     	}
-    	if(character_input.GetButtonDown("Inventory 6")){
+    	if(character_input.GetButtonDown("Inventory 6", secondaryHand)){
     		target_weapon_slot = 5;
     	}
-    	if(character_input.GetButtonDown("Inventory 7")){
+    	if(character_input.GetButtonDown("Inventory 7", secondaryHand)){
     		target_weapon_slot = 6;
     	}
-    	if(character_input.GetButtonDown("Inventory 8")){
+    	if(character_input.GetButtonDown("Inventory 8", secondaryHand)){
     		target_weapon_slot = 7;
     	}
-    	if(character_input.GetButtonDown("Inventory 9")){
+    	if(character_input.GetButtonDown("Inventory 9", secondaryHand)){
     		target_weapon_slot = 8;
     	}
-    	if(character_input.GetButtonDown("Inventory 10")){
+    	if(character_input.GetButtonDown("Inventory 10", secondaryHand)){
     		target_weapon_slot = 9;
     	}
     	
@@ -804,63 +815,64 @@ public class AimScript:MonoBehaviour{
     
     public void HandleGunControls(bool insert_mag_with_number_key) {
     	GunScript gun_script = GetGunScript();
-    	if(character_input.GetButton("Trigger")){
+    	if(character_input.GetButton("Trigger", primaryHand)){
     		gun_script.ApplyPressureToTrigger();
     	} else {
     		gun_script.ReleasePressureFromTrigger();
     	}
-    	if(character_input.GetButtonDown("Slide Lock")){
+    	if(character_input.GetButtonDown("Slide Lock", primaryHand)){
     		if(gun_script.action_type == ActionType.BOLT)
     			gun_script.ToggleBolt();
     		else
     			gun_script.ReleaseSlideLock();
     	}
-    	if(character_input.GetButtonUp("Slide Lock")){
+    	if(character_input.GetButtonUp("Slide Lock", primaryHand)){
     		gun_script.ReleasePressureOnSlideLock();
     	}
-    	if(character_input.GetButton("Slide Lock")){
+    	if(character_input.GetButton("Slide Lock", primaryHand)){
     		gun_script.PressureOnSlideLock();
     	}
-    	if(character_input.GetButtonDown("Safety")){
+    	if(character_input.GetButtonDown("Safety", primaryHand)){
     		gun_script.ToggleSafety();			
     	}	
-    	if(character_input.GetButtonDown("Auto Mod Toggle")){
+    	if(character_input.GetButtonDown("Auto Mod Toggle", primaryHand)){
     		gun_script.ToggleAutoMod();			
     	}	
-    	if(character_input.GetButtonDown("Pull Back Slide")){
+    	if(character_input.GetButtonDown("Pull Back Slide", secondaryHand)){
     		gun_script.PullBackSlide();
     	}
-    	if(character_input.GetButtonUp("Pull Back Slide")){
+    	if(character_input.GetButtonUp("Pull Back Slide", secondaryHand)){
     		gun_script.ReleaseSlide();
     	}	
-    	if(character_input.GetButtonDown("Swing Out Cylinder")){
+    	if(character_input.GetButtonDown("Swing Out Cylinder", primaryHand)){
     		gun_script.SwingOutCylinder();
     		gun_script.ToggleLiftedStage();
     	}	
-    	if(character_input.GetButtonDown("Close Cylinder")){
+    	if(character_input.GetButtonDown("Close Cylinder", primaryHand)){
     		gun_script.CloseCylinder();
     	}	
-    	if(character_input.GetButton("Extractor Rod")){
+    	if(character_input.GetButton("Extractor Rod", primaryHand)){
     		gun_script.ExtractorRod();
     	}
-    	if(character_input.GetButton("Hammer")){
+    	if(character_input.GetButton("Hammer", primaryHand)){
     		gun_script.PressureOnHammer();
     	}
-    	if(character_input.GetButtonUp("Hammer")){
+    	if(character_input.GetButtonUp("Hammer", primaryHand)){
     		gun_script.ReleaseHammer();
     	}		
-    	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
-    		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
+    	if(character_input.GetAxis("Mouse ScrollWheel", secondaryHand) != 0.0f){
+    		gun_script.RotateCylinder((int)character_input.GetAxis("Mouse ScrollWheel", secondaryHand));
     	}		
-    	if(character_input.GetButtonDown("Insert")){
-    		if(loose_bullets.Count > 0){
-    			if(GetGunScript().AddRound()){
-    				GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
-    				loose_bullets.RemoveAt(loose_bullets.Count-1);
-    				loose_bullet_spring.RemoveAt(loose_bullet_spring.Count-1);
-    			}
-    		}
-    	}
+    	if(character_input.GetButtonDown("Insert", secondaryHand)){
+            if (loose_bullets.Count > 0) {
+                if (GetGunScript().AddRound()) {
+                    GameObject.Destroy(loose_bullets[loose_bullets.Count - 1]);
+                    loose_bullets.RemoveAt(loose_bullets.Count - 1);
+                    loose_bullet_spring.RemoveAt(loose_bullet_spring.Count - 1);
+                }
+            }
+        }
+
     	if(slide_pose_spring.target_state < 0.1f && reload_pose_spring.target_state < 0.1f){
     		gun_tilt = GunTilt.CENTER;
     	} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){
@@ -937,7 +949,7 @@ public class AimScript:MonoBehaviour{
     		hold_pose_spring.vel = 0.0f;
     		hold_pose_spring.target_state = 1.0f;
     	}
-    	if((character_input.GetButtonDown("Insert")/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
+    	if(character_input.GetButtonDown("Insert",primaryHand) || insert_mag_with_number_key){
     		if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
     			hold_pose_spring.target_state = 0.0f;
     			mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -953,7 +965,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void HandleControls() {
-    	if(character_input.GetButton("Get")){
+    	if(character_input.GetButton("Get", secondaryHand)){
     		HandleGetControl();
     	}
     	
@@ -970,7 +982,7 @@ public class AimScript:MonoBehaviour{
     	
     	bool insert_mag_with_number_key = HandleInventoryControls();
     	
-    	if(character_input.GetButtonDown("Eject/Drop") || queue_drop){
+    	if(character_input.GetButtonDown("Eject/Drop", primaryHand) || queue_drop){
     		if(mag_stage == HandMagStage.HOLD){
     			mag_stage = HandMagStage.EMPTY;
     			magazine_instance_in_hand.AddComponent<Rigidbody>();
@@ -986,7 +998,7 @@ public class AimScript:MonoBehaviour{
     		}
     	}
     	
-    	if(character_input.GetButtonDown("Eject/Drop")){
+    	if(character_input.GetButtonDown("Eject/Drop",primaryHand)){
     		if(mag_stage == HandMagStage.EMPTY && (gun_instance != null)){
     			if(gun_instance.GetComponent<GunScript>().IsMagCurrentlyEjecting()){
     				queue_drop = true;
@@ -997,12 +1009,14 @@ public class AimScript:MonoBehaviour{
     			mag_stage = HandMagStage.HOLD;
     			hold_pose_spring.target_state = 1.0f;
     		}
-    	}
-    	
-    	if(gun_instance != null){
-    		HandleGunControls(insert_mag_with_number_key);
-    	} else if(mag_stage == HandMagStage.HOLD){
-    		if(character_input.GetButtonDown("Insert")){
+            //target_weapon_slot = -1;
+        }
+
+        if (gun_instance != null) {
+            HandleGunControls(insert_mag_with_number_key);
+        }
+        if(mag_stage == HandMagStage.HOLD){
+    		if(character_input.GetButtonDown("Insert",secondaryHand)){
     			if(loose_bullets.Count > 0){
     				if(magazine_instance_in_hand.GetComponent<mag_script>().AddRound()){
     					GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -1011,7 +1025,7 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     		}
-    		if(character_input.GetButtonDown("Pull Back Slide")){
+    		if(character_input.GetButtonDown("Pull Back Slide",secondaryHand)){
     			if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
     				AddLooseBullet(true);
     				PlaySoundFromGroup(sound_bullet_grab, 0.2f);
@@ -1019,10 +1033,10 @@ public class AimScript:MonoBehaviour{
     		}
     	}
 
-    	if(character_input.GetButtonDown("Aim Toggle")){
+    	/*if(character_input.GetButtonDown("Aim Toggle")){
     		aim_toggle = !aim_toggle;
-    	}
-    	if(character_input.GetButtonDown("Slow Motion Toggle")){
+    	}*/
+    	/*if(character_input.GetButtonDown("Slow Motion Toggle")){
     		if(slomo_mode) {
     			if(Time.timeScale == 1.0f) {
     				Time.timeScale = 0.1f;
@@ -1032,7 +1046,7 @@ public class AimScript:MonoBehaviour{
     		} else {
     			slomoWarningDuration = 1f;
     		}
-    	}
+    	}*/
     }
     
     public void StartTapePlay() {
@@ -1073,7 +1087,8 @@ public class AimScript:MonoBehaviour{
     }
     
     public void ApplyPose(string name,float amount){
-    	Transform pose = gun_instance.transform.Find(name);
+        return;
+        /*Transform pose = gun_instance.transform.Find(name);
     	if(amount == 0.0f || (pose == null)){
     		return;
     	}
@@ -1083,7 +1098,7 @@ public class AimScript:MonoBehaviour{
     	gun_instance.transform.rotation = mix(
     		gun_instance.transform.rotation,
     		pose.rotation,
-    		amount);
+    		amount);*/
     }
     
     public void UpdateCheats() {
@@ -1159,7 +1174,7 @@ public class AimScript:MonoBehaviour{
     		--unplayed_tapes;
     		StartTapePlay();
     	}
-    	if(character_input.GetButtonDown("Tape Player") && tape_in_progress){
+    	if(character_input.GetButtonDown("Tape Player",secondaryHand) && tape_in_progress){
     		if(!audiosource_tape_background.isPlaying){
     			StartTapePlay();
     		} else {
@@ -1209,13 +1224,13 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateHelpToggle() {
-    	if(character_input.GetButton("Help Toggle")){
+    	if(character_input.GetButton("Help Toggle",primaryHand)){
     		help_hold_time += Time.deltaTime;
     		if(show_help && help_hold_time >= 1.0f){
     			show_advanced_help = true;
     		}
     	}
-    	if(character_input.GetButtonDown("Help Toggle")){
+    	if(character_input.GetButtonDown("Help Toggle", primaryHand)){
     		if(!show_help){
     			show_help = true;
     			help_ever_shown = true;
@@ -1223,7 +1238,7 @@ public class AimScript:MonoBehaviour{
     		}
     		help_hold_time = 0.0f;
     	}
-    	if(character_input.GetButtonUp("Help Toggle")){
+    	if(character_input.GetButtonUp("Help Toggle", primaryHand)){
     		if(show_help && help_hold_time < 1.0f && !just_started_help){
     			show_help = false;
     			show_advanced_help = false;
@@ -1233,7 +1248,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateLevelResetButton() {
-    	if(character_input.GetButtonDown("Level Reset")){
+    	if(character_input.GetButtonDown("Level Reset",primaryHand)){
     		level_reset_hold = 0.01f;
     	}
     	if(level_reset_hold != 0.0f && Input.GetButton("Level Reset")){
@@ -1298,12 +1313,13 @@ public class AimScript:MonoBehaviour{
     	}
     }
     
-    public void UpdateAimSpring() {
-    	bool offset_aim_target = false;
+    public void UpdateAimSpring() {//TODO: rip this out
+        return;
+    	/*bool offset_aim_target = false;
     	if((character_input.GetButton("Hold To Aim") || aim_toggle) && !dead && (gun_instance != null)){
     		aim_spring.target_state = 1.0f;
     		RaycastHit hit = new RaycastHit();
-    		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2f, out hit, 1 << 0)){
+    		if(Physics.Linecast(AimPos(), AimPos() + AimDir() * 0.2f, out hit, 1 << 0)){
     			aim_spring.target_state = Mathf.Clamp(
     				1.0f - (Vector3.Distance(hit.point, main_camera.transform.position)/(GunDist() + 0.2f)),
     				0.0f,
@@ -1313,14 +1329,15 @@ public class AimScript:MonoBehaviour{
     	} else {
     		aim_spring.target_state = 0.0f;
     	}
+       
     	aim_spring.Update();
     	if(offset_aim_target){
     		aim_spring.target_state = 1.0f;
-    	}
+    	}*/
     }
     
-    public void UpdateCameraRotationControls() {
-    	rotation_y_min_leeway = Mathf.Lerp(0.0f,kRotationYMinLeeway,aim_spring.state);
+    public void UpdateCameraRotationControls() {//TODO: none of this, rip it out
+    	/*rotation_y_min_leeway = Mathf.Lerp(0.0f,kRotationYMinLeeway,aim_spring.state);
     	rotation_y_max_leeway = Mathf.Lerp(0.0f,kRotationYMaxLeeway,aim_spring.state);
     	rotation_x_leeway = Mathf.Lerp(0.0f,kRotationXLeeway,aim_spring.state);
     	
@@ -1355,33 +1372,55 @@ public class AimScript:MonoBehaviour{
     			rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
     			rotation_x = Mathf.Clamp(rotation_x, view_rotation_x - rotation_x_leeway, view_rotation_x + rotation_x_leeway);
     		}
-    	}
+    	}*/
     }
     
-    public void UpdateCameraAndPlayerTransformation() {
-    	main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, view_rotation_x, head_tilt);
-    	main_camera.transform.localEulerAngles += new Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0.0f); 
-    	var tmp_cs1 = character_controller.transform.localEulerAngles;
+    public void UpdateCameraAndPlayerTransformation() {//TODO: Angles never change, set position of parent instead, set it at feet.
+        /*
+        main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, view_rotation_x, head_tilt);
+        main_camera.transform.localEulerAngles += new Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0.0f); */
+        /*var tmp_cs1 = character_controller.transform.localEulerAngles;
         tmp_cs1.y = view_rotation_x;
-        character_controller.transform.localEulerAngles = tmp_cs1;
-    	main_camera.transform.position = transform.position;
-    	var tmp_cs2 = main_camera.transform.position;
+        character_controller.transform.localEulerAngles = tmp_cs1;*/
+
+        if (VRInputController.instance.GetRotateLeft(primaryHand)) {
+            main_camera.transform.parent.RotateAround(main_camera.transform.position, new Vector3(0, 1, 0), -45f);
+            transform.position = main_camera.transform.parent.position + (Vector3.up * ((character_controller.height / 2) - head_fall));
+            character_controller.transform.rotation = main_camera.transform.parent.rotation;
+        }
+
+        if (VRInputController.instance.GetRotateRight(primaryHand)) {
+            main_camera.transform.parent.RotateAround(main_camera.transform.position, new Vector3(0, 1, 0), 45f);
+            transform.position = main_camera.transform.parent.position + (Vector3.up * ((character_controller.height / 2) - head_fall));
+            character_controller.transform.rotation = main_camera.transform.parent.rotation;
+        }
+
+        main_camera.transform.parent.position = transform.position - (Vector3.up * ((character_controller.height / 2) - head_fall));// - main_camera.transform.parent.rotation* new Vector3(main_camera.transform.localPosition.x, 0, main_camera.transform.localPosition.z);
+        character_controller.transform.rotation = main_camera.transform.parent.rotation;
+
+        character_controller.center = new Vector3(main_camera.transform.localPosition.x, 0, main_camera.transform.localPosition.z) * 0.9f;// - main_camera.transform.parent.rotation * new Vector3(startOffset.x, 0, startOffset.z);
+        Vector3 graphicsPos = character_controller.center;
+        graphicsPos.y = -character_controller.height/2f;
+        graphics.localPosition = graphicsPos;
+        playerCollider.center = character_controller.center + new Vector3(0, ((playerCollider.height/2)-0.4f),0);
+        playerCollider.height = main_camera.transform.localPosition.y * 0.9f;
+        /*var tmp_cs2 = main_camera.transform.position;
         tmp_cs2.y += character_controller.height * character_controller.transform.localScale.y - 0.1f;
         tmp_cs2.y += head_fall;
-        main_camera.transform.position = tmp_cs2;
+        main_camera.transform.position = tmp_cs2;*/
     }
     
-    public void UpdateGunTransformation() {
+    public void UpdateGunTransformation() {//TODO: Lock to controller, no poses
     	Vector3 aim_dir = AimDir();
     	Vector3 aim_pos = AimPos();	
     	
     	Vector3 unaimed_dir = (transform.forward + new Vector3(0.0f,-1.0f,0.0f)).normalized;
     	Vector3 unaimed_pos = main_camera.transform.position + unaimed_dir*GunDist();
-    	 
-    	gun_instance.transform.position = mix(unaimed_pos, aim_pos, aim_spring.state);
-    	gun_instance.transform.forward = mix(unaimed_dir, aim_dir, aim_spring.state);
-      	
-    	ApplyPose("pose_slide_pull", slide_pose_spring.state);
+
+        gun_instance.transform.position = aim_pos;//mix(unaimed_pos, aim_pos, aim_spring.state);
+    	gun_instance.transform.LookAt(aim_pos+aim_dir,VRInputController.instance.GetAimUp(primaryHand));//mix(unaimed_dir, aim_dir, aim_spring.state);
+
+        ApplyPose("pose_slide_pull", slide_pose_spring.state);
     	ApplyPose("pose_reload", reload_pose_spring.state);
     	ApplyPose("pose_press_check", press_check_pose_spring.state);
     	ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
@@ -1399,7 +1438,7 @@ public class AimScript:MonoBehaviour{
     		y_recoil_spring.state); 
     }
     
-    public void UpdateFlashlightTransformation() {
+    public void UpdateFlashlightTransformation() {//TODO: Figure out what to do with the flashlight
     	Vector3 flashlight_hold_pos = main_camera.transform.position + main_camera.transform.rotation*new Vector3(-0.15f,-0.01f,0.15f);
     	Quaternion flashlight_hold_rot = main_camera.transform.rotation;
     	
@@ -1456,7 +1495,7 @@ public class AimScript:MonoBehaviour{
     	held_flashlight.transform.rotation = flashlight_rot;
     }
     
-    public void UpdateMagazineTransformation() {
+    public void UpdateMagazineTransformation() {//TODO: Make mag attach to other hand
     	if(gun_instance != null){
     		mag_pos = gun_instance.transform.position;
     		mag_rot = gun_instance.transform.rotation;
@@ -1465,8 +1504,8 @@ public class AimScript:MonoBehaviour{
         }
        if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
        		mag_script mag_script = magazine_instance_in_hand.GetComponent<mag_script>();
-       		Vector3 hold_pos = main_camera.transform.position + main_camera.transform.rotation*mag_script.hold_offset;
-    		Quaternion hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(mag_script.hold_rotation.x, new Vector3(0.0f,1.0f,0.0f)) * Quaternion.AngleAxis(mag_script.hold_rotation.y, new Vector3(1.0f,0.0f,0.0f));
+       		Vector3 hold_pos = VRInputController.instance.GetAimPos(secondaryHand);
+    		Quaternion hold_rot = Quaternion.Euler(VRInputController.instance.GetAimDir(secondaryHand));
        		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
     	   	hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
        		if(hold_pose_spring.state != 1.0f){ 
@@ -1483,23 +1522,23 @@ public class AimScript:MonoBehaviour{
     	} 
     }
     
-    public void UpdateInventoryTransformation() {
+    public void UpdateInventoryTransformation() {//TODO: inventory management, make mags sit around belt?
     	int i = 0;
     	WeaponSlot slot = null;
-        for(i=0; i<10; ++i){
+        for(i=0; i<9; ++i){
     		slot = weapon_slots[i];
     		if(slot.type == WeaponSlotType.EMPTY){
     			continue;
     		}
     		slot.obj.transform.localScale = new Vector3(1.0f,1.0f,1.0f); 
     	}
-    	for(i=0; i<10; ++i){
+    	for(i=0; i<9; ++i){
     		slot = weapon_slots[i];
     		if(slot.type == WeaponSlotType.EMPTY){
     			continue;
     		}
-    		Vector3 start_pos = main_camera.transform.position + slot.start_pos;
-    		Quaternion start_rot = main_camera.transform.rotation * slot.start_rot;
+    		Vector3 start_pos = VRInventoryManager.instance.slots[i].position + slot.start_pos;
+    		Quaternion start_rot = VRInventoryManager.instance.slots[i].rotation * slot.start_rot;
     		if(slot.type == WeaponSlotType.EMPTYING){
     			start_pos = slot.obj.transform.position;
     			start_rot = slot.obj.transform.rotation;
@@ -1509,23 +1548,23 @@ public class AimScript:MonoBehaviour{
     			}
     		} 
     		float scale = 0.0f;
-    		Vector3 target_pos = main_camera.transform.position;
-    		if(main_camera.GetComponent<Camera>() != null){
+            Vector3 target_pos = VRInventoryManager.instance.slots[i].position + Vector3.up * 0.05f ;
+    		/*if(main_camera.GetComponent<Camera>() != null){
     			target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f + i*0.15f), main_camera.GetComponent<Camera>().pixelHeight * 0.17f,0.0f)).direction * 0.3f;
-    		}
+    		}*/
     		slot.obj.transform.position = mix(
     			start_pos, 
     			target_pos, 
     			slot.spring.state);
-    		scale = 0.3f * slot.spring.state + (1.0f - slot.spring.state);
+    		scale = 0.8f * slot.spring.state + (1.0f - slot.spring.state);
     		var tmp_cs3 = slot.obj.transform.localScale;
             tmp_cs3.x *= scale;
             tmp_cs3.y *= scale;
             tmp_cs3.z *= scale;
             slot.obj.transform.localScale = tmp_cs3; 
     		slot.obj.transform.rotation = mix(
-    			start_rot, 
-    			main_camera.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(0.0f,1.0f,0.0f)), 
+    			start_rot,
+                VRInventoryManager.instance.slots[i].rotation * Quaternion.AngleAxis(90.0f, new Vector3(0.0f,1.0f,0.0f)), 
     			slot.spring.state);
     		Renderer[] renderers = slot.obj.GetComponentsInChildren<Renderer>();
     		foreach(Renderer renderer in renderers){
@@ -1535,7 +1574,7 @@ public class AimScript:MonoBehaviour{
     	}
     }
     
-    public void UpdateLooseBulletDisplay() {
+    public void UpdateLooseBulletDisplay() {//TODO: find spot for loose bullets
     	bool revolver_open = ((gun_instance != null) && gun_instance.GetComponent<GunScript>().IsCylinderOpen());
     	var isLifted = ((gun_instance != null) && gun_instance.GetComponent<GunScript>().IsLifted());
     	if((mag_stage == HandMagStage.HOLD && (gun_instance == null)) || picked_up_bullet_delay > 0.0f || revolver_open || isLifted){
@@ -1550,19 +1589,32 @@ public class AimScript:MonoBehaviour{
     		Spring spring = loose_bullet_spring[i];
     		spring.Update();
     		GameObject bullet = loose_bullets[i];
-    		bullet.transform.position = main_camera.transform.position;
-    		if(main_camera.GetComponent<Camera>() != null){
-    			bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
-    		}
-    		bullet.transform.position += main_camera.transform.rotation * new Vector3(0.02f,-0.01f,0.0f);
-    		bullet.transform.position += main_camera.transform.rotation * new Vector3(0.006f * i,0.0f,0.0f);
-    		bullet.transform.position += main_camera.transform.rotation * new Vector3(-0.03f,0.03f,0.0f) * (1.0f - show_bullet_spring.state);
-    		var tmp_cs4 = bullet.transform.localScale;
+            if (primaryHand == HandSide.Right) {
+                bullet.transform.position = VRInputController.instance.LeftHand.transform.position;
+                /*if(main_camera.GetComponent<Camera>() != null){
+                    bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
+                }*/
+                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
+                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
+                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
+                bullet.transform.rotation = VRInputController.instance.LeftHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+            }
+            else {
+                bullet.transform.position = VRInputController.instance.RightHand.transform.position;
+                /*if(main_camera.GetComponent<Camera>() != null){
+                    bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
+                }*/
+                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
+                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
+                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
+                bullet.transform.rotation = VRInputController.instance.RightHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+            }
+    		/*var tmp_cs4 = bullet.transform.localScale;
             tmp_cs4.x = spring.state;
             tmp_cs4.y = spring.state;
             tmp_cs4.z = spring.state;
-            bullet.transform.localScale = tmp_cs4;
-    		bullet.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f,0.0f,0.0f));
+            bullet.transform.localScale = tmp_cs4;*/
+    		
     		Renderer[] renderers = bullet.GetComponentsInChildren<Renderer>();
     		foreach(Renderer renderer in renderers){
                 renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
@@ -1570,7 +1622,7 @@ public class AimScript:MonoBehaviour{
     	}
     }
     
-    public void UpdateSprings() {	
+    public void UpdateSprings() {//TODO: Stop updating some of these springs
     	slide_pose_spring.Update();
     	reload_pose_spring.Update();
     	press_check_pose_spring.Update();
@@ -1589,7 +1641,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdatePickupMagnet() {
-    	Vector3 attract_pos = transform.position - new Vector3(0.0f,character_controller.height * 0.2f,0.0f);
+        Vector3 attract_pos = main_camera.transform.position;//transform.position - new Vector3(0.0f,character_controller.height * 0.2f,0.0f) + character_controller.center;
     	for(int i=0; i<items_being_picked_up.Count; ++i){
     		GameObject round = items_being_picked_up[i];
     		if(round == null){
@@ -1942,24 +1994,33 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), 0.0f, character_input.GetAxis("Vertical"));
+    	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, 0.0f, VRInputController.instance.GetWalkVector(primaryHand).y);
     	
-    	if(old_vert_axis < 0.9f && character_input.GetAxis("Vertical") >= 0.9f){
-    		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
+    	if(old_vert_axis < 0.9f && forward_input_delay < 0.05f && VRInputController.instance.GetWalkVector(primaryHand).magnitude > 0.9f){
+    		if(!crouching && !IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
     		}
     		forward_input_delay = 0.0f;
     	}
-    	forward_input_delay += Time.deltaTime;
-    	if(forward_input_delay > 0.4f || GetComponent<AimScript>().IsAiming()){
+
+        if (directionVector.magnitude > 0.9f) {
+            forward_input_delay += Time.deltaTime;
+        }
+        else if (directionVector.magnitude < 0.5f) {
+            forward_input_delay = 0.0f;
+            SetRunning(0.0f);
+            bool_running = false;
+        }
+
+    	if(IsAiming() || VRInputController.instance.GetWalkVector(primaryHand).magnitude < 0.9f) {
     		SetRunning(0.0f);
     		bool_running = false;
     	}
-    	if(bool_running){
+    	/*if(bool_running){
     		directionVector.z = 1.0f;
-    	}
-    	old_vert_axis = character_input.GetAxis("Vertical");
+    	}*/
+    	old_vert_axis = VRInputController.instance.GetWalkVector(primaryHand).y;
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1980,7 +2041,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = transform.rotation * directionVector;
-    	inputJump = character_input.GetButton("Jump");	
+    	inputJump = VRInputController.instance.JumpPress(primaryHand);	
     }
     
     // This makes the character turn to face the current movement speed per default.
@@ -1988,9 +2049,9 @@ public class AimScript:MonoBehaviour{
     const float maxRotationSpeed = 360.0f;
     
     // Update is called once per frame
-    public void FPSInputControllerUpdate() {
+    public void FPSInputControllerUpdate() {//TODO: movement mapping
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), character_input.GetAxis("Vertical"), 0.0f);
+    	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, VRInputController.instance.GetWalkVector(primaryHand).y, 0.0f);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -2010,15 +2071,15 @@ public class AimScript:MonoBehaviour{
     	}
     	
     	// Rotate the input vector into camera space so up is camera's up and right is camera's right
-    	directionVector = Camera.main.transform.rotation * directionVector;
+    	//directionVector = Camera.main.transform.rotation * directionVector;
     	
     	// Rotate input vector to be perpendicular to character's up vector
-    	Quaternion camToCharacterSpace = Quaternion.FromToRotation(-Camera.main.transform.forward, transform.up);
-    	directionVector = (camToCharacterSpace * directionVector);
+    	//Quaternion camToCharacterSpace = Quaternion.FromToRotation(-Camera.main.transform.forward, transform.up);
+    	//directionVector = (camToCharacterSpace * directionVector);
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = directionVector;
-    	inputJump = character_input.GetButton("Jump");
+    	inputJump = VRInputController.instance.JumpPress(primaryHand);
     	
     	// Set rotation to the move direction	
     	if (autoRotate && directionVector.sqrMagnitude > 0.01f) {
@@ -2269,7 +2330,7 @@ public class AimScript:MonoBehaviour{
     		}
     	}
     	
-    	CharacterController controller = GetComponent<CharacterController>();
+    	CharacterController controller = character_controller;
     	if(crouching && running == 0.0f){
     		height_spring.target_state = 0.5f + head_bob;
     	} else {
@@ -2293,15 +2354,15 @@ public class AimScript:MonoBehaviour{
     }
     
     public void CharacterMotorUpdate() {
-    	if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
+    	/*if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
     		if(!GetComponent<AimScript>().IsDead() && character_input.GetButtonDown("Crouch Toggle")){
     			crouching = !crouching;
     		}
-    	} else {
+    	} else {*/
     		if(!GetComponent<AimScript>().IsDead()){
-    			crouching = character_input.GetButton("Crouch Toggle");
+    			crouching = (VRInputController.instance.Head.transform.localPosition.y < ((VRInputController.instance.TallestHead/3f) * 2));
     		}
-    	}	
+    	//}	
     	if(running > 0.0f){
     		crouching = false;
     	}

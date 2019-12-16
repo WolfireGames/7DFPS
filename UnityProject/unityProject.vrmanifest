@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.receiver.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "D:\\JamGames\\Misc\\ReceiVR\\UnityProject\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Receiver [Testing]"
+        }
+      }
+    }
+  ]
+}
