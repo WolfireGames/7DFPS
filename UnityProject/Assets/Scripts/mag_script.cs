@@ -21,6 +21,8 @@ public class mag_script:MonoBehaviour{
     public MagLoadStage mag_load_stage = MagLoadStage.NONE;
     public float mag_load_progress = 0.0f;
     public bool disable_interp = true;
+
+	public float bulletReloadTime = 1 / 20f;
     
     public bool RemoveRound() {
     	if(num_rounds == 0){
@@ -82,7 +84,7 @@ public class mag_script:MonoBehaviour{
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
     	if(group.Count != 0){
     		int which_shot = UnityEngine.Random.Range(0,group.Count);
-    		GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    		GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     	}
     }
     
@@ -112,52 +114,40 @@ public class mag_script:MonoBehaviour{
     }
     
     public void Update() {
+		if(mag_load_stage == MagLoadStage.NONE)
+			return;
+		
     	Transform obj = null;
-        switch(mag_load_stage){
-    		case MagLoadStage.PUSHING_DOWN:
-    			mag_load_progress += Time.deltaTime * 20.0f;
-    			if(mag_load_progress >= 1.0f){
+		mag_load_progress += Time.deltaTime / bulletReloadTime;
+		if(mag_load_progress >= 1f) {
+			mag_load_progress = 0f;
+
+			switch (mag_load_stage) {
+				case MagLoadStage.PUSHING_DOWN:
     				mag_load_stage = MagLoadStage.ADDING_ROUND;
-    				mag_load_progress = 0.0f;
-    			}
-    			break;
-    		case MagLoadStage.ADDING_ROUND:
-    			mag_load_progress += Time.deltaTime * 20.0f;
-    			if(mag_load_progress >= 1.0f){
-    				mag_load_stage = MagLoadStage.NONE;
-    				mag_load_progress = 0.0f;
-    				for(int i=0; i<num_rounds; ++i){
-    					obj = transform.Find("round_"+(i+1));
-    					obj.localPosition = round_pos[i];
-    					obj.localRotation = round_rot[i];
-    				}
-    			}
-    			break;
-    		case MagLoadStage.PUSHING_UP:
-    			mag_load_progress += Time.deltaTime * 20.0f;
-    			if(mag_load_progress >= 1.0f){
-    				mag_load_stage = MagLoadStage.NONE;
-    				mag_load_progress = 0.0f;
-    				RemoveRound();
-    				for(int i=0; i<num_rounds; ++i){
-    					obj = transform.Find("round_"+(i+1));
-    					obj.localPosition = round_pos[i];
-    					obj.localRotation = round_rot[i];
-    				}
-    			}
-    			break;
-    		case MagLoadStage.REMOVING_ROUND:
-    			mag_load_progress += Time.deltaTime * 20.0f;
-    			if(mag_load_progress >= 1.0f){
-    				mag_load_stage = MagLoadStage.PUSHING_UP;
-    				mag_load_progress = 0.0f;
-    			}
-    			break;
-    	}
+    				break;
+				case MagLoadStage.PUSHING_UP:
+					RemoveRound();
+					goto case MagLoadStage.ADDING_ROUND;
+				case MagLoadStage.ADDING_ROUND:
+					mag_load_stage = MagLoadStage.NONE;
+					for(int i=0; i<num_rounds; ++i){
+						obj = transform.Find("round_"+(i+1));
+						obj.localPosition = round_pos[i];
+						obj.localRotation = round_rot[i];
+					}
+					break;
+				case MagLoadStage.REMOVING_ROUND:
+					mag_load_stage = MagLoadStage.PUSHING_UP;
+					break;
+			}
+		}
+
     	float mag_load_progress_display = mag_load_progress;
     	if(disable_interp){
     		mag_load_progress_display = Mathf.Floor(mag_load_progress + 0.5f);
     	}
+
     	switch(mag_load_stage){
     		case MagLoadStage.PUSHING_DOWN:
     			obj = transform.Find("round_1");

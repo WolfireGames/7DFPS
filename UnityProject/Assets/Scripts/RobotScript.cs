@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public enum RobotType {SHOCK_DRONE, STATIONARY_TURRET, MOBILE_TURRET, GUN_DRONE};
@@ -10,6 +9,8 @@ public enum CameraPivotState {DOWN, WAIT_UP, UP, WAIT_DOWN};
 
 public class RobotScript:MonoBehaviour{
     
+    private static Transform _target;
+
     public List<AudioClip> sound_gunshot;
     public List<AudioClip> sound_damage_camera;
     public List<AudioClip> sound_damage_gun;
@@ -84,6 +85,8 @@ public class RobotScript:MonoBehaviour{
     public float camera_pivot_angle = 0.0f;
 
     LevelCreatorScript level_creator = null;
+    Light lightObject;
+    LensFlare lensFlareObject;
 
     int tile_parent_position = 0;
     
@@ -92,21 +95,8 @@ public class RobotScript:MonoBehaviour{
     		return;
     	}
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
-    	audiosource_effect.PlayOneShot(group[which_shot], volume * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    	audiosource_effect.PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
     }
-    
-    public GameObject GetTurretLightObject() {
-    	return transform.Find("gun pivot").Find("camera").Find("light").gameObject;
-    }
-    
-    public GameObject GetDroneLightObject() {
-    	return transform.Find("camera_pivot").Find("camera").Find("light").gameObject;
-    }
-    
-    public GameObject GetDroneLensFlareObject() {
-    	return transform.Find("camera_pivot").Find("camera").Find("lens flare").gameObject;
-    }
-    
     
     public Quaternion RandomOrientation() {
     	return Quaternion.Euler((float)UnityEngine.Random.Range(0,360),(float)UnityEngine.Random.Range(0,360),(float)UnityEngine.Random.Range(0,360));
@@ -160,7 +150,7 @@ public class RobotScript:MonoBehaviour{
     	Damage(obj);
     }
     
-    public void WasShot(GameObject obj,Vector3 pos,Vector3 vel) {
+    public void WasShot(GameObject obj, Vector3 pos, Vector3 vel, float damage = 1f) {
     	if((transform.parent != null) && transform.parent.gameObject.name == "gun pivot"){
     		Vector3 x_axis = transform.Find("point_pivot").rotation * new Vector3(1.0f,0.0f,0.0f);
     		Vector3 y_axis = transform.Find("point_pivot").rotation * new Vector3(0.0f,1.0f,0.0f);
@@ -176,18 +166,32 @@ public class RobotScript:MonoBehaviour{
     		Vector3 x_plane_pos = new Vector3(-Vector3.Dot(rel_pos, z_axis), 0.0f, Vector3.Dot(rel_pos, y_axis));
     		rotation_x.vel += Vector3.Dot(x_plane_vel, x_plane_pos) * 10.0f;
     	}
-    	if(robot_type == RobotType.SHOCK_DRONE){
-    		if(UnityEngine.Random.Range(0.0f,1.0f) < 0.5f){
+    	
+    	if(robot_type == RobotType.SHOCK_DRONE) {
+    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.5f, damage))
     			Damage(transform.Find("battery").gameObject);
-    		}
     	} else {
-    		if(UnityEngine.Random.Range(0.0f,1.0f) < 0.25f){
+    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.75f, damage))
     			Damage(transform.Find("battery").gameObject);
-    		}
     	}
     	Damage(obj);
     }
     
+    public void Awake() {
+    	// Assign light objects
+    	switch(robot_type) {
+    		case RobotType.MOBILE_TURRET:
+    		case RobotType.STATIONARY_TURRET:
+    			lightObject = transform.Find("gun pivot").Find("camera").Find("light").GetComponent<Light>();
+    			break;
+    		case RobotType.GUN_DRONE:
+    		case RobotType.SHOCK_DRONE:
+    			lightObject = transform.Find("camera_pivot").Find("camera").Find("light").GetComponent<Light>();
+    			lensFlareObject = transform.Find("camera_pivot").Find("camera").Find("lens flare").GetComponent<LensFlare>();
+    			break;
+    	}
+    }
+
     public void Start() {
         GameObject level_object = GameObject.Find("LevelObject");
 
@@ -211,7 +215,7 @@ public class RobotScript:MonoBehaviour{
     	audiosource_motor = object_audiosource_motor.AddComponent<AudioSource>();
     	object_audiosource_motor.AddComponent<AudioLowPassFilter>();
     	audiosource_motor.loop = true;
-    	audiosource_motor.volume = 0.4f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume = 0.4f * Preferences.sound_volume;
     	audiosource_motor.clip = sound_engine_loop;
     	audiosource_motor.spatialBlend = 1.0f;
     	
@@ -250,23 +254,38 @@ public class RobotScript:MonoBehaviour{
         attached_holes.Add(hole_attachment);
     }
 
+    public Transform GetTarget() {
+    	if(RobotScript._target == null) {
+    		RobotScript._target = GameObject.Find("Player").transform;
+    	}
+    	return RobotScript._target;
+    }
+
+    public bool ShouldSleep() {
+    	Transform target = GetTarget();
+    	if(target == null) {
+    		return true;
+    	}
+    	return Vector3.Distance(target.position, transform.position) > kSleepDistance;
+    }
+
     public void UpdateStationaryTurret() {
-    	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
-    		GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;		
+    	if(ShouldSleep()){
+    		lightObject.shadows = LightShadows.None;
     		if(audiosource_motor.isPlaying){
     			audiosource_motor.Stop();
     		}
     		return;
     	} else {
     		if(!audiosource_motor.isPlaying){
-    			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 0.0f);
+    			audiosource_motor.volume = Preferences.sound_volume;
     			audiosource_motor.Play();
     		}
-    		audiosource_motor.volume = 0.4f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
-    		if(GetTurretLightObject().GetComponent<Light>().intensity > 0.0f){
-    			GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.Hard;
+    		audiosource_motor.volume = 0.4f * Preferences.sound_volume;
+    		if(lightObject.intensity > 0.0f){
+    			lightObject.shadows = LightShadows.Hard;
     		} else {
-    			GetTurretLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    			lightObject.shadows = LightShadows.None;
     		}
     	}
     	Vector3 rel_pos = Vector3.zero;
@@ -274,7 +293,7 @@ public class RobotScript:MonoBehaviour{
     		switch(ai_state){
     			case AIState.IDLE:
     				rotation_y.target_state += Time.deltaTime * 100.0f;
-    				break;				
+    				break;
     			case AIState.AIMING:
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:
@@ -319,7 +338,7 @@ public class RobotScript:MonoBehaviour{
     				
     				GameObject bullet = (GameObject)Instantiate(bullet_obj, point_muzzle_flash.position, point_muzzle_flash.rotation);
     				bullet.GetComponent<BulletScript>().SetVelocity(point_muzzle_flash.forward * 300.0f);
-    				bullet.GetComponent<BulletScript>().SetHostile();				
+    				bullet.GetComponent<BulletScript>().SetHostile();
     				rotation_x.vel += (float)UnityEngine.Random.Range(-50,50);
     				rotation_y.vel += (float)UnityEngine.Random.Range(-50,50);
     				--bullets;
@@ -329,93 +348,97 @@ public class RobotScript:MonoBehaviour{
     			gun_delay = Mathf.Max(0.0f, gun_delay - Time.deltaTime);
     		}
     	}
-    	float danger = 0.0f;
-    	GameObject player = GameObject.Find("Player");
-    	float dist = Vector3.Distance(player.transform.position, transform.position);
-    	if(battery_alive){
-    		danger += Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
-    	}
-    	if(camera_alive){
-    		if(danger > 0.0f){
-    			danger = Mathf.Min(0.2f, danger);
+
+    	// Target interactions
+    	Transform target = GetTarget();
+    	if(target != null) {
+    		float danger = 0.0f;
+    		float dist = Vector3.Distance(target.position, transform.position);
+    		if(battery_alive){
+    			danger += Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     		}
-    		if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
-    			danger = 1.0f;
-    		}
-    		if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
-    			danger += 0.5f;
-    		}
-    		
-    		Transform camera = transform.Find("gun pivot").Find("camera");
-    		rel_pos = player.transform.position - camera.position;
-    		bool sees_target = false;
-    		if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
-    			RaycastHit hit = new RaycastHit();
-    			if(!Physics.Linecast(camera.position, player.transform.position, out hit, 1<<0)){
-    				sees_target = true;
+    		if(camera_alive){
+    			if(danger > 0.0f){
+    				danger = Mathf.Min(0.2f, danger);
     			}
-    		}
-    		if(sees_target){
+    			if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
+    				danger = 1.0f;
+    			}
+    			if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
+    				danger += 0.5f;
+    			}
+    			
+    			Transform camera = transform.Find("gun pivot").Find("camera");
+    			rel_pos = target.position - camera.position;
+    			bool sees_target = false;
+    			if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
+    				RaycastHit hit = new RaycastHit();
+    				if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
+    					sees_target = true;
+    				}
+    			}
+    			if(sees_target){
+    				switch(ai_state){
+    					case AIState.IDLE:
+    						ai_state = AIState.ALERT;
+    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * Preferences.sound_volume);
+    						alert_delay = kAlertDelay;
+    						break;
+    					case AIState.AIMING:
+    						if(Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.9f){
+    							ai_state = AIState.FIRING;
+    						}
+    						target_pos = target.position;
+    						break;					
+    					case AIState.FIRING:
+    						target_pos = target.position;
+    						break;
+    					case AIState.ALERT:
+    						alert_delay -= Time.deltaTime;
+    						if(alert_delay <= 0.0f){
+    							ai_state = AIState.AIMING;
+    						}
+    						target_pos = target.position;
+    						break;
+    					case AIState.ALERT_COOLDOWN:
+    						ai_state = AIState.ALERT;
+    						alert_delay = kAlertDelay;
+    						break;
+    				}
+    			} else {
+    				switch(ai_state){
+    					case AIState.AIMING:
+    					case AIState.FIRING:
+    					case AIState.ALERT:
+    						ai_state = AIState.ALERT_COOLDOWN;
+    						alert_cooldown_delay = kAlertCooldownDelay;
+    						break;
+    					case AIState.ALERT_COOLDOWN:
+    						alert_cooldown_delay -= Time.deltaTime;
+    						if(alert_cooldown_delay <= 0.0f){
+    							ai_state = AIState.IDLE;
+    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * Preferences.sound_volume);
+    						}
+    						break;
+    				}
+    			}
     			switch(ai_state){
     				case AIState.IDLE:
-    					ai_state = AIState.ALERT;
-    					audiosource_effect.PlayOneShot(sound_alert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
-    					alert_delay = kAlertDelay;
+    					lightObject.color = new Color(0.0f,0.0f,1.0f);
     					break;
     				case AIState.AIMING:
-    					if(Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.9f){
-    						ai_state = AIState.FIRING;
-    					}
-    					target_pos = player.transform.position;
-    					break;					
-    				case AIState.FIRING:
-    					target_pos = player.transform.position;
+    					lightObject.color = new Color(1.0f,0.0f,0.0f);
     					break;
     				case AIState.ALERT:
-    					alert_delay -= Time.deltaTime;
-    					if(alert_delay <= 0.0f){
-    						ai_state = AIState.AIMING;
-    					}
-    					target_pos = player.transform.position;
-    					break;
     				case AIState.ALERT_COOLDOWN:
-    					ai_state = AIState.ALERT;
-    					alert_delay = kAlertDelay;
-    					break;
-    			}
-    		} else {
-    			switch(ai_state){
-    				case AIState.AIMING:
-    				case AIState.FIRING:
-    				case AIState.ALERT:
-    					ai_state = AIState.ALERT_COOLDOWN;
-    					alert_cooldown_delay = kAlertCooldownDelay;
-    					break;
-    				case AIState.ALERT_COOLDOWN:
-    					alert_cooldown_delay -= Time.deltaTime;
-    					if(alert_cooldown_delay <= 0.0f){
-    						ai_state = AIState.IDLE;
-    						audiosource_effect.PlayOneShot(sound_unalert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
-    					}
+    					lightObject.color = new Color(1.0f,1.0f,0.0f);
     					break;
     			}
     		}
-    		switch(ai_state){
-    			case AIState.IDLE:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(0.0f,0.0f,1.0f);
-    				break;
-    			case AIState.AIMING:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(1.0f,0.0f,0.0f);
-    				break;
-    			case AIState.ALERT:
-    			case AIState.ALERT_COOLDOWN:
-    				GetTurretLightObject().GetComponent<Light>().color = new Color(1.0f,1.0f,0.0f);
-    				break;
-    		}
+    		target.GetComponent<MusicScript>().AddDangerLevel(danger);
     	}
-    	player.GetComponent<MusicScript>().AddDangerLevel(danger);
     	if(!camera_alive){
-    		GetTurretLightObject().GetComponent<Light>().intensity *= Mathf.Pow(0.01f, Time.deltaTime);
+    		lightObject.intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
     	float target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 2.0f);
@@ -436,8 +459,8 @@ public class RobotScript:MonoBehaviour{
     }
     
     public void UpdateDrone() {
-    	if(Vector3.Distance(GameObject.Find("Player").transform.position, transform.position) > kSleepDistance){
-    		GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    	if(ShouldSleep()){
+    		lightObject.shadows = LightShadows.None;
     		if(motor_alive){
     			distance_sleep = true;
     			GetComponent<Rigidbody>().Sleep();
@@ -447,17 +470,17 @@ public class RobotScript:MonoBehaviour{
     		}
     		return;
     	} else {
-    		if(GetDroneLightObject().GetComponent<Light>().intensity > 0.0f){
-    			GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.Hard;
+    		if(lightObject.intensity > 0.0f){
+    			lightObject.shadows = LightShadows.Hard;
     		} else {
-    			GetDroneLightObject().GetComponent<Light>().shadows = LightShadows.None;
+    			lightObject.shadows = LightShadows.None;
     		}
     		if(motor_alive && distance_sleep){
     			GetComponent<Rigidbody>().WakeUp();
     			distance_sleep = false;
     		}
     		if(!audiosource_motor.isPlaying){
-    			audiosource_motor.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    			audiosource_motor.volume = Preferences.sound_volume;
     			audiosource_motor.Play();
     		}
 
@@ -469,6 +492,11 @@ public class RobotScript:MonoBehaviour{
                 }
             }
     	}
+
+    	if(audiosource_taser.isPlaying && (!barrel_alive || ai_state != AIState.FIRING)) { // Turn off taser if we no longer fire
+    		audiosource_taser.Stop();
+    	}
+
     	Vector3 rel_pos = target_pos - transform.position;
     	if(motor_alive){		
     		float kFlyDeadZone = 0.2f;
@@ -533,24 +561,6 @@ public class RobotScript:MonoBehaviour{
     		rotor_speed = Mathf.Max(0.0f, rotor_speed - Time.deltaTime * 5.0f);
     		GetComponent<Rigidbody>().angularDrag = 0.05f;
     	}
-    	if(barrel_alive && ai_state == AIState.FIRING){
-    		if(!audiosource_taser.isPlaying){
-    			audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
-    			audiosource_taser.Play();
-    		} else {
-    			audiosource_taser.volume = PlayerPrefs.GetFloat("sound_volume", 1.0f);
-    		}
-    		if(gun_delay <= 0.0f){
-    			gun_delay = 0.1f;	
-    			Instantiate(muzzle_flash, transform.Find("point_spark").position, RandomOrientation());
-    			if(Vector3.Distance(transform.Find("point_spark").position, GameObject.Find("Player").transform.position) < 1){
-    				GameObject.Find("Player").GetComponent<AimScript>().Shock();
-    			}
-    		}
-    	} else {
-    		audiosource_taser.Stop();
-    	}
-    	gun_delay = Mathf.Max(0.0f, gun_delay - Time.deltaTime);
     	
     	top_rotor_rotation += rotor_speed * Time.deltaTime * 1000.0f;
     	bottom_rotor_rotation -= rotor_speed * Time.deltaTime * 1000.0f;
@@ -608,112 +618,138 @@ public class RobotScript:MonoBehaviour{
     				camera_pivot_angle = 0.0f;
     			}
     		}
-    		Transform cam_pivot = transform.Find("camera_pivot");
-    		var tmp_cs3 = cam_pivot.localEulerAngles;
-            tmp_cs3.x = camera_pivot_angle;
-            cam_pivot.localEulerAngles = tmp_cs3;
-    		GameObject player = GameObject.Find("Player");
-    		float dist = Vector3.Distance(player.transform.position, transform.position);
-    		float danger = Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
-    		if(danger > 0.0f){
-    			danger = Mathf.Min(0.2f, danger);
-    		}
-    		if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
-    			danger = 1.0f;
-    		}
-    		if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
-    			danger += 0.5f;
-    		}
-    		player.GetComponent<MusicScript>().AddDangerLevel(danger);
-    		
-    		Transform camera = transform.Find("camera_pivot").Find("camera");
-    		rel_pos = player.transform.position - camera.position;
-    		bool sees_target = false;
-    		if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
-    			hit = new RaycastHit();
-    			if(!Physics.Linecast(camera.position, player.transform.position, out hit, 1<<0)){
-    				sees_target = true;
+
+    		// Target interactions
+    		var target = GetTarget();
+    		if(target != null) {
+    			// Taser
+    			if(barrel_alive && ai_state == AIState.FIRING){
+    				if(!audiosource_taser.isPlaying){
+    					audiosource_taser.volume = Preferences.sound_volume;
+    					audiosource_taser.Play();
+    				} else {
+    					audiosource_taser.volume = Preferences.sound_volume;
+    				}
+    				if(gun_delay <= 0.0f){
+    					gun_delay = 0.1f;	
+    					Instantiate(muzzle_flash, transform.Find("point_spark").position, RandomOrientation());
+    					if(Vector3.Distance(transform.Find("point_spark").position, target.position) < 1){
+    						target.GetComponent<AimScript>().Shock();
+    					}
+    				}
     			}
-    		}
-    		if(sees_target){
-    			Vector3 new_target = player.transform.position + player.GetComponent<AimScript>().GetVelocity() * 
-    							Mathf.Clamp(Vector3.Distance(player.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
-    			switch(ai_state){
-    				case AIState.IDLE:
-    					ai_state = AIState.ALERT;
-    					alert_delay = kAlertDelay;
-    					audiosource_effect.PlayOneShot(sound_alert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
-    					break;
-    				case AIState.AIMING:
-    					target_pos = new_target;
-    					if(Vector3.Distance(transform.position, target_pos) < 4){
-    						ai_state = AIState.FIRING;
-    					}
-    					target_pos.y += 1.0f;
-    					break;					
-    				case AIState.FIRING:
-    					target_pos = new_target;
-    					if(Vector3.Distance(transform.position, target_pos) > 4){
-    						ai_state = AIState.AIMING;
-    					}
-    					break;
-    				case AIState.ALERT:
-    					alert_delay -= Time.deltaTime;
-    					target_pos = new_target;
-    					target_pos.y += 1.0f;
-    					if(alert_delay <= 0.0f){
-    						ai_state = AIState.AIMING;
-    					}
-    					break;
-    				case AIState.ALERT_COOLDOWN:
-    					ai_state = AIState.ALERT;
-    					alert_delay = kAlertDelay;
-    					break;
+    			gun_delay = Mathf.Max(0.0f, gun_delay - Time.deltaTime);
+
+    			// Danger state
+    			Transform cam_pivot = transform.Find("camera_pivot");
+    			var tmp_cs3 = cam_pivot.localEulerAngles;
+    			tmp_cs3.x = camera_pivot_angle;
+    			cam_pivot.localEulerAngles = tmp_cs3;
+    			float dist = Vector3.Distance(target.position, transform.position);
+    			float danger = Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
+    			if(danger > 0.0f){
+    				danger = Mathf.Min(0.2f, danger);
     			}
-    		} else {
-    			switch(ai_state){
-    				case AIState.AIMING:
-    				case AIState.FIRING:
-    				case AIState.ALERT:
-    					ai_state = AIState.ALERT_COOLDOWN;
-    					alert_cooldown_delay = kAlertCooldownDelay;
-    					break;
-    				case AIState.ALERT_COOLDOWN:
-    					alert_cooldown_delay -= Time.deltaTime;
-    					if(alert_cooldown_delay <= 0.0f){
-    						ai_state = AIState.IDLE;
-    						audiosource_effect.PlayOneShot(sound_unalert, 0.3f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
-    					}
-    					break;
+    			if(ai_state == AIState.AIMING || ai_state == AIState.FIRING){
+    				danger = 1.0f;
+    			}
+    			if(ai_state == AIState.ALERT || ai_state == AIState.ALERT_COOLDOWN){
+    				danger += 0.5f;
+    			}
+    			target.GetComponent<MusicScript>().AddDangerLevel(danger);
+    			
+    			// Target finding
+    			Transform camera = transform.Find("camera_pivot").Find("camera");
+    			rel_pos = target.position - camera.position;
+    			bool sees_target = false;
+    			if(dist < kMaxRange && Vector3.Dot(camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
+    				hit = new RaycastHit();
+    				if(!Physics.Linecast(camera.position, target.position, out hit, 1<<0)){
+    					sees_target = true;
+    				}
+    			}
+
+    			// Attacking
+    			if(sees_target){
+    				Vector3 new_target = target.position + target.GetComponent<AimScript>().GetVelocity() * 
+    								Mathf.Clamp(Vector3.Distance(target.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
+    				switch(ai_state){
+    					case AIState.IDLE:
+    						ai_state = AIState.ALERT;
+    						alert_delay = kAlertDelay;
+    						audiosource_effect.PlayOneShot(sound_alert, 0.3f * Preferences.sound_volume);
+    						break;
+    					case AIState.AIMING:
+    						target_pos = new_target;
+    						if(Vector3.Distance(transform.position, target_pos) < 4){
+    							ai_state = AIState.FIRING;
+    						}
+    						target_pos.y += 1.0f;
+    						break;					
+    					case AIState.FIRING:
+    						target_pos = new_target;
+    						if(Vector3.Distance(transform.position, target_pos) > 4){
+    							ai_state = AIState.AIMING;
+    						}
+    						break;
+    					case AIState.ALERT:
+    						alert_delay -= Time.deltaTime;
+    						target_pos = new_target;
+    						target_pos.y += 1.0f;
+    						if(alert_delay <= 0.0f){
+    							ai_state = AIState.AIMING;
+    						}
+    						break;
+    					case AIState.ALERT_COOLDOWN:
+    						ai_state = AIState.ALERT;
+    						alert_delay = kAlertDelay;
+    						break;
+    				}
+    			} else {
+    				switch(ai_state){
+    					case AIState.AIMING:
+    					case AIState.FIRING:
+    					case AIState.ALERT:
+    						ai_state = AIState.ALERT_COOLDOWN;
+    						alert_cooldown_delay = kAlertCooldownDelay;
+    						break;
+    					case AIState.ALERT_COOLDOWN:
+    						alert_cooldown_delay -= Time.deltaTime;
+    						if(alert_cooldown_delay <= 0.0f){
+    							ai_state = AIState.IDLE;
+    							audiosource_effect.PlayOneShot(sound_unalert, 0.3f * Preferences.sound_volume);
+    						}
+    						break;
+    				}
     			}
     		}
     		switch(ai_state){
     			case AIState.IDLE:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(0.0f,0.0f,1.0f);
+    				lightObject.color = new Color(0.0f,0.0f,1.0f);
     				break;
     			case AIState.AIMING:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(1.0f,0.0f,0.0f);
+    				lightObject.color = new Color(1.0f,0.0f,0.0f);
     				break;
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:
-    				GetDroneLightObject().GetComponent<Light>().color = new Color(1.0f,1.0f,0.0f);
+    				lightObject.color = new Color(1.0f,1.0f,0.0f);
     				break;
     		}
     	}
     	if(!camera_alive){
-    		GetDroneLightObject().GetComponent<Light>().intensity *= Mathf.Pow(0.01f, Time.deltaTime);
+    		lightObject.intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
-    	(GetDroneLensFlareObject().GetComponent<LensFlare>()).color = GetDroneLightObject().GetComponent<Light>().color;
-    	(GetDroneLensFlareObject().GetComponent<LensFlare>()).brightness = GetDroneLightObject().GetComponent<Light>().intensity;
+    	lensFlareObject.color = lightObject.color;
+    	lensFlareObject.brightness = lightObject.intensity;
     	float target_pitch = rotor_speed * 0.2f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 3.0f);
     	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001f, Time.deltaTime));
-    	audiosource_motor.volume = rotor_speed * 0.1f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume = rotor_speed * 0.1f * Preferences.sound_volume;
     
-    	audiosource_motor.volume -= Vector3.Distance(GameObject.Find("Main Camera").transform.position, transform.position) * 0.0125f * PlayerPrefs.GetFloat("sound_volume", 1.0f);
+    	audiosource_motor.volume -= Vector3.Distance(Camera.main.transform.position, transform.position) * 0.0125f * Preferences.sound_volume;
     
     	bool line_of_sight = true;
-    	if(Physics.Linecast(transform.position, GameObject.Find("Main Camera").transform.position, out hit, 1<<0)){
+    	if(Physics.Linecast(transform.position, Camera.main.transform.position, out hit, 1<<0)){
     		line_of_sight = false;
     	}
     	if(line_of_sight){
@@ -761,7 +797,7 @@ public class RobotScript:MonoBehaviour{
     			} 
     		} else {
     			int which_shot = UnityEngine.Random.Range(0,sound_bump.Count);
-    			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.relativeVelocity.magnitude * 0.15f * PlayerPrefs.GetFloat("sound_volume", 1.0f));
+    			audiosource_foley.PlayOneShot(sound_bump[which_shot], collision.relativeVelocity.magnitude * 0.15f * Preferences.sound_volume);
     		}
     	}
     }

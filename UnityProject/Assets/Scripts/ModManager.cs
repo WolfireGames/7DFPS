@@ -7,6 +7,7 @@ public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
     public static List<Mod> loadedCustomMods = new List<Mod>();
+    public static List<Mod> loadedTapeMods = new List<Mod>();
 
     public static List<Mod> availableMods;
 
@@ -18,13 +19,18 @@ public class ModManager : MonoBehaviour {
         Directory.CreateDirectory(Path.Combine(Application.dataPath, "Mods"));
         GetModsFolder(ModType.Gun);
         GetModsFolder(ModType.LevelTile);
+        GetModsFolder(ModType.Tapes);
 
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
             foreach (var mod in availableMods)
                 LoadMod(mod);
         }
+        
+        InsertMods();
+    }
 
+    public void InsertMods() {
         /*
         // Instantiate all custom mods
         foreach (var mod in loadedCustomMods) {
@@ -37,16 +43,30 @@ public class ModManager : MonoBehaviour {
 
         // Insert all gun mods
         var guns = new List<GameObject>(guiSkinHolder.weapons);
+        if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
+            guns.Clear();
+
         foreach (var mod in loadedGunMods)
             guns.Add(mod.mainAsset);
         guiSkinHolder.weapons = guns.ToArray();
 
         // Insert all Level Tile mods
         var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+        if(loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
+            tiles.Clear();
+
         foreach (var mod in loadedLevelMods)
             foreach(Transform child in mod.mainAsset.transform)
                 tiles.Add(child.gameObject);
         levelCreatorScript.level_tiles = tiles.ToArray();
+
+        // Insert all Tape mods
+        if(loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
+            guiSkinHolder.sound_tape_content.Clear();
+
+        foreach (var mod in loadedTapeMods)
+            foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+                guiSkinHolder.sound_tape_content.Add(tape);
     }
 
     public void LoadMod(Mod mod) {
@@ -62,6 +82,7 @@ public class ModManager : MonoBehaviour {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
             case ModType.Custom: return loadedCustomMods;
+            case ModType.Tapes: return loadedTapeMods;
 
             default:
                 throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
@@ -73,6 +94,7 @@ public class ModManager : MonoBehaviour {
             case ModType.Gun: return "gun_holder.prefab";
             case ModType.LevelTile: return "tiles_holder.prefab";
             case ModType.Custom: return "script_holder.prefab";
+            case ModType.Tapes: return "tape_holder.prefab";
 
             default:
                 throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
@@ -105,11 +127,13 @@ public class ModManager : MonoBehaviour {
         availableMods = new List<Mod>();
         
         foreach (var folder in rootFolders) {
-            var modType = (ModType) Enum.Parse(typeof(ModType), Path.GetFileName(folder));
-            var modFolders = Directory.GetDirectories(folder);
+            ModType modType;
+            if(!Enum.TryParse<ModType>(Path.GetFileName(folder), out modType))
+                continue; // This is not a folder for a supported mod
 
             Debug.Log($"Importing \"{modType}\" mods..");
 
+            var modFolders = Directory.GetDirectories(folder);
             foreach(var path in modFolders) {            
                 var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
                 var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
@@ -143,6 +167,7 @@ public class ModManager : MonoBehaviour {
 public enum ModType {
     Custom,
     Gun,
+    Tapes,
     LevelTile
 }
 
@@ -183,9 +208,20 @@ public class Mod {
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(mainAssetName);
 
+        if(modType == ModType.Gun)
+            SetupGun();
+    }
+
+    private void SetupGun() {
+        WeaponHolder weaponHolder = mainAsset.GetComponent<WeaponHolder>();
+
+        // Set the display name to the bundle name if no custom name is provided
+        if(weaponHolder.display_name == "My Gun")
+            weaponHolder.display_name = name;
+
         // Attach script for gun mods
-        if(hasCustomScript && modType == ModType.Gun)
-            mainAsset.GetComponent<WeaponHolder>().gun_object.AddComponent(GetScript());
+        if(hasCustomScript)
+            weaponHolder.gun_object.AddComponent(GetScript());
     }
     
     public void Unload() {

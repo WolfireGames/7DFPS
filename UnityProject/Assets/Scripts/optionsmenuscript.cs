@@ -40,6 +40,7 @@ public class optionsmenuscript:MonoBehaviour{
             RestoreDefaults();
         }
 
+        Preferences.UpdatePreferences();
         UpdateUIValues();
     }
 
@@ -77,6 +78,8 @@ public class optionsmenuscript:MonoBehaviour{
         menu.SetActive(false);
         LockCursor();
         Time.timeScale = 1.0f;
+
+        Preferences.UpdatePreferences();
     }
 
     public static bool IsMenuShown() {
@@ -97,6 +100,8 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void UpdateUIValues() {
         foreach(Transform transform in optionsContent.transform) {
+            if(transform.name.StartsWith("_")) // Don't default settings that start with _
+                continue;
 
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
@@ -136,6 +141,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetInt("lock_gun_to_center", 0);
         PlayerPrefs.SetInt("mouse_invert", 0);
         PlayerPrefs.SetInt("toggle_crouch", 1);
+        PlayerPrefs.SetInt("selected_gun_index", -1);
 
         PlayerPrefs.SetFloat("post_processing", 1f);
         PlayerPrefs.SetFloat("ambient_intensity", 0.44f);
@@ -147,6 +153,9 @@ public class optionsmenuscript:MonoBehaviour{
         
         PlayerPrefs.SetInt("antialiasing_mode", 3);
         PlayerPrefs.SetInt("vignette", 0);
+
+        PlayerPrefs.SetInt("ignore_vanilla_guns", 0);
+        PlayerPrefs.SetInt("ignore_vanilla_tiles", 0);
     }
 
     // Functionality
