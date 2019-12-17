@@ -8,6 +8,9 @@ public class VRInputBridge : MonoBehaviour
 
     public AimScript aimScript_ref;
 
+    Renderer SlideObject;
+    Bounds SlideBounds;
+
     void Awake()
     {
         instance = this;
@@ -16,6 +19,13 @@ public class VRInputBridge : MonoBehaviour
     private IEnumerator Start() {
         yield return new WaitForSeconds(0.5f);
         aimScript_ref = FindObjectOfType<AimScript>();
+
+        if (aimScript_ref.gun_instance.GetComponent<GunScript>().HasSlide()) {
+            SlideObject = aimScript_ref.gun_instance.transform.Find("slide").GetComponent<Renderer>();
+            if(SlideObject == null) {
+                SlideObject = aimScript_ref.gun_instance.transform.Find("slide").GetComponentInChildren<Renderer>();
+            }
+        }
     }
 
     public bool MagOut;
@@ -29,8 +39,12 @@ public class VRInputBridge : MonoBehaviour
             case "Auto Mod Toggle":
                 return VRInputController.instance.GunInteract3Down(hand);
             case "Pull Back Slide":
+                if(SlideObject == null) {
+                    return false;
+                }
                 if (hand == HandSide.Left) {
-                    if (Vector3.Distance(VRInputController.instance.LeftHand.transform.position, VRInputController.instance.RightHand.transform.position) < 0.15f && VRInputController.instance.LeftHand.transform.position.y > VRInputController.instance.RightHand.transform.position.y-0.1f) {
+                    SlideBounds = SlideObject.bounds;
+                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position)) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {
@@ -38,7 +52,8 @@ public class VRInputBridge : MonoBehaviour
                     }
                 }
                 else {
-                    if (Vector3.Distance(VRInputController.instance.RightHand.transform.position, VRInputController.instance.LeftHand.transform.position) < 0.15f && VRInputController.instance.RightHand.transform.position.y > VRInputController.instance.LeftHand.transform.position.y-0.1f) {
+                    SlideBounds = SlideObject.bounds;
+                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position)) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {

@@ -265,7 +265,7 @@ public class AimScript:MonoBehaviour{
     int next_head_recoil_delay = 0;
     
     // Actual instance of gun prefab			
-    GameObject gun_instance;
+    public GameObject gun_instance;
     
     // Springs for different gun poses (how it's held)
     Spring slide_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
