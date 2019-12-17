@@ -122,7 +122,7 @@ public class BulletScript:MonoBehaviour{
     					PlaySoundFromGroup(sound_glass_break, 1.0f);
     				}
     			}
-    			if(Vector3.Magnitude(velocity) > 50){
+    			if(Vector3.Magnitude(velocity) * damageMultiplier > 50){
                     GameObject hole = null;
                     GameObject effect;
     				if(turret_script){

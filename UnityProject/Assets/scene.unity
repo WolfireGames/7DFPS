@@ -437,6 +437,7 @@ MonoBehaviour:
     needsReinit: 0
   LHandSphere: {fileID: 1204297264}
   RHandSphere: {fileID: 1341089381}
+  cylinderRenderer: {fileID: 0}
   ControllerPose:
     actionPath: /actions/default/in/Pose
     needsReinit: 0

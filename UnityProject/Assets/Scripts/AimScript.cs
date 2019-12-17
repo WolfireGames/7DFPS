@@ -812,9 +812,13 @@ public class AimScript:MonoBehaviour{
     	}
     	return insert_mag_with_number_key;
     }
-    
+
+    public GunScript gun_script;
+
     public void HandleGunControls(bool insert_mag_with_number_key) {
-    	GunScript gun_script = GetGunScript();
+        if (gun_script == null) {
+            gun_script = GetGunScript();
+        }
     	if(character_input.GetButton("Trigger", primaryHand)){
     		gun_script.ApplyPressureToTrigger();
     	} else {

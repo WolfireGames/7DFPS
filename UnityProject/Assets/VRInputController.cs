@@ -22,6 +22,8 @@ public class VRInputController : MonoBehaviour
 
     public GameObject LHandSphere, RHandSphere;
 
+    public Renderer cylinderRenderer;
+
     public SteamVR_Action_Pose ControllerPose;
 
     private void Awake() {
@@ -52,24 +54,35 @@ public class VRInputController : MonoBehaviour
         }
     }
 
+    bool checkedCylinderRenderer;
+
     public float GetSpinSpeed(HandSide hand) {
-        switch (hand) {
-            case HandSide.Right:
-                if (Vector3.Distance(RightHand.transform.position, LeftHand.transform.position) < 0.15f) {
-                    return -ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
-                }
-                else {
-                    return 0f;
-                }
-            case HandSide.Left:
-                if (Vector3.Distance(RightHand.transform.position, LeftHand.transform.position) < 0.15f) {
-                    return -ControllerPose.GetVelocity(SteamVR_Input_Sources.LeftHand).y;
-                }
-                else {
-                    return 0f;
-                }
-            default:
-                return ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+        if(!checkedCylinderRenderer && VRInputBridge.instance.aimScript_ref != null && VRInputBridge.instance.aimScript_ref.gun_script.magazineType == MagazineType.CYLINDER) {
+            cylinderRenderer = VRInputBridge.instance.aimScript_ref.gun_instance.transform.Find("yolk_pivot").Find("yolk").Find("cylinder_assembly").Find("cylinder").GetComponent<Renderer>();
+            checkedCylinderRenderer = true;
+        }
+        if (cylinderRenderer != null) {
+            switch (hand) {
+                case HandSide.Right:
+                    if (cylinderRenderer.bounds.Contains(RightHand.transform.position)) {
+                        return -ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+                    }
+                    else {
+                        return 0f;
+                    }
+                case HandSide.Left:
+                    if (cylinderRenderer.bounds.Contains(LeftHand.transform.position)) {
+                        return -ControllerPose.GetVelocity(SteamVR_Input_Sources.LeftHand).y;
+                    }
+                    else {
+                        return 0f;
+                    }
+                default:
+                    return ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+            }
+        }
+        else {
+            return 0f;
         }
     }
 
