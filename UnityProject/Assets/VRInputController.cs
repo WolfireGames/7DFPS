@@ -20,10 +20,25 @@ public class VRInputController : MonoBehaviour
 
     public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness;
 
+    public GameObject LHandSphere, RHandSphere;
+
     public SteamVR_Action_Pose ControllerPose;
 
     private void Awake() {
         instance = this;
+
+    }
+
+    IEnumerator Start() {
+        yield return new WaitForSeconds(1f);
+        if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left) {
+            LHandSphere.SetActive(false);
+            RHandSphere.SetActive(true);
+        }
+        else {
+            LHandSphere.SetActive(true);
+            RHandSphere.SetActive(false);
+        }
     }
 
     public Vector3 GetAimPos(HandSide hand) {
@@ -175,10 +190,14 @@ public class VRInputController : MonoBehaviour
             if(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
                 VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Left;
                 VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Right;
+                LHandSphere.SetActive(false);
+                RHandSphere.SetActive(true);
             }
             else {
                 VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Right;
                 VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Left;
+                LHandSphere.SetActive(true);
+                RHandSphere.SetActive(false);
             }
         }
         //InventoryPos.transform.LookAt(Head.transform.forward - new Vector3(0, Head.transform.forward.y, 0));
