@@ -842,10 +842,10 @@ public class AimScript:MonoBehaviour{
     	if(character_input.GetButtonDown("Auto Mod Toggle", primaryHand)){
     		gun_script.ToggleAutoMod();			
     	}	
-    	if(character_input.GetButtonDown("Pull Back Slide", secondaryHand)){
+    	if (!VRInputBridge.instance.MagOut && character_input.GetButtonDown("Pull Back Slide", secondaryHand)) {
     		gun_script.PullBackSlide();
-    	}
-    	if(character_input.GetButtonUp("Pull Back Slide", secondaryHand)){
+        }
+    	if(!VRInputBridge.instance.MagOut && character_input.GetButtonUp("Pull Back Slide", secondaryHand)) {
     		gun_script.ReleaseSlide();
     	}	
     	if(character_input.GetButtonDown("Swing Out Cylinder", primaryHand)){

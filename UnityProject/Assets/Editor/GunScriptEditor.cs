@@ -15,15 +15,27 @@ public class GunScriptEditor : Editor {
         {"gun_type", "Determines what general kind of gun we are looking for:\n - AUTOMATIC: The chamber is cycled by a pulled back slide\n - REVOLVER: The chamber needs to cycle by rotating the cylinder"},
         {"magazineType", "Determines how the Gun is loaded:\n - MAGAZINE: Your typical weapon, bullets are stored inside an external magazine\n - CYLINDER: typical for revolvers\n - INTERNAL: typical for shotguns or breach loading guns, rounds are stored inside the gun without a detachable container. (Requires a Magazine inside the Prefab)"},
         {"slideInteractionNeedsHand", "Can we interact with the slide even if we don't have a free hand?\n - TRUE: Grip needs to be changed before interacting with the slide\n - FALSE: We can interact with the slide without a free hand. (Useful for pump action shotguns, as you hold the \"slide\" in one of your hands)"},
+        {"cylinder_is_static", "Prevents the cylinder from visually moving, the next bullet fired is still cycled when the hammer is pulled. Useful for multiple barrels that are loaded directly and fire in sequence."},
+        {"seating_min", "Determines the odds of bullets being stuck in the chamber"},
+        {"seating_max", "Determines the odds of bullets being stuck in the chamber"},
+        {"seating_firebonus_min", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
+        {"seating_firebonus_max", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
     };
 
     // These *must not* be null
-    private List<string> non_null = new List<string> {"bullet_obj", "shell_casing", "casing_with_bullet"};
+    private List<string> non_null = new List<string> { "bullet_obj", "shell_casing", "casing_with_bullet" };
 
     // Hide certain properties if gun_scrip doesn't meet requirements
     private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
         {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
-        {"cylinders", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        
+        // Cylinder stuff
+        {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"cylinder_is_static", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"seating_min", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"seating_max", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"seating_firebonus_min", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"seating_firebonus_max", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
     };
 
     public override void OnInspectorGUI() {
@@ -33,20 +45,20 @@ public class GunScriptEditor : Editor {
 
         // General properties
         SerializedProperty property = serializedObject.GetIterator();
-        if(property.NextVisible(true)) {
+        if (property.NextVisible(true)) {
             do {
-                if(IsSoundArray(property))
+                if (IsSoundArray(property))
                     continue;
 
-                if(!ShouldDraw(property))
+                if (!ShouldDraw(property))
                     continue;
 
-                if(tooltips.ContainsKey(property.name)) // Is there a custom tooltip provided?
+                if (tooltips.ContainsKey(property.name)) // Is there a custom tooltip provided?
                     EditorGUILayout.PropertyField(property, new GUIContent(property.displayName, tooltips[property.name]), true);
                 else
                     EditorGUILayout.PropertyField(property, true);
 
-                if(non_null.Contains(property.name) && property.objectReferenceInstanceIDValue == 0) 
+                if (non_null.Contains(property.name) && property.objectReferenceInstanceIDValue == 0)
                     DrawWarning($"\"{property.displayName}\" can not be None!");
             } while (property.NextVisible(false));
         }
@@ -56,12 +68,12 @@ public class GunScriptEditor : Editor {
         EditorGUILayout.LabelField("Sound Effects", EditorStyles.boldLabel);
 
         // Sound properties
-        if(list_sounds = EditorGUILayout.Foldout(list_sounds, "Sound Options", true)) {
+        if (list_sounds = EditorGUILayout.Foldout(list_sounds, "Sound Options", true)) {
             EditorGUI.indentLevel++;
             DrawSoundOptions();
             EditorGUI.indentLevel--;
         }
-        
+
         // Show Contact data via buttons
         DrawContactOptions();
 
@@ -70,7 +82,7 @@ public class GunScriptEditor : Editor {
     }
 
     private bool ShouldDraw(SerializedProperty property) {
-        if(!predicates.ContainsKey(property.name))
+        if (!predicates.ContainsKey(property.name))
             return true;
         return predicates[property.name].Invoke(gun_script);
     }
@@ -92,10 +104,10 @@ public class GunScriptEditor : Editor {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
 
-        if(GUILayout.Button("Discord"))
+        if (GUILayout.Button("Discord"))
             Application.OpenURL("https://discordapp.com/invite/wCntgVQ");
 
-        if(GUILayout.Button("Github"))
+        if (GUILayout.Button("Github"))
             Application.OpenURL("https://github.com/David20321/7DFPS/issues");
 
         GUILayout.EndHorizontal();
@@ -108,7 +120,7 @@ public class GunScriptEditor : Editor {
     }
 
     private string CapitalizeFirst(string str) {
-        if(str.Length <= 1)
+        if (str.Length <= 1)
             return str.ToUpper();
         return str[0].ToString().ToUpper() + str.Substring(1);
     }
@@ -132,26 +144,27 @@ public class GunScriptEditor : Editor {
         GUILayout.BeginHorizontal();
         bool force_state = false;
         bool expand = false;
-        if(GUILayout.Button("Expand All")) {
+        if (GUILayout.Button("Expand All")) {
             force_state = true;
             expand = true;
-        } else if (GUILayout.Button("Shrink All")) {
+        }
+        else if (GUILayout.Button("Shrink All")) {
             force_state = true;
         }
         GUILayout.EndHorizontal();
 
         // Draw properties
-        if(property.NextVisible(true)) {
+        if (property.NextVisible(true)) {
             do {
-                if(!IsSoundArray(property))
+                if (!IsSoundArray(property))
                     continue;
 
-                if(force_state)
+                if (force_state)
                     property.isExpanded = expand;
-                
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(property, SoundPropertyToContentLabel(property), true);
-                if(!property.isExpanded) { // Display arraysize if not expanded
+                if (!property.isExpanded) { // Display arraysize if not expanded
                     GUILayout.FlexibleSpace();
                     GUILayout.Label($"({property.arraySize})");
                 }

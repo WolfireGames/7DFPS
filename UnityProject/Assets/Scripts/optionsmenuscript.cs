@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class optionsmenuscript:MonoBehaviour{
+public class optionsmenuscript : MonoBehaviour {
     public static bool show_menu = false;
 
     public GameObject menu;
@@ -16,12 +16,12 @@ public class optionsmenuscript:MonoBehaviour{
     private Vignette vignette;
     private AmbientOcclusion ambientOcclusion;
 
-    public void OnApplicationPause() {  
+    public void OnApplicationPause() {
         UnlockCursor();
     }
 
     public void OnApplicationFocus() {
-        if(!show_menu) {
+        if (!show_menu) {
             LockCursor();
         }
     }
@@ -36,7 +36,7 @@ public class optionsmenuscript:MonoBehaviour{
         vignette = postProcessVolume.profile.GetSetting<Vignette>();
         ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
 
-        if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
+        if (PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
         }
 
@@ -45,13 +45,14 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void Update() {
-        if(Input.GetKeyDown("escape") && !show_menu) {
+        if (Input.GetKeyDown("escape") && !show_menu) {
             ShowMenu();
-        } else if(Input.GetKeyDown("escape") && show_menu) {
+        }
+        else if (Input.GetKeyDown("escape") && show_menu) {
             HideMenu();
         }
 
-        if(Input.GetMouseButtonDown(0) && !show_menu) {
+        if (Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
         }
     }
@@ -72,7 +73,7 @@ public class optionsmenuscript:MonoBehaviour{
         UnlockCursor();
         Time.timeScale = 0.0f;
     }
-    
+
     public void HideMenu() {
         show_menu = false;
         menu.SetActive(false);
@@ -85,7 +86,7 @@ public class optionsmenuscript:MonoBehaviour{
     public static bool IsMenuShown() {
         return show_menu;
     }
-    
+
     public void UpdateInt(Toggle toggle) {
         PlayerPrefs.SetInt(toggle.name, toggle.isOn ? 1 : 0);
     }
@@ -99,13 +100,13 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void UpdateUIValues() {
-        foreach(Transform transform in optionsContent.transform) {
-            if(transform.name.StartsWith("_")) // Don't default settings that start with _
+        foreach (Transform transform in optionsContent.transform) {
+            if (transform.name.StartsWith("_")) // Don't default settings that start with _
                 continue;
 
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
-            if(slider != null) {
+            if (slider != null) {
                 slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
                 slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
@@ -113,7 +114,7 @@ public class optionsmenuscript:MonoBehaviour{
 
             // Update Toggles
             Toggle toggle = transform.GetComponent<Toggle>();
-            if(toggle != null) {
+            if (toggle != null) {
                 toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
                 toggle.onValueChanged.Invoke(toggle.isOn);
                 continue;
@@ -121,7 +122,7 @@ public class optionsmenuscript:MonoBehaviour{
 
             // Update Dropdowns
             Dropdown dropdown = transform.GetComponent<Dropdown>();
-            if(dropdown != null) {
+            if (dropdown != null) {
                 dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
                 dropdown.onValueChanged.Invoke(dropdown.value);
                 continue;
@@ -150,7 +151,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetFloat("auto_exposure_min_luminance", -3.3f);
         PlayerPrefs.SetFloat("auto_exposure_max_luminance", 2.8f);
         PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
-        
+
         PlayerPrefs.SetInt("antialiasing_mode", 3);
         PlayerPrefs.SetInt("vignette", 0);
 
@@ -170,7 +171,7 @@ public class optionsmenuscript:MonoBehaviour{
     public void SetPostProcessingEnabled(Toggle toggle) {
         postProcessLayer.enabled = toggle.isOn;
     }
-    
+
     public void SetPostProcessingWeight(float weight) {
         postProcessVolume.weight = weight;
     }
@@ -184,22 +185,26 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
-          autoExposure.minLuminance.Override(autoExposureMinLuminance);
+        autoExposure.minLuminance.Override(autoExposureMinLuminance);
     }
 
     public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
-          autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
+        autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
     }
 
     public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
-          autoExposure.keyValue.Override(autoExposureExposureCompensation);
+        autoExposure.keyValue.Override(autoExposureExposureCompensation);
     }
- 
+
     public void SetAAMode(int mode) {
-        postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
+        postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing)mode;
     }
 
     public void SetVignette(bool enabled) {
         vignette.active = enabled;
+    }
+
+    public void OpenModsFolder() {
+        Application.OpenURL(ModManager.GetModsfolderPath());
     }
 }

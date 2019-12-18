@@ -44,7 +44,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 if (hand == HandSide.Left) {
                     SlideBounds = SlideObject.bounds;
-                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position)) {
+                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {
@@ -53,7 +53,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 else {
                     SlideBounds = SlideObject.bounds;
-                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position)) {
+                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
                     else {
@@ -70,13 +70,16 @@ public class VRInputBridge : MonoBehaviour
             case "Insert":
 
                 if (aimScript_ref != null) {
+                    
                     if (aimScript_ref.primaryHand == HandSide.Right) {
                         if (hand == HandSide.Left) {
                             return VRInputController.instance.GunInteractDown(hand);//Magazine bullet insert
                         }
-                        else {//Magazine into gun insert, have to hold the mag under the gun.
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, VRInputController.instance.RightHand.transform.position) < 0.15f && VRInputController.instance.LeftHand.transform.position.y < VRInputController.instance.RightHand.transform.position.y) {
+                        else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE){//Magazine into gun insert, have to hold the mag under the gun.
+                            Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
+                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, magInsertPos) < 0.1f) {
                                 MagOut = false;
+                                Debug.Log("MAGOUT SET TO FALSE");
                                 return true;
                             }
                             else {
@@ -88,8 +91,9 @@ public class VRInputBridge : MonoBehaviour
                         if (hand == HandSide.Right) {
                             return VRInputController.instance.GunInteractDown(hand);//Lefthanded version
                         }
-                        else {
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, VRInputController.instance.RightHand.transform.position) < 0.15f && VRInputController.instance.RightHand.transform.position.y < VRInputController.instance.LeftHand.transform.position.y) {
+                        else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE) {
+                            Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
+                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.position) < 0.1f) {
                                 MagOut = false;
                                 return true;
                             }
@@ -102,7 +106,9 @@ public class VRInputBridge : MonoBehaviour
                 return false;
 
             case "Eject/Drop":
-                MagOut = true;
+                if (VRInputController.instance.GunInteractLongPressDown(hand)) {
+                    MagOut = true;
+                }
                 return VRInputController.instance.GunInteractLongPressDown(hand);
             case "Inventory 1":
                 if (VRInventoryManager.instance.ActiveSlot == 0) {
@@ -219,7 +225,7 @@ public class VRInputBridge : MonoBehaviour
     public float GetAxis(string input_str, HandSide hand) {
         switch (input_str) {
             case "Mouse ScrollWheel":
-                return VRInputController.instance.GetSpinSpeed(hand);
+                return VRInputController.instance.GetSpinSpeed(hand) * 10f;
             default:
                 return Input.GetAxis(input_str);
         }
