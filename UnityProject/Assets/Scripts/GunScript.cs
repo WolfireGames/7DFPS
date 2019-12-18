@@ -154,6 +154,10 @@ public class GunScript:MonoBehaviour{
     Vector3 extractor_rod_rel_pos;
 
     public int cylinder_capacity = 6;
+    public float seating_min = 0;
+    public float seating_max = 1f;
+    public float seating_firebonus_min = 0;
+    public float seating_firebonus_max = 0.5f;
     CylinderState[] cylinders;
 
     LevelCreatorScript level_creator = null;
@@ -273,7 +277,7 @@ public class GunScript:MonoBehaviour{
                 cylinders[i].game_object.transform.localScale = Vector3.one;
                 cylinders[i].game_object.transform.parent = chamber_transform;
                 cylinders[i].can_fire = true;
-                cylinders[i].seated = Random.Range(0f, 0.5f);
+                cylinders[i].seated = Random.Range(seating_min, seating_max);
                 RemoveChildrenShadows(cylinders[i].game_object);
             }
         }
@@ -476,7 +480,7 @@ public class GunScript:MonoBehaviour{
                     PlaySoundFromGroup(sound_gunshot_smallroom, 1f);
                     round_in_chamber_state = RoundState.FIRED;
                     cylinders[which_chamber].can_fire = false;
-                    cylinders[which_chamber].seated += Random.Range(0f, 0.5f);
+                    cylinders[which_chamber].seated += Random.Range(seating_firebonus_min, seating_firebonus_max);
                     cylinders[which_chamber].game_object = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
                     cylinders[which_chamber].game_object.transform.parent = round.transform.parent;
                     GameObject.Destroy(round);
@@ -799,7 +803,7 @@ public class GunScript:MonoBehaviour{
                         cylinders[best_chamber].game_object.transform.localScale = Vector3.one;
                         cylinders[best_chamber].game_object.transform.parent = chamber_transform;
                         cylinders[best_chamber].can_fire = true;
-                        cylinders[best_chamber].seated = Random.Range(0f, 1f);
+                        cylinders[best_chamber].seated = Random.Range(seating_min, seating_max);
 
                         RemoveChildrenShadows(cylinders[best_chamber].game_object);
                         PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
