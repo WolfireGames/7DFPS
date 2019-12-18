@@ -15,6 +15,7 @@ public class GunScriptEditor : Editor {
         {"gun_type", "Determines what general kind of gun we are looking for:\n - AUTOMATIC: The chamber is cycled by a pulled back slide\n - REVOLVER: The chamber needs to cycle by rotating the cylinder"},
         {"magazineType", "Determines how the Gun is loaded:\n - MAGAZINE: Your typical weapon, bullets are stored inside an external magazine\n - CYLINDER: typical for revolvers\n - INTERNAL: typical for shotguns or breach loading guns, rounds are stored inside the gun without a detachable container. (Requires a Magazine inside the Prefab)"},
         {"slideInteractionNeedsHand", "Can we interact with the slide even if we don't have a free hand?\n - TRUE: Grip needs to be changed before interacting with the slide\n - FALSE: We can interact with the slide without a free hand. (Useful for pump action shotguns, as you hold the \"slide\" in one of your hands)"},
+        {"cylinder_is_static", "Prevents the cylinder from visually moving, the next bullet fired is still cycled when the hammer is pulled. Useful for multiple barrels that are loaded directly and fire in sequence."},
     };
 
     // These *must not* be null
@@ -24,6 +25,7 @@ public class GunScriptEditor : Editor {
     private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
         {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
         {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"cylinder_is_static", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
     };
 
     public override void OnInspectorGUI() {
