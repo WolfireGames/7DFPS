@@ -202,4 +202,8 @@ public class optionsmenuscript:MonoBehaviour{
     public void SetVignette(bool enabled) {
         vignette.active = enabled;
     }
+
+    public void OpenModsFolder() {
+        Application.OpenURL(ModManager.GetModsfolderPath());
+    }
 }

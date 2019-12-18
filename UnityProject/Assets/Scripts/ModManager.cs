@@ -16,7 +16,7 @@ public class ModManager : MonoBehaviour {
 
     public void Awake() {
         //Make sure these folders are generated if they don't exist
-        Directory.CreateDirectory(Path.Combine(Application.dataPath, "Mods"));
+        Directory.CreateDirectory(GetModsfolderPath());
         GetModsFolder(ModType.Gun);
         GetModsFolder(ModType.LevelTile);
         GetModsFolder(ModType.Tapes);
@@ -28,6 +28,10 @@ public class ModManager : MonoBehaviour {
         }
         
         InsertMods();
+    }
+
+    public static string GetModsfolderPath() {
+        return Path.Combine(Application.persistentDataPath, "Mods");
     }
 
     public void InsertMods() {
@@ -114,7 +118,7 @@ public class ModManager : MonoBehaviour {
     }
 
     public static string GetModsFolder(ModType modType) {
-        var path = Path.Combine(Application.dataPath, "Mods", modType.ToString());
+        var path = Path.Combine(GetModsfolderPath(), modType.ToString());
         
         if(!Directory.Exists(path))
             Directory.CreateDirectory(path);
@@ -123,7 +127,7 @@ public class ModManager : MonoBehaviour {
     }
 
     public static void UpdateMods() {
-        var rootFolders = Directory.GetDirectories(Path.Combine(Application.dataPath, "Mods"));
+        var rootFolders = Directory.GetDirectories(GetModsfolderPath());
         availableMods = new List<Mod>();
         
         foreach (var folder in rootFolders) {
