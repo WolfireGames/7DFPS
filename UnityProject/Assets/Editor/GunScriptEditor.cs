@@ -23,7 +23,7 @@ public class GunScriptEditor : Editor {
     // Hide certain properties if gun_scrip doesn't meet requirements
     private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
         {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
-        {"cylinders", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
+        {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
     };
 
     public override void OnInspectorGUI() {

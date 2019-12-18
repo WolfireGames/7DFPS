@@ -153,7 +153,7 @@ public class GunScript:MonoBehaviour{
     Vector3 extractor_rod_rel_pos;
 
     public int cylinder_capacity = 6;
-    public CylinderState[] cylinders;
+    CylinderState[] cylinders;
 
     LevelCreatorScript level_creator = null;
     
