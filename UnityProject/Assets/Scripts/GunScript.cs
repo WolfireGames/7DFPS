@@ -146,6 +146,7 @@ public class GunScript:MonoBehaviour{
     //float cylinder_rotation_vel = 0f;
     int active_cylinder = 0;
     int target_cylinder_offset = 0;
+    public bool cylinder_is_static = false;
 
     ExtractorRodStage extractor_rod_stage = ExtractorRodStage.CLOSED;
     float extractor_rod_amount = 0f;
@@ -153,7 +154,11 @@ public class GunScript:MonoBehaviour{
     Vector3 extractor_rod_rel_pos;
 
     public int cylinder_capacity = 6;
-    public CylinderState[] cylinders;
+    [Range(0f, 1f)] public float seating_min = 0;
+    [Range(0f, 1f)] public float seating_max = 1f;
+    [Range(0f, 1f)] public float seating_firebonus_min = 0;
+    [Range(0f, 1f)] public float seating_firebonus_max = 0.5f;
+    CylinderState[] cylinders;
 
     LevelCreatorScript level_creator = null;
     
@@ -272,7 +277,7 @@ public class GunScript:MonoBehaviour{
                 cylinders[i].game_object.transform.localScale = Vector3.one;
                 cylinders[i].game_object.transform.parent = chamber_transform;
                 cylinders[i].can_fire = true;
-                cylinders[i].seated = Random.Range(0f, 0.5f);
+                cylinders[i].seated = Random.Range(seating_min, seating_max);
                 RemoveChildrenShadows(cylinders[i].game_object);
             }
         }
@@ -475,7 +480,7 @@ public class GunScript:MonoBehaviour{
                     PlaySoundFromGroup(sound_gunshot_smallroom, 1f);
                     round_in_chamber_state = RoundState.FIRED;
                     cylinders[which_chamber].can_fire = false;
-                    cylinders[which_chamber].seated += Random.Range(0f, 0.5f);
+                    cylinders[which_chamber].seated += Random.Range(seating_firebonus_min, seating_firebonus_max);
                     cylinders[which_chamber].game_object = Instantiate(shell_casing, round.transform.position, round.transform.rotation);
                     cylinders[which_chamber].game_object.transform.parent = round.transform.parent;
                     GameObject.Destroy(round);
@@ -798,7 +803,7 @@ public class GunScript:MonoBehaviour{
                         cylinders[best_chamber].game_object.transform.localScale = Vector3.one;
                         cylinders[best_chamber].game_object.transform.parent = chamber_transform;
                         cylinders[best_chamber].can_fire = true;
-                        cylinders[best_chamber].seated = Random.Range(0f, 1f);
+                        cylinders[best_chamber].seated = Random.Range(seating_min, seating_max);
 
                         RemoveChildrenShadows(cylinders[best_chamber].game_object);
                         PlaySoundFromGroup(sound_bullet_eject, kGunMechanicVolume);
@@ -1102,12 +1107,12 @@ public class GunScript:MonoBehaviour{
             }
         }
         
-        if(gun_type == GunType.REVOLVER) {
+        if(magazineType == MagazineType.CYLINDER) {
             if(yolk_stage == YolkStage.CLOSED && hammer_cocked == 1f) {
                 target_cylinder_offset = 0;
             }
 
-            if(target_cylinder_offset != 0f) {
+            if(target_cylinder_offset != 0f && !cylinder_is_static) {
                 float target_cylinder_rotation = ((active_cylinder + target_cylinder_offset) * 360f / cylinder_capacity);
                 cylinder_rotation = Mathf.Lerp(target_cylinder_rotation, cylinder_rotation, Mathf.Pow(0.2f, Time.deltaTime));
                 if(cylinder_rotation > (active_cylinder + 0.5f)  * 360f / cylinder_capacity) {
@@ -1215,13 +1220,16 @@ public class GunScript:MonoBehaviour{
             Transform yolk_pivot = transform.Find("yolk_pivot");
             yolk_pivot.localRotation = Quaternion.Slerp(yolk_pivot_rel_rot, transform.Find("point_yolk_pivot_open").localRotation, yolk_open_display);
             Transform cylinder_assembly = yolk_pivot.Find("yolk").Find("cylinder_assembly");
-            var tmp_cs1 = cylinder_assembly.localRotation;
-            var tmp_cs2 = tmp_cs1.eulerAngles;
-            tmp_cs2.z = cylinder_rotation;
-            tmp_cs1.eulerAngles = tmp_cs2;
-            cylinder_assembly.localRotation = tmp_cs1;    
-            Transform extractor_rod = cylinder_assembly.Find("extractor_rod");
-            extractor_rod.localPosition = Vector3.Lerp(extractor_rod_rel_pos, cylinder_assembly.Find("point_extractor_rod_extended").localPosition,extractor_rod_amount_display);    
+            
+            if(!cylinder_is_static) {
+                var tmp_cs1 = cylinder_assembly.localRotation;
+                var tmp_cs2 = tmp_cs1.eulerAngles;
+                tmp_cs2.z = cylinder_rotation;
+                tmp_cs1.eulerAngles = tmp_cs2;
+                cylinder_assembly.localRotation = tmp_cs1;    
+                Transform extractor_rod = cylinder_assembly.Find("extractor_rod");
+                extractor_rod.localPosition = Vector3.Lerp(extractor_rod_rel_pos, cylinder_assembly.Find("point_extractor_rod_extended").localPosition,extractor_rod_amount_display);    
+            }
         }
     }
     
