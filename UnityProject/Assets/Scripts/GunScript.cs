@@ -154,10 +154,10 @@ public class GunScript:MonoBehaviour{
     Vector3 extractor_rod_rel_pos;
 
     public int cylinder_capacity = 6;
-    public float seating_min = 0;
-    public float seating_max = 1f;
-    public float seating_firebonus_min = 0;
-    public float seating_firebonus_max = 0.5f;
+    [Range(0f, 1f)] public float seating_min = 0;
+    [Range(0f, 1f)] public float seating_max = 1f;
+    [Range(0f, 1f)] public float seating_firebonus_min = 0;
+    [Range(0f, 1f)] public float seating_firebonus_max = 0.5f;
     CylinderState[] cylinders;
 
     LevelCreatorScript level_creator = null;
