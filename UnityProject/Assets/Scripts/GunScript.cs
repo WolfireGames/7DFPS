@@ -104,7 +104,6 @@ public class GunScript:MonoBehaviour{
     float bolt_amount = 0f;
     [Header("Misc")]
     public bool slide_lock = false;
-
     SlideStage slide_stage = SlideStage.NOTHING;
 
     Thumb thumb_on_hammer = Thumb.OFF_HAMMER;
@@ -160,6 +159,8 @@ public class GunScript:MonoBehaviour{
     [Range(0f, 1f)] public float seating_firebonus_max = 0.5f;
     CylinderState[] cylinders;
 
+    [Range(0.1f, .02f)] public float camera_nearplane_override = 0.1f;
+
     LevelCreatorScript level_creator = null;
     
     public bool IsAddingRounds() {
@@ -201,6 +202,9 @@ public class GunScript:MonoBehaviour{
         if(level_creator == null) {
             Debug.LogWarning("We're missing a LevelCreatorScript in GunScript, this might mean that some world-interactions don't work correctly.");
         }
+
+        // Override Camera's near plane
+        Camera.main.nearClipPlane = camera_nearplane_override;
 
         if(transform.Find("slide") != null) {
             Transform slide = transform.Find("slide");
@@ -340,7 +344,7 @@ public class GunScript:MonoBehaviour{
         return false;
     }
     
-        public bool CanInteractWithSlide() {
+    public bool CanInteractWithSlide() {
         return handed == HandedType.ONE_HANDED || !slideInteractionNeedsHand || lifted;
     }
 
