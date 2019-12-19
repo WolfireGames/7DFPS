@@ -14,12 +14,16 @@ public class ModManager : MonoBehaviour {
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
 
+    public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
+        {ModType.Gun, "gun_holder.prefab"},
+        {ModType.LevelTile, "tiles_holder.prefab"},
+        {ModType.Custom, "script_holder.prefab"},
+        {ModType.Tapes, "tape_holder.prefab"},
+    };
+
     public void Awake() {
         //Make sure these folders are generated if they don't exist
         Directory.CreateDirectory(GetModsfolderPath());
-        GetModsFolder(ModType.Gun);
-        GetModsFolder(ModType.LevelTile);
-        GetModsFolder(ModType.Tapes);
 
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
@@ -93,16 +97,11 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    private static String GetMainAssetName(ModType modType) {
-        switch (modType) {
-            case ModType.Gun: return "gun_holder.prefab";
-            case ModType.LevelTile: return "tiles_holder.prefab";
-            case ModType.Custom: return "script_holder.prefab";
-            case ModType.Tapes: return "tape_holder.prefab";
+    public static String GetMainAssetName(ModType modType) {
+        if(!mainAssets.ContainsKey(modType))
+            throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
 
-            default:
-                throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
-        }
+        return mainAssets[modType];
     }
 
     private void SetModLoaded(Mod mod, bool loadMod) {
@@ -110,7 +109,7 @@ public class ModManager : MonoBehaviour {
 
         if(loadMod) {
             mod.Load();
-            list.Add(mod);   
+            list.Add(mod);
         } else {
             mod.Unload();
             list.Remove(mod);
@@ -126,45 +125,49 @@ public class ModManager : MonoBehaviour {
         return path;
     }
 
+    public static ModType GetModTypeFromBundle(AssetBundle assetBundle) {
+        foreach (ModType modType in mainAssets.Keys)
+            if(assetBundle.Contains(mainAssets[modType]))
+                return modType;
+
+        throw new System.InvalidOperationException($"Unable to find Mod Type for \"{assetBundle.name}\"");
+    }
+
     public static void UpdateMods() {
-        var rootFolders = Directory.GetDirectories(GetModsfolderPath());
+        var folders = Directory.GetDirectories(GetModsfolderPath(), "modfile_*", SearchOption.AllDirectories);
         availableMods = new List<Mod>();
         
-        foreach (var folder in rootFolders) {
-            ModType modType;
-            if(!Enum.TryParse<ModType>(Path.GetFileName(folder), out modType))
-                continue; // This is not a folder for a supported mod
-
-            Debug.Log($"Importing \"{modType}\" mods..");
-
-            var modFolders = Directory.GetDirectories(folder);
-            foreach(var path in modFolders) {            
-                var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
-                var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
-
-                foreach(var bundleName in manifest.GetAllAssetBundles()) {
-                    var assetPath = Path.Combine(path, bundleName);
-                    Debug.Log($" - {bundleName}");
-
-                    /*
-                    // Check if this mod has a custom script inside
-                    var modBundle = AssetBundle.LoadFromFile(assetPath);
-                    var hasScript = modBundle.Contains("scripts.bytes");
-                    modBundle.Unload(true);
-                    */
-
-                    // Generate Mod Object
-                    var mod = new Mod(GetMainAssetName(modType), assetPath, modType);
-                    mod.name = bundleName;
-                    //mod.hasCustomScript = hasScript;
-
-                    availableMods.Add(mod);
-                }
-                manifestBundle.Unload(true);
+        Debug.Log($"Importing mods..");
+        foreach(var path in folders) {
+            try {
+                UpdateMod(path);
+            } catch (System.Exception e) {
+                Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
         }
-
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
+    }
+
+    private static void UpdateMod(string path) {
+        var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
+        var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
+        foreach(var bundleName in manifest.GetAllAssetBundles()) {
+            // Init
+            var assetPath = Path.Combine(path, bundleName);
+            var modBundle = AssetBundle.LoadFromFile(assetPath);
+
+            // Generate Mod Object
+            var mod = new Mod(assetPath);
+            mod.name = bundleName;
+            mod.modType = GetModTypeFromBundle(modBundle);
+            //mod.hasCustomScript = modBundle.Contains("scripts.bytes");
+
+            // Register mod and clean up
+            availableMods.Add(mod);
+            modBundle.Unload(true);
+            Debug.Log($" + {bundleName} ({mod.modType})");
+        }
+        manifestBundle.Unload(true);
     }
 }
 
@@ -186,12 +189,9 @@ public class Mod {
     public AssetBundle assetBundle;
 
     public GameObject mainAsset;
-    public string mainAssetName;
 
-    public Mod(string mainAssetName, string path, ModType modType = ModType.Custom) {
-        this.mainAssetName = mainAssetName;
+    public Mod(string path) {
         this.path = path;
-        this.modType = modType;
     }
 
     public System.Type GetScript() {
@@ -210,7 +210,7 @@ public class Mod {
         // Loading
         loaded = true;
         assetBundle = AssetBundle.LoadFromFile(path);
-        mainAsset = assetBundle.LoadAsset<GameObject>(mainAssetName);
+        mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
 
         if(modType == ModType.Gun)
             SetupGun();
