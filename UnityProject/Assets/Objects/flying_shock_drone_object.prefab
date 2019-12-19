@@ -417,6 +417,17 @@ MonoBehaviour:
   sound_unalert: {fileID: 8300000, guid: ea541cf07213a6f4cb0dbee286709b84, type: 3}
   sound_engine_loop: {fileID: 8300000, guid: c4b0968ce29a49845a244e24ba1d4dfc, type: 3}
   sound_damaged_engine_loop: {fileID: 0}
+  point_pivot: {fileID: 0}
+  top_rotor: {fileID: 400016}
+  bottom_rotor: {fileID: 400018}
+  point_spark: {fileID: 400002}
+  camera_pivot: {fileID: 400006}
+  battery: {fileID: 400010}
+  gun_pivot: {fileID: 0}
+  muzflash_point: {fileID: 0}
+  gun_camera: {fileID: 0}
+  drone_camera: {fileID: 400024}
+  motor: {fileID: 400012}
   electric_spark_obj: {fileID: 100002, guid: 25b4c9337037a8344976cf5a8529c6a0, type: 3}
   muzzle_flash: {fileID: 100002, guid: 2439661d5efe8db43ba46337c8b22aa0, type: 3}
   bullet_obj: {fileID: 0}
