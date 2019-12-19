@@ -4,34 +4,19 @@ using UnityEditor;
 using System.Linq;
 
 public class ModExport : MonoBehaviour {
-    [MenuItem("Wolfire/Modding/Export Gun Mod")]
-    public static void ExportGun () {
-        ExportBundle(ModType.Gun);
+    [MenuItem("Wolfire/Export Mod")]
+    public static void ExportMod () {
+        ExportBundle();
     }
 
-    [MenuItem("Wolfire/Modding/Export Level Tile Mod")]
-    public static void ExportLevelTile () {
-        ExportBundle(ModType.LevelTile);
-    }
-
-    [MenuItem("Wolfire/Modding/Export Tape Pack Mod")]
-    public static void ExportTapes () {
-        ExportBundle(ModType.Tapes);
-    }
-
-    //[MenuItem("Wolfire/Modding/Export Custom Mod")]
-    public static void ExportCustom () {
-        ExportBundle(ModType.Custom);
-    }
-
-    public static void ExportBundle (ModType modType) {
-        var pathIn = EditorUtility.OpenFolderPanel($"Select \"{modType.ToString()}\" Mod Folder", "Assets/", "");
-        var pathOut = $"Assets/Mods/{modType.ToString()}/modfile_{Path.GetFileName(pathIn)}";
+    public static void ExportBundle () {
+        var pathIn = EditorUtility.OpenFolderPanel("Select Mod Folder", "Assets/Mods", "");
+        var pathOut = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_{Path.GetFileName(pathIn)}");
         
         if(pathIn == "") // Happens when the user aborts path selection
             return;
         
-        Debug.Log($"Exporting \"{modType.ToString()}\" Mod: Source: \"{pathIn}\", Target: \"{pathOut}\"");
+        Debug.Log($"Exporting Mod: Source: \"{pathIn}\", Target: \"{pathOut}\"");
 
         // Get Files and convert absolute paths to relative paths (required by the buildmap)
         var absoluteFiles = Directory.GetFiles(pathIn).Where(name => !name.EndsWith(".meta") && !name.EndsWith(".cs")).ToArray();
