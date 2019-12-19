@@ -36,9 +36,8 @@ ehthumbs.db
 
 # Mod bundles
 # ===============
-/UnityProject/Assets/Mods/*/*
-!UnityProject/Assets/Mods/*/.gitkeep
-/UnityProject/Assets/Modding
-/UnityProject/Assets/Modding.meta
+/UnityProject/Assets/Mods/*
+!UnityProject/Assets/Mods/HowToMakeAMod.txt
+!UnityProject/Assets/Mods/LevelTileGuide.blend
 
 # Temp folder
