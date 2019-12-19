@@ -20,6 +20,7 @@ public class GunScriptEditor : Editor {
         {"seating_max", "Determines the odds of bullets being stuck in the chamber"},
         {"seating_firebonus_min", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
         {"seating_firebonus_max", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
+        {"chamber_loaded", "Use this if you need to push a round into the chamber in order to fill the internal magazine"},
     };
 
     // These *must not* be null
@@ -28,6 +29,8 @@ public class GunScriptEditor : Editor {
     // Hide certain properties if gun_scrip doesn't meet requirements
     private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
         {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
+
+        {"chamber_loaded", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.INTERNAL;})},
         
         // Cylinder stuff
         {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},

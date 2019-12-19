@@ -160,6 +160,8 @@ public class GunScript:MonoBehaviour{
     [Range(0f, 1f)] public float seating_firebonus_max = 0.5f;
     CylinderState[] cylinders;
 
+    public bool chamber_loaded = true;
+
     LevelCreatorScript level_creator = null;
     
     public bool IsAddingRounds() {
@@ -322,25 +324,35 @@ public class GunScript:MonoBehaviour{
         return magazine_instance_in_gun && magazine_instance_in_gun.GetComponent<mag_script>().NumRounds() == 0;
     }
     
+    public bool ChamberRound() {
+        if(magazineType == MagazineType.CYLINDER) {
+            return false;
+        }
+
+        if(round_in_chamber == null) {
+            round_in_chamber = (GameObject)Instantiate(casing_with_bullet, transform.Find("point_load_round").position, transform.Find("point_load_round").rotation);
+            round_in_chamber.transform.parent = transform;
+            round_in_chamber.transform.localScale = Vector3.one;
+            round_in_chamber_state = RoundState.LOADING;
+
+            RemoveChildrenShadows(round_in_chamber);
+            return true;
+        }
+        return false;
+    }
+
     public bool ChamberRoundFromMag() {
         if(magazineType == MagazineType.CYLINDER) {
             return false;
         }
         if((magazine_instance_in_gun != null) && MagScript().NumRounds() > 0 && mag_stage == MagStage.IN) {
-            if(round_in_chamber == null) {
-                round_in_chamber = (GameObject)Instantiate(casing_with_bullet, transform.Find("point_load_round").position, transform.Find("point_load_round").rotation);
-                round_in_chamber.transform.parent = transform;
-                round_in_chamber.transform.localScale = Vector3.one;
-                round_in_chamber_state = RoundState.LOADING;
-
-                RemoveChildrenShadows(round_in_chamber);
-            }
+            ChamberRound();
             return true;
         }
         return false;
     }
     
-        public bool CanInteractWithSlide() {
+    public bool CanInteractWithSlide() {
         return handed == HandedType.ONE_HANDED || !slideInteractionNeedsHand || lifted;
     }
 
@@ -758,14 +770,29 @@ public class GunScript:MonoBehaviour{
         if(magazineType == MagazineType.MAGAZINE)
             return false;
 
-        if(action_type == ActionType.BOLT && (!IsBoltOpen() || !IsSlidePulledBack()))
-            return false;
-
         if(magazineType == MagazineType.INTERNAL) {
-            if(IsLifted())
-                return magazine_instance_in_gun.GetComponent<mag_script>().AddRound();
-            else
+            if(action_type == ActionType.BOLT && !IsBoltOpen())
                 return false;
+
+            if(chamber_loaded && slide_amount < kSlideLockPosition)
+                return false;
+
+            if(handed == HandedType.TWO_HANDED && !IsLifted())
+                return false;
+
+            // Update chambered round's visual model
+            if(chamber_loaded) {
+                if(round_in_chamber && round_in_chamber_state == RoundState.LOADING) { // Turn the visual model into a "real" round
+                    round_in_chamber_state = RoundState.READY;
+                    MagScript().RemoveRound();
+                }
+
+                if(!round_in_chamber) { // Add visual model
+                    ChamberRound();
+                }
+            }
+
+            return magazine_instance_in_gun.GetComponent<mag_script>().AddRound();
         }
 
         if(yolk_stage != YolkStage.OPEN) // Cylinder closed
