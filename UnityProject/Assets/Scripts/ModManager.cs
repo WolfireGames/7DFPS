@@ -139,29 +139,35 @@ public class ModManager : MonoBehaviour {
         
         Debug.Log($"Importing mods..");
         foreach(var path in folders) {
-            var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
-            var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
-
-            foreach(var bundleName in manifest.GetAllAssetBundles()) {
-                // Init
-                var assetPath = Path.Combine(path, bundleName);
-                var modBundle = AssetBundle.LoadFromFile(assetPath);
-
-                // Generate Mod Object
-                var mod = new Mod(assetPath);
-                mod.name = bundleName;
-                mod.modType = GetModTypeFromBundle(modBundle);
-                //mod.hasCustomScript = modBundle.Contains("scripts.bytes");
-
-                // Register mod and clean up
-                availableMods.Add(mod);
-                modBundle.Unload(true);
-                Debug.Log($" - {bundleName} ({mod.modType})");
+            try {
+                UpdateMod(path);
+            } catch (System.Exception e) {
+                Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
-            manifestBundle.Unload(true);
         }
-
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
+    }
+
+    private static void UpdateMod(string path) {
+        var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
+        var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
+        foreach(var bundleName in manifest.GetAllAssetBundles()) {
+            // Init
+            var assetPath = Path.Combine(path, bundleName);
+            var modBundle = AssetBundle.LoadFromFile(assetPath);
+
+            // Generate Mod Object
+            var mod = new Mod(assetPath);
+            mod.name = bundleName;
+            mod.modType = GetModTypeFromBundle(modBundle);
+            //mod.hasCustomScript = modBundle.Contains("scripts.bytes");
+
+            // Register mod and clean up
+            availableMods.Add(mod);
+            modBundle.Unload(true);
+            Debug.Log($" + {bundleName} ({mod.modType})");
+        }
+        manifestBundle.Unload(true);
     }
 }
 
