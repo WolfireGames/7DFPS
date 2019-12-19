@@ -28,6 +28,11 @@ public class ModExport : MonoBehaviour {
                 files[i] = absoluteFiles[i].Substring(index);
         }
 
+        if(!CheckHasHolder(files)) {
+            Debug.LogError($"Failed to export \"{Path.GetDirectoryName(pathIn)}\". Make sure you have an appropriate holder included!");
+            return;
+        }
+
         // Prepare Bundle
         var buildMap = new AssetBundleBuild[1];
         buildMap[0].assetBundleName = Path.GetFileName(pathIn);
@@ -38,5 +43,12 @@ public class ModExport : MonoBehaviour {
         BuildPipeline.BuildAssetBundles(pathOut, buildMap, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(pathIn)}\" with {files.Length} files");
+    }
+
+    private static bool CheckHasHolder(string[] files) {
+        foreach (string file in files)
+            if(ModManager.mainAssets.Values.Contains(Path.GetFileName(file)))
+                return true;
+        return false;
     }
 }
