@@ -23,7 +23,17 @@ public class RobotScript:MonoBehaviour{
     public AudioClip sound_engine_loop;
     public AudioClip sound_damaged_engine_loop;
 
-    public Transform point_pivot, top_rotor, bottom_rotor, point_spark, camera_pivot, battery, gun_pivot, point_muzzle_flash, gun_camera, drone_camera, motor;
+    public Transform point_pivot;
+    public Transform top_rotor;
+    public Transform bottom_rotor;
+    public Transform point_spark;
+    public Transform camera_pivot;
+    public Transform battery;
+    public Transform gun_pivot;
+    public Transform point_muzzle_flash;
+    public Transform gun_camera;
+    public Transform drone_camera;
+    public Transform motor;
 
     // Track bullet holes attached to robot
     // We do this instead of parenting the transform to avoid scaling issues
