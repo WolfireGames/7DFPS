@@ -424,7 +424,7 @@ MonoBehaviour:
   camera_pivot: {fileID: 400006}
   battery: {fileID: 400010}
   gun_pivot: {fileID: 0}
-  muzflash_point: {fileID: 0}
+  point_muzzle_flash: {fileID: 0}
   gun_camera: {fileID: 0}
   drone_camera: {fileID: 400024}
   motor: {fileID: 400012}
