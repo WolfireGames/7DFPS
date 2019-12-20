@@ -23,7 +23,7 @@ public class RobotScript:MonoBehaviour{
     public AudioClip sound_engine_loop;
     public AudioClip sound_damaged_engine_loop;
 
-    public Transform point_pivot, top_rotor, bottom_rotor, point_spark, camera_pivot, battery, gun_pivot, muzflash_point, gun_camera, drone_camera, motor;
+    public Transform point_pivot, top_rotor, bottom_rotor, point_spark, camera_pivot, battery, gun_pivot, point_muzzle_flash, gun_camera, drone_camera, motor;
 
     // Track bullet holes attached to robot
     // We do this instead of parenting the transform to avoid scaling issues
@@ -332,11 +332,11 @@ public class RobotScript:MonoBehaviour{
     		if(trigger_down){
     			if(gun_delay <= 0.0f){
     				gun_delay += 0.1f;
-    				Instantiate(muzzle_flash, muzflash_point.position, muzflash_point.rotation);
+    				Instantiate(muzzle_flash, point_muzzle_flash.position, point_muzzle_flash.rotation);
     				PlaySoundFromGroup(sound_gunshot, 1.0f);
     				
-    				GameObject bullet = (GameObject)Instantiate(bullet_obj, muzflash_point.position, muzflash_point.rotation);
-    				bullet.GetComponent<BulletScript>().SetVelocity(muzflash_point.forward * 300.0f);
+    				GameObject bullet = (GameObject)Instantiate(bullet_obj, point_muzzle_flash.position, point_muzzle_flash.rotation);
+    				bullet.GetComponent<BulletScript>().SetVelocity(point_muzzle_flash.forward * 300.0f);
     				bullet.GetComponent<BulletScript>().SetHostile();
     				rotation_x.vel += (float)UnityEngine.Random.Range(-50,50);
     				rotation_y.vel += (float)UnityEngine.Random.Range(-50,50);
