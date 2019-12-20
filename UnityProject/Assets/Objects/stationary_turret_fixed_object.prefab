@@ -830,7 +830,7 @@ MonoBehaviour:
   camera_pivot: {fileID: 0}
   battery: {fileID: 400024}
   gun_pivot: {fileID: 400002}
-  muzflash_point: {fileID: 400000}
+  point_muzzle_flash: {fileID: 400000}
   gun_camera: {fileID: 400010}
   electric_spark_obj: {fileID: 100002, guid: 25b4c9337037a8344976cf5a8529c6a0, type: 3}
   muzzle_flash: {fileID: 100008, guid: 1026f63056726a447952427344841144, type: 3}
