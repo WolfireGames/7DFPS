@@ -11,6 +11,7 @@ public class GunScriptEditor : Editor {
 
     // Tooltip overrides
     private Dictionary<string, string> tooltips = new Dictionary<string, string> {
+        {"camera_nearplane_override", "This changes the clipping distance. If you are using a normal sidearm, you probably don't want to touch this.\nLower this if parts of your stock are clipping on a close gun distance setting."},
         {"handed", "Determines if flashlights or other objects can be held while holding the gun in default position:\n - ONE_HANDED: other objects can be held in the second hand\n - TWO_HANDED: The gun needs to be holstered or the grip must be shifted before other objects can be used."},
         {"gun_type", "Determines what general kind of gun we are looking for:\n - AUTOMATIC: The chamber is cycled by a pulled back slide\n - REVOLVER: The chamber needs to cycle by rotating the cylinder"},
         {"magazineType", "Determines how the Gun is loaded:\n - MAGAZINE: Your typical weapon, bullets are stored inside an external magazine\n - CYLINDER: typical for revolvers\n - INTERNAL: typical for shotguns or breach loading guns, rounds are stored inside the gun without a detachable container. (Requires a Magazine inside the Prefab)"},
@@ -20,6 +21,7 @@ public class GunScriptEditor : Editor {
         {"seating_max", "Determines the odds of bullets being stuck in the chamber"},
         {"seating_firebonus_min", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
         {"seating_firebonus_max", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
+        {"chamber_loaded", "Use this if you need to push a round into the chamber in order to fill the internal magazine"},
     };
 
     // These *must not* be null
@@ -28,6 +30,8 @@ public class GunScriptEditor : Editor {
     // Hide certain properties if gun_scrip doesn't meet requirements
     private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
         {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
+
+        {"chamber_loaded", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.INTERNAL;})},
         
         // Cylinder stuff
         {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},

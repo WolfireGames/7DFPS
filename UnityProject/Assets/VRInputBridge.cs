@@ -26,6 +26,8 @@ public class VRInputBridge : MonoBehaviour
                 SlideObject = aimScript_ref.gun_instance.transform.Find("slide").GetComponentInChildren<Renderer>();
             }
         }
+
+        Camera.main.nearClipPlane = 0.01f;
     }
 
     public bool MagOut;
@@ -77,9 +79,8 @@ public class VRInputBridge : MonoBehaviour
                         }
                         else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, magInsertPos) < 0.1f) {
+                            if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, magInsertPos) < 0.075f && VRInputController.instance.LeftHand.transform.position.y < magInsertPos.y) {
                                 MagOut = false;
-                                Debug.Log("MAGOUT SET TO FALSE");
                                 return true;
                             }
                             else {
@@ -93,7 +94,7 @@ public class VRInputBridge : MonoBehaviour
                         }
                         else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE) {
                             Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
-                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.position) < 0.1f) {
+                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.position) < 0.05f) {
                                 MagOut = false;
                                 return true;
                             }
@@ -180,7 +181,7 @@ public class VRInputBridge : MonoBehaviour
                 else {
                     return false;
                 }
-            case "TapePlayer":
+            case "Tape Player":
                 if (VRInventoryManager.instance.TapePlayer) {
                     return VRInputController.instance.ActionPressDown(hand);
                 }
