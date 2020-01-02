@@ -43,6 +43,7 @@ public class ModExport : MonoBehaviour {
         BuildPipeline.BuildAssetBundles(pathOut, buildMap, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(pathIn)}\" with {files.Length} files");
+        Application.OpenURL(pathOut);
     }
 
     private static bool CheckHasHolder(string[] files) {
