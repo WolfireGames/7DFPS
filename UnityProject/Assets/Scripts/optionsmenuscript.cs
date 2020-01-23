@@ -203,6 +203,10 @@ public class optionsmenuscript:MonoBehaviour{
         vignette.active = enabled;
     }
 
+    public void SetVSync(bool enabled) {
+        QualitySettings.vSyncCount = enabled ? 1 : 0;
+    }
+
     public void OpenModsFolder() {
         Application.OpenURL(ModManager.GetModsfolderPath());
     }
