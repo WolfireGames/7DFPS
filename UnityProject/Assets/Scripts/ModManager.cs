@@ -35,7 +35,7 @@ public class ModManager : MonoBehaviour {
     }
 
     public static string GetModsfolderPath() {
-        return Path.Combine(Application.persistentDataPath, "Mods");
+        return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
 
     public void InsertMods() {
