@@ -24,6 +24,7 @@ public class GUISkinHolder:MonoBehaviour{
 
     private GameObject GetGunHolder() {
         int selected_gun = PlayerPrefs.GetInt("selected_gun_index", -1);
+        PlayerPrefs.DeleteKey("selected_gun_index");
 
         if(selected_gun < 0 || selected_gun >= weapons.Length)
             return weapons[Random.Range(0, weapons.Length)];
