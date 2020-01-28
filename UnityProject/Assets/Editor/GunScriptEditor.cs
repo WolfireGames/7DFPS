@@ -2,178 +2,414 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using ExtentionUtil;
 
 [CustomEditor(typeof(GunScript))]
-[CanEditMultipleObjects]
 public class GunScriptEditor : Editor {
-    private bool list_sounds = false;
-    private GunScript gun_script; // target
+    GunScript gun_script;
+    GunSystemsContainer systems;
 
-    // Tooltip overrides
-    private Dictionary<string, string> tooltips = new Dictionary<string, string> {
-        {"camera_nearplane_override", "This changes the clipping distance. If you are using a normal sidearm, you probably don't want to touch this.\nLower this if parts of your stock are clipping on a close gun distance setting."},
-        {"handed", "Determines if flashlights or other objects can be held while holding the gun in default position:\n - ONE_HANDED: other objects can be held in the second hand\n - TWO_HANDED: The gun needs to be holstered or the grip must be shifted before other objects can be used."},
-        {"gun_type", "Determines what general kind of gun we are looking for:\n - AUTOMATIC: The chamber is cycled by a pulled back slide\n - REVOLVER: The chamber needs to cycle by rotating the cylinder"},
-        {"magazineType", "Determines how the Gun is loaded:\n - MAGAZINE: Your typical weapon, bullets are stored inside an external magazine\n - CYLINDER: typical for revolvers\n - INTERNAL: typical for shotguns or breach loading guns, rounds are stored inside the gun without a detachable container. (Requires a Magazine inside the Prefab)"},
-        {"slideInteractionNeedsHand", "Can we interact with the slide even if we don't have a free hand?\n - TRUE: Grip needs to be changed before interacting with the slide\n - FALSE: We can interact with the slide without a free hand. (Useful for pump action shotguns, as you hold the \"slide\" in one of your hands)"},
-        {"cylinder_is_static", "Prevents the cylinder from visually moving, the next bullet fired is still cycled when the hammer is pulled. Useful for multiple barrels that are loaded directly and fire in sequence."},
-        {"seating_min", "Determines the odds of bullets being stuck in the chamber"},
-        {"seating_max", "Determines the odds of bullets being stuck in the chamber"},
-        {"seating_firebonus_min", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
-        {"seating_firebonus_max", "Adds an additional chance for bullets to get stuck if it is a fired casing"},
-        {"chamber_loaded", "Use this if you need to push a round into the chamber in order to fill the internal magazine"},
-    };
+    private GunAspect excluded_aspects = new GunAspect();
+    private GunAspect loaded_aspects = new GunAspect();
+    private Type[] required_components = new Type[0];
 
-    // These *must not* be null
-    private List<string> non_null = new List<string> {"bullet_obj", "shell_casing", "casing_with_bullet"};
+    GunAspect expanded_aspects = GunAspect.ALL;
+    public bool force_show_aspecs = false;
+    public static bool autodelete_components = false;
 
-    // Hide certain properties if gun_scrip doesn't meet requirements
-    private Dictionary<string, System.Predicate<GunScript>> predicates = new Dictionary<string, System.Predicate<GunScript>> {
-        {"magazine_obj", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.MAGAZINE;})},
+    private Dictionary<string, GunAspect> aspect_groups = GatherGunAspectGroups();
+    private List<Type> possible_components;
+    private List<Type> possible_systems;
 
-        {"chamber_loaded", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.INTERNAL;})},
-        
-        // Cylinder stuff
-        {"cylinder_capacity", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-        {"cylinder_is_static", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-        {"seating_min", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-        {"seating_max", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-        {"seating_firebonus_min", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-        {"seating_firebonus_max", new System.Predicate<GunScript>((gun_script) => { return ((GunScript)gun_script).magazineType == MagazineType.CYLINDER;})},
-    };
+    private Dictionary<Type, bool> validation_cache_components = new Dictionary<Type, bool>();
+    private Dictionary<FieldInfo, bool> validation_cache_fields = new Dictionary<FieldInfo, bool>();
+
+    private static readonly Color ASPECT_LOADED = Color.green;
+    private static readonly Color ASPECT_SELECTED = Color.HSVToRGB(.4f, .3f, .9f);
+
+    private void Update() {
+        loaded_aspects = LoadedAspects();
+        required_components = GetRequiredComponents();
+        UpdateComponents();
+        excluded_aspects = ExcludedAspects();
+
+        UpdateValidationCache();
+
+        // Hide all GunComponents
+        foreach(GunComponent gun_component in gun_script.gameObject.GetComponents<GunComponent>()) {
+            gun_component.hideFlags = HideFlags.HideInInspector;
+        }
+        EditorUtility.SetDirty(gun_script);
+    }
+
+    private void OnEnable() {
+        gun_script = (GunScript)target;
+        systems = gun_script.GetGunSystems();
+
+        possible_components = typeof(GunComponent).GetAllDerivedTypes();
+        possible_systems = typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType());
+        Update();
+    }
 
     public override void OnInspectorGUI() {
-        // Init
+        DrawDefaultInspector();
         serializedObject.Update();
-        gun_script = target as GunScript;
 
-        // General properties
-        SerializedProperty property = serializedObject.GetIterator();
-        if(property.NextVisible(true)) {
-            do {
-                if(IsSoundArray(property))
-                    continue;
+        EditorGUILayout.LabelField("Gun Aspects", EditorStyles.boldLabel);
+        autodelete_components = EditorGUILayout.Toggle("Autodelete components", autodelete_components);
 
-                if(!ShouldDraw(property))
-                    continue;
-
-                if(tooltips.ContainsKey(property.name)) // Is there a custom tooltip provided?
-                    EditorGUILayout.PropertyField(property, new GUIContent(property.displayName, tooltips[property.name]), true);
-                else
-                    EditorGUILayout.PropertyField(property, true);
-
-                if(non_null.Contains(property.name) && property.objectReferenceInstanceIDValue == 0) 
-                    DrawWarning($"\"{property.displayName}\" can not be None!");
-            } while (property.NextVisible(false));
+        if(!Application.isPlaying || force_show_aspecs) {
+            DrawAspectButtons();
+            DrawAspects();
+        } else {
+            EditorGUILayout.HelpBox("Aspects hidden during play mode to prevent performance drops.\n\nDepending on the underlying systems, many changes made during play mode won't change anyways.", MessageType.Info);
+            force_show_aspecs = GUILayout.Button("Show aspects anyways");
         }
 
-        // Header for sounds
-        GUILayout.Space(7);
-        EditorGUILayout.LabelField("Sound Effects", EditorStyles.boldLabel);
+        if(GUILayout.Button("DEBUG: VALIDATE SYSTEMS"))
+            ValidateSystems();
 
-        // Sound properties
-        if(list_sounds = EditorGUILayout.Foldout(list_sounds, "Sound Options", true)) {
-            EditorGUI.indentLevel++;
-            DrawSoundOptions();
-            EditorGUI.indentLevel--;
-        }
-        
-        // Show Contact data via buttons
-        DrawContactOptions();
-
-        // Apply changed
         serializedObject.ApplyModifiedProperties();
     }
 
-    private bool ShouldDraw(SerializedProperty property) {
-        if(!predicates.ContainsKey(property.name))
+    private GunAspect ExcludedAspects() {
+        GunAspect excluded_aspects = new GunAspect();
+        foreach (Type type in possible_systems) {
+            ExclusiveAspectsAttribute exclusives = type.GetCustomAttribute<ExclusiveAspectsAttribute>();
+            if (exclusives != null && systems.ShouldLoadSystem(type, gun_script.aspect, true)) {
+                excluded_aspects = excluded_aspects | exclusives.exclusive_aspects;
+            }
+        }
+        return excluded_aspects;
+    }
+
+    private GunAspect LoadedAspects() {
+        GunAspect loaded_aspects = new GunAspect();
+        foreach (Type type in possible_systems) {
+            if (systems.ShouldLoadSystem(type, gun_script.aspect)) {
+                loaded_aspects = loaded_aspects | type.GetCustomAttribute<InclusiveAspectsAttribute>().inclusive_aspects;
+            }
+        }
+        return loaded_aspects;
+    }
+
+    private Type[] GetRequiredComponents() {
+        List<Type> types = new List<Type>();
+        foreach (Type type in possible_components) {
+            GunAspect component_aspect = type.GetCustomAttribute<GunDataAttribute>().gun_aspect;
+            if(loaded_aspects.HasFlag(component_aspect)) {
+                types.Add(type);
+            }
+        }
+
+        return types.ToArray();
+    }
+
+    private void UpdateComponents() {
+        foreach(Type possible_component in possible_components) {
+            bool should_have = required_components.Contains(possible_component);
+            bool has_component = gun_script.GetComponent(possible_component) != null;
+
+            if(should_have == has_component)
+                continue; // Component is fine, skip to next
+
+            // Component is NOT fine, see what it should have been
+            if(should_have) {
+                AddGunComponent(possible_component);
+            } else if (autodelete_components) {
+                RemoveGunComponent(possible_component);
+            }
+        }
+    }
+
+    private void RemoveGunComponent(Type gun_component) {
+        Debug.Log($"REMOVING {gun_component}");
+
+        GameObject.DestroyImmediate(gun_script.gameObject.GetComponent(gun_component), true);
+        EditorUtility.SetDirty(gun_script);
+    }
+
+    private void AddGunComponent(Type gun_component) {
+        Debug.Log($"ADDING {gun_component}");
+
+        Component component = gun_script.gameObject.AddComponent(gun_component);
+        component.hideFlags = HideFlags.HideInInspector;
+        EditorUtility.SetDirty(gun_script);
+    }
+
+    public GunComponent GetComponentFromAspect(GunAspect aspect) {
+        foreach (Type type in possible_components) {
+            GunDataAttribute gun_data = type.GetCustomAttribute<GunDataAttribute>();
+            if(gun_data != null && gun_data.gun_aspect.HasFlag(aspect)) {
+                return (GunComponent) gun_script.GetComponent(type);
+            }
+        }
+        return null;
+    }
+
+    private static Dictionary<string, GunAspect> GatherGunAspectGroups() {
+        Dictionary<string, GunAspect> output = new Dictionary<string, GunAspect> {{"None", new GunAspect()}};
+        Type type = typeof(GunAspect);
+        foreach(GunAspect value in GunAspect.ALL) {
+            string key = value.GetGUIGroup();
+            if(!output.ContainsKey(key)) {
+                output.Add(key, new GunAspect());
+            }
+            output[key] = output[key] | value;
+        }
+        return output;
+    }
+
+    private string GetFieldLabel(string base_label) {
+        return base_label.Replace('_', ' ');
+    }
+
+    private bool ShouldShowComponent(Type component) {
+        foreach (FieldInfo field in component.GetFields()) {
+            if(field.GetCustomAttribute<HideInInspector>() != null) {
+                continue;
+            }
             return true;
-        return predicates[property.name].Invoke(gun_script);
-    }
-
-    private void DrawWarning(string warning) {
-        GUIStyle error_style = new GUIStyle(EditorStyles.label);
-        error_style.normal.textColor = Color.red;
-        error_style.padding.bottom = 5;
-        error_style.padding.left = 10;
-
-        GUILayout.Label(warning, error_style);
-    }
-
-    private void DrawContactOptions() {
-        GUILayout.BeginVertical("Box");
-
-        GUILayout.Label("Can't find what you want?");
-
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-
-        if(GUILayout.Button("Discord"))
-            Application.OpenURL("https://discordapp.com/invite/wCntgVQ");
-
-        if(GUILayout.Button("Github"))
-            Application.OpenURL("https://github.com/David20321/7DFPS/issues");
-
-        GUILayout.EndHorizontal();
-        GUILayout.EndVertical();
-    }
-
-    // Sound specifics
-    private bool IsSoundArray(SerializedProperty property) {
-        return property.isArray && property.arrayElementType == "PPtr<$AudioClip>";
-    }
-
-    private string CapitalizeFirst(string str) {
-        if(str.Length <= 1)
-            return str.ToUpper();
-        return str[0].ToString().ToUpper() + str.Substring(1);
-    }
-
-    private GUIContent SoundPropertyToContentLabel(SerializedProperty property) {
-        string label = "";
-        string[] parts = property.name.Split('_');
-
-        for (int i = 1; i < parts.Length; i++)
-            label += CapitalizeFirst(parts[i]) + " ";
-
-        return new GUIContent(label, property.tooltip);
-    }
-
-    private void DrawSoundOptions() {
-        SerializedProperty property = serializedObject.GetIterator();
-
-        GUILayout.BeginVertical("box");
-
-        // Controlls
-        GUILayout.BeginHorizontal();
-        bool force_state = false;
-        bool expand = false;
-        if(GUILayout.Button("Expand All")) {
-            force_state = true;
-            expand = true;
-        } else if (GUILayout.Button("Shrink All")) {
-            force_state = true;
         }
-        GUILayout.EndHorizontal();
+        return false;
+    }
 
-        // Draw properties
-        if(property.NextVisible(true)) {
-            do {
-                if(!IsSoundArray(property))
-                    continue;
+    // Drawing
+    public void DrawAspectData(GunComponent component) {
+        // Init
+        var obj = new SerializedObject(component); 
+        var prop = obj.GetIterator();
+        prop.Next(true);
 
-                if(force_state)
-                    property.isExpanded = expand;
-                
-                EditorGUILayout.BeginHorizontal();
-                EditorGUILayout.PropertyField(property, SoundPropertyToContentLabel(property), true);
-                if(!property.isExpanded) { // Display arraysize if not expanded
-                    GUILayout.FlexibleSpace();
-                    GUILayout.Label($"({property.arraySize})");
+        // Display properties
+        do {
+            if(prop.displayName == "Script" || prop.displayName == "Object Hide Flags") {
+                continue;
+            }
+
+            if(!IsValid(prop, component)) {
+                Color temp_color = GUI.color;
+                GUI.color = Color.red;
+                EditorGUILayout.PropertyField(prop, new GUIContent(GetFieldLabel(prop.displayName)), true);
+                GUI.color = temp_color;
+            } else {
+                EditorGUILayout.PropertyField(prop, new GUIContent(GetFieldLabel(prop.displayName)), true);
+            }
+        } while (prop.NextVisible(false));
+
+        // Finalize
+        obj.ApplyModifiedProperties();
+    }
+
+    public void DrawAspects() {
+        // Draw Header
+        EditorGUI.BeginChangeCheck();
+        foreach (GunAspect aspect in GunAspect.ALL) {
+            if(aspect.IsEmpty() || !loaded_aspects.HasFlag(aspect))
+                continue;
+
+            GunComponent component = GetComponentFromAspect(aspect);
+            if(!component || !ShouldShowComponent(component.GetType())) {
+                continue;
+            }
+
+            bool show_error = !IsValid(component);
+            if(show_error)
+                BeginError();
+
+            GUILayout.BeginVertical("Box");
+            EditorGUI.indentLevel++;
+
+            // Show Aspect Header
+            bool unfold = EditorGUILayout.Foldout(expanded_aspects.HasFlag(aspect), aspect.GetGUIContent(), true, EditorStyles.label);
+
+            // Display Aspect Data
+            if(unfold) {
+                DrawAspectData(component);
+            }
+            
+            // Update folded Aspects
+            if(unfold != expanded_aspects.HasFlag(aspect)) {
+                if(unfold) {
+                    expanded_aspects = expanded_aspects | aspect;
+                } else {
+                    expanded_aspects = ~(~expanded_aspects | aspect);
                 }
-                EditorGUILayout.EndHorizontal();
-            } while (property.NextVisible(false));
+            }
+
+            // Endgroup
+            EditorGUI.indentLevel--;
+            GUILayout.EndVertical();
+            if(show_error)
+                EndError();
         }
-        GUILayout.EndVertical();
+
+        if(EditorGUI.EndChangeCheck())
+            UpdateValidationCache();
+    }
+
+    private void DrawAspectButtons() {
+        GUIStyle style = new GUIStyle(EditorStyles.miniButton);
+        style.fontSize = 10;
+        style.clipping = TextClipping.Clip;
+        style.margin = new RectOffset();
+
+        foreach(var group in aspect_groups) {
+            GUILayout.BeginHorizontal();
+
+            GunAspect group_aspect = GunAspect.ALL.Where((value) => { return group.Value.HasFlag(value);}).ToArray();
+            for (int i = 0; i < group_aspect.value.Length; i++) {
+                GunAspect current_aspect = group_aspect.value[i];
+                if(i % 2 == 0) {
+                    GUILayout.EndHorizontal();
+                    GUILayout.BeginHorizontal();
+                }
+                
+                // Prepare color
+                Color color = GUI.color;
+                if(loaded_aspects.HasFlag(current_aspect))
+                    GUI.color = ASPECT_LOADED;
+                else if(gun_script.aspect.HasFlag(current_aspect))
+                    GUI.color = ASPECT_SELECTED;
+
+                // Draw Button
+                if(GUILayout.Button(current_aspect.GetGUIContent(), style, GUILayout.MinWidth(20))) {
+                    gun_script.aspect = gun_script.aspect ^ current_aspect;
+                    Update();
+                }
+
+                // Restore color
+                GUI.color = color;
+            }
+            GUILayout.EndHorizontal();
+            GUILayout.Space(10);
+        }
+
+        if(validation_cache_components.ContainsValue(false))
+            EditorGUILayout.HelpBox("One or more Gun Components report an issue!\n\nMake sure every required field is set below!", MessageType.Warning);
+    }
+
+    private Color pre_error_color;
+    private void BeginError() {
+        GUILayout.BeginHorizontal();
+        Color temp_color = GUI.color;
+        GUI.color = Color.red;
+        GUILayout.Box("", GUILayout.MinWidth(1f), GUILayout.MaxWidth(2f), GUILayout.ExpandHeight(true));
+        GUI.color = temp_color;
+    }
+
+    private void EndError() {
+        GUILayout.EndHorizontal();
+    }
+
+    // Validation
+    /// <summary> Reset validation cache for components and fields, and revalidate each individualy </summary>
+    private void UpdateValidationCache() {
+        validation_cache_components.Clear();
+        validation_cache_fields.Clear();
+
+        // Validate every component
+        foreach (GunComponent component in gun_script.GetComponents<GunComponent>()) {
+            bool valid = true;
+
+            // Validate every field
+            foreach (FieldInfo field in component.GetType().GetFields()) {
+                bool valid_field = ValidateField(field, component);
+                if(!valid_field) {
+                    valid = false; // Component is not valid
+                }
+
+                // Store valid status of the checked field
+                validation_cache_fields.Add(field, valid_field);
+            }
+
+            // Store valid status of the checked component
+            validation_cache_components.Add(component.GetType(), valid);
+        }
+    }
+
+    /// <summary> Validate a single component's field and handle Custom Attributes </summary>
+    private bool ValidateField(FieldInfo field, GunComponent component) {
+        bool valid = true;
+        bool is_null = (component == null || field.GetValue(component) == null || field.GetValue(component).Equals(null));
+
+        foreach(object attribute in field.GetCustomAttributes(true)) {
+            if(is_null && attribute is HasTransformPathAttribute path_attribute) // Try to restore a reference if it is missing 
+                RestoreReference(field, component, path_attribute.paths);
+
+            if(attribute is IsNonNull) // This field needs to be set
+                if(is_null)
+                    valid = false;
+        }
+        return valid;
+    }
+
+    /// <summary> Check if a component is cached as valid </summary>
+    private bool IsValid(GunComponent component) {
+        if(!validation_cache_components.ContainsKey(component.GetType()))
+            return false;
+        return validation_cache_components[component.GetType()];
+    }
+
+    /// <summary> Check if a property is cached as valid </summary>
+    private bool IsValid(SerializedProperty property, GunComponent component) {
+        FieldInfo field = component.GetType().GetField(property.name);
+
+        if(!validation_cache_fields.ContainsKey(field))
+            return false;
+        return validation_cache_fields[field];
+    }
+
+    /// <summary> Try to find a transform inside the gun with any of the specified names, and set the field to it. </summary>
+    private void RestoreReference(FieldInfo field, GunComponent component, string[] names) {
+        foreach (string name in names) {
+            Transform transform = gun_script.transform.Find(name, true);
+            if(transform != null) {
+                field.SetValue(component, transform);
+                return;
+            }
+        }
+    }
+
+    /// <summary> Use Reflection to check if all systems have proper attributes defined and Debug.Log everything is used, but not specified </summary>
+    public void ValidateSystems() {
+        // Validate Gun Components, map them to GunAspects for later use
+        Dictionary<ushort, Type> component_map = new Dictionary<ushort, Type>();
+        foreach (Type component_type in typeof(GunComponent).GetAllDerivedTypes()) {
+            GunDataAttribute att = component_type.GetCustomAttribute<GunDataAttribute>();
+            if(att == null) {
+                Debug.LogError($"{component_type} doesn't have a GunDataAttribute assigned. Every GunComponent needs to specify one!");
+                continue;
+            }
+
+            if(component_map.ContainsKey((ushort)att.gun_aspect)) { // TODO might need to override GunAspect operator==
+                Debug.LogError($"{component_type} links to {att.gun_aspect}, but {component_map[(ushort)att.gun_aspect]} has already linked to the same aspect!");
+            } else {
+                component_map.Add((ushort)att.gun_aspect, component_type);
+            }
+        }
+
+        // Go over every system
+        foreach (Type system_type in typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType())) {
+            List<Type> registered = new List<Type>();
+
+            // Gather types the system says it wants to use
+            InclusiveAspectsAttribute inc_att = system_type.GetCustomAttribute<InclusiveAspectsAttribute>();
+            if(inc_att != null)
+                foreach (GunAspect gun_aspect in inc_att.inclusive_aspects.value)
+                    if(component_map.ContainsKey((ushort)gun_aspect))
+                        registered.Add(component_map[(ushort)gun_aspect]);
+
+            // Gather types the system actually uses as fields
+            foreach(FieldInfo field in system_type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                if(field.FieldType.IsSubclassOf(typeof(GunComponent)) && !registered.Contains(field.FieldType))
+                    Debug.LogWarning($"{system_type} uses {field.FieldType} but doesn't include it as inclusive aspect!");
+        }
+
+        Debug.Log("System validation completed!");
     }
 }

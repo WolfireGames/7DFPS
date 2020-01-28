@@ -626,7 +626,7 @@ MonoBehaviour:
   tape_object: {fileID: 100002, guid: de49a158db9dc914b9ccb2b464ff7f3b, type: 3}
   win_sting: {fileID: 8300000, guid: abd9f54655b9a5d43bc2e0df8673945f, type: 3}
   weapons:
-  - {fileID: 100000, guid: 562ac16c573a2e34dbd4bf018cfb7cbc, type: 3}
+  - {fileID: 100000, guid: 3621583329b678a41803c80c0a07cd5e, type: 3}
   - {fileID: 100000, guid: cf054d1155a951442a29a00c8c897c2a, type: 3}
   - {fileID: 100000, guid: a65de81d094f47944a2c3336544b7ca8, type: 3}
   weapon: {fileID: 0}

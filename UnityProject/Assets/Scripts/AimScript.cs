@@ -19,7 +19,7 @@ public class CharacterInput {
 	}
 };
 
-public enum GunTilt {LEFT, CENTER, RIGHT};
+public enum GunTilt {NONE, LEFT, CENTER, RIGHT};
 
 public enum HandMagStage {HOLD, HOLD_TO_INSERT, EMPTY};
 
@@ -274,6 +274,7 @@ public class AimScript:MonoBehaviour{
     Spring inspect_cylinder_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
     Spring add_rounds_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
     Spring eject_rounds_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
+    Spring alternative_stance_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
     float kGunDistance = 0.3f;
 
     GunTilt gun_tilt = GunTilt.CENTER;
@@ -465,7 +466,7 @@ public class AimScript:MonoBehaviour{
     	casing_with_bullet = weapon_holder.bullet_object;
     	character_input = new CharacterInput();
     
-    	if(gun_obj.GetComponent<GunScript>().handed == HandedType.ONE_HANDED && UnityEngine.Random.Range(0f, 1f) < 0.35f) {
+    	if(UnityEngine.Random.Range(0f, 1f) < 0.35f) {
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
     		Destroy(held_flashlight.GetComponent<Rigidbody>());
     		held_flashlight.GetComponent<FlashlightScript>().TurnOn();
@@ -499,7 +500,7 @@ public class AimScript:MonoBehaviour{
     		weapon_slots[i] = new WeaponSlot();
     	}
     	int num_start_bullets = UnityEngine.Random.Range(0,10);
-    	if(GetGunScript().magazineType == MagazineType.MAGAZINE) {
+    	if(magazine_obj != null) {
     		int num_start_mags = UnityEngine.Random.Range(0,3);
     		for(int i=1; i<num_start_mags+1; ++i){
     			weapon_slots[i].type = WeaponSlotType.MAGAZINE;
@@ -691,7 +692,7 @@ public class AimScript:MonoBehaviour{
 		if(gun_instance)
 			gunScript = gun_instance.GetComponent<GunScript>();
 
-    	if(gun_instance && (gunScript.IsMagCurrentlyEjecting() || gunScript.ready_to_remove_mag))
+    	if(gun_instance && (gunScript.IsMagCurrentlyEjecting() || gunScript.IsReadyToRemoveMagazine()))
     		mag_ejecting = true;
     
     	bool insert_mag_with_number_key = false;
@@ -745,7 +746,7 @@ public class AimScript:MonoBehaviour{
     			weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
     			held_flashlight = null;
     			target_weapon_slot = -2;
-    		}  else if (target_weapon_slot != -1 && (held_flashlight == null) && weapon_slots[target_weapon_slot].type == WeaponSlotType.FLASHLIGHT && (!gun_instance || gunScript.handed == HandedType.ONE_HANDED)) {
+    		}  else if (target_weapon_slot != -1 && (held_flashlight == null) && weapon_slots[target_weapon_slot].type == WeaponSlotType.FLASHLIGHT) {// && (!gun_instance || gunScript.handed == HandedType.ONE_HANDED)) {
     			// Take flashlight from inventory
     			held_flashlight = weapon_slots[target_weapon_slot].obj;
     			held_flashlight.GetComponent<FlashlightScript>().TurnOn();
@@ -810,32 +811,49 @@ public class AimScript:MonoBehaviour{
     		gun_script.ReleasePressureFromTrigger();
     	}
     	if(character_input.GetButtonDown("Slide Lock")){
-    		if(gun_script.action_type == ActionType.BOLT)
-    			gun_script.ToggleBolt();
-    		else
-    			gun_script.ReleaseSlideLock();
+    		//if(gun_script.action_type == ActionType.BOLT)
+    		//	gun_script.ToggleBolt();
+    		//else
+    		gun_script.ReleaseSlideLock();
     	}
     	if(character_input.GetButtonUp("Slide Lock")){
     		gun_script.ReleasePressureOnSlideLock();
     	}
-    	if(character_input.GetButton("Slide Lock")){
+
+    	// Pull slide or do press check
+    	if(character_input.GetButton("Pull Back Slide")) {
+    		if(character_input.GetButton("Slide Lock")) {
+    			gun_script.Request(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK);
+    		} else if(character_input.GetButtonUp("Slide Lock")) {
+				gun_script.InputPullSlideBack();
+    		}
+    	}
+
+		if(character_input.GetButtonDown("Pull Back Slide")){
+			if(gun_script.ShouldPushSlideForward()) { // Slide input should push slide forward
+				gun_script.PushSlideForward();
+			} else {
+				gun_script.InputPullSlideBack();
+			}
+		}
+		if(character_input.GetButtonUp("Pull Back Slide")){
+			gun_script.ReleaseSlide();
+		}
+    	if(character_input.GetButton("Slide Lock")) {
     		gun_script.PressureOnSlideLock();
+			if(character_input.GetButtonDown("Slide Lock")) {
+				gun_script.ToggleBoltLock();
+			}
     	}
     	if(character_input.GetButtonDown("Safety")){
     		gun_script.ToggleSafety();			
     	}	
     	if(character_input.GetButtonDown("Auto Mod Toggle")){
     		gun_script.ToggleAutoMod();			
-    	}	
-    	if(character_input.GetButtonDown("Pull Back Slide")){
-    		gun_script.PullBackSlide();
     	}
-    	if(character_input.GetButtonUp("Pull Back Slide")){
-    		gun_script.ReleaseSlide();
-    	}	
     	if(character_input.GetButtonDown("Swing Out Cylinder")){
     		gun_script.SwingOutCylinder();
-    		gun_script.ToggleLiftedStage();
+    		//gun_script.ToggleLiftedStage();
     	}	
     	if(character_input.GetButtonDown("Close Cylinder")){
     		gun_script.CloseCylinder();
@@ -848,20 +866,41 @@ public class AimScript:MonoBehaviour{
     	}
     	if(character_input.GetButtonUp("Hammer")){
     		gun_script.ReleaseHammer();
-    	}		
+    	}
+    	if(character_input.GetButtonDown("Hammer")){
+    		gun_script.InputToggleStance();
+    	}
     	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
     		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
     	}		
     	if(character_input.GetButtonDown("Insert")){
     		if(loose_bullets.Count > 0){
-    			if(GetGunScript().AddRound()){
+    			if(GetGunScript().AddRoundToCylinder()){
     				GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
     				loose_bullets.RemoveAt(loose_bullets.Count-1);
     				loose_bullet_spring.RemoveAt(loose_bullet_spring.Count-1);
     			}
     		}
     	}
-    	if(slide_pose_spring.target_state < 0.1f && reload_pose_spring.target_state < 0.1f){
+    	// Aiming notification
+    	if(!aim_toggle) {
+    		if(character_input.GetButtonDown("Hold To Aim")) {
+    			gun_script.InputStartAim();
+    		} else if(character_input.GetButtonUp("Hold To Aim")) {
+    			gun_script.InputStopAim();
+    		}
+    	}
+		if(character_input.GetButtonDown("Aim Toggle") && !character_input.GetButton("Hold To Aim")) {
+			if(aim_toggle) {
+				gun_script.InputStopAim();
+			} else {
+    			gun_script.InputStartAim();
+			}
+		}
+
+    	if(gun_script.preferred_tilt != GunTilt.NONE) { // Allow guncomponents to choose how the gun should be tilted
+    		gun_tilt = gun_script.preferred_tilt;
+    	} else if(slide_pose_spring.target_state < 0.1f && reload_pose_spring.target_state < 0.1f){
     		gun_tilt = GunTilt.CENTER;
     	} else if(slide_pose_spring.target_state > reload_pose_spring.target_state){
     		gun_tilt = GunTilt.LEFT;
@@ -894,11 +933,8 @@ public class AimScript:MonoBehaviour{
     		}
     	}
     	
-    	if(gun_script.IsLifted()){
-    		gun_tilt = GunTilt.RIGHT;
-    		reload_pose_spring.target_state = .6f;
-    	}
-
+    	alternative_stance_pose_spring.target_state = gun_script.IsInAlternativeStance() ? 1f : 0f;
+    	
     	if(gun_script.IsPressCheck()){
     		slide_pose_spring.target_state = 0.0f;
     		reload_pose_spring.target_state = 0.0f;
@@ -916,22 +952,25 @@ public class AimScript:MonoBehaviour{
     		inspect_cylinder_pose_spring.target_state = 1.0f;
     	}
     	
-    	x_recoil_spring.vel += gun_script.recoil_transfer_x;
-    	y_recoil_spring.vel += gun_script.recoil_transfer_y;
-    	rotation_x += gun_script.rotation_transfer_x;
-    	rotation_y += gun_script.rotation_transfer_y;
-    	gun_script.recoil_transfer_x = 0.0f;
-    	gun_script.recoil_transfer_y = 0.0f;
-    	gun_script.rotation_transfer_x = 0.0f;
-    	gun_script.rotation_transfer_y = 0.0f;
-    	if(gun_script.add_head_recoil){
-    		head_recoil_delay[next_head_recoil_delay] = 0.1f;
-    		next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
-    		gun_script.add_head_recoil = false;
-    	}
+        var recoil_data = gun_script.GetRecoilData();
+        if(recoil_data != null) {
+            x_recoil_spring.vel += recoil_data.recoil_transfer_x;
+            y_recoil_spring.vel += recoil_data.recoil_transfer_y;
+            rotation_x += recoil_data.rotation_transfer_x;
+            rotation_y += recoil_data.rotation_transfer_y;
+            recoil_data.recoil_transfer_x = 0.0f;
+            recoil_data.recoil_transfer_y = 0.0f;
+            recoil_data.rotation_transfer_x = 0.0f;
+            recoil_data.rotation_transfer_y = 0.0f;
+            if(recoil_data.add_head_recoil){
+                head_recoil_delay[next_head_recoil_delay] = 0.1f;
+                next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
+                recoil_data.add_head_recoil = false;
+            }
+        }
     	
-    	if(gun_script.ready_to_remove_mag && (magazine_instance_in_hand == null)){
-    		magazine_instance_in_hand = gun_script.RemoveMag();
+    	if(gun_script.IsReadyToRemoveMagazine() && (magazine_instance_in_hand == null)){
+    		magazine_instance_in_hand = gun_script.GrabMag();
     		mag_stage = HandMagStage.HOLD;
     		hold_pose_spring.state = 0.0f;
     		hold_pose_spring.vel = 0.0f;
@@ -1018,7 +1057,6 @@ public class AimScript:MonoBehaviour{
     			}
     		}
     	}
-
     	if(character_input.GetButtonDown("Aim Toggle")){
     		aim_toggle = !aim_toggle;
     	}
@@ -1386,7 +1424,8 @@ public class AimScript:MonoBehaviour{
     	ApplyPose("pose_press_check", press_check_pose_spring.state);
     	ApplyPose("pose_inspect_cylinder", inspect_cylinder_pose_spring.state);
     	ApplyPose("pose_add_rounds", add_rounds_pose_spring.state);
-    	ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state); 
+    	ApplyPose("pose_eject_rounds", eject_rounds_pose_spring.state);
+    	ApplyPose("pose_alternative_stance", alternative_stance_pose_spring.state);
     
     	gun_instance.transform.RotateAround(
     		gun_instance.transform.Find("point_recoil_rotate").position,
@@ -1537,7 +1576,7 @@ public class AimScript:MonoBehaviour{
     
     public void UpdateLooseBulletDisplay() {
     	bool revolver_open = ((gun_instance != null) && gun_instance.GetComponent<GunScript>().IsCylinderOpen());
-    	var isLifted = ((gun_instance != null) && gun_instance.GetComponent<GunScript>().IsLifted());
+    	var isLifted = false; //(gun_instance != null) && gun_instance.GetComponent<GunScript>().IsLifted();
     	if((mag_stage == HandMagStage.HOLD && (gun_instance == null)) || picked_up_bullet_delay > 0.0f || revolver_open || isLifted){
     		show_bullet_spring.target_state = 1.0f;
     		picked_up_bullet_delay = Mathf.Max(0.0f, picked_up_bullet_delay - Time.deltaTime);
@@ -1577,6 +1616,7 @@ public class AimScript:MonoBehaviour{
     	inspect_cylinder_pose_spring.Update();
     	add_rounds_pose_spring.Update();
     	eject_rounds_pose_spring.Update();
+    	alternative_stance_pose_spring.Update();
     	x_recoil_spring.Update();
     	y_recoil_spring.Update();
     	head_recoil_spring_x.Update();
@@ -1634,8 +1674,9 @@ public class AimScript:MonoBehaviour{
     	UpdateAimSpring();
     	UpdateCameraRotationControls();
     	UpdateCameraAndPlayerTransformation();	
-    	    	if(gun_instance != null){
+    	if(gun_instance != null){
     		UpdateGunTransformation();
+			/*
 			if(held_flashlight != null) {
 				if(gun_instance.GetComponent<GunScript>().handed == HandedType.TWO_HANDED){
 					for(var i=0; i<weapon_slots.Length; i++) {
@@ -1654,6 +1695,7 @@ public class AimScript:MonoBehaviour{
 					}
 				}
 			}
+			*/
     	}
     	if(held_flashlight != null){
     		UpdateFlashlightTransformation();
@@ -1813,7 +1855,13 @@ public class AimScript:MonoBehaviour{
     				if(gun_script.HasHammer()){
     					display_text.Add(new DisplayLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer()?true:false));
     				}
-    				if(gun_script.magazineType == MagazineType.CYLINDER){
+    				if(GetGunScript().HasGunComponent(GunAspect.LOCKABLE_BOLT)){
+    					display_text.Add(new DisplayLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt()));
+    				}
+    				if(GetGunScript().HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
+    					display_text.Add(new DisplayLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance()));
+    				}
+    				if(GetGunScript().HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
     						display_text.Add(new DisplayLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0)?true:false));
     					} else {
@@ -1822,8 +1870,10 @@ public class AimScript:MonoBehaviour{
     						display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
     					}
     					display_text.Add(new DisplayLine("Spin cylinder: [ mousewheel ]", false));
+    				} else if(GetGunScript().HasGunComponent(GunAspect.MANUAL_LOADING)) {
+    					display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
     				}
-    				if(gun_script.magazineType == MagazineType.MAGAZINE) {
+    				if(GetGunScript().HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
     						display_text.Add(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));
@@ -1836,9 +1886,9 @@ public class AimScript:MonoBehaviour{
     						}
     					}
     				}
-    				if(gun_script.magazineType == MagazineType.INTERNAL) {
-    					display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
-    				}
+    				//if(gun_script.magazineType == MagazineType.INTERNAL) {
+    				//	display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    				//}
     			} else {
     				if(CanLoadBulletsInMag()){
     					display_text.Add(new DisplayLine("Insert bullet in magazine: tap [ z ]", true));

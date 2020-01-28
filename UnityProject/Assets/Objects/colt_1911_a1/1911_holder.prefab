@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   display_name: Colt M1911 A1
-  gun_object: {fileID: 100000, guid: 9eee11bbf4fc92344a11b4d0f9c48ed4, type: 3}
-  mag_object: {fileID: 100026, guid: 3f0e1f2ce81101848a2fc290ce45e444, type: 3}
-  bullet_object: {fileID: 100002, guid: eaff02a64c89c3343a5c08c3c9778ee3, type: 3}
-  casing_object: {fileID: 100000, guid: fcde468279562f94a939ee5ba967be6b, type: 3}
+  gun_object: {fileID: 100000, guid: bb20b4f15c2b6754fbc584c7c5d418db, type: 3}
+  mag_object: {fileID: 100026, guid: 33868e05f650da44b8c5499660805c83, type: 3}
+  bullet_object: {fileID: 100002, guid: 8e5f3108e4d99fc4d826896d2e55b754, type: 3}
+  casing_object: {fileID: 100000, guid: 0304b1c305eada246b604b1aea6138bc, type: 3}
