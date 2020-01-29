@@ -1750,7 +1750,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void OnGUI() {
-    	if(main_client_control){
+    	if(main_client_control && Event.current.type == EventType.Repaint){
     		List<DisplayLine> display_text = new List<DisplayLine>();
     		GunScript gun_script = null;
     		if(gun_instance != null){
