@@ -8,6 +8,7 @@ public class optionsmenuscript:MonoBehaviour{
     public GameObject menu;
     public GameObject menuOptions;
     public GameObject optionsContent;
+    public Camera uiCamera;
 
     private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
@@ -53,6 +54,13 @@ public class optionsmenuscript:MonoBehaviour{
 
         if(Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
+        }
+    }
+
+    public void OnGUI() {
+        GUI.depth = -1;
+        if(show_menu && Event.current.type == EventType.Repaint) {
+            uiCamera.Render();
         }
     }
 
