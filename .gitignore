@@ -42,3 +42,1200 @@ ehthumbs.db
 /UnityProject/Assets/Modding.meta
 
 # Temp folder
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VectorProjection.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VectorProjection.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector4Property.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector4Property.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector4.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector4.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector3.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector3.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector2.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector2.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector1.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Vector1.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tex2dAsset.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tex2dAsset.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tex2d.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tex2d.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tau.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tau.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tangent.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tangent.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tan.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Tan.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SwitchProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SwitchProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Subtract.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Subtract.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Step.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Step.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RemapRangeAdvanced.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RemapRange.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RemapRange.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Relay.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Relay.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Reflect.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Reflect.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Reciprocal.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Reciprocal.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ProjectionParameters.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ProjectionParameters.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Power.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ObjectScale.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ObjectPosition.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ObjectPosition.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Normalize.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Normalize.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_NormalVector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_NormalVector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_NormalBlend.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_NormalBlend.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Noise.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Noise.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Node_Constant.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Node_Constant.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Negate.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Negate.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_MultiplyMatrix.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Blend.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Bitangent.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Bitangent.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcTan2.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcTan2.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcTan.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcTan.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcSin.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcSin.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcCos.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ArcCos.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Append.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Append.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_AmbientLight.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_AmbientLight.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Add.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Add.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Abs.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Abs.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/_NewSystem/DependencyTree.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/_NewSystem/DependencyTree.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/_NewSystem.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/SF_Evaluator.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/SF_Evaluator.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/Pass_FwdAdd.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator/Pass_FwdAdd.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Evaluator.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Enums/SF_VarTypeEnums.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Enums/SF_VarTypeEnums.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Enums.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SF_NodeConnectionGroup.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SF_NodeConnectionGroup.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_MatrixMultiply.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_MatrixMultiply.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_ComponentMask.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_ComponentMask.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_ChannelBlend.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_ChannelBlend.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_Arithmetic.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_Arithmetic.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_Append.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups/SFNCG_Append.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ConnectionGroups.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_StatusBox.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_StatusBox.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Settings.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Settings.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_SelectionManager.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_SelectionManager.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PreviewWindow.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PreviewWindow.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PreviewSettings.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PreviewSettings.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PassSettings.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_PassSettings.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Parser.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Parser.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeTreeStatus.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeTreeStatus.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeStatus.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeStatus.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodePreview.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodePreview.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeConnector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeConnector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeConnectionLine.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_NodeConnectionLine.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_InstructionPass.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_InstructionPass.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_FeatureChecker.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_FeatureChecker.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_ErrorEntry.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_ErrorEntry.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeView.cs.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Screen.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_PinLight.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_PinLight.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Overlay.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Overlay.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Multiply.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Multiply.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearLight.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearLight.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearDodge.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearDodge.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearBurn.shader.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ValueProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ValueProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_UVTile.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_UVTile.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Trunc.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Trunc.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Transpose.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Transpose.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Transform.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Transform.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ToggleProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ToggleProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Time.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Time.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_TexCoord.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_TexCoord.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Power.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Posterize.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Posterize.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_PixelSize.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_PixelSize.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Pi.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Pi.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Phi.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Phi.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Parallax.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Parallax.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Panner.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Panner.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_OneMinus.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_OneMinus.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ObjectScale.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_HsvToRgb.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_HsvToRgb.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_HalfVector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_HalfVector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Get.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Get.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Fresnel.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Fresnel.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FragmentPosition.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FragmentPosition.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Frac.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Frac.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FogColor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FogColor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Fmod.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Fmod.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Floor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Floor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Final.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Final.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FaceSign.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_FaceSign.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Exp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Exp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_E.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_E.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Dot.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Dot.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Divide.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Divide.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Distance.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Distance.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Desaturate.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Desaturate.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DepthBlend.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DepthBlend.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Depth.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Depth.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDY.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDY.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDXY.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDXY.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDX.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_DDX.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cubemap.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cubemap.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cross.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cross.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cos.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Cos.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantLerp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantLerp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantInverseLerp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantInverseLerp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantClamp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ConstantClamp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ComponentMask.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ComponentMask.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_CommentBox.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_CommentBox.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Color.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Color.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Code.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Code.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Clamp01.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Clamp01.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Clamp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Clamp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ChannelBlend.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ChannelBlend.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Ceil.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Ceil.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_BlendOver.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_BlendOver.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Blend.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_MultiplyMatrix.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Multiply.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Multiply.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Min.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Min.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Max.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Max.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Matrix4x4Property.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Matrix4x4Property.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Matrix4x4.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Matrix4x4.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Log.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Log.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightVector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightVector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightPosition.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightPosition.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightColor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightColor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightAttenuation.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_LightAttenuation.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Lerp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Lerp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Length.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Length.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_InverseLerp.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_InverseLerp.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_If.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_If.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Hue.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Hue.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_StaticBranch.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_StaticBranch.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sqrt.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sqrt.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Smoothstep.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Smoothstep.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Slider.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Slider.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sin.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sin.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sign.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Sign.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Set.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Set.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ScreenPos.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ScreenPos.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ScreenParameters.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ScreenParameters.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SceneDepth.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SceneDepth.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SceneColor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_SceneColor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Round.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Round.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Rotator.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Rotator.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Root2.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_Root2.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RgbToHsv.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RgbToHsv.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_RemapRangeAdvanced.cs.meta
+MilkorMGLMK1s.mlt
+HighriseLevelChunkTest.mlt
+HeizerDefensePar-1.mlt
+HaloGun.mlt
+HKUSPSource.mlt
+DC15Blaster.mlt
+ChiappaNew.unitypackage
+ChiappaDoubleEagleMayaSource.mlt
+ChiappaDoubleEagle.unitypackage
+ChauChatSource.mlt
+AlyxGun.mlt
+.mayaSwatches/SW500Source.mlt.swatches
+.mayaSwatches/Roth-Steyr M1907.mlt.swatches
+.mayaSwatches/MilkorMGLMK1s.mlt.swatches
+.mayaSwatches/HighriseLevelChunkTest.mlt.swatches
+.mayaSwatches/HeizerDefensePar-1.mlt.swatches
+.mayaSwatches/HaloGun.mlt.swatches
+.mayaSwatches/HKUSPSource.mlt.swatches
+.mayaSwatches/DC15Blaster.mlt.swatches
+.mayaSwatches/ChiappaDoubleEagleMayaSource.mlt.swatches
+.mayaSwatches/ChauChatSource.mlt.swatches
+.mayaSwatches/AlyxGun.mlt.swatches
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_LinearBurn.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Lighten.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Lighten.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_HardMix.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_HardMix.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_HardLight.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_HardLight.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Exclusion.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Exclusion.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Divide.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Divide.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Difference.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Difference.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Darken.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Darken.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_ColorDodge.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_ColorDodge.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_ColorBurn.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_ColorBurn.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Bitangent/SFN_Bitangent.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Bitangent/SFN_Bitangent.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Bitangent.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_ZTOW.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_ZTOW.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_ZTO.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_ZTO.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_NPTP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_NPTP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_NOTO.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2/SFN_ArcTan2_NOTO.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan2.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/ExtractChannel.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/ExtractChannel.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SerializableDictionary.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SerializableDictionary.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_ZoomArea.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_ZoomArea.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Web.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Web.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Tools.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Tools.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Styles.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Styles.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Resources.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Resources.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_MinMax.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_MinMax.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Link.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Link.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_GUI.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_GUI.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Extensions.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Extensions.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_DraggableSeparator.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_DraggableSeparator.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Debug.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Debug.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_ColorPicker.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_ColorPicker.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Blit.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/SF_Blit.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/GUILines.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility/GUILines.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Utility.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SF_ShaderProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SF_ShaderProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Vector4Property.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Vector4Property.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_ValueProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_ValueProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_ToggleProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_ToggleProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Tex2d.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Tex2d.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_SwitchProperty.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_SwitchProperty.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Slider.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Slider.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Matrix4x4Property.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Matrix4x4Property.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Cubemap.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Cubemap.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Color.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Color.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Branch.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties/SFP_Branch.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_ShaderProperties.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node_Resizeable.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node_Resizeable.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node_Arithmetic.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node_Arithmetic.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SF_Node.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewVector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewVector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewReflectionVector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewReflectionVector.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewPosition.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_ViewPosition.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VertexColor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VertexColor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VectorRejection.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/_Nodes/SFN_VectorRejection.cs
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan/SFN_ArcTan.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan/SFN_ArcTan.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcTan.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcSin/SFN_ArcSin.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcSin/SFN_ArcSin.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcSin.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcCos/SFN_ArcCos.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcCos/SFN_ArcCos.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ArcCos.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Append/SFN_Append.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Append/SFN_Append.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Append.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_AmbientLight/SFN_AmbientLight.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_AmbientLight/SFN_AmbientLight.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_AmbientLight.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_5.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_5.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_3.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_3.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add/SFN_Add_2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Add.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Abs/SFN_Abs.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Abs/SFN_Abs.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Abs.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/ReadPackedData.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/ReadPackedData.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/FillColor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/Common/FillColor.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorProjection/SFN_VectorProjection.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorProjection/SFN_VectorProjection.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorProjection.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_UVTile/SFN_UVTile.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_UVTile/SFN_UVTile.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_UVTile.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Trunc/SFN_Trunc.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Trunc/SFN_Trunc.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Trunc.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transpose/SFN_Transpose.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transpose/SFN_Transpose.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transpose.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transform/SFN_Transform.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transform/SFN_Transform.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Transform.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Time/SFN_Time.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Panner.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_OneMinus/SFN_OneMinus.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_OneMinus/SFN_OneMinus.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_OneMinus.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectScale/SFN_ObjectScale_Reciprocal.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectScale/SFN_ObjectScale_Reciprocal.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectScale/SFN_ObjectScale_Default.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectScale/SFN_ObjectScale_Default.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectScale.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectPosition/SFN_ObjectPosition.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectPosition/SFN_ObjectPosition.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ObjectPosition.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Distance/SFN_Distance.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Distance/SFN_Distance.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Distance.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Desaturate/SFN_Desaturate_REQONLY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Desaturate/SFN_Desaturate_REQONLY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Desaturate/SFN_Desaturate_DES.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Desaturate/SFN_Desaturate_DES.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Desaturate.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DepthBlend/SFN_DepthBlend.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DepthBlend/SFN_DepthBlend.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DepthBlend.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Depth/SFN_Depth.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Depth/SFN_Depth.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Depth.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDY/SFN_DDY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDY/SFN_DDY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDY.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDXY/SFN_DDXY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDXY/SFN_DDXY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDXY.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDX/SFN_DDX.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDX/SFN_DDX.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_DDX.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cubemap/SFN_Cubemap.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cubemap/SFN_Cubemap.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cubemap.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cross/SFN_Cross.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cross/SFN_Cross.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cross.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cos/SFN_Cos.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cos/SFN_Cos.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Cos.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantLerp/SFN_ConstantLerp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantLerp/SFN_ConstantLerp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantLerp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantInverseLerp/SFN_ConstantInverseLerp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantInverseLerp/SFN_ConstantInverseLerp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantInverseLerp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantClamp/SFN_ConstantClamp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantClamp/SFN_ConstantClamp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ConstantClamp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC3.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC3.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC1.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask/SFN_ComponentMask_CC1.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ComponentMask.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Code/SFN_Code.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Code/SFN_Code.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Code.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp01/SFN_Clamp01.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp01/SFN_Clamp01.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp01.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp/SFN_Clamp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp/SFN_Clamp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Clamp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ChannelBlend/SFN_ChannelBlend.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ChannelBlend/SFN_ChannelBlend.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ChannelBlend.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Ceil/SFN_Ceil.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Ceil/SFN_Ceil.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Ceil.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_BlendOver/SFN_BlendOver_Simple.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_BlendOver/SFN_BlendOver_Simple.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_BlendOver/SFN_BlendOver_GammaCorr.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_BlendOver/SFN_BlendOver_GammaCorr.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_BlendOver.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_VividLight.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_VividLight.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Subtract.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Subtract.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Blend/SFN_Blend_Screen.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Time/SFN_Time.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Time.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_TexCoord/SFN_TexCoord.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_TexCoord/SFN_TexCoord.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_TexCoord.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2dAsset/SFN_Tex2dAsset.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2dAsset/SFN_Tex2dAsset.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2dAsset.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_UV_MIP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_UV_MIP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_UV.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_UV.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_NoInputs.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_NoInputs.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_MIP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d/SFN_Tex2d_MIP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightPosition.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightColor/SFN_LightColor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightColor/SFN_LightColor.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightColor.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightAttenuation/SFN_LightAttenuation.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightAttenuation/SFN_LightAttenuation.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightAttenuation.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Lerp/SFN_Lerp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Lerp/SFN_Lerp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Lerp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Length/SFN_Length.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Length/SFN_Length.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Length.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_InverseLerp/SFN_InverseLerp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_InverseLerp/SFN_InverseLerp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_InverseLerp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_If/SFN_If.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_If/SFN_If.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_If.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Hue/SFN_Hue.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Hue/SFN_Hue.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Hue.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HsvToRgb/SFN_HsvToRgb.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HsvToRgb/SFN_HsvToRgb.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HsvToRgb.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HalfVector/SFN_HalfVector.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HalfVector/SFN_HalfVector.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_HalfVector.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Get/SFN_Get.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Get/SFN_Get.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Get.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_REQONLY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_REQONLY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_NRM_EXP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_NRM_EXP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_NRM.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_NRM.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_EXP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel/SFN_Fresnel_EXP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fresnel.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FragmentPosition/SFN_FragmentPosition.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FragmentPosition/SFN_FragmentPosition.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FragmentPosition.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Frac/SFN_Frac.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Frac/SFN_Frac.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Frac.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FogColor/SFN_FogColor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FogColor/SFN_FogColor.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FogColor.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fmod/SFN_Fmod.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fmod/SFN_Fmod.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Fmod.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Floor/SFN_Floor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Floor/SFN_Floor.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Floor.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FaceSign/SFN_FaceSign.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FaceSign/SFN_FaceSign.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_FaceSign.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Exp/SFN_Exp.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Exp/SFN_Exp.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Exp.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_STD.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_STD.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_POS.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_POS.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_NRM.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_NRM.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_NEG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_NEG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_ABS.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot/SFN_Dot_ABS.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Dot.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Divide/SFN_Divide.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Divide/SFN_Divide.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Divide.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VertexColor.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorRejection/SFN_VectorRejection.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorRejection/SFN_VectorRejection.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VectorRejection.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sqrt/SFN_Sqrt.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sqrt/SFN_Sqrt.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sqrt.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Smoothstep/SFN_Smoothstep.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Smoothstep/SFN_Smoothstep.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Smoothstep.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sin/SFN_Sin.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sin/SFN_Sin.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sin.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sign/SFN_Sign.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sign/SFN_Sign.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Sign.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Set/SFN_Set.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Set/SFN_Set.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Set.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenPos/SFN_ScreenPos.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneDepth.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneColor/SFN_SceneColor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneColor/SFN_SceneColor.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneColor.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Round/SFN_Round.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Round/SFN_Round.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Round.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_SPD_ANG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_SPD_ANG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_SPD.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_SPD.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_REQONLY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_REQONLY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_SPD_ANG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_SPD_ANG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_SPD.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_SPD.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_ANG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV_ANG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_PIV.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_ANG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator/SFN_Rotator_ANG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Rotator.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RgbToHsv/SFN_RgbToHsv.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RgbToHsv/SFN_RgbToHsv.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RgbToHsv.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRangeAdvanced/SFN_RemapRangeAdvanced.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRangeAdvanced/SFN_RemapRangeAdvanced.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRangeAdvanced.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRange/SFN_RemapRange.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRange/SFN_RemapRange.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_RemapRange.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Relay/SFN_Relay.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Relay/SFN_Relay.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Relay.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reflect/SFN_Reflect.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reflect/SFN_Reflect.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reflect.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reciprocal/SFN_Reciprocal.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reciprocal/SFN_Reciprocal.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Reciprocal.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ProjectionParameters/SFN_ProjectionParameters.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ProjectionParameters/SFN_ProjectionParameters.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ProjectionParameters.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Power/SFN_Power.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Power/SFN_Power.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Power.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Posterize/SFN_Posterize.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Posterize/SFN_Posterize.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Posterize.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_PixelSize/SFN_PixelSize.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_PixelSize/SFN_PixelSize.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_PixelSize.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_REF.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_REF.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_DEP_REF.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_DEP_REF.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_DEP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV_DEP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_UV.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_REQONLY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_REQONLY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_REF.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_REF.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_DEP_REF.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_DEP_REF.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_DEP.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax/SFN_Parallax_DEP.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Parallax.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Panner/SFN_Panner_REQONLY.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Panner/SFN_Panner_REQONLY.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Panner/SFN_Panner_DIST.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Panner/SFN_Panner_DIST.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenPos/SFN_ScreenPos.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenPos.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenParameters/SFN_ScreenParameters.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenParameters/SFN_ScreenParameters.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ScreenParameters.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneDepth/SFN_SceneDepth.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SceneDepth/SFN_SceneDepth.shader
+UnityProject/Assets/Mods/LevelTileGuide.fbx.meta
+UnityProject/Assets/Mods/LevelTileGuide.fbx
+UnityProject/Assets/Mods/CustomLevelTiles.meta
+UnityProject/Assets/Mods/CustomGuns.meta
+UnityProject/Assets/Models/map_occlusion.png.meta
+UnityProject/Assets/Models/map_occlusion.png
+UnityProject/Assets/Materials/levelmat.mat.meta
+UnityProject/Assets/Materials/levelmat.mat
+UnityProject/Assets/Materials/StandardVertexColored.shader.meta
+UnityProject/Assets/Materials/StandardVertexColored.shader
+UnityProject/Assets/Effects/muzzleflasheffect_heizer.prefab.meta
+UnityProject/Assets/Effects/muzzleflasheffect_heizer.prefab
+SW500Source.mlt
+SW 500.fbx
+RothSteyrM1907.unitypackage
+Roth-Steyr M1907.mlt
+UnityProject/Assets/ShaderForge/Example Assets.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetUnlit.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetUnlit.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetSprite.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetSprite.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetSky.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetSky.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetPostEffect.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetPostEffect.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleMultiplicative.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleMultiplicative.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleAlphaBlended.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleAlphaBlended.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleAdditive.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetParticleAdditive.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetPBR.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fragmentposition.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fogcolor_2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fogcolor_2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fogcolor.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fogcolor.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_final.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_final.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_facesign_2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_facesign_2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_facesign.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_facesign.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_e.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_e.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_depth.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_depth.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_bitangent.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_bitangent.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_ambientlight.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_ambientlight.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_viewvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_viewvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_viewreflectionvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_viewreflectionvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_tangent.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_tangent.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_normalvector_2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_normalvector_2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_normalvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_normalvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightcolor.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightcolor.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightattenuation.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_lightattenuation.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_halfvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_halfvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_fresnel.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_fresnel.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_fragmentposition.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_fragmentposition.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_depth.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_depth.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_bitangent.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/sfn_bitangent.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/node_3d_data_mask.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data/node_3d_data_mask.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/Data.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono.ttf.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono.ttf
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Italic.ttf.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Italic.ttf
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Bold.ttf.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Bold.ttf
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Bold-Italic.ttf.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts/VeraMono-Bold-Italic.ttf
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Fonts.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Inspectors/ShaderForgeMaterialInspector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Inspectors/ShaderForgeMaterialInspector.cs
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Inspectors/ShaderForgeInspector.cs.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Inspectors/ShaderForgeInspector.cs
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Inspectors.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewVector/SFN_ViewVector.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewVector/SFN_ViewVector.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewVector.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewReflectionVector/SFN_ViewReflectionVector.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewReflectionVector/SFN_ViewReflectionVector.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewReflectionVector.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewPosition/SFN_ViewPosition.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewPosition/SFN_ViewPosition.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_ViewPosition.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VertexColor/SFN_VertexColor.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_VertexColor/SFN_VertexColor.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/CustomLighting.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders.meta
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/SoftNormalsToVertexColor.cs.meta
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/SoftNormalsToVertexColor.cs
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/EnableCameraDepthInForward.cs.meta
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/EnableCameraDepthInForward.cs
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/EditorLabel.cs.meta
+UnityProject/Assets/ShaderForge/Example Assets/Scripts/EditorLabel.cs
+UnityProject/Assets/ShaderForge/Example Assets/Scripts.meta
+UnityProject/Assets/ShaderForge/Example Assets/Meshes/sf_example_meshes.fbx.meta
+UnityProject/Assets/ShaderForge/Example Assets/Meshes/sf_example_meshes.fbx
+UnityProject/Assets/ShaderForge/Example Assets/Meshes.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_tex.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_tex.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_tex_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_tex_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_tex.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_tex.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_frag.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon_normal.tga.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon_normal.tga
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/icon.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/handle_drag.tga.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/handle_drag.tga
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/chk_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/chk_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/chk.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/chk.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewreflectionvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewreflectionvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewposition.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_viewposition.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_vertexcolor.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_vertexcolor.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_time.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_time.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_tau.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_tau.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_tangent.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_tangent.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos_3.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos_3.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos_2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos_2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenpos.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenparameters.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_screenparameters.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_root2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_root2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_projectionparameters.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_projectionparameters.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_pi.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_pi.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_phi.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_phi.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_objectscale.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_objectscale.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_objectposition.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_objectposition.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_normalvector_2.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_normalvector_2.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_normalvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_normalvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightposition.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightposition.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightcolor.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightcolor.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightattenuation.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_lightattenuation.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_halfvector.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_halfvector.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/Nodes/sfn_fragmentposition.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tex2d.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tangent/SFN_Tangent.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tangent/SFN_Tangent.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tangent.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tan/SFN_Tan.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tan/SFN_Tan.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Tan.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SwitchProperty/SFN_SwitchProperty.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SwitchProperty/SFN_SwitchProperty.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_SwitchProperty.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Subtract/SFN_Subtract.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Subtract/SFN_Subtract.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Subtract.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Step/SFN_Step.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Step/SFN_Step.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Step.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Normalize/SFN_Normalize.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Normalize/SFN_Normalize.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Normalize.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalVector/SFN_NormalVector.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalVector/SFN_NormalVector.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalVector.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalBlend/SFN_NormalBlend.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalBlend/SFN_NormalBlend.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_NormalBlend.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Noise/SFN_Noise.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Noise/SFN_Noise.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Noise.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Negate/SFN_Negate.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Negate/SFN_Negate.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Negate.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_MultiplyMatrix/SFN_MultiplyMatrix.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_MultiplyMatrix/SFN_MultiplyMatrix.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_MultiplyMatrix.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_5.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_5.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_3.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_3.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply/SFN_Multiply_2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Multiply.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_5.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_5.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_3.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_3.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min/SFN_Min_2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Min.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_5.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_5.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_3.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_3.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max/SFN_Max_2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Max.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4Property/SFN_Matrix4x4Property.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4Property/SFN_Matrix4x4Property.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4Property.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4/SFN_Matrix4x4.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4/SFN_Matrix4x4.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Matrix4x4.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG2.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG2.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG10.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG10.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log/SFN_Log_LOG.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_Log.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightVector/SFN_LightVector.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightVector/SFN_LightVector.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightVector.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightPosition/SFN_LightPosition.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/GPU Rendering/SFN_LightPosition/SFN_LightPosition.shader
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Properties.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Meta.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Meta.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Lighting.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Lighting.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Geometry.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Geometry.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Experimental.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Experimental.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Console.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Console.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Blending.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Blending.cs
+UnityProject/Assets/ShaderForge/Editor/Code.meta
+UnityProject/Assets/ShaderForge/Editor.meta
+UnityProject/Assets/ShaderForge.meta
+halo_m6d_shoot1.wav
+UnityProject/Assets/ShaderForge/Readme.txt.meta
+UnityProject/Assets/ShaderForge/Readme.txt
+UnityProject/Assets/ShaderForge/Example Scene.unity.meta
+UnityProject/Assets/ShaderForge/Example Scene.unity
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_tile_01_n.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_tile_01_n.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_tile_01_d.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_tile_01_d.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_texcoords.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_texcoords.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_rgb_overlap.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_rgb_overlap.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_parallax_test_normals.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_parallax_test_normals.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_parallax_test_ao_height.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_parallax_test_ao_height.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_noise_grain_01.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_noise_grain_01.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_noise_clouds_01.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_noise_clouds_01.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_leaves_01_n.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_leaves_01_n.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_leaves_01_d.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_leaves_01_d.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_ramp_02.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_ramp_02.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_ramp_01.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_ramp_01.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_light_01.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_gradient_light_01.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_conc_floor_01_n.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_conc_floor_01_n.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_conc_floor_01_d.tga.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_conc_floor_01_d.tga
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_alpha_circle_02.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_alpha_circle_02.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_alpha_circle.png.meta
+UnityProject/Assets/ShaderForge/Example Assets/Textures/sf_alpha_circle.png
+UnityProject/Assets/ShaderForge/Example Assets/Textures.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexColorRounding.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexColorRounding.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexColorRounding.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexColorRounding.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation_blue.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation_blue.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/VertexAnimation.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Vegetation.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Vegetation.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Vegetation.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Vegetation.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Tiles.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Tiles.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Tiles.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Tiles.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/TessellationDisplacement.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/TessellationDisplacement.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/TessellationDisplacement.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/TessellationDisplacement.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Refraction.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Refraction.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Refraction.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Refraction.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/PixelRotator.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/PixelRotator.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/PixelRotator.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/PixelRotator.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Parallax.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Parallax.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Parallax.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/Parallax.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/LightWrapping.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/LightWrapping.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/LightWrapping.mat.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/LightWrapping.mat
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/CustomLighting.shader.meta
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/CustomLighting.shader
+UnityProject/Assets/ShaderForge/Example Assets/Shaders/CustomLighting.mat.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeView.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeData.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeData.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeBrowser.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_EditorNodeBrowser.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Editor.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Editor.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Dependencies.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SF_Dependencies.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPS_Category.cs.meta
+UnityProject/Assets/ShaderForge/Editor/Code/SFPS_Category.cs
+UnityProject/Assets/ShaderForge/Editor/Code/SFPSC_Properties.cs.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetPBR.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetCustomLighting.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetCustomLighting.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetBasic.shader.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets/PresetBasic.shader
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Shader Presets.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Meshes/sf_meshes.fbx.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Meshes/sf_meshes.fbx
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Meshes.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/screenshot_icon_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/screenshot_icon_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/screenshot_icon.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/screenshot_icon.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_unlit.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_unlit.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_sprite.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_sprite.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_sky.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_sky.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_posteffect.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_posteffect.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlemultiplicative_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlemultiplicative_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlemultiplicative.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlemultiplicative.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlealphablended_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlealphablended_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlealphablended.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particlealphablended.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particleadditive_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particleadditive_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particleadditive.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_particleadditive.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_litpbr.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_litpbr.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_litbasic.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_litbasic.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_highlight.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_highlight.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_custom.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/preset_custom.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/logo_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/logo_light.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/logo.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/logo.png
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_tex_light.png.meta
+UnityProject/Assets/ShaderForge/Editor/InternalResources/Interface/inst_vert_tex_light.png
