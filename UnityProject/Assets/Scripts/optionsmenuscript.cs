@@ -216,6 +216,6 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void OpenModsFolder() {
-        Application.OpenURL(ModManager.GetModsfolderPath());
+        Application.OpenURL($"\"{ModManager.GetModsfolderPath()}\"");
     }
 }
