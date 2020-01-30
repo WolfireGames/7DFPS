@@ -57,8 +57,8 @@ public class VRInputController : MonoBehaviour
     bool checkedCylinderRenderer;
 
     public float GetSpinSpeed(HandSide hand) {
-        if(!checkedCylinderRenderer && VRInputBridge.instance.aimScript_ref != null && VRInputBridge.instance.aimScript_ref.gun_script.magazineType == MagazineType.CYLINDER) {
-            cylinderRenderer = VRInputBridge.instance.aimScript_ref.gun_instance.transform.Find("yolk_pivot").Find("yolk").Find("cylinder_assembly").Find("cylinder").GetComponent<Renderer>();
+        if(!checkedCylinderRenderer && VRInputBridge.instance.aimScript_ref != null && VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)) {
+            cylinderRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponent<RevolverCylinderComponent>().GetComponent<Renderer>();
             checkedCylinderRenderer = true;
         }
         if (cylinderRenderer != null) {

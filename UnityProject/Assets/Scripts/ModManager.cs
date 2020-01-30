@@ -25,17 +25,17 @@ public class ModManager : MonoBehaviour {
         //Make sure these folders are generated if they don't exist
         Directory.CreateDirectory(GetModsfolderPath());
 
-        if (availableMods == null) { //DEBUG load all mods
+        if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
             foreach (var mod in availableMods)
                 LoadMod(mod);
         }
-
+        
         InsertMods();
     }
 
     public static string GetModsfolderPath() {
-        return Path.Combine(Application.persistentDataPath, "Mods");
+        return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
 
     public void InsertMods() {
@@ -45,12 +45,13 @@ public class ModManager : MonoBehaviour {
             var scriptHolder = Instantiate(mod.mainAsset);
             scriptHolder.transform.parent = transform;
             scriptHolder.name = mod.name;
+
             scriptHolder.AddComponent(mod.GetScript());
         } */
 
         // Insert all gun mods
         var guns = new List<GameObject>(guiSkinHolder.weapons);
-        if (loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
+        if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
             guns.Clear();
 
         foreach (var mod in loadedGunMods)
@@ -59,20 +60,20 @@ public class ModManager : MonoBehaviour {
 
         // Insert all Level Tile mods
         var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-        if (loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
+        if(loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
             tiles.Clear();
 
         foreach (var mod in loadedLevelMods)
-            foreach (Transform child in mod.mainAsset.transform)
+            foreach(Transform child in mod.mainAsset.transform)
                 tiles.Add(child.gameObject);
         levelCreatorScript.level_tiles = tiles.ToArray();
 
         // Insert all Tape mods
-        if (loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
+        if(loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
             guiSkinHolder.sound_tape_content.Clear();
 
         foreach (var mod in loadedTapeMods)
-            foreach (AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+            foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
                 guiSkinHolder.sound_tape_content.Add(tape);
     }
 
@@ -97,7 +98,7 @@ public class ModManager : MonoBehaviour {
     }
 
     public static String GetMainAssetName(ModType modType) {
-        if (!mainAssets.ContainsKey(modType))
+        if(!mainAssets.ContainsKey(modType))
             throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
 
         return mainAssets[modType];
@@ -106,11 +107,10 @@ public class ModManager : MonoBehaviour {
     private void SetModLoaded(Mod mod, bool loadMod) {
         List<Mod> list = GetModList(mod.modType);
 
-        if (loadMod) {
+        if(loadMod) {
             mod.Load();
             list.Add(mod);
-        }
-        else {
+        } else {
             mod.Unload();
             list.Remove(mod);
         }
@@ -118,8 +118,8 @@ public class ModManager : MonoBehaviour {
 
     public static string GetModsFolder(ModType modType) {
         var path = Path.Combine(GetModsfolderPath(), modType.ToString());
-
-        if (!Directory.Exists(path))
+        
+        if(!Directory.Exists(path))
             Directory.CreateDirectory(path);
 
         return path;
@@ -127,7 +127,7 @@ public class ModManager : MonoBehaviour {
 
     public static ModType GetModTypeFromBundle(AssetBundle assetBundle) {
         foreach (ModType modType in mainAssets.Keys)
-            if (assetBundle.Contains(mainAssets[modType]))
+            if(assetBundle.Contains(mainAssets[modType]))
                 return modType;
 
         throw new System.InvalidOperationException($"Unable to find Mod Type for \"{assetBundle.name}\"");
@@ -136,13 +136,12 @@ public class ModManager : MonoBehaviour {
     public static void UpdateMods() {
         var folders = Directory.GetDirectories(GetModsfolderPath(), "modfile_*", SearchOption.AllDirectories);
         availableMods = new List<Mod>();
-
+        
         Debug.Log($"Importing mods..");
-        foreach (var path in folders) {
+        foreach(var path in folders) {
             try {
                 UpdateMod(path);
-            }
-            catch (System.Exception e) {
+            } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
         }
@@ -152,7 +151,7 @@ public class ModManager : MonoBehaviour {
     private static void UpdateMod(string path) {
         var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
         var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
-        foreach (var bundleName in manifest.GetAllAssetBundles()) {
+        foreach(var bundleName in manifest.GetAllAssetBundles()) {
             // Init
             var assetPath = Path.Combine(path, bundleName);
             var modBundle = AssetBundle.LoadFromFile(assetPath);
@@ -185,7 +184,7 @@ public class Mod {
     public bool hasCustomScript = false;
 
     public bool loaded = false;
-
+    
     public string path;
     public AssetBundle assetBundle;
 
@@ -205,7 +204,7 @@ public class Mod {
     }
 
     public void Load() {
-        if (loaded)
+        if(loaded)
             return;
 
         // Loading
@@ -213,7 +212,7 @@ public class Mod {
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
 
-        if (modType == ModType.Gun)
+        if(modType == ModType.Gun)
             SetupGun();
     }
 
@@ -221,16 +220,16 @@ public class Mod {
         WeaponHolder weaponHolder = mainAsset.GetComponent<WeaponHolder>();
 
         // Set the display name to the bundle name if no custom name is provided
-        if (weaponHolder.display_name == "My Gun")
+        if(weaponHolder.display_name == "My Gun")
             weaponHolder.display_name = name;
 
         // Attach script for gun mods
-        if (hasCustomScript)
+        if(hasCustomScript)
             weaponHolder.gun_object.AddComponent(GetScript());
     }
-
+    
     public void Unload() {
-        if (!loaded)
+        if(!loaded)
             return;
 
         loaded = false;

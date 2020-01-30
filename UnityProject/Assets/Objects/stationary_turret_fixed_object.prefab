@@ -823,6 +823,15 @@ MonoBehaviour:
   sound_engine_loop: {fileID: 8300000, guid: 2afe6d9646584d44fa5164a0ba66e058, type: 3}
   sound_damaged_engine_loop: {fileID: 8300000, guid: 2e3e6ad795e4b7143879f9b6c869fd14,
     type: 3}
+  point_pivot: {fileID: 400022}
+  top_rotor: {fileID: 0}
+  bottom_rotor: {fileID: 0}
+  point_spark: {fileID: 0}
+  camera_pivot: {fileID: 0}
+  battery: {fileID: 400024}
+  gun_pivot: {fileID: 400002}
+  point_muzzle_flash: {fileID: 400000}
+  gun_camera: {fileID: 400010}
   electric_spark_obj: {fileID: 100002, guid: 25b4c9337037a8344976cf5a8529c6a0, type: 3}
   muzzle_flash: {fileID: 100008, guid: 1026f63056726a447952427344841144, type: 3}
   bullet_obj: {fileID: 100000, guid: 45aa8aee963396647970bee4b0342c1b, type: 3}

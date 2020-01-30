@@ -20,10 +20,10 @@ public class VRInputBridge : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         aimScript_ref = FindObjectOfType<AimScript>();
 
-        if (aimScript_ref.gun_instance.GetComponent<GunScript>().HasSlide()) {
-            SlideObject = aimScript_ref.gun_instance.transform.Find("slide").GetComponent<Renderer>();
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE)){//gun_instance.GetComponent<GunScript>().HasSlide()) {
+            SlideObject = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().slide.GetComponent<Renderer>();
             if(SlideObject == null) {
-                SlideObject = aimScript_ref.gun_instance.transform.Find("slide").GetComponentInChildren<Renderer>();
+                SlideObject = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().slide.GetComponentInChildren<Renderer>();
             }
         }
 
@@ -77,8 +77,8 @@ public class VRInputBridge : MonoBehaviour
                         if (hand == HandSide.Left) {
                             return VRInputController.instance.GunInteractDown(hand);//Magazine bullet insert
                         }
-                        else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE){//Magazine into gun insert, have to hold the mag under the gun.
-                            Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
+                        else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)){//Magazine into gun insert, have to hold the mag under the gun.
+                            Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
                             if (MagOut && Vector3.Distance(VRInputController.instance.LeftHand.transform.position, magInsertPos) < 0.075f && VRInputController.instance.LeftHand.transform.position.y < magInsertPos.y) {
                                 MagOut = false;
                                 return true;
@@ -92,8 +92,8 @@ public class VRInputBridge : MonoBehaviour
                         if (hand == HandSide.Right) {
                             return VRInputController.instance.GunInteractDown(hand);//Lefthanded version
                         }
-                        else if (aimScript_ref.gun_script.magazineType == MagazineType.MAGAZINE) {
-                            Vector3 magInsertPos = aimScript_ref.gun_instance.transform.Find("point_mag_to_insert").position;
+                        else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
+                            Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
                             if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RightHand.transform.position) < 0.05f) {
                                 MagOut = false;
                                 return true;
@@ -205,6 +205,28 @@ public class VRInputBridge : MonoBehaviour
                 return VRInputController.instance.GunInteract3(hand);
             case "Get":
                 return VRInputController.instance.CollectPress(hand);
+            case "Pull Back Slide":
+                if (SlideObject == null) {
+                    return false;
+                }
+                if (hand == HandSide.Left) {
+                    SlideBounds = SlideObject.bounds;
+                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position) || MagOut) {
+                        return VRInputController.instance.ActionPress(hand);
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
+                    SlideBounds = SlideObject.bounds;
+                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position) || MagOut) {
+                        return VRInputController.instance.ActionPress(hand);
+                    }
+                    else {
+                        return false;
+                    }
+                }
             default:
                 return Input.GetButton(input_str);
         }
