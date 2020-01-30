@@ -31,6 +31,14 @@ public class GunScriptEditor : Editor {
     private static readonly Color ASPECT_LOADED = Color.green;
     private static readonly Color ASPECT_SELECTED = Color.HSVToRGB(.4f, .3f, .9f);
 
+    private static readonly Dictionary<string, GunAspect> gun_presets = new Dictionary<string, GunAspect> {
+        {"Select Preset", GunAspect.ALL},
+        {"M1911 Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.HAMMER_VISUAL, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING, GunAspect.THUMB_SAFETY, GunAspect.GRIP_SAFETY)},
+        {"Glock Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.FIRE_MODE, GunAspect.TRIGGER_COCKING, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING)},
+        {"Revolver Preset", new GunAspect(GunAspect.MANUAL_LOADING, GunAspect.REVOLVER_CYLINDER, GunAspect.EXTRACTOR_ROD, GunAspect.EXTRACTOR_ROD_VISUAL, GunAspect.CYLINDER_VISUAL, GunAspect.YOKE, GunAspect.YOKE_VISUAL, GunAspect.HAMMER, GunAspect.HAMMER_VISUAL, GunAspect.THUMB_COCKING, GunAspect.TRIGGER_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING)},
+    };
+    private static readonly string[] gun_preset_labels = gun_presets.Keys.ToArray();
+
     private void Update() {
         loaded_aspects = LoadedAspects();
         required_components = GetRequiredComponents();
@@ -61,6 +69,11 @@ public class GunScriptEditor : Editor {
 
         EditorGUILayout.LabelField("Gun Aspects", EditorStyles.boldLabel);
         autodelete_components = EditorGUILayout.Toggle("Autodelete components", autodelete_components);
+        int selected_preset = EditorGUILayout.Popup(0, gun_preset_labels);
+        if(selected_preset != 0) {
+            gun_script.aspect = gun_presets.Values.ElementAt(selected_preset);
+            Update();
+        }
 
         if(!Application.isPlaying || force_show_aspecs) {
             DrawAspectButtons();
