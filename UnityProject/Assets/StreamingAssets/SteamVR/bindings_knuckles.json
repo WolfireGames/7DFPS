@@ -225,8 +225,8 @@
    },
    "category" : "steamvr_input",
    "controller_type" : "knuckles",
-   "description" : "",
-   "name" : "My Receiver [Testing] configuration for Index Controller",
+   "description" : "Default Index Controller bindings",
+   "name" : "My Receivr configuration for Index Controller",
    "options" : {},
    "simulated_actions" : []
 }
