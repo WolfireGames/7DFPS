@@ -1400,10 +1400,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound_cylinder_rotate:
-  - {fileID: 8300000, guid: e349087c6a16f9042bc5660af7ca3d6f, type: 3}
   - {fileID: 8300000, guid: 00fd98c994a0de344a3ae700a824e765, type: 3}
   - {fileID: 8300000, guid: 0ce646016a114b64485a4c10371463bd, type: 3}
-  - {fileID: 8300000, guid: a9f48727e35982648a8a7f99eabd4cac, type: 3}
   chamber_parent: {fileID: 400040}
   empty_casing: {fileID: 100000, guid: fda8c4568550ac44d92f5c3fd498cec5, type: 3}
   full_casing: {fileID: 100002, guid: fdd017da75a67b742ad3ecfde494d323, type: 3}
