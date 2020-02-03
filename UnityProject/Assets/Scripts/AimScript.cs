@@ -918,7 +918,7 @@ public class AimScript:MonoBehaviour{
     		gun_tilt = GunTilt.RIGHT;
     	}
     	
-    	if(gun_script.IsSlideLocked()){
+    	if(gun_script.IsSlideLocked() && !gun_script.HasGunComponent(GunAspect.OPEN_BOLT_FIRING)){
     		if(gun_tilt != GunTilt.LEFT){
     			reload_pose_spring.target_state = 0.7f;
     		} else {
