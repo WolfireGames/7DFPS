@@ -523,7 +523,7 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
                 {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
-                {GunSystemRequests.RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
+                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
             };
         }
     }
@@ -827,7 +827,7 @@ namespace GunSystemsV1 {
             if ((tc.pressure_on_trigger != PressureState.NONE) && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
                 tc.trigger_pressed = 1.0f;
                 tc.fired_once_this_pull = true;
-                gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
+                gs.Request(GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK);
             }
 
             // Slide priming
