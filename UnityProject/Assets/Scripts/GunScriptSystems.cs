@@ -574,7 +574,7 @@ namespace GunSystemsV1 {
         }
 
         bool InputPressCheck() {
-            if (slide_c.slide_stage == SlideStage.NOTHING && slide_c.block_slide_pull == false) {
+            if (slide_c.slide_stage == SlideStage.NOTHING && !slide_c.block_slide_pull) {
                 slide_c.slide_stage = SlideStage.PULLBACK;
             }
 
@@ -1293,7 +1293,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
-    public class BoltSlideToggleSystem : GunSystemBase {
+    public class SlideBoltBlockSystem : GunSystemBase {
         LockableBoltComponent bc;
         SlideComponent sc;
 
@@ -1301,7 +1301,7 @@ namespace GunSystemsV1 {
             bc = gs.GetComponent<LockableBoltComponent>();
             sc = gs.GetComponent<SlideComponent>();
 
-            bc.block_toggle_predicates.Add(() => sc.slide_amount > 0f);
+            bc.block_toggle_predicates.Add(() => sc.slide_amount > 0f || sc.slide_stage == SlideStage.PULLBACK);
         }
     }
 
