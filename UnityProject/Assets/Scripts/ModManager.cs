@@ -64,8 +64,8 @@ public class ModManager : MonoBehaviour {
             tiles.Clear();
 
         foreach (var mod in loadedLevelMods)
-            foreach(Transform child in mod.mainAsset.transform)
-                tiles.Add(child.gameObject);
+            foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
+                tiles.Add(tile);
         levelCreatorScript.level_tiles = tiles.ToArray();
 
         // Insert all Tape mods
