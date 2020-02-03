@@ -498,6 +498,10 @@ namespace GunSystemsV1 {
         SlideComponent slide_c;
         bool pressure_on_switch = false;
 
+        bool InputReleaseSlideLock() {
+            return slide_c.has_slide_release_button ? RequestReleaseSlideLock() : false;
+        }
+
         bool RequestReleaseSlideLock() {
             slide_c.slide_lock = false;
             return true;
@@ -523,7 +527,8 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
                 {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
-                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
+                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
+                {GunSystemRequests.RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
             };
         }
     }
@@ -566,6 +571,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE)]
+    [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class PressCheckSystem : GunSystemBase {
         SlideComponent slide_c;
 
@@ -827,7 +833,7 @@ namespace GunSystemsV1 {
             if ((tc.pressure_on_trigger != PressureState.NONE) && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
                 tc.trigger_pressed = 1.0f;
                 tc.fired_once_this_pull = true;
-                gs.Request(GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK);
+                gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
             // Slide priming
