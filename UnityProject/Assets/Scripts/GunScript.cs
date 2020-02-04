@@ -39,6 +39,7 @@ public enum GunSystemRequests {
     APPLY_PRESSURE_ON_SLIDE_LOCK,
     RELEASE_PRESSURE_ON_SLIDE_LOCK,
     TOGGLE_SAFETY,
+    INPUT_RELEASE_SLIDE_LOCK,
     RELEASE_SLIDE_LOCK,
     TOGGLE_FIRE_MODE,
     INPUT_PULL_SLIDE_BACK,
@@ -271,7 +272,7 @@ public class GunScript : MonoBehaviour {
     }
 
     public bool ReleaseSlideLock() {
-        return Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
+        return Request(GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK);
     }
 
     public bool ToggleBoltLock() {

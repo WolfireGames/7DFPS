@@ -498,6 +498,10 @@ namespace GunSystemsV1 {
         SlideComponent slide_c;
         bool pressure_on_switch = false;
 
+        bool InputReleaseSlideLock() {
+            return slide_c.has_slide_release_button ? RequestReleaseSlideLock() : false;
+        }
+
         bool RequestReleaseSlideLock() {
             slide_c.slide_lock = false;
             return true;
@@ -523,6 +527,7 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
                 {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
+                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
                 {GunSystemRequests.RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
             };
         }
@@ -566,6 +571,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE)]
+    [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class PressCheckSystem : GunSystemBase {
         SlideComponent slide_c;
 
@@ -782,6 +788,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.HAMMER, GunAspect.CHAMBER)]
+    [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class AutomaticFireSystem : GunSystemBase {
         TriggerComponent tc;
         ChamberComponent cc;
@@ -805,6 +812,49 @@ namespace GunSystemsV1 {
                     }
                 }
             }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.TRIGGER, GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.OPEN_BOLT_FIRING)]
+    [Priority(PriorityAttribute.LATE)]
+    public class OpenBoltFireSystem : GunSystemBase {
+        TriggerComponent tc;
+        ChamberComponent cc;
+        SlideComponent sc;
+
+        public override void Initialize() {
+            tc = gs.GetComponent<TriggerComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+        }
+
+        public override void Update() {
+            // Slide release
+            if ((tc.pressure_on_trigger != PressureState.NONE) && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
+                tc.trigger_pressed = 1.0f;
+                tc.fired_once_this_pull = true;
+                gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
+            }
+
+            // Slide priming
+            if (sc.slide_amount == 0 && sc.old_slide_amount != 0 && cc.is_closed) {
+                if(cc.active_round_state == RoundState.READY) {
+                    gs.Request(GunSystemRequests.DISCHARGE);
+                }
+            }
+        }
+    }
+
+    /// <summary> This system makes sure we always try to push the slide into the slide lock </summary>
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.OPEN_BOLT_FIRING)]
+    [Priority(PriorityAttribute.VERY_EARLY)]
+    public class OpenBoltSlideLockSystem : GunSystemBase {
+        SlideComponent sc;
+
+        public override void Initialize() {
+            sc = gs.GetComponent<SlideComponent>();
+
+            sc.should_slide_lock_predicates.Add(() => true);
         }
     }
 
