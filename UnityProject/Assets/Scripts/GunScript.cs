@@ -93,6 +93,7 @@ public abstract class GunSystemsContainer {
     public abstract void Update();
 }
 
+[RequireComponent(typeof(AudioSource))]
 public class GunScript : MonoBehaviour {
     // Versioning
     public enum GunSystemVersion { VERSION_0, VERSION_1 }
