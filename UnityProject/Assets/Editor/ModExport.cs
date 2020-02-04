@@ -24,7 +24,7 @@ public class ModExport : MonoBehaviour {
         // Gather mods and names
         string[] paths = Directory.GetDirectories(root_path);
         List<string> names = new List<string>();
-        foreach (var path in paths)
+        foreach (string path in paths)
             names.Add(Path.GetFileName(path));
 
         if(names.Count <= 0)
@@ -35,7 +35,7 @@ public class ModExport : MonoBehaviour {
             return;
 
         // Export each path individually
-        foreach (var path in paths) {
+        foreach (string path in paths) {
             try {
                 ExportBundle(path);
             } catch (System.Exception e) {
@@ -50,26 +50,26 @@ public class ModExport : MonoBehaviour {
         Debug.Log($"Exporting Mod: Source: \"{source}\", Target: \"{dest}\"");
 
         // Get Files and convert absolute paths to relative paths (required by the buildmap)
-        var absoluteFiles = Directory.GetFiles(source).Where(name => !name.EndsWith(".meta") && !name.EndsWith(".cs")).ToArray();
-        var files = new string[absoluteFiles.Length];
+        string[] absolute_files = Directory.GetFiles(source).Where(name => !name.EndsWith(".meta") && !name.EndsWith(".cs")).ToArray();
+        string[] files = new string[absolute_files.Length];
 
         if(files.Length > 0) {
-            var index = absoluteFiles[0].IndexOf("Assets");
+            int index = absolute_files[0].IndexOf("Assets");
             for (int i = 0; i < files.Length; i++)
-                files[i] = absoluteFiles[i].Substring(index);
+                files[i] = absolute_files[i].Substring(index);
         }
 
         if(!CheckHasHolder(files))
             throw new System.Exception($"Failed to export \"{Path.GetDirectoryName(source)}\". Make sure you have an appropriate holder included!");
 
         // Prepare Bundle
-        var buildMap = new AssetBundleBuild[1];
-        buildMap[0].assetBundleName = Path.GetFileName(source);
-        buildMap[0].assetNames = files;
+        AssetBundleBuild[] build_map = new AssetBundleBuild[1];
+        build_map[0].assetBundleName = Path.GetFileName(source);
+        build_map[0].assetNames = files;
 
         // Build Folder / Bundle
         Directory.CreateDirectory(dest);
-        BuildPipeline.BuildAssetBundles(dest, buildMap, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
+        BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(source)}\" with {files.Length} files");
     }
