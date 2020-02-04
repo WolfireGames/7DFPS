@@ -5,7 +5,7 @@ using System.Linq;
 public static class GunAspectHelper {
     public static readonly Dictionary<ushort, GUIContent> GUI_CONTENT = new Dictionary<ushort, GUIContent> {
         {GunAspect.REVOLVER_CYLINDER, new GUIContent("Revolver Cylinder")},
-        {GunAspect.MAGAZINE, new GUIContent("Magazine")},
+        {GunAspect.MAGAZINE, new GUIContent("Magazine Base")},
         {GunAspect.MANUAL_LOADING, new GUIContent("Manual Loading", "Aspect that allows inserting individual rounds into chamber, mags or cylinders.")},
         {GunAspect.CHAMBER, new GUIContent("Chamber")},
         {GunAspect.SLIDE, new GUIContent("Slide", "Regular slide component used in modern firearms")},
@@ -18,7 +18,7 @@ public static class GunAspectHelper {
         {GunAspect.TRIGGER_COCKING, new GUIContent("Trigger Cocking", "Cock the hammer if the trigger is pulled (Double Action Trigger)")},
         {GunAspect.HAMMER_VISUAL, new GUIContent("Hammer Visual")},
         {GunAspect.LOCKABLE_BOLT, new GUIContent("Lockable Bolt", "Turns the Slide aspect into a rotateable bolt")},
-        {GunAspect.FIRING, new GUIContent("Firing", "Aspect to create the actual bullet")},
+        {GunAspect.FIRING, new GUIContent("Firing Base", "Aspect to create the actual bullet")},
         {GunAspect.SLIDE_COCKING, new GUIContent("Slide Cocking", "Cock the hammer if the slide is back")},
         {GunAspect.THUMB_SAFETY, new GUIContent("Thumb Safety", "Safety switch that can be toggled via a switch")},
         {GunAspect.SLIDE_LOCK, new GUIContent("Slide Lock", "The Slide lock catches the slide in a pulled position. Releasable with the slide lock switch")},
@@ -36,10 +36,12 @@ public static class GunAspectHelper {
         {GunAspect.ALTERNATIVE_STANCE, new GUIContent("Alternative Stance Mode", "Adds logic for an alternative stance, this can be used to simulate multiple ways of holding a weapon.")},
         {GunAspect.YOKE, new GUIContent("Yoke", "Make your cylinder openable with a Yoke aspect")},
         {GunAspect.YOKE_VISUAL, new GUIContent("Yoke Visual")},
+        {GunAspect.OPEN_BOLT_FIRING, new GUIContent("Open Bolt Firing")},
     };
 
     public static readonly Dictionary<ushort, string> GUI_GROUP = new Dictionary<ushort, string> {
         {GunAspect.FIRING, "Firing"},
+        {GunAspect.OPEN_BOLT_FIRING, "Firing"},
         {GunAspect.TRIGGER, "Firing"},
         {GunAspect.TRIGGER_VISUAL, "Firing"},
         {GunAspect.RECOIL, "Firing"},
@@ -132,8 +134,9 @@ public class GunAspect {
     public const ushort ALTERNATIVE_STANCE = 29;
     public const ushort YOKE = 30;
     public const ushort YOKE_VISUAL = 31;
+    public const ushort OPEN_BOLT_FIRING = 32;
 
-    private const ushort MAX_VALUE = 31; // Used to determine an all bits enum
+    private const ushort MAX_VALUE = 32; // Used to determine an all bits enum
     public static readonly ushort[] ALL = System.Array.ConvertAll<int, ushort>(Enumerable.Range(0, MAX_VALUE + 1).ToArray(), item => (ushort)item);
 
     public ushort[] value = new ushort[0];
