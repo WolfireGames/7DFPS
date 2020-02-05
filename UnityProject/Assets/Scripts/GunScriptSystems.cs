@@ -164,16 +164,11 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             gsc = gs.GetComponent<GripSafetyComponent>();
-
-            gsc.safety_rel_pos = gsc.grip_safety.localPosition;
-            gsc.safety_rel_rot = gsc.grip_safety.localRotation;
         }
 
         public override void Update() {
             gsc.safety_off = Mathf.Max(IsSafe() ? 0f : 1f, gsc.safety_off - Time.deltaTime * 10.0f);
-
-            gsc.grip_safety.LerpPosition(gsc.safety_rel_pos, gsc.point_grip_safety_off, gsc.safety_off);
-            gsc.grip_safety.LerpRotation(gsc.safety_rel_rot, gsc.point_grip_safety_off, gsc.safety_off);
+            // TODO make this transition nicer
         }
     }
 

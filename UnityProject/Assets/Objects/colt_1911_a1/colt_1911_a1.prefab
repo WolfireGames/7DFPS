@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 8113434217731484025}
   - component: {fileID: -4806607044569499607}
   - component: {fileID: 3480435699394331292}
+  - component: {fileID: 4818883412998868600}
   m_Layer: 0
   m_Name: colt_1911_a1
   m_TagString: Untagged
@@ -203,7 +204,7 @@ MonoBehaviour:
   full_casing: {fileID: 100002, guid: 8e5f3108e4d99fc4d826896d2e55b754, type: 3}
   camera_nearplane_override: 0.1
   aspect:
-    value: 0100030004000500070008000a000c000e000f001000110012001300150016001b0021002300
+    value: 0100030004000500070008000a000c000e000f001000110012001300150016001b00210023002400
 --- !u!114 &3261144228036680374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,8 +369,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e2db16483d5d2f42a78bb836517c4e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grip_safety: {fileID: 400012}
-  point_grip_safety_off: {fileID: 7778059500727416225}
   block_trigger: 1
   block_slide: 0
 --- !u!114 &9115464781236209924
@@ -450,6 +449,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   safety: {fileID: 400042}
   point_safety_off: {fileID: 400018}
+--- !u!114 &4818883412998868600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d81dbf1d792b2f41ae37eeb40691130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grip_safety: {fileID: 400012}
+  point_grip_safety_off: {fileID: 7778059500727416225}
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0

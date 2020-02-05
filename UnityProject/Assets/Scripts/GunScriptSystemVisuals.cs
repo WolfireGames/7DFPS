@@ -171,4 +171,23 @@ namespace GunSystemsV1 {
             tsvc.safety.LerpRotation(tsvc.rel_rot, tsvc.point_safety_off, tsc.safety_off);
         }
     }
+
+    [InclusiveAspects(GunAspect.GRIP_SAFETY, GunAspect.GRIP_SAFETY_VISUAL)]
+    public class GripSafetyVisualSystem : GunSystemBase {
+        GripSafetyComponent gsc;
+        GripSafetyVisualComponent gsvc;
+
+        public override void Initialize() {
+            gsc = gs.GetComponent<GripSafetyComponent>();
+            gsvc = gs.GetComponent<GripSafetyVisualComponent>();
+
+            gsvc.rel_pos = gsvc.grip_safety.localPosition;
+            gsvc.rel_rot = gsvc.grip_safety.localRotation;
+        }
+
+        public override void Update() {
+            gsvc.grip_safety.LerpPosition(gsvc.rel_pos, gsvc.point_grip_safety_off, gsc.safety_off);
+            gsvc.grip_safety.LerpRotation(gsvc.rel_rot, gsvc.point_grip_safety_off, gsc.safety_off);
+        }
+    }
 }
