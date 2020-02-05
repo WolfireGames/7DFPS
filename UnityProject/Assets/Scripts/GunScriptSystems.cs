@@ -493,18 +493,13 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_RELEASE_BUTTON)]
     public class SlideLockSwichSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent sc;
         bool pressure_on_switch = false;
 
         bool InputReleaseSlideLock() {
-            return slide_c.has_slide_release_button ? RequestReleaseSlideLock() : false;
-        }
-
-        bool RequestReleaseSlideLock() {
-            slide_c.slide_lock = false;
-            return true;
+            return gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
         }
 
         bool ApplyPressureToSlideLock() {
@@ -518,9 +513,9 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
+            sc = gs.GetComponent<SlideComponent>();
 
-            slide_c.should_slide_lock_predicates.Add(() => pressure_on_switch);
+            sc.should_slide_lock_predicates.Add(() => pressure_on_switch);
         }
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
@@ -528,7 +523,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
                 {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
                 {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
-                {GunSystemRequests.RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
             };
         }
     }
@@ -541,6 +535,11 @@ namespace GunSystemsV1 {
             return sc.slide_lock;
         }
 
+        bool ReleaseSlideLock() {
+            sc.slide_lock = false;
+            return true;
+        }
+
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
         }
@@ -548,6 +547,12 @@ namespace GunSystemsV1 {
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.IS_SLIDE_LOCKED, IsSlideLocked},
+            };
+        }
+
+        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
+            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
+                {GunSystemRequests.RELEASE_SLIDE_LOCK, ReleaseSlideLock},
             };
         }
 
