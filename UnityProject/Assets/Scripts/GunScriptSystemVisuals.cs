@@ -74,6 +74,27 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_SPRING_VISUAL)]
+    public class SlideSpringVisualSystem : GunSystemBase {
+        SlideComponent psc;
+        SlideSpringVisualComponent ssvc;
+
+        public override void Initialize() {
+            psc = gs.GetComponent<SlideComponent>();
+            ssvc = gs.GetComponent<SlideSpringVisualComponent>();
+
+            ssvc.rel_pos = ssvc.recoil_spring.localPosition;
+            ssvc.rel_rot = ssvc.recoil_spring.localRotation;
+            ssvc.rel_scale = ssvc.recoil_spring.localScale;
+        }
+        
+        public override void Update() {
+            ssvc.recoil_spring.LerpPosition(ssvc.rel_pos, ssvc.point_recoil_spring_compressed, psc.slide_amount);
+            ssvc.recoil_spring.LerpRotation(ssvc.rel_rot, ssvc.point_recoil_spring_compressed, psc.slide_amount);
+            ssvc.recoil_spring.LerpScale(ssvc.rel_scale, ssvc.point_recoil_spring_compressed, psc.slide_amount);
+        }
+    }
+
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.EXTRACTOR_ROD_VISUAL)]
     public class ExtractorRodSystem : GunSystemBase {
         ExtractorRodVisualComponent ervc;

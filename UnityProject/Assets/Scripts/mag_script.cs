@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public enum MagLoadStage {NONE, PUSHING_DOWN, ADDING_ROUND, REMOVING_ROUND, PUSHING_UP};
 
-public class mag_script:MonoBehaviour{
-    
+[RequireComponent(typeof(AudioSource))]
+public class mag_script : MonoBehaviour {
     int num_rounds = 8;
     public int kMaxRounds = 8;
     Vector3[] round_pos;

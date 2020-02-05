@@ -41,6 +41,7 @@ public static class GunAspectHelper {
         {GunAspect.FIRE_MODE_VISUAL, new GUIContent("Fire Mode Visual")},
         {GunAspect.THUMB_SAFETY_VISUAL, new GUIContent("Thumb Safety Visual")},
         {GunAspect.GRIP_SAFETY_VISUAL, new GUIContent("Grip Safety Visual")},
+        {GunAspect.SLIDE_SPRING_VISUAL, new GUIContent("Slide Spring Visual")},
     };
 
     public static readonly Dictionary<ushort, string> GUI_GROUP = new Dictionary<ushort, string> {
@@ -68,6 +69,7 @@ public static class GunAspectHelper {
         {GunAspect.SLIDE_RELEASE_BUTTON, "Slide"},
         {GunAspect.SLIDE_LOCK_VISUAL, "Slide"},
         {GunAspect.SLIDE_SPRING, "Slide"},
+        {GunAspect.SLIDE_SPRING_VISUAL, "Slide"},
         {GunAspect.SLIDE_PUSHING, "Slide"},
         {GunAspect.SLIDE_VISUAL, "Slide"},
         {GunAspect.LOCKABLE_BOLT, "Slide"},
@@ -143,12 +145,13 @@ public class GunAspect {
     public const ushort YOKE = 30;
     public const ushort YOKE_VISUAL = 31;
     public const ushort OPEN_BOLT_FIRING = 32;
-    public const ushort SLIDE_RELEASE_BUTTON = 33;
-    public const ushort FIRE_MODE_VISUAL = 34;
-    public const ushort THUMB_SAFETY_VISUAL = 35;
-    public const ushort GRIP_SAFETY_VISUAL = 36;
+    public const ushort SLIDE_SPRING_VISUAL = 33;
+    public const ushort SLIDE_RELEASE_BUTTON = 34;
+    public const ushort FIRE_MODE_VISUAL = 35;
+    public const ushort THUMB_SAFETY_VISUAL = 36;
+    public const ushort GRIP_SAFETY_VISUAL = 37;
 
-    private const ushort MAX_VALUE = 36; // Used to determine an all bits enum
+    private const ushort MAX_VALUE = 37; // Used to determine an all bits enum
     public static readonly ushort[] ALL = System.Array.ConvertAll<int, ushort>(Enumerable.Range(0, MAX_VALUE + 1).ToArray(), item => (ushort)item);
 
     public ushort[] value = new ushort[0];
