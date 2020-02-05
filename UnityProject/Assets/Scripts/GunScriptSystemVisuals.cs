@@ -152,4 +152,23 @@ namespace GunSystemsV1 {
             fmvc.fire_mode_toggle.LerpRotation(fmvc.rel_rot, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
         }
     }
+
+    [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.THUMB_SAFETY_VISUAL)]
+    public class ThumbSafetyVisualSystem : GunSystemBase {
+        ThumbSafetyComponent tsc;
+        ThumbSafetyVisualComponent tsvc;
+
+        public override void Initialize() {
+            tsc = gs.GetComponent<ThumbSafetyComponent>();
+            tsvc = gs.GetComponent<ThumbSafetyVisualComponent>();
+
+            tsvc.rel_pos = tsvc.safety.localPosition;
+            tsvc.rel_rot = tsvc.safety.localRotation;
+        }
+
+        public override void Update() {
+            tsvc.safety.LerpPosition(tsvc.rel_pos, tsvc.point_safety_off, tsc.safety_off);
+            tsvc.safety.LerpRotation(tsvc.rel_rot, tsvc.point_safety_off, tsc.safety_off);
+        }
+    }
 }

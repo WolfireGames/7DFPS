@@ -39,6 +39,7 @@ public static class GunAspectHelper {
         {GunAspect.OPEN_BOLT_FIRING, new GUIContent("Open Bolt Firing")},
         {GunAspect.SLIDE_RELEASE_BUTTON, new GUIContent("Slide Release Button", "Aspect to allow for manual slide lock interactions like releasing via a button press.")},
         {GunAspect.FIRE_MODE_VISUAL, new GUIContent("Fire Mode Visual")},
+        {GunAspect.THUMB_SAFETY_VISUAL, new GUIContent("Thumb Safety Visual")},
     };
 
     public static readonly Dictionary<ushort, string> GUI_GROUP = new Dictionary<ushort, string> {
@@ -57,6 +58,7 @@ public static class GunAspectHelper {
         {GunAspect.SLIDE_COCKING, "Hammer"},
 
         {GunAspect.THUMB_SAFETY, "Safety"},
+        {GunAspect.THUMB_SAFETY_VISUAL, "Safety"},
         {GunAspect.GRIP_SAFETY, "Safety"},
 
         {GunAspect.SLIDE, "Slide"},
@@ -141,8 +143,9 @@ public class GunAspect {
     public const ushort OPEN_BOLT_FIRING = 32;
     public const ushort SLIDE_RELEASE_BUTTON = 33;
     public const ushort FIRE_MODE_VISUAL = 34;
+    public const ushort THUMB_SAFETY_VISUAL = 35;
 
-    private const ushort MAX_VALUE = 34; // Used to determine an all bits enum
+    private const ushort MAX_VALUE = 35; // Used to determine an all bits enum
     public static readonly ushort[] ALL = System.Array.ConvertAll<int, ushort>(Enumerable.Range(0, MAX_VALUE + 1).ToArray(), item => (ushort)item);
 
     public ushort[] value = new ushort[0];

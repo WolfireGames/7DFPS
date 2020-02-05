@@ -212,16 +212,11 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
             tsc = gs.GetComponent<ThumbSafetyComponent>();
-
-            tsc.safety_rel_pos = tsc.safety.localPosition;
-            tsc.safety_rel_rot = tsc.safety.localRotation;
         }
 
         public override void Update() {
             tsc.safety_off = Mathf.Max(tsc.is_safe ? 0f : 1f, tsc.safety_off - Time.deltaTime * 10.0f);
-
-            tsc.safety.LerpPosition(tsc.safety_rel_pos, tsc.point_safety_off, tsc.safety_off);
-            tsc.safety.LerpRotation(tsc.safety_rel_rot, tsc.point_safety_off, tsc.safety_off);
+            // TODO make this transition nicer
         }
     }
 
