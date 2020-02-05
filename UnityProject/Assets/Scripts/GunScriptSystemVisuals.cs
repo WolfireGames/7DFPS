@@ -133,4 +133,23 @@ namespace GunSystemsV1 {
             yvc.yoke_pivot.LerpRotation(yvc.yoke_pivot_rel_rot, yvc.point_yoke_pivot_open, yc.yoke_open);
         }
     }
+
+    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.FIRE_MODE_VISUAL)]
+    public class FireModeVisualSystem : GunSystemBase {
+        FireModeComponent fmc;
+        FireModeVisualComponent fmvc;
+
+        public override void Initialize() {
+            fmc = gs.GetComponent<FireModeComponent>();
+            fmvc = gs.GetComponent<FireModeVisualComponent>();
+
+            fmvc.rel_pos = fmvc.fire_mode_toggle.localPosition;
+            fmvc.rel_rot = fmvc.fire_mode_toggle.localRotation;
+        }
+
+        public override void Update() {
+            fmvc.fire_mode_toggle.LerpPosition(fmvc.rel_pos, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
+            fmvc.fire_mode_toggle.LerpRotation(fmvc.rel_rot, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
+        }
+    }
 }

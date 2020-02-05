@@ -763,9 +763,6 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             fmc = gs.GetComponent<FireModeComponent>();
             tc = gs.GetComponent<TriggerComponent>();
-
-            fmc.auto_mod_rel_pos = fmc.auto_mod_toggle.localPosition;
-            fmc.auto_mod_rel_rot = fmc.auto_mod_toggle.localRotation;
         }
 
         public override void Update() {
@@ -784,11 +781,6 @@ namespace GunSystemsV1 {
                 //(Or can you? We should test on a real glock)
                 tc.fire_mode = FireMode.DISABLED;
             }
-
-            float auto_mod_amount_display = fmc.auto_mod_amount;
-
-            fmc.auto_mod_toggle.LerpPosition(fmc.auto_mod_rel_pos, fmc.point_auto_mod_enabled, auto_mod_amount_display);
-            fmc.auto_mod_toggle.LerpRotation(fmc.auto_mod_rel_rot, fmc.point_auto_mod_enabled, auto_mod_amount_display);
         }
     }
 
