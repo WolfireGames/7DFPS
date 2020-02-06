@@ -21,8 +21,6 @@ public class SlideComponent : GunComponent {
     public float slide_chambering_position = 0.7f; // Start chambering at this slide amount
 
     public float slide_lock_position = 0.9f;
-    public bool has_slide_release_button = true; // TODO SYSTEMS V2: Make the slide release button a gun aspect.
-
     public float press_check_position = 0.4f;
     public float slide_lock_speed = 20.0f;
 
