@@ -28,7 +28,6 @@ public class VRInputController : MonoBehaviour
 
     private void Awake() {
         instance = this;
-
     }
 
     IEnumerator Start() {
@@ -64,14 +63,14 @@ public class VRInputController : MonoBehaviour
         if (cylinderRenderer != null) {
             switch (hand) {
                 case HandSide.Right:
-                    if (cylinderRenderer.bounds.Contains(RightHand.transform.position)) {
+                    if (cylinderRenderer.bounds.Contains(RHandSphere.transform.position)) {
                         return -ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
                     }
                     else {
                         return 0f;
                     }
                 case HandSide.Left:
-                    if (cylinderRenderer.bounds.Contains(LeftHand.transform.position)) {
+                    if (cylinderRenderer.bounds.Contains(LHandSphere.transform.position)) {
                         return -ControllerPose.GetVelocity(SteamVR_Input_Sources.LeftHand).y;
                     }
                     else {
@@ -196,7 +195,10 @@ public class VRInputController : MonoBehaviour
         if(TallestHead < Head.transform.localPosition.y) {
             TallestHead = Head.transform.localPosition.y+0.1f;
         }
-        InventoryPos.transform.localPosition = Head.transform.localPosition - (Vector3.up * TallestHead / 3f);
+
+        
+
+        InventoryPos.transform.localPosition = (new Vector3(Head.transform.localPosition.x - (transform.InverseTransformDirection(Head.transform.forward).x * 0.15f), Head.transform.localPosition.y, Head.transform.localPosition.z - (transform.InverseTransformDirection(Head.transform.forward).z * 0.15f)) * Head.transform.localScale.x) - (Vector3.up * TallestHead / 3f);
         InventoryPos.transform.rotation = transform.rotation;
 
         if (ChangeHandedness.GetStateDown(SteamVR_Input_Sources.Any)) {

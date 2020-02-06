@@ -1462,11 +1462,11 @@ public class AimScript:MonoBehaviour{
         main_camera.transform.parent.position = transform.position - (Vector3.up * ((character_controller.height / 2) - head_fall));// - main_camera.transform.parent.rotation* new Vector3(main_camera.transform.localPosition.x, 0, main_camera.transform.localPosition.z);
         character_controller.transform.rotation = main_camera.transform.parent.rotation;
 
-        character_controller.center = new Vector3(main_camera.transform.localPosition.x - (main_camera.transform.forward.x * 0.15f), 0, main_camera.transform.localPosition.z - (main_camera.transform.forward.z*0.15f)) * 0.9f;// - main_camera.transform.parent.rotation * new Vector3(startOffset.x, 0, startOffset.z);
+        character_controller.center = new Vector3(main_camera.transform.localPosition.x - (character_controller.transform.InverseTransformDirection(main_camera.transform.forward).x * 0.15f), 0, main_camera.transform.localPosition.z - (character_controller.transform.InverseTransformDirection(main_camera.transform.forward).z*0.15f)) * main_camera.transform.localScale.x;// - main_camera.transform.parent.rotation * new Vector3(startOffset.x, 0, startOffset.z);
         Vector3 graphicsPos = character_controller.center;
         graphicsPos.y = -character_controller.height/2f;
         graphics.localPosition = graphicsPos;
-        playerCollider.center = character_controller.center + new Vector3(0, ((playerCollider.height/2)-0.4f),0);
+        playerCollider.center = (character_controller.center + new Vector3(0, ((playerCollider.height/2)-0.4f),0));
         playerCollider.height = main_camera.transform.localPosition.y * 0.9f;
         /*var tmp_cs2 = main_camera.transform.position;
         tmp_cs2.y += character_controller.height * character_controller.transform.localScale.y - 0.1f;
@@ -1855,6 +1855,7 @@ public class AimScript:MonoBehaviour{
     			break;
     		}
     	}
+        VRInventoryManager.instance.SetHighlightSlot(empty_slot);
     	return empty_slot;
     }
     
