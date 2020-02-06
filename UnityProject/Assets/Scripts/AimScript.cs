@@ -2086,13 +2086,13 @@ public class AimScript:MonoBehaviour{
         if (directionVector.magnitude > 0.9f) {
             forward_input_delay += Time.deltaTime;
         }
-        else if (directionVector.magnitude < 0.5f) {
+        else if (directionVector.magnitude < 0.75f) {
             forward_input_delay = 0.0f;
             SetRunning(0.0f);
             bool_running = false;
         }
 
-    	if(IsAiming() || VRInputController.instance.GetWalkVector(primaryHand).magnitude < 0.9f) {
+    	if(IsAiming() || VRInputController.instance.GetWalkVector(primaryHand).magnitude < 0.75f) {
     		SetRunning(0.0f);
     		bool_running = false;
     	}
