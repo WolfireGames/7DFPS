@@ -37,6 +37,10 @@ public static class GunAspectHelper {
         {GunAspect.YOKE, new GUIContent("Yoke", "Make your cylinder openable with a Yoke aspect")},
         {GunAspect.YOKE_VISUAL, new GUIContent("Yoke Visual")},
         {GunAspect.OPEN_BOLT_FIRING, new GUIContent("Open Bolt Firing")},
+        {GunAspect.SLIDE_RELEASE_BUTTON, new GUIContent("Slide Release Button", "Aspect to allow for manual slide lock interactions like releasing via a button press.")},
+        {GunAspect.FIRE_MODE_VISUAL, new GUIContent("Fire Mode Visual")},
+        {GunAspect.THUMB_SAFETY_VISUAL, new GUIContent("Thumb Safety Visual")},
+        {GunAspect.GRIP_SAFETY_VISUAL, new GUIContent("Grip Safety Visual")},
         {GunAspect.SLIDE_SPRING_VISUAL, new GUIContent("Slide Spring Visual")},
     };
 
@@ -47,6 +51,7 @@ public static class GunAspectHelper {
         {GunAspect.TRIGGER_VISUAL, "Firing"},
         {GunAspect.RECOIL, "Firing"},
         {GunAspect.FIRE_MODE, "Firing"},
+        {GunAspect.FIRE_MODE_VISUAL, "Firing"},
         
         {GunAspect.HAMMER, "Hammer"},
         {GunAspect.THUMB_COCKING, "Hammer"},
@@ -55,10 +60,13 @@ public static class GunAspectHelper {
         {GunAspect.SLIDE_COCKING, "Hammer"},
 
         {GunAspect.THUMB_SAFETY, "Safety"},
+        {GunAspect.THUMB_SAFETY_VISUAL, "Safety"},
         {GunAspect.GRIP_SAFETY, "Safety"},
+        {GunAspect.GRIP_SAFETY_VISUAL, "Safety"},
 
         {GunAspect.SLIDE, "Slide"},
         {GunAspect.SLIDE_LOCK, "Slide"},
+        {GunAspect.SLIDE_RELEASE_BUTTON, "Slide"},
         {GunAspect.SLIDE_LOCK_VISUAL, "Slide"},
         {GunAspect.SLIDE_SPRING, "Slide"},
         {GunAspect.SLIDE_SPRING_VISUAL, "Slide"},
@@ -138,8 +146,12 @@ public class GunAspect {
     public const ushort YOKE_VISUAL = 31;
     public const ushort OPEN_BOLT_FIRING = 32;
     public const ushort SLIDE_SPRING_VISUAL = 33;
+    public const ushort SLIDE_RELEASE_BUTTON = 34;
+    public const ushort FIRE_MODE_VISUAL = 35;
+    public const ushort THUMB_SAFETY_VISUAL = 36;
+    public const ushort GRIP_SAFETY_VISUAL = 37;
 
-    private const ushort MAX_VALUE = 33; // Used to determine an all bits enum
+    private const ushort MAX_VALUE = 37; // Used to determine an all bits enum
     public static readonly ushort[] ALL = System.Array.ConvertAll<int, ushort>(Enumerable.Range(0, MAX_VALUE + 1).ToArray(), item => (ushort)item);
 
     public ushort[] value = new ushort[0];

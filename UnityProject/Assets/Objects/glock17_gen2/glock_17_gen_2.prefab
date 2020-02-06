@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 8171177189962462377}
   - component: {fileID: 3279033207455554344}
   - component: {fileID: 6393551791531349303}
+  - component: {fileID: 8930544703160108865}
   m_Layer: 0
   m_Name: glock_17_gen_2
   m_TagString: Untagged
@@ -179,7 +180,7 @@ MonoBehaviour:
   full_casing: {fileID: 100002, guid: 7abc52798abbf9145a6a57ed3b957f2d, type: 3}
   camera_nearplane_override: 0.1
   aspect:
-    value: 01000300040005000600070008000b000e000f0011001200130016001b00
+    value: 01000300040005000600070008000b000e000f0011001200130016001b0022002300
 --- !u!114 &1454998633859932448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,8 +209,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sound_firemode_toggle:
   - {fileID: 8300000, guid: 2b43a4edf32193c478929bfde893e4e8, type: 3}
-  auto_mod_toggle: {fileID: 400036}
-  point_auto_mod_enabled: {fileID: 400004}
 --- !u!114 &6067651196356063951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -384,6 +383,20 @@ MonoBehaviour:
   point_mag_inserted: {fileID: 400028}
   point_mag_to_insert: {fileID: 400026}
   magazine_obj: {fileID: 100000, guid: bec8b09fecaa1d445b37085d3a499672, type: 3}
+--- !u!114 &8930544703160108865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb14bf7fd3d42a40be09a67c783f7b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fire_mode_toggle: {fileID: 400036}
+  point_fire_mode_enabled: {fileID: 400004}
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0

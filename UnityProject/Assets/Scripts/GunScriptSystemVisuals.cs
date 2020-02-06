@@ -154,4 +154,61 @@ namespace GunSystemsV1 {
             yvc.yoke_pivot.LerpRotation(yvc.yoke_pivot_rel_rot, yvc.point_yoke_pivot_open, yc.yoke_open);
         }
     }
+
+    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.FIRE_MODE_VISUAL)]
+    public class FireModeVisualSystem : GunSystemBase {
+        FireModeComponent fmc;
+        FireModeVisualComponent fmvc;
+
+        public override void Initialize() {
+            fmc = gs.GetComponent<FireModeComponent>();
+            fmvc = gs.GetComponent<FireModeVisualComponent>();
+
+            fmvc.rel_pos = fmvc.fire_mode_toggle.localPosition;
+            fmvc.rel_rot = fmvc.fire_mode_toggle.localRotation;
+        }
+
+        public override void Update() {
+            fmvc.fire_mode_toggle.LerpPosition(fmvc.rel_pos, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
+            fmvc.fire_mode_toggle.LerpRotation(fmvc.rel_rot, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.THUMB_SAFETY_VISUAL)]
+    public class ThumbSafetyVisualSystem : GunSystemBase {
+        ThumbSafetyComponent tsc;
+        ThumbSafetyVisualComponent tsvc;
+
+        public override void Initialize() {
+            tsc = gs.GetComponent<ThumbSafetyComponent>();
+            tsvc = gs.GetComponent<ThumbSafetyVisualComponent>();
+
+            tsvc.rel_pos = tsvc.safety.localPosition;
+            tsvc.rel_rot = tsvc.safety.localRotation;
+        }
+
+        public override void Update() {
+            tsvc.safety.LerpPosition(tsvc.rel_pos, tsvc.point_safety_off, tsc.safety_off);
+            tsvc.safety.LerpRotation(tsvc.rel_rot, tsvc.point_safety_off, tsc.safety_off);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.GRIP_SAFETY, GunAspect.GRIP_SAFETY_VISUAL)]
+    public class GripSafetyVisualSystem : GunSystemBase {
+        GripSafetyComponent gsc;
+        GripSafetyVisualComponent gsvc;
+
+        public override void Initialize() {
+            gsc = gs.GetComponent<GripSafetyComponent>();
+            gsvc = gs.GetComponent<GripSafetyVisualComponent>();
+
+            gsvc.rel_pos = gsvc.grip_safety.localPosition;
+            gsvc.rel_rot = gsvc.grip_safety.localRotation;
+        }
+
+        public override void Update() {
+            gsvc.grip_safety.LerpPosition(gsvc.rel_pos, gsvc.point_grip_safety_off, gsc.safety_off);
+            gsvc.grip_safety.LerpRotation(gsvc.rel_rot, gsvc.point_grip_safety_off, gsc.safety_off);
+        }
+    }
 }

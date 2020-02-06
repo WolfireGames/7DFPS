@@ -1844,7 +1844,9 @@ public class AimScript:MonoBehaviour{
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
     					display_text.Add(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()));
-    					display_text.Add(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()));
+    					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
+    						display_text.Add(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()));
+    					}
     				}
     				if(gun_script.HasSafety()){
     					display_text.Add(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
@@ -1855,13 +1857,13 @@ public class AimScript:MonoBehaviour{
     				if(gun_script.HasHammer()){
     					display_text.Add(new DisplayLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer()?true:false));
     				}
-    				if(GetGunScript().HasGunComponent(GunAspect.LOCKABLE_BOLT)){
+    				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
     					display_text.Add(new DisplayLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt()));
     				}
-    				if(GetGunScript().HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
+    				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
     					display_text.Add(new DisplayLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance()));
     				}
-    				if(GetGunScript().HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
+    				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
     						display_text.Add(new DisplayLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0)?true:false));
     					} else {
@@ -1870,10 +1872,10 @@ public class AimScript:MonoBehaviour{
     						display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
     					}
     					display_text.Add(new DisplayLine("Spin cylinder: [ mousewheel ]", false));
-    				} else if(GetGunScript().HasGunComponent(GunAspect.MANUAL_LOADING)) {
+    				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
     					display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
     				}
-    				if(GetGunScript().HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
+    				if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
     						display_text.Add(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));

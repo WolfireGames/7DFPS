@@ -164,16 +164,11 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             gsc = gs.GetComponent<GripSafetyComponent>();
-
-            gsc.safety_rel_pos = gsc.grip_safety.localPosition;
-            gsc.safety_rel_rot = gsc.grip_safety.localRotation;
         }
 
         public override void Update() {
             gsc.safety_off = Mathf.Max(IsSafe() ? 0f : 1f, gsc.safety_off - Time.deltaTime * 10.0f);
-
-            gsc.grip_safety.LerpPosition(gsc.safety_rel_pos, gsc.point_grip_safety_off, gsc.safety_off);
-            gsc.grip_safety.LerpRotation(gsc.safety_rel_rot, gsc.point_grip_safety_off, gsc.safety_off);
+            // TODO make this transition nicer
         }
     }
 
@@ -212,16 +207,11 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
             tsc = gs.GetComponent<ThumbSafetyComponent>();
-
-            tsc.safety_rel_pos = tsc.safety.localPosition;
-            tsc.safety_rel_rot = tsc.safety.localRotation;
         }
 
         public override void Update() {
             tsc.safety_off = Mathf.Max(tsc.is_safe ? 0f : 1f, tsc.safety_off - Time.deltaTime * 10.0f);
-
-            tsc.safety.LerpPosition(tsc.safety_rel_pos, tsc.point_safety_off, tsc.safety_off);
-            tsc.safety.LerpRotation(tsc.safety_rel_rot, tsc.point_safety_off, tsc.safety_off);
+            // TODO make this transition nicer
         }
     }
 
@@ -493,18 +483,13 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_RELEASE_BUTTON)]
     public class SlideLockSwichSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent sc;
         bool pressure_on_switch = false;
 
         bool InputReleaseSlideLock() {
-            return slide_c.has_slide_release_button ? RequestReleaseSlideLock() : false;
-        }
-
-        bool RequestReleaseSlideLock() {
-            slide_c.slide_lock = false;
-            return true;
+            return gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
         }
 
         bool ApplyPressureToSlideLock() {
@@ -518,9 +503,9 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
+            sc = gs.GetComponent<SlideComponent>();
 
-            slide_c.should_slide_lock_predicates.Add(() => pressure_on_switch);
+            sc.should_slide_lock_predicates.Add(() => pressure_on_switch);
         }
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
@@ -528,7 +513,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
                 {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
                 {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
-                {GunSystemRequests.RELEASE_SLIDE_LOCK, RequestReleaseSlideLock},
             };
         }
     }
@@ -541,6 +525,11 @@ namespace GunSystemsV1 {
             return sc.slide_lock;
         }
 
+        bool ReleaseSlideLock() {
+            sc.slide_lock = false;
+            return true;
+        }
+
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
         }
@@ -548,6 +537,12 @@ namespace GunSystemsV1 {
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.IS_SLIDE_LOCKED, IsSlideLocked},
+            };
+        }
+
+        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
+            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
+                {GunSystemRequests.RELEASE_SLIDE_LOCK, ReleaseSlideLock},
             };
         }
 
@@ -758,9 +753,6 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             fmc = gs.GetComponent<FireModeComponent>();
             tc = gs.GetComponent<TriggerComponent>();
-
-            fmc.auto_mod_rel_pos = fmc.auto_mod_toggle.localPosition;
-            fmc.auto_mod_rel_rot = fmc.auto_mod_toggle.localRotation;
         }
 
         public override void Update() {
@@ -779,11 +771,6 @@ namespace GunSystemsV1 {
                 //(Or can you? We should test on a real glock)
                 tc.fire_mode = FireMode.DISABLED;
             }
-
-            float auto_mod_amount_display = fmc.auto_mod_amount;
-
-            fmc.auto_mod_toggle.LerpPosition(fmc.auto_mod_rel_pos, fmc.point_auto_mod_enabled, auto_mod_amount_display);
-            fmc.auto_mod_toggle.LerpRotation(fmc.auto_mod_rel_rot, fmc.point_auto_mod_enabled, auto_mod_amount_display);
         }
     }
 
