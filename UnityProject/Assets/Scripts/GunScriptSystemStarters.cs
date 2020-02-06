@@ -100,6 +100,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.CHAMBER)]
+    [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.LATE)]
     public class ChamberStartSystem : GunSystemBase {
         ChamberComponent cc;
