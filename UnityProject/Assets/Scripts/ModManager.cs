@@ -23,6 +23,10 @@ public class ModManager : MonoBehaviour {
         //Make sure these folders are generated if they don't exist
         Directory.CreateDirectory(GetModsfolderPath());
 
+        // Are mods enabled?
+        if(PlayerPrefs.GetInt("mods_enabled", 1) != 1)
+            return;
+
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
             foreach (var mod in availableMods)
