@@ -5,11 +5,24 @@ using UnityEngine.UI;
 public class OptionLabelUtil : MonoBehaviour {
     private Text textBox;
 
-    public void ChangeValue(float value) {
-        if(textBox == null) {
-            textBox = GetComponent<Text>();
-        }
+    [TextArea] public string prefix = "";
+    public bool is_mod_path_label = false;
 
-        textBox.text = $"{value:0.00}";
+    public void Start() {
+        if(is_mod_path_label) {
+            ChangeValue(ModManager.GetModsfolderPath());
+        }
+    }
+
+    public void ChangeValue(float value) {
+        if(!textBox)
+            textBox = GetComponent<Text>();
+        textBox.text = $"{prefix}{value:0.00}";
+    }
+
+    public void ChangeValue(string value) {
+        if(!textBox)
+            textBox = GetComponent<Text>();
+        textBox.text = $"{prefix}{value}";
     }
 }
