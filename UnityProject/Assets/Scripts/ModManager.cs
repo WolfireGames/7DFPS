@@ -42,31 +42,40 @@ public class ModManager : MonoBehaviour {
 
     public void InsertMods() {
         // Insert all gun mods
-        var guns = new List<GameObject>(guiSkinHolder.weapons);
-        if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
-            guns.Clear();
+        ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
+        if(gun_load_type != ModLoadType.DISABLED) {
+            var guns = new List<GameObject>(guiSkinHolder.weapons);
+            if(loadedGunMods.Count > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+                guns.Clear();
 
-        foreach (var mod in loadedGunMods)
-            guns.Add(mod.mainAsset);
-        guiSkinHolder.weapons = guns.ToArray();
+            foreach (var mod in loadedGunMods)
+                guns.Add(mod.mainAsset);
+            guiSkinHolder.weapons = guns.ToArray();
+        }
 
         // Insert all Level Tile mods
-        var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-        if(loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
-            tiles.Clear();
+        ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
+        if(tile_load_type != ModLoadType.DISABLED) {
+            var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+            if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                tiles.Clear();
 
-        foreach (var mod in loadedLevelMods)
-            foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
-                tiles.Add(tile);
-        levelCreatorScript.level_tiles = tiles.ToArray();
+            foreach (var mod in loadedLevelMods)
+                foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
+                    tiles.Add(tile);
+            levelCreatorScript.level_tiles = tiles.ToArray();
+        }
 
         // Insert all Tape mods
-        if(loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
-            guiSkinHolder.sound_tape_content.Clear();
+        ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
+        if(tape_load_type != ModLoadType.DISABLED) {
+            if(loadedTapeMods.Count > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
+                guiSkinHolder.sound_tape_content.Clear();
 
-        foreach (var mod in loadedTapeMods)
-            foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
-                guiSkinHolder.sound_tape_content.Add(tape);
+            foreach (var mod in loadedTapeMods)
+                foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+                    guiSkinHolder.sound_tape_content.Add(tape);
+        }
     }
 
     public void LoadMod(Mod mod) {
@@ -159,6 +168,12 @@ public class ModManager : MonoBehaviour {
         }
         manifestBundle.Unload(true);
     }
+}
+
+public enum ModLoadType {
+    ENABLED,
+    EXCLUSIVE,
+    DISABLED,
 }
 
 public enum ModType {
