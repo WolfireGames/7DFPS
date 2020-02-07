@@ -6,7 +6,6 @@ using UnityEngine;
 public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
-    public static List<Mod> loadedCustomMods = new List<Mod>();
     public static List<Mod> loadedTapeMods = new List<Mod>();
 
     public static List<Mod> availableMods;
@@ -17,7 +16,6 @@ public class ModManager : MonoBehaviour {
     public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
         {ModType.Gun, "gun_holder.prefab"},
         {ModType.LevelTile, "tiles_holder.prefab"},
-        {ModType.Custom, "script_holder.prefab"},
         {ModType.Tapes, "tape_holder.prefab"},
     };
 
@@ -39,16 +37,6 @@ public class ModManager : MonoBehaviour {
     }
 
     public void InsertMods() {
-        /*
-        // Instantiate all custom mods
-        foreach (var mod in loadedCustomMods) {
-            var scriptHolder = Instantiate(mod.mainAsset);
-            scriptHolder.transform.parent = transform;
-            scriptHolder.name = mod.name;
-
-            scriptHolder.AddComponent(mod.GetScript());
-        } */
-
         // Insert all gun mods
         var guns = new List<GameObject>(guiSkinHolder.weapons);
         if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
@@ -89,7 +77,6 @@ public class ModManager : MonoBehaviour {
         switch (modType) {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
-            case ModType.Custom: return loadedCustomMods;
             case ModType.Tapes: return loadedTapeMods;
 
             default:
@@ -160,7 +147,6 @@ public class ModManager : MonoBehaviour {
             var mod = new Mod(assetPath);
             mod.name = bundleName;
             mod.modType = GetModTypeFromBundle(modBundle);
-            //mod.hasCustomScript = modBundle.Contains("scripts.bytes");
 
             // Register mod and clean up
             availableMods.Add(mod);
@@ -172,7 +158,6 @@ public class ModManager : MonoBehaviour {
 }
 
 public enum ModType {
-    Custom,
     Gun,
     Tapes,
     LevelTile
@@ -181,7 +166,6 @@ public enum ModType {
 public class Mod {
     public ModType modType;
     public string name = "None";
-    public bool hasCustomScript = false;
 
     public bool loaded = false;
     
@@ -192,15 +176,6 @@ public class Mod {
 
     public Mod(string path) {
         this.path = path;
-    }
-
-    public System.Type GetScript() {
-        var txt = assetBundle.LoadAsset<TextAsset>("scripts.bytes");
-
-        var assembly = System.Reflection.Assembly.Load(txt.bytes);
-        var type = assembly.GetType("CustomScript");
-
-        return type;
     }
 
     public void Load() {
@@ -222,10 +197,6 @@ public class Mod {
         // Set the display name to the bundle name if no custom name is provided
         if(weaponHolder.display_name == "My Gun")
             weaponHolder.display_name = name;
-
-        // Attach script for gun mods
-        if(hasCustomScript)
-            weaponHolder.gun_object.AddComponent(GetScript());
     }
     
     public void Unload() {
