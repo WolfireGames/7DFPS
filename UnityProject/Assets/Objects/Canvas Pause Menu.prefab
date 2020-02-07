@@ -394,6 +394,7 @@ GameObject:
   - component: {fileID: 6174180857185071187}
   - component: {fileID: 7096281405186414362}
   - component: {fileID: 3719090620390058494}
+  - component: {fileID: 7726041538933551020}
   m_Layer: 5
   m_Name: Open_Modsfolder
   m_TagString: Untagged
@@ -514,6 +515,22 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &7726041538933551020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 295056048546157474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fd10d3bd4ece77489a8e57a2f60cc7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windows: 1
+  linux: 0
+  mac: 0
+  others: 0
 --- !u!1 &353662923001442864
 GameObject:
   m_ObjectHideFlags: 0
