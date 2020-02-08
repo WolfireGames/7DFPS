@@ -18,13 +18,6 @@
                   [ "/user/hand/right/input/b", "click" ]
                ],
                "output" : "/actions/default/in/swaphandedness"
-            },
-            {
-               "inputs" : [
-                  [ "/user/hand/left/input/trackpad", "center" ],
-                  [ "/user/hand/right/input/trackpad", "center" ]
-               ],
-               "output" : "/actions/default/in/pausegame"
             }
          ],
          "haptics" : [
@@ -219,6 +212,30 @@
                   "sub_mode" : "touch"
                },
                "path" : "/user/hand/right/input/thumbstick"
+            },
+            {
+               "inputs" : {
+                  "north" : {
+                     "output" : "/actions/default/in/pausegame"
+                  }
+               },
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "click"
+               },
+               "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "north" : {
+                     "output" : "/actions/default/in/pausegame"
+                  }
+               },
+               "mode" : "dpad",
+               "parameters" : {
+                  "sub_mode" : "click"
+               },
+               "path" : "/user/hand/right/input/trackpad"
             }
          ]
       },

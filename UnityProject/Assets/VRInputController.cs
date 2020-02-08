@@ -115,7 +115,7 @@ public class VRInputController : MonoBehaviour
     }
 
     public bool GetPauseGame(HandSide hand) {
-        return PauseGame.GetStateDown(SteamVR_Input_Sources.Any);
+        return PauseGame.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
 
     public bool GetRotateLeft(HandSide hand) {

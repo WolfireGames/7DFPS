@@ -52,11 +52,13 @@ public class optionsmenuscript:MonoBehaviour{
             HideMenu();
         }
 
-        if (VRInputController.instance.GetPauseGame(HandSide.Left) && !show_menu) {
-            ShowMenu();
-        }
-        else if (VRInputController.instance.GetPauseGame(HandSide.Left) && show_menu) {
-            HideMenu();
+        if (VRInputBridge.instance.aimScript_ref != null) {
+            if (VRInputController.instance.GetPauseGame(VRInputBridge.instance.aimScript_ref.secondaryHand) && !show_menu) {
+                ShowMenu();
+            }
+            else if (VRInputController.instance.GetPauseGame(VRInputBridge.instance.aimScript_ref.secondaryHand) && show_menu) {
+                HideMenu();
+            }
         }
 
         if (Input.GetMouseButtonDown(0) && !show_menu) {

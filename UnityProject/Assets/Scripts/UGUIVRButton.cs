@@ -46,25 +46,27 @@ public class UGUIVRButton : MonoBehaviour {
     public void PressButton(Vector3 worldspacePos){
 
         if (slider != null) {
-            float sliderwidth = GetComponent<BoxCollider>().size.x * transform.root.localScale.x;
+            float sliderwidth = GetComponent<BoxCollider>().size.x;
 
-            float rawPositionOffset = -((transform.position - (transform.right * sliderwidth)).x - transform.InverseTransformPoint(worldspacePos).x);
+            float rawPositionOffset =   Mathf.Abs((transform.InverseTransformPoint(worldspacePos).x) - (sliderwidth / 2));
 
-            float minvalueabs = Mathf.Abs(slider.minValue);
+            /*float minvalueabs = Mathf.Abs(slider.minValue);
             if (minvalueabs == 0) {
                 minvalueabs = slider.maxValue;
-            }
+            }*/
 
-            slider.value = ((rawPositionOffset / sliderwidth) * transform.root.localScale.x) * (slider.maxValue + minvalueabs);
+            //Debug.Log("Slider width: " + rawPositionOffset);
+
+            slider.value = 1f - ((rawPositionOffset / sliderwidth));
             return;
         }
 
         if(scrollbar != null) {
-            float sliderHeight = GetComponent<BoxCollider>().size.y;
+            float sliderHeight = GetComponent<BoxCollider>().size.y*0.5f;
 
-            float rawPositionOffset = -((transform.position - (transform.up * sliderHeight)).y - (transform.InverseTransformPoint(worldspacePos).y + sliderHeight/10));
+            float rawPositionOffset = -(transform.InverseTransformPoint(worldspacePos).y - (sliderHeight / 2));
 
-            scrollbar.value = ((rawPositionOffset / sliderHeight) * transform.root.localScale.x) * 3f;
+            scrollbar.value = 1f - ((rawPositionOffset / sliderHeight));
             return;
         }
 

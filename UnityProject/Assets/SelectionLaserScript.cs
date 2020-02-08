@@ -13,6 +13,8 @@ public class SelectionLaserScript : MonoBehaviour
 
     public LayerMask mask;
 
+    public GameObject LastUsedObjectL, LastUsedObjectR;
+
     private void Awake() {
         instance = this;
     }
@@ -38,28 +40,61 @@ public class SelectionLaserScript : MonoBehaviour
         if (Physics.Raycast(LeftHandLaser.position, LeftHandLaser.forward, out HitL, 10f, mask)) {
             if (HitL.collider.GetComponent<UGUIVRButton>() != null) {
                 if (HitL.collider.GetComponent<UGUIVRButton>().slider != null || HitL.collider.GetComponent<UGUIVRButton>().scrollbar != null) {
-                    if (VRInputController.instance.ActionPress(HandSide.Left)) {
-                        HitL.collider.GetComponent<UGUIVRButton>().PressButton(HitL.point);
+                    if (LastUsedObjectL == null) { 
+                        if (VRInputController.instance.ActionPress(HandSide.Left)) {
+                            HitL.collider.GetComponent<UGUIVRButton>().PressButton(HitL.point);
+                        }
+
+                        if (VRInputController.instance.ActionPressDown(HandSide.Left)) {
+                            LastUsedObjectL = HitL.collider.gameObject;
+                        }
+                    }
+                    else {
+                        if (LastUsedObjectL == HitL.collider.gameObject && VRInputController.instance.ActionPress(HandSide.Left)) {
+                            HitL.collider.GetComponent<UGUIVRButton>().PressButton(HitL.point);
+                        }
                     }
                 }
                 else {
-                    if (VRInputController.instance.ActionPressDown(HandSide.Left)) {
+                    if (LastUsedObjectL == null && VRInputController.instance.ActionPressDown(HandSide.Left)) {
                         HitL.collider.GetComponent<UGUIVRButton>().PressButton(HitL.point);
+                        LastUsedObjectL = HitL.collider.gameObject;
                     }
                 }
             }
         }
 
+        if (VRInputController.instance.ActionPressUp(HandSide.Left)) {
+            LastUsedObjectL = null;
+        }
+
+        if (VRInputController.instance.ActionPressUp(HandSide.Right)) {
+            LastUsedObjectR = null;
+        }
+
         if (Physics.Raycast(RightHandLaser.position, RightHandLaser.forward, out HitR, 10f, mask)) {
             if (HitR.collider.GetComponent<UGUIVRButton>() != null) {
                 if (HitR.collider.GetComponent<UGUIVRButton>().slider != null || HitR.collider.GetComponent<UGUIVRButton>().scrollbar != null) {
-                    if (VRInputController.instance.ActionPress(HandSide.Right)) {
-                        HitR.collider.GetComponent<UGUIVRButton>().PressButton(HitR.point);
+
+                    if (LastUsedObjectR == null) {
+                        if (VRInputController.instance.ActionPress(HandSide.Right)) {
+                            HitR.collider.GetComponent<UGUIVRButton>().PressButton(HitR.point);
+                        }
+
+                        if (VRInputController.instance.ActionPressDown(HandSide.Right)) {
+                            LastUsedObjectR = HitR.collider.gameObject;
+                        }
+                    }
+                    else {
+                        if (LastUsedObjectR == HitR.collider.gameObject && VRInputController.instance.ActionPress(HandSide.Right)) {
+                            HitR.collider.GetComponent<UGUIVRButton>().PressButton(HitR.point);
+                        }
                     }
                 }
                 else {
-                    if (VRInputController.instance.ActionPressDown(HandSide.Right)) {
+                    if (LastUsedObjectR == null && VRInputController.instance.ActionPressDown(HandSide.Right)) {
                         HitR.collider.GetComponent<UGUIVRButton>().PressButton(HitR.point);
+                        LastUsedObjectR = HitR.collider.gameObject;
                     }
                 }
             }
