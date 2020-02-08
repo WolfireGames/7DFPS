@@ -47,6 +47,8 @@ namespace Valve.VR
         
         private static SteamVR_Action_Boolean p_default_SwapHandedness;
         
+        private static SteamVR_Action_Boolean p_default_PauseGame;
+        
         private static SteamVR_Action_Vibration p_default_Haptic;
         
         private static SteamVR_Action_Pose p_mixedreality_ExternalCamera;
@@ -171,6 +173,14 @@ namespace Valve.VR
             }
         }
         
+        public static SteamVR_Action_Boolean default_PauseGame
+        {
+            get
+            {
+                return SteamVR_Actions.p_default_PauseGame.GetCopy<SteamVR_Action_Boolean>();
+            }
+        }
+        
         public static SteamVR_Action_Vibration default_Haptic
         {
             get
@@ -205,6 +215,7 @@ namespace Valve.VR
                     SteamVR_Actions.default_GunInteract3,
                     SteamVR_Actions.default_GunInteractLongpress,
                     SteamVR_Actions.default_SwapHandedness,
+                    SteamVR_Actions.default_PauseGame,
                     SteamVR_Actions.default_Haptic,
                     SteamVR_Actions.mixedreality_ExternalCamera};
             Valve.VR.SteamVR_Input.actionsIn = new Valve.VR.ISteamVR_Action_In[] {
@@ -223,6 +234,7 @@ namespace Valve.VR
                     SteamVR_Actions.default_GunInteract3,
                     SteamVR_Actions.default_GunInteractLongpress,
                     SteamVR_Actions.default_SwapHandedness,
+                    SteamVR_Actions.default_PauseGame,
                     SteamVR_Actions.mixedreality_ExternalCamera};
             Valve.VR.SteamVR_Input.actionsOut = new Valve.VR.ISteamVR_Action_Out[] {
                     SteamVR_Actions.default_Haptic};
@@ -242,7 +254,8 @@ namespace Valve.VR
                     SteamVR_Actions.default_GunInteract2,
                     SteamVR_Actions.default_GunInteract3,
                     SteamVR_Actions.default_GunInteractLongpress,
-                    SteamVR_Actions.default_SwapHandedness};
+                    SteamVR_Actions.default_SwapHandedness,
+                    SteamVR_Actions.default_PauseGame};
             Valve.VR.SteamVR_Input.actionsSingle = new Valve.VR.SteamVR_Action_Single[0];
             Valve.VR.SteamVR_Input.actionsVector2 = new Valve.VR.SteamVR_Action_Vector2[] {
                     SteamVR_Actions.default_Locomotion};
@@ -262,7 +275,8 @@ namespace Valve.VR
                     SteamVR_Actions.default_GunInteract2,
                     SteamVR_Actions.default_GunInteract3,
                     SteamVR_Actions.default_GunInteractLongpress,
-                    SteamVR_Actions.default_SwapHandedness};
+                    SteamVR_Actions.default_SwapHandedness,
+                    SteamVR_Actions.default_PauseGame};
         }
         
         private static void PreInitActions()
@@ -282,6 +296,7 @@ namespace Valve.VR
             SteamVR_Actions.p_default_GunInteract3 = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/GunInteract3")));
             SteamVR_Actions.p_default_GunInteractLongpress = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/GunInteractLongpress")));
             SteamVR_Actions.p_default_SwapHandedness = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/SwapHandedness")));
+            SteamVR_Actions.p_default_PauseGame = ((SteamVR_Action_Boolean)(SteamVR_Action.Create<SteamVR_Action_Boolean>("/actions/default/in/PauseGame")));
             SteamVR_Actions.p_default_Haptic = ((SteamVR_Action_Vibration)(SteamVR_Action.Create<SteamVR_Action_Vibration>("/actions/default/out/Haptic")));
             SteamVR_Actions.p_mixedreality_ExternalCamera = ((SteamVR_Action_Pose)(SteamVR_Action.Create<SteamVR_Action_Pose>("/actions/mixedreality/in/ExternalCamera")));
         }

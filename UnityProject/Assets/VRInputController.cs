@@ -18,7 +18,7 @@ public class VRInputController : MonoBehaviour
 
     public SteamVR_Action_Vector2 Locomotion;
 
-    public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness;
+    public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness, PauseGame;
 
     public GameObject LHandSphere, RHandSphere;
 
@@ -112,6 +112,10 @@ public class VRInputController : MonoBehaviour
         Vector3 rawAxis = new Vector3(Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).x, 0, Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).y);
         rawAxis = Head.transform.localRotation * rawAxis;
         return new Vector2(rawAxis.x,rawAxis.z);
+    }
+
+    public bool GetPauseGame(HandSide hand) {
+        return PauseGame.GetStateDown(SteamVR_Input_Sources.Any);
     }
 
     public bool GetRotateLeft(HandSide hand) {

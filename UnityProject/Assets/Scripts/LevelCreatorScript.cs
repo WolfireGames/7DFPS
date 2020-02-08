@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 
 public class LevelCreatorScript:MonoBehaviour{
+
     public enum TileInstanceState {
         Destroyed,
         Disabled,

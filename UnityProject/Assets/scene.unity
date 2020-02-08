@@ -433,7 +433,7 @@ MonoBehaviour:
   weapon: {fileID: 0}
   flashlight_object: {fileID: 100000, guid: 145c6e0c0ae2338458b73cc8a03c2569, type: 3}
   has_flashlight: 0
-  pause_menu: {fileID: 2866556412233748978, guid: 105aa1b1ec7a3544c88fb970235ac5b9,
+  pause_menu: {fileID: 1351792091575863156, guid: 8fa228ddaf0794549b385c1942fdd2a2,
     type: 3}
 --- !u!82 &2106325459
 AudioSource:

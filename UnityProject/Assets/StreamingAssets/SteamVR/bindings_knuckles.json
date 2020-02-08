@@ -18,6 +18,13 @@
                   [ "/user/hand/right/input/b", "click" ]
                ],
                "output" : "/actions/default/in/swaphandedness"
+            },
+            {
+               "inputs" : [
+                  [ "/user/hand/left/input/trackpad", "center" ],
+                  [ "/user/hand/right/input/trackpad", "center" ]
+               ],
+               "output" : "/actions/default/in/pausegame"
             }
          ],
          "haptics" : [
@@ -226,7 +233,7 @@
    "category" : "steamvr_input",
    "controller_type" : "knuckles",
    "description" : "Default Index Controller bindings",
-   "name" : "My Receivr configuration for Index Controller",
+   "name" : "My Receiver [Testing] configuration for Index Controller",
    "options" : {},
    "simulated_actions" : []
 }

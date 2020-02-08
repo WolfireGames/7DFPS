@@ -73,6 +73,10 @@
       "type": "boolean"
     },
     {
+      "name": "/actions/default/in/PauseGame",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     },

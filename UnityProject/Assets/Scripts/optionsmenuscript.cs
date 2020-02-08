@@ -52,7 +52,14 @@ public class optionsmenuscript:MonoBehaviour{
             HideMenu();
         }
 
-        if(Input.GetMouseButtonDown(0) && !show_menu) {
+        if (VRInputController.instance.GetPauseGame(HandSide.Left) && !show_menu) {
+            ShowMenu();
+        }
+        else if (VRInputController.instance.GetPauseGame(HandSide.Left) && show_menu) {
+            HideMenu();
+        }
+
+        if (Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
         }
     }
@@ -77,8 +84,10 @@ public class optionsmenuscript:MonoBehaviour{
     public void ShowMenu() {
         show_menu = true;
         menu.SetActive(true);
-        UnlockCursor();
         Time.timeScale = 0.0f;
+        transform.position = VRInputController.instance.transform.GetChild(0).position + (VRInputController.instance.transform.GetChild(0).forward * 1.5f);
+        transform.LookAt(transform.position + VRInputController.instance.transform.GetChild(0).forward);
+        UnlockCursor();
     }
     
     public void HideMenu() {
