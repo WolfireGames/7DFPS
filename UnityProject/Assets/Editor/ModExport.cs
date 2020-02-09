@@ -64,12 +64,30 @@ public class ModExport : MonoBehaviour {
 
         // Prepare Bundle
         AssetBundleBuild[] build_map = new AssetBundleBuild[1];
-        build_map[0].assetBundleName = Path.GetFileName(source);
         build_map[0].assetNames = files;
 
         // Build Folder / Bundle
         Directory.CreateDirectory(dest);
-        BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
+        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Linux, BuildTarget.StandaloneLinuxUniversal}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}, {OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}}) {
+            build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
+            BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
+        }
+
+        // Clean out manifest files and bundle holder
+        try {
+            if(Directory.GetFiles(dest).Count() > 10) { // FAILSAFE
+                throw new System.ArgumentException($"failsafe triggered: too many files found in mod folder! Skipping deletion of unneeded files!");
+            }
+
+            File.Delete(Path.Combine(dest, Path.GetFileName(dest)));
+            foreach (var manifest in Directory.GetFiles(dest, "*.manifest", SearchOption.TopDirectoryOnly)) {
+                File.Delete(Path.Combine(dest, manifest));
+            }
+        } catch (System.UnauthorizedAccessException) {
+            Debug.LogWarning("Unauthorized to delete obsolete files in the exported mod. These files are not needed and don't need to be removed manually.");
+        } catch (System.ArgumentException e) {
+            Debug.LogError(e);
+        }
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(source)}\" with {files.Length} files");
     }
