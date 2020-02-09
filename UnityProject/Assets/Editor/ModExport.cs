@@ -12,7 +12,6 @@ public class ModExport : MonoBehaviour {
             return;
 
         ExportBundle(root_path);
-        Application.OpenURL(ModManager.GetModsfolderPath());
     }
 
     [MenuItem("Wolfire/Batch Export Mods")]
@@ -42,6 +41,10 @@ public class ModExport : MonoBehaviour {
                 Debug.LogException(e);
             }
         }
+    }
+
+    [MenuItem("Wolfire/Open Mods Path")]
+    public static void OpenModPath () {
         Application.OpenURL(ModManager.GetModsfolderPath());
     }
 
