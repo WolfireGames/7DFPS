@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class ModManager : MonoBehaviour {
@@ -149,24 +150,30 @@ public class ModManager : MonoBehaviour {
     }
 
     private static void UpdateMod(string path) {
-        var manifestBundle = AssetBundle.LoadFromFile(Path.Combine(path, Path.GetFileName(path)));
-        var manifest = manifestBundle.LoadAsset<AssetBundleManifest>("assetbundlemanifest");
-        foreach(var bundleName in manifest.GetAllAssetBundles()) {
-            // Init
-            var assetPath = Path.Combine(path, bundleName);
-            var modBundle = AssetBundle.LoadFromFile(assetPath);
+        string[] bundles = Directory.GetFiles(path);
+        string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
-            // Generate Mod Object
-            var mod = new Mod(assetPath);
-            mod.name = bundleName;
-            mod.modType = GetModTypeFromBundle(modBundle);
-
-            // Register mod and clean up
-            availableMods.Add(mod);
-            modBundle.Unload(true);
-            Debug.Log($" + {bundleName} ({mod.modType})");
+        // Fallback to unsigned mods (old naming version without os versions)
+        if(bundleName == null) {
+            bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null));
+            if(bundleName == null) {
+                throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
+            }
         }
-        manifestBundle.Unload(true);
+
+        // Init
+        var assetPath = Path.Combine(path, bundleName);
+        var modBundle = AssetBundle.LoadFromFile(assetPath);
+
+        // Generate Mod Object
+        var mod = new Mod(assetPath);
+        mod.name = bundleName;
+        mod.modType = GetModTypeFromBundle(modBundle);
+
+        // Register mod and clean up
+        availableMods.Add(mod);
+        modBundle.Unload(true);
+        Debug.Log($" + {bundleName} ({mod.modType})");
     }
 }
 
