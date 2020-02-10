@@ -524,7 +524,11 @@ public class AimScript:MonoBehaviour{
     	audiosource_audio_content.loop = false;
     	
     	List<AudioClip> temp_total_tapes = new List<AudioClip>(holder.sound_tape_content);
-    	while(temp_total_tapes.Count > 0 && tapes_remaining.Count < tape_count) {
+    	while(tapes_remaining.Count < tape_count) {
+    		if(temp_total_tapes.Count <= 0) {
+    			temp_total_tapes.AddRange(holder.sound_tape_content); // We have run out of tapes, but we need more => Allow for duplicates
+    		}
+    
     		int rand_tape_id = UnityEngine.Random.Range(0, temp_total_tapes.Count);
     		tapes_remaining.Add(temp_total_tapes[rand_tape_id]);
     		temp_total_tapes.RemoveAt(rand_tape_id);
