@@ -7,7 +7,6 @@ using UnityEngine;
 public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
-    public static List<Mod> loadedCustomMods = new List<Mod>();
     public static List<Mod> loadedTapeMods = new List<Mod>();
 
     public static List<Mod> availableMods;
@@ -18,13 +17,16 @@ public class ModManager : MonoBehaviour {
     public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
         {ModType.Gun, "gun_holder.prefab"},
         {ModType.LevelTile, "tiles_holder.prefab"},
-        {ModType.Custom, "script_holder.prefab"},
         {ModType.Tapes, "tape_holder.prefab"},
     };
 
     public void Awake() {
         //Make sure these folders are generated if they don't exist
         Directory.CreateDirectory(GetModsfolderPath());
+
+        // Are mods enabled?
+        if(PlayerPrefs.GetInt("mods_enabled", 1) != 1)
+            return;
 
         if(availableMods == null) { //DEBUG load all mods
             UpdateMods();
@@ -40,42 +42,41 @@ public class ModManager : MonoBehaviour {
     }
 
     public void InsertMods() {
-        /*
-        // Instantiate all custom mods
-        foreach (var mod in loadedCustomMods) {
-            var scriptHolder = Instantiate(mod.mainAsset);
-            scriptHolder.transform.parent = transform;
-            scriptHolder.name = mod.name;
-
-            scriptHolder.AddComponent(mod.GetScript());
-        } */
-
         // Insert all gun mods
-        var guns = new List<GameObject>(guiSkinHolder.weapons);
-        if(loadedGunMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_guns", 0) == 1)
-            guns.Clear();
+        ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
+        if(gun_load_type != ModLoadType.DISABLED) {
+            var guns = new List<GameObject>(guiSkinHolder.weapons);
+            if(loadedGunMods.Count > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+                guns.Clear();
 
-        foreach (var mod in loadedGunMods)
-            guns.Add(mod.mainAsset);
-        guiSkinHolder.weapons = guns.ToArray();
+            foreach (var mod in loadedGunMods)
+                guns.Add(mod.mainAsset);
+            guiSkinHolder.weapons = guns.ToArray();
+        }
 
         // Insert all Level Tile mods
-        var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-        if(loadedLevelMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tiles", 0) == 1)
-            tiles.Clear();
+        ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
+        if(tile_load_type != ModLoadType.DISABLED) {
+            var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+            if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                tiles.Clear();
 
-        foreach (var mod in loadedLevelMods)
-            foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
-                tiles.Add(tile);
-        levelCreatorScript.level_tiles = tiles.ToArray();
+            foreach (var mod in loadedLevelMods)
+                foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
+                    tiles.Add(tile);
+            levelCreatorScript.level_tiles = tiles.ToArray();
+        }
 
         // Insert all Tape mods
-        if(loadedTapeMods.Count > 0 && PlayerPrefs.GetInt("ignore_vanilla_tapes", 0) == 1)
-            guiSkinHolder.sound_tape_content.Clear();
+        ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
+        if(tape_load_type != ModLoadType.DISABLED) {
+            if(loadedTapeMods.Count > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
+                guiSkinHolder.sound_tape_content.Clear();
 
-        foreach (var mod in loadedTapeMods)
-            foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
-                guiSkinHolder.sound_tape_content.Add(tape);
+            foreach (var mod in loadedTapeMods)
+                foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+                    guiSkinHolder.sound_tape_content.Add(tape);
+        }
     }
 
     public void LoadMod(Mod mod) {
@@ -90,7 +91,6 @@ public class ModManager : MonoBehaviour {
         switch (modType) {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
-            case ModType.Custom: return loadedCustomMods;
             case ModType.Tapes: return loadedTapeMods;
 
             default:
@@ -169,7 +169,6 @@ public class ModManager : MonoBehaviour {
         var mod = new Mod(assetPath);
         mod.name = bundleName;
         mod.modType = GetModTypeFromBundle(modBundle);
-        //mod.hasCustomScript = modBundle.Contains("scripts.bytes");
 
         // Register mod and clean up
         availableMods.Add(mod);
@@ -178,8 +177,13 @@ public class ModManager : MonoBehaviour {
     }
 }
 
+public enum ModLoadType {
+    ENABLED,
+    EXCLUSIVE,
+    DISABLED,
+}
+
 public enum ModType {
-    Custom,
     Gun,
     Tapes,
     LevelTile
@@ -188,7 +192,6 @@ public enum ModType {
 public class Mod {
     public ModType modType;
     public string name = "None";
-    public bool hasCustomScript = false;
 
     public bool loaded = false;
     
@@ -199,15 +202,6 @@ public class Mod {
 
     public Mod(string path) {
         this.path = path;
-    }
-
-    public System.Type GetScript() {
-        var txt = assetBundle.LoadAsset<TextAsset>("scripts.bytes");
-
-        var assembly = System.Reflection.Assembly.Load(txt.bytes);
-        var type = assembly.GetType("CustomScript");
-
-        return type;
     }
 
     public void Load() {
@@ -229,10 +223,6 @@ public class Mod {
         // Set the display name to the bundle name if no custom name is provided
         if(weaponHolder.display_name == "My Gun")
             weaponHolder.display_name = name;
-
-        // Attach script for gun mods
-        if(hasCustomScript)
-            weaponHolder.gun_object.AddComponent(GetScript());
     }
     
     public void Unload() {
