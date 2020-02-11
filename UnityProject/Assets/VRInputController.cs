@@ -57,14 +57,14 @@ public class VRInputController : MonoBehaviour
 
     public float GetSpinSpeed(HandSide hand) {
         if(!checkedCylinderRenderer && VRInputBridge.instance.aimScript_ref != null && VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)) {
-            cylinderRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponent<RevolverCylinderComponent>().GetComponent<Renderer>();
+            cylinderRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.Find("cylinder").GetComponent<Renderer>();
             checkedCylinderRenderer = true;
         }
         if (cylinderRenderer != null) {
             switch (hand) {
                 case HandSide.Right:
                     if (cylinderRenderer.bounds.Contains(RHandSphere.transform.position)) {
-                        return -ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
+                        return ControllerPose.GetVelocity(SteamVR_Input_Sources.RightHand).y;
                     }
                     else {
                         return 0f;
