@@ -87,7 +87,7 @@ public class optionsmenuscript:MonoBehaviour{
         show_menu = true;
         menu.SetActive(true);
         Time.timeScale = 0.0f;
-        transform.position = VRInputController.instance.transform.GetChild(0).position + (VRInputController.instance.transform.GetChild(0).forward * 1.5f);
+        transform.position = VRInputController.instance.transform.GetChild(0).position + (VRInputController.instance.transform.GetChild(0).forward * 1f);
         transform.LookAt(transform.position + VRInputController.instance.transform.GetChild(0).forward);
         UnlockCursor();
     }

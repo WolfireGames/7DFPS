@@ -73,20 +73,12 @@ public class UGUIVRButton : MonoBehaviour {
         
 
         if (!LongPress) {
-            GetComponent<Collider>().enabled = false;
             pressed = true;
             PointerEventData data = new PointerEventData(EventSystem.current);
             data.scrollDelta = -Vector2.up * 0.1f;
             GetComponent<Selectable>().Select();
             ExecuteEvents.Execute(gameObject, data, ExecuteEvents.scrollHandler);
             ExecuteEvents.Execute(gameObject, data, ExecuteEvents.pointerClickHandler);
-            if (this.gameObject.activeInHierarchy) {
-                StartCoroutine(ReEnableCollider());
-            }
-            else {
-                pressed = false;
-                GetComponent<Collider>().enabled = true;
-            }
         }
         else {
             pressed = true;
