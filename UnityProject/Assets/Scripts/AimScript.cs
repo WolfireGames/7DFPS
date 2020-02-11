@@ -900,7 +900,7 @@ public class AimScript:MonoBehaviour{
     		gun_script.InputToggleStance();
     	}
     	if(character_input.GetAxis("Mouse ScrollWheel", secondaryHand) != 0.0f){
-    		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
+    		gun_script.RotateCylinder((int)character_input.GetAxis("Mouse ScrollWheel",secondaryHand));
     	}		
     	if(character_input.GetButtonDown("Insert", secondaryHand)){
     		if(loose_bullets.Count > 0){
