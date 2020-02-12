@@ -151,6 +151,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelCreatorScript: {fileID: 1854270037}
   guiSkinHolder: {fileID: 2106325458}
+  inbuildMods:
+  - name: rem870_josh
+    files:
+    - {fileID: 4900000, guid: bd8201d101807534fa7a8b217d8369d2, type: 3}
+    - {fileID: 4900000, guid: 50bbd313986a22b4fac17b9b55e03940, type: 3}
+    - {fileID: 4900000, guid: d7d9d095c61d87a4aaccd80686d45409, type: 3}
+  - name: gew98_josh
+    files:
+    - {fileID: 4900000, guid: a0ee1981749e5d14a8170d167d915715, type: 3}
+    - {fileID: 4900000, guid: f372ccda183fc72489bf9efd476ce11c, type: 3}
+    - {fileID: 4900000, guid: b8b112aa184da0a45bb5a84e65996e87, type: 3}
 --- !u!4 &131495380
 Transform:
   m_ObjectHideFlags: 0
@@ -629,6 +640,7 @@ MonoBehaviour:
   - {fileID: 100000, guid: 3621583329b678a41803c80c0a07cd5e, type: 3}
   - {fileID: 100000, guid: cf054d1155a951442a29a00c8c897c2a, type: 3}
   - {fileID: 100000, guid: a65de81d094f47944a2c3336544b7ca8, type: 3}
+  - {fileID: 100000, guid: f7c06f4c396be014d872b749c3720f11, type: 3}
   weapon: {fileID: 0}
   flashlight_object: {fileID: 100000, guid: 145c6e0c0ae2338458b73cc8a03c2569, type: 3}
   has_flashlight: 0

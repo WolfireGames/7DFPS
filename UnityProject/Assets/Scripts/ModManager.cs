@@ -13,6 +13,7 @@ public class ModManager : MonoBehaviour {
 
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
+    public InbuildMod[] inbuildMods;
 
     public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
         {ModType.Gun, "gun_holder.prefab"},
@@ -22,7 +23,13 @@ public class ModManager : MonoBehaviour {
 
     public void Awake() {
         //Make sure these folders are generated if they don't exist
-        Directory.CreateDirectory(GetModsfolderPath());
+        if(!Directory.Exists(GetModsfolderPath())) {
+            Directory.CreateDirectory(GetModsfolderPath());
+
+            // Generate inbuild mods
+            foreach (var mod in inbuildMods)
+                mod.Generate();
+        }
 
         // Are mods enabled?
         if(PlayerPrefs.GetInt("mods_enabled", 1) != 1)
@@ -231,5 +238,28 @@ public class Mod {
 
         loaded = false;
         assetBundle.Unload(true);
+    }
+}
+
+[System.Serializable]
+public class InbuildMod {
+    public string name;
+    public TextAsset[] files;
+
+    public void Generate() {
+        try {
+            // Create directory
+            string directory = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_inbuild_{name}");
+            Directory.CreateDirectory(directory);
+
+            // Create files
+            foreach(TextAsset file in files) {
+                string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(file.name));
+                File.Create(path).Close();
+                File.WriteAllBytes(path, file.bytes);
+            }
+        } catch (Exception e) {
+            Debug.LogError(e);
+        }
     }
 }
