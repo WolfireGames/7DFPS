@@ -161,7 +161,7 @@ public class ModManager : MonoBehaviour {
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
         // Fallback to unsigned mods (old naming version without os versions)
-        if(bundleName == null) {
+        if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
             bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null));
             if(bundleName == null) {
                 throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
