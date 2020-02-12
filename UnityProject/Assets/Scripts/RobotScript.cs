@@ -264,11 +264,16 @@ public class RobotScript:MonoBehaviour{
         attached_holes.Add(hole_attachment);
     }
 
+    Vector3 targetoffsetpos;
+
     public Transform GetTarget() {
     	if(RobotScript._target == null) {
     		RobotScript._target = GameObject.Find("Player").transform;
     	}
-    	return RobotScript._target;
+        targetoffsetpos = VRInputController.instance.Head.transform.root.rotation * VRInputController.instance.Head.transform.localPosition;
+        targetoffsetpos.y = 0f;
+        targetoffsetpos *= VRInputController.instance.Head.transform.root.localScale.x;
+        return RobotScript._target;
     }
 
     public bool ShouldSleep() {
@@ -276,7 +281,7 @@ public class RobotScript:MonoBehaviour{
     	if(target == null) {
     		return true;
     	}
-    	return Vector3.Distance(target.position, transform.position) > kSleepDistance;
+    	return Vector3.Distance(target.position + targetoffsetpos, transform.position) > kSleepDistance;
     }
 
     public void UpdateStationaryTurret() {
@@ -362,7 +367,7 @@ public class RobotScript:MonoBehaviour{
     	Transform target = GetTarget();
     	if(target != null) {
     		float danger = 0.0f;
-    		float dist = Vector3.Distance(target.position, transform.position);
+    		float dist = Vector3.Distance(target.position + targetoffsetpos, transform.position);
     		if(battery_alive){
     			danger += Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     		}
@@ -377,11 +382,11 @@ public class RobotScript:MonoBehaviour{
     				danger += 0.5f;
     			}
     			
-    			rel_pos = target.position - gun_camera.position;
+    			rel_pos = (target.position + targetoffsetpos) - gun_camera.position;
     			bool sees_target = false;
     			if(dist < kMaxRange && Vector3.Dot(gun_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     				RaycastHit hit = new RaycastHit();
-    				if(!Physics.Linecast(gun_camera.position, target.position, out hit, 1<<0)){
+    				if(!Physics.Linecast(gun_camera.position, target.position + targetoffsetpos, out hit, 1<<0)){
     					sees_target = true;
     				}
     			}
@@ -396,17 +401,17 @@ public class RobotScript:MonoBehaviour{
     						if(Vector3.Dot(gun_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.9f){
     							ai_state = AIState.FIRING;
     						}
-    						target_pos = target.position;
+    						target_pos = target.position+targetoffsetpos;
     						break;					
     					case AIState.FIRING:
-    						target_pos = target.position;
+    						target_pos = target.position+targetoffsetpos;
     						break;
     					case AIState.ALERT:
     						alert_delay -= Time.deltaTime;
     						if(alert_delay <= 0.0f){
     							ai_state = AIState.AIMING;
     						}
-    						target_pos = target.position;
+    						target_pos = target.position+targetoffsetpos;
     						break;
     					case AIState.ALERT_COOLDOWN:
     						ai_state = AIState.ALERT;
@@ -641,7 +646,7 @@ public class RobotScript:MonoBehaviour{
     				if(gun_delay <= 0.0f){
     					gun_delay = 0.1f;	
     					Instantiate(muzzle_flash, point_spark.position, RandomOrientation());
-    					if(Vector3.Distance(point_spark.position, target.position) < 1){
+    					if(Vector3.Distance(point_spark.position, target.position + targetoffsetpos) < 1){
     						target.GetComponent<AimScript>().Shock();
     					}
     				}
@@ -652,7 +657,7 @@ public class RobotScript:MonoBehaviour{
     			var tmp_cs3 = camera_pivot.localEulerAngles;
     			tmp_cs3.x = camera_pivot_angle;
     			camera_pivot.localEulerAngles = tmp_cs3;
-    			float dist = Vector3.Distance(target.position, transform.position);
+    			float dist = Vector3.Distance(target.position + targetoffsetpos, transform.position);
     			float danger = Mathf.Max(0.0f, 1.0f - dist/kMaxRange);
     			if(danger > 0.0f){
     				danger = Mathf.Min(0.2f, danger);
@@ -666,19 +671,19 @@ public class RobotScript:MonoBehaviour{
     			target.GetComponent<MusicScript>().AddDangerLevel(danger);
     			
     			// Target finding
-    			rel_pos = target.position - drone_camera.position;
+    			rel_pos = (target.position + targetoffsetpos) - drone_camera.position;
     			bool sees_target = false;
     			if(dist < kMaxRange && Vector3.Dot(drone_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
     				hit = new RaycastHit();
-    				if(!Physics.Linecast(drone_camera.position, target.position, out hit, 1<<0)){
+    				if(!Physics.Linecast(drone_camera.position, target.position + targetoffsetpos, out hit, 1<<0)){
     					sees_target = true;
     				}
     			}
 
     			// Attacking
     			if(sees_target){
-    				Vector3 new_target = target.position + target.GetComponent<AimScript>().GetVelocity() * 
-    								Mathf.Clamp(Vector3.Distance(target.transform.position, transform.position) * 0.1f, 0.5f, 1.0f);
+    				Vector3 new_target = (target.position + targetoffsetpos) + target.GetComponent<AimScript>().GetVelocity() * 
+    								Mathf.Clamp(Vector3.Distance(target.position + targetoffsetpos, transform.position) * 0.1f, 0.5f, 1.0f);
     				switch(ai_state){
     					case AIState.IDLE:
     						ai_state = AIState.ALERT;
