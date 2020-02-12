@@ -32,7 +32,7 @@ public class ModManager : MonoBehaviour {
         }
 
         // Are mods enabled?
-        if(PlayerPrefs.GetInt("mods_enabled", 1) != 1)
+        if(PlayerPrefs.GetInt("mods_enabled", 0) != 1)
             return;
 
         if(availableMods == null) { //DEBUG load all mods
