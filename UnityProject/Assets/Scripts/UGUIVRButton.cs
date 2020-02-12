@@ -100,6 +100,7 @@ public class UGUIVRButton : MonoBehaviour {
                 dropdownButtons[i].gameObject.AddComponent<BoxCollider>();
                 Vector3 colsize = GetComponent<BoxCollider>().size * 0.9f;
                 colsize.y *= 0.75f;
+                colsize.z *= 1.5f;
                 dropdownButtons[i].GetComponent<BoxCollider>().size = colsize;
             }
         }

@@ -66,12 +66,12 @@ public class optionsmenuscript:MonoBehaviour{
         }
     }
 
-    public void OnGUI() {
+    /*public void OnGUI() {
         GUI.depth = -1;
         if(show_menu && Event.current.type == EventType.Repaint) {
             uiCamera.Render();
         }
-    }
+    }*/
 
     private void LockCursor() {
         Cursor.lockState = CursorLockMode.Locked;
