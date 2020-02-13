@@ -6,18 +6,14 @@ using ExtentionUtil;
 using System.Linq;
 
 namespace GunSystemsV1 {
-    [InclusiveAspects(GunAspect.CHAMBER, GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]
-    public class ChamberLoadingWithMagazineSystem : GunSystemBase {
+    [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]
+    [ExclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    public class ManualLoadingMagazineSystem : GunSystemBase {
         MagazineComponent mc;
         ManualLoadingComponent mlc;
-        ChamberComponent cc;
 
         private bool InputAddRound() {
             if(!mlc.can_insert) {
-                return false;
-            }
-
-            if(cc.is_closed != mlc.load_when_closed) {
                 return false;
             }
 
@@ -37,29 +33,36 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        private bool IsAddingRounds() {
+            return mlc.can_insert;
+        }
+
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.INPUT_ADD_ROUND, InputAddRound},
             };
         }
 
+        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
+            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
+                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
+            };
+        }
+
         public override void Initialize() {
             mc = gs.GetComponent<MagazineComponent>();
             mlc = gs.GetComponent<ManualLoadingComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
         }
     }
 
-    [InclusiveAspects(GunAspect.CHAMBER, GunAspect.MANUAL_LOADING)]
-    [ExclusiveAspects(GunAspect.MAGAZINE)]
-    public class ChamberLoadingSystem : GunSystemBase {
+    [InclusiveAspects(GunAspect.MANUAL_LOADING)]
+    [ExclusiveAspects(GunAspect.MAGAZINE, GunAspect.REVOLVER_CYLINDER)]
+    public class ManualLoadingSystem : GunSystemBase {
         ManualLoadingComponent mlc;
-        ChamberComponent cc;
 
         public bool AddRound() {
-            if(cc.is_closed != mlc.load_when_closed) {
-                return false; // Can't add rounds if the chamber is closed 
-            }
+            if(!mlc.can_insert)
+                return false;
             return gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER);
         }
 
@@ -77,9 +80,18 @@ namespace GunSystemsV1 {
             };
         }
 
+        private bool IsAddingRounds() {
+            return mlc.can_insert;
+        }
+
+        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
+            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
+                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
+            };
+        }
+
         public override void Initialize() {
             mlc = gs.GetComponent<ManualLoadingComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
         }
     }
 

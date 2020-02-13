@@ -164,9 +164,6 @@ namespace GunSystemsV1 {
         ChamberComponent cc;
 
         bool ShouldInsertBullet() {
-            if(mlc.load_when_closed != cc.is_closed)
-                return false;
-
             if(!mlc.can_insert)
                 return false;
 
