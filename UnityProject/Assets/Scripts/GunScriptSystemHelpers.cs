@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE)]
     public class ExternalMagazineHelperSystem : GunSystemBase {
         MagazineComponent mc;
+        ExternalMagazineComponent emc;
 
         public bool ShouldEjectMagazine() {
-            return (mc.mag_script && mc.mag_script.NumRounds() == 0);
+            return mc.mag_script && mc.mag_script.NumRounds() == 0 && emc.can_eject;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -17,6 +19,7 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             mc = gs.GetComponent<MagazineComponent>();
+            emc = gs.GetComponent<ExternalMagazineComponent>();
         }
     }
 
@@ -26,7 +29,7 @@ namespace GunSystemsV1 {
         SlideComponent slide_c;
 
         bool ShouldPushSlide() {
-            return slide_c.slide_amount > 0f;
+            return !slide_c.block_slide_pull && slide_c.slide_amount > 0f;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -61,12 +64,12 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.MAGAZINE, GunAspect.CHAMBER)]
     public class SlideHelperSystem : GunSystemBase {
-        SlideComponent slide_c; //unused, but closely related
+        SlideComponent sc;
         MagazineComponent mc;
         ChamberComponent cc;
 
         bool ShouldPullSlide() {
-            return (cc.active_round_state == RoundState.EMPTY || cc.active_round_state == RoundState.FIRED) && mc.mag_script && mc.mag_script.NumRounds() > 0;
+            return !sc.block_slide_pull && (cc.active_round_state == RoundState.EMPTY || cc.active_round_state == RoundState.FIRED) && mc.mag_script && mc.mag_script.NumRounds() > 0;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -76,6 +79,7 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
+            sc = gs.GetComponent<SlideComponent>();
             mc = gs.GetComponent<MagazineComponent>();
             cc = gs.GetComponent<ChamberComponent>();
         }
@@ -85,24 +89,52 @@ namespace GunSystemsV1 {
     public class StanceHelperSystem : GunSystemBase {
         AlternativeStanceComponent asc;
 
-        bool ShouldToggleStance() { // This function can probably be optimized a bit
+        // Optional
+        SlideComponent sc;
+        MagazineComponent mc;
+        ChamberComponent cc;
+        LockableBoltComponent lbc;
+        ManualLoadingComponent mlc;
+        RevolverCylinderComponent rcc;
+
+        bool ShouldToggleStance() {
+            // Find out what we want to do, this isn't a pretty approach, but it doesn't lock up other components
+            bool wants_bolt_toggled = cc && lbc && (
+                (cc.active_round_state == RoundState.READY) == (lbc.bolt_stage == BoltActionStage.UNLOCKED)
+            );
+
+            bool wants_slide_moved = cc && sc && (
+                cc.active_round_state != RoundState.READY ||
+                (gs.HasGunComponent(GunAspect.SLIDE_PUSHING) && sc.slide_amount > 0f)
+            );
+
+            bool wants_mag_ejected = mc && cc && (
+                cc.active_round_state == RoundState.EMPTY && mc.mag_script && mc.mag_script.NumRounds() == 0
+            );
+
+            bool wants_round_inserted = mlc && (
+                !mlc.mag_insert && cc.active_round_state == RoundState.EMPTY ||
+                rcc && rcc.cylinders.Any((cylinder) => !cylinder.game_object)
+            );
+
+            // Find out if we need to toggle for the things we want to do
             if(asc.is_alternative) {
-                if(asc.alt_stance_blocks_bolt && gs.ShouldToggleBolt())
+                if(asc.alt_stance_blocks_bolt && wants_bolt_toggled)
                     return true;
-                else if(asc.alt_stance_blocks_slide && (gs.ShouldPullSlide() || gs.ShouldPushSlideForward()))
+                else if(asc.alt_stance_blocks_slide && wants_slide_moved)
                     return true;
-                else if(asc.alt_stance_blocks_mag && (gs.ShouldEjectMag() || gs.ShouldInsertBullet()))
+                else if(asc.alt_stance_blocks_mag && (wants_mag_ejected || wants_round_inserted))
                     return true;
-                else if(asc.alt_stance_blocks_trigger && !(gs.ShouldPullSlide() || gs.ShouldPushSlideForward() || gs.ShouldToggleBolt() || gs.ShouldEjectMag() || gs.ShouldInsertBullet()))
+                else if(asc.alt_stance_blocks_trigger && !(wants_slide_moved || wants_bolt_toggled || wants_mag_ejected || wants_round_inserted))
                     return true;
             } else {
-                if(asc.stance_blocks_bolt && gs.ShouldToggleBolt())
+                if(asc.stance_blocks_bolt && wants_bolt_toggled)
                     return true;
-                else if(asc.stance_blocks_slide && (gs.ShouldPullSlide() || gs.ShouldPushSlideForward()))
+                else if(asc.stance_blocks_slide && wants_slide_moved)
                     return true;
-                else if(asc.stance_blocks_mag && (gs.ShouldEjectMag() || gs.ShouldInsertBullet()))
+                else if(asc.stance_blocks_mag && (wants_mag_ejected || wants_round_inserted))
                     return true;
-                else if(asc.stance_blocks_trigger && !(gs.ShouldPullSlide() || gs.ShouldPushSlideForward() || gs.ShouldToggleBolt() || gs.ShouldEjectMag() || gs.ShouldInsertBullet()))
+                else if(asc.stance_blocks_trigger && !(wants_slide_moved || wants_bolt_toggled || wants_mag_ejected || wants_round_inserted))
                     return true;
             }
             return false;
@@ -116,15 +148,25 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             asc = gs.GetComponent<AlternativeStanceComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+            mc = gs.GetComponent<MagazineComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+            lbc = gs.GetComponent<LockableBoltComponent>();
+            mlc = gs.GetComponent<ManualLoadingComponent>();
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
         }
     }
 
-    [InclusiveAspects(GunAspect.LOCKABLE_BOLT)]
+    [InclusiveAspects(GunAspect.LOCKABLE_BOLT, GunAspect.CHAMBER)]
     public class BoltHelperSystem : GunSystemBase {
         LockableBoltComponent lbc;
+        ChamberComponent cc;
 
         bool ShouldToggleBolt() {
-            return lbc.bolt_stage != BoltActionStage.UNLOCKED && gs.ShouldPullSlide() || lbc.bolt_stage == BoltActionStage.UNLOCKED && (!gs.ShouldPullSlide() && !gs.ShouldPushSlideForward());
+            return !lbc.block_toggle && (
+                cc.active_round_state != RoundState.READY && lbc.bolt_stage == BoltActionStage.LOCKED ||
+                cc.active_round_state == RoundState.READY && lbc.bolt_stage == BoltActionStage.UNLOCKED
+            );
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -135,6 +177,7 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             lbc = gs.GetComponent<LockableBoltComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
         }
     }
 
