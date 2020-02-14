@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE)]
@@ -194,43 +195,19 @@ namespace GunSystemsV1 {
         RevolverCylinderComponent rcc;
 
         bool ShouldInsertBullet() {
-            int num_empty_chambers = 0;
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                if (rcc.cylinders[i].game_object == null) {
-                    ++num_empty_chambers;
-                }
-            }
-            return num_empty_chambers > 0;
+            return rcc.cylinders.Any((cylinder) => !cylinder.game_object);
         }
 
         bool ShouldExtractCasings() {
-            int num_fired_bullets = 0;
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                if ((rcc.cylinders[i].game_object != null) && !rcc.cylinders[i].can_fire) {
-                    ++num_fired_bullets;
-                }
-            }
-            return num_fired_bullets > 0;
+            return rcc.cylinders.Any((cylinder) => cylinder.game_object && !cylinder.can_fire);
         }
 
         bool ShouldCloseCylinder() {
-            int num_firable_bullets = 0;
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                if (rcc.cylinders[i].can_fire) {
-                    ++num_firable_bullets;
-                }
-            }
-            return num_firable_bullets == rcc.cylinder_capacity;
+            return !rcc.cylinders.Any((cylinder) => !cylinder.can_fire);
         }
 
         bool ShouldOpenCylinder() {
-            int num_firable_bullets = 0;
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                if (rcc.cylinders[i].can_fire) {
-                    ++num_firable_bullets;
-                }
-            }
-            return num_firable_bullets != rcc.cylinder_capacity;
+            return rcc.cylinders.Any((cylinder) => !cylinder.can_fire);
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
