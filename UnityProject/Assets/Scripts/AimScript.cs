@@ -1089,6 +1089,11 @@ public class AimScript:MonoBehaviour{
     			slomoWarningDuration = 1f;
     		}
     	}
+        if(character_input.GetButtonDown("Flashlight Toggle")){
+            if (held_flashlight != null && mag_stage == HandMagStage.EMPTY && gun_instance == null) {
+                held_flashlight.GetComponent<FlashlightScript>().ToggleSwitch();
+            }
+        }
     }
     
     public void StartTapePlay() {
@@ -1842,6 +1847,11 @@ public class AimScript:MonoBehaviour{
     				}
                     if (gun_instance == null && mag_stage == HandMagStage.EMPTY) {
                         display_text.Add(new DisplayLine("Drop flashlight: tap [ e ]", false));
+                        if (held_flashlight.GetComponent<FlashlightScript>().switch_on) {
+                            display_text.Add(new DisplayLine("Turn off flashlight: tap [ v ]", false));
+                        } else {
+                            display_text.Add(new DisplayLine("Turn on flashlight: tap [ v ]", false));
+                        }
                     }
     			} else {
     				int flashlight_slot = GetFlashlightSlot();

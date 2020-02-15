@@ -8,7 +8,7 @@ public class FlashlightScript:MonoBehaviour{
     public AudioClip sound_turn_on;
     public AudioClip sound_turn_off;
     float kSoundVolume = 0.3f;
-    bool switch_on = false;
+    public bool switch_on = false;
     const float max_battery_life = 60*60*5.5f;
     float battery_life_remaining = max_battery_life;
     
@@ -44,6 +44,13 @@ public class FlashlightScript:MonoBehaviour{
     	}
     }
     
+    public void ToggleSwitch(){
+        if (switch_on) {
+            TurnOff();
+        } else {
+            TurnOn();
+        }
+    }
     public void Update() {
     	if(switch_on){
     		battery_life_remaining -= Time.deltaTime;
