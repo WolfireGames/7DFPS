@@ -1019,6 +1019,7 @@ public class AimScript:MonoBehaviour{
     			magazine_instance_in_hand.AddComponent<Rigidbody>();
     			magazine_instance_in_hand.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
     			magazine_instance_in_hand.GetComponent<Rigidbody>().velocity = character_controller.velocity;
+                magazine_instance_in_hand.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
 
                 if(level_creator != null) {
                     magazine_instance_in_hand.transform.parent = level_creator.GetPositionTileItemParent(magazine_instance_in_hand.transform.position);
@@ -1030,6 +1031,7 @@ public class AimScript:MonoBehaviour{
                 held_flashlight.AddComponent<Rigidbody>();
                 held_flashlight.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
                 held_flashlight.GetComponent<Rigidbody>().velocity = character_controller.velocity;
+                held_flashlight.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
 
                 if(level_creator != null) {
                     held_flashlight.transform.parent = level_creator.GetPositionTileItemParent(held_flashlight.transform.position);
