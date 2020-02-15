@@ -619,7 +619,7 @@ public class AimScript:MonoBehaviour{
     			collider.gameObject.GetComponent<Rigidbody>().useGravity = false;
     			collider.gameObject.GetComponent<Rigidbody>().WakeUp();
     			collider.enabled = false;
-    		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null) && (held_flashlight == null)){
+    		} else if(collider.gameObject.name == "flashlight_object(Clone)" && (collider.gameObject.GetComponent<Rigidbody>() != null) && !holder.has_flashlight){
     			// Flashlight
     			held_flashlight = collider.gameObject;
     			Destroy(held_flashlight.GetComponent<Rigidbody>());
@@ -1026,7 +1026,19 @@ public class AimScript:MonoBehaviour{
 
     			magazine_instance_in_hand = null;
     			queue_drop = false;
-    		}
+    		} else if (held_flashlight != null && mag_stage == HandMagStage.EMPTY && gun_instance == null) {
+                held_flashlight.AddComponent<Rigidbody>();
+                held_flashlight.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                held_flashlight.GetComponent<Rigidbody>().velocity = character_controller.velocity;
+
+                if(level_creator != null) {
+                    held_flashlight.transform.parent = level_creator.GetPositionTileItemParent(held_flashlight.transform.position);
+                }
+
+                held_flashlight = null;
+                holder.has_flashlight = false;
+                queue_drop = false;
+            }
     	}
     	
     	if(character_input.GetButtonDown("Eject/Drop")){
@@ -1826,6 +1838,9 @@ public class AimScript:MonoBehaviour{
     					str += " ]";
     					display_text.Add(new DisplayLine(str, false));
     				}
+                    if (gun_instance == null && mag_stage == HandMagStage.EMPTY) {
+                        display_text.Add(new DisplayLine("Drop flashlight: tap [ e ]", false));
+                    }
     			} else {
     				int flashlight_slot = GetFlashlightSlot();
     				if(flashlight_slot != -1){
