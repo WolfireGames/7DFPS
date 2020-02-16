@@ -51,6 +51,7 @@ public class FlashlightScript:MonoBehaviour{
             TurnOn();
         }
     }
+
     public void Update() {
     	if(switch_on){
     		battery_life_remaining -= Time.deltaTime;
