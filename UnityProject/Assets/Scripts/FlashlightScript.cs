@@ -45,7 +45,7 @@ public class FlashlightScript:MonoBehaviour{
     }
     
     public void ToggleSwitch(){
-        if (switch_on) {
+        if(switch_on){
             TurnOff();
         } else {
             TurnOn();
