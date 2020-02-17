@@ -1598,9 +1598,8 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateLooseBulletDisplay() {
-    	bool revolver_open = ((gun_instance != null) && gun_instance.GetComponent<GunScript>().IsCylinderOpen());
-    	var isLifted = false; //(gun_instance != null) && gun_instance.GetComponent<GunScript>().IsLifted();
-    	if((mag_stage == HandMagStage.HOLD && (gun_instance == null)) || picked_up_bullet_delay > 0.0f || revolver_open || isLifted){
+    	bool can_add_rounds = gun_instance && gun_instance.GetComponent<GunScript>().IsAddingRounds();
+    	if((mag_stage == HandMagStage.HOLD && (gun_instance == null)) || picked_up_bullet_delay > 0.0f || can_add_rounds){
     		show_bullet_spring.target_state = 1.0f;
     		picked_up_bullet_delay = Mathf.Max(0.0f, picked_up_bullet_delay - Time.deltaTime);
     	} else {	
