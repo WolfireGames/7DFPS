@@ -62,16 +62,18 @@ public class ModManager : MonoBehaviour {
         }
 
         // Insert all Level Tile mods
-        ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
-        if(tile_load_type != ModLoadType.DISABLED) {
-            var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-            if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
-                tiles.Clear();
+        if(levelCreatorScript) {
+            ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
+            if(tile_load_type != ModLoadType.DISABLED) {
+                var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+                if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                    tiles.Clear();
 
-            foreach (var mod in loadedLevelMods)
-                foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
-                    tiles.Add(tile);
-            levelCreatorScript.level_tiles = tiles.ToArray();
+                foreach (var mod in loadedLevelMods)
+                    foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
+                        tiles.Add(tile);
+                levelCreatorScript.level_tiles = tiles.ToArray();
+            }
         }
 
         // Insert all Tape mods
