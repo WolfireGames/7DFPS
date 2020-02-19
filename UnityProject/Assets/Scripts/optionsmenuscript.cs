@@ -222,4 +222,9 @@ public class optionsmenuscript:MonoBehaviour{
         UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
         HideMenu();
     }
+
+    public void OpenScene(string scene_name) {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(scene_name);
+        HideMenu();
+    }
 }
