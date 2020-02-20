@@ -39,6 +39,7 @@ ehthumbs.db
 UnityProject/Assets/Mods/*
 !UnityProject/Assets/Mods/HowToMakeAMod.txt
 !UnityProject/Assets/Mods/LevelTileGuide.blend
+!UnityProject/Assets/Mods/inbuild_*
 
 # Temp folder
 UnityProject/Assets/ShaderForge/*
