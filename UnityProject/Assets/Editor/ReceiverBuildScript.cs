@@ -133,9 +133,10 @@ public class ReceiverBuildScript {
     }
 
     static string[] base_scenes = {
-            "Assets/splashscreen.unity",
-            "Assets/scene.unity",
-            "Assets/winscene.unity"
+        "Assets/splashscreen.unity",
+        "Assets/scene.unity",
+        "Assets/winscene.unity",
+        "Assets/Gun Range/range.unity",
     };
 
     public class BuildConfiguration {
