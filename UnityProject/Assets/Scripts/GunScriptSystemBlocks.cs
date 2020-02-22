@@ -213,4 +213,17 @@ namespace GunSystemsV1 {
             tc.trigger_pressable_predicates.Add( () => bc.bolt_stage == BoltActionStage.LOCKED);
         }
     }
+
+    [InclusiveAspects(GunAspect.CHAMBER, GunAspect.MANUAL_LOADING)]
+    public class ManualLoadingChamberBlockSystem : GunSystemBase {
+        ManualLoadingComponent mlc;
+        ChamberComponent cc;
+
+        public override void Initialize() {
+            mlc = gs.GetComponent<ManualLoadingComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+
+            mlc.can_insert_predicates.Add( () => cc.is_closed == mlc.load_when_closed);
+        }
+    }
 }

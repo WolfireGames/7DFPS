@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/winscene.unity
     guid: 51550a676e9499840ad4e69a0ba9656e
+  - enabled: 1
+    path: Assets/Gun Range/range.unity
+    guid: 477e6449cd7fab244a54d665c05e78c0
   m_configObjects: {}
