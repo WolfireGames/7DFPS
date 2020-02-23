@@ -111,6 +111,8 @@ public class VRInputBridge : MonoBehaviour
                     MagOut = true;
                 }
                 return VRInputController.instance.GunInteractLongPressDown(hand);
+            case "Flashlight Toggle":
+                return VRInputController.instance.GunInteract2Down(hand);
             case "Inventory 1":
                 if (VRInventoryManager.instance.ActiveSlot == 0) {
                     return VRInputController.instance.ActionPressDown(hand);

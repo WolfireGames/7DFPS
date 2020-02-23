@@ -85,6 +85,50 @@ public class VRInputController : MonoBehaviour
         }
     }
 
+    public Vector3 GetAimHandlePos(HandSide hand) {
+        switch (hand) {
+            case HandSide.Right:
+                return RightHand.transform.position - RightHand.transform.forward * 0.06f;
+            case HandSide.Left:
+                return LeftHand.transform.position - LeftHand.transform.forward * 0.06f;
+            default:
+                return RightHand.transform.position;
+        }
+    }
+
+    bool FlipFlashlightDirection;
+
+    public Vector3 GetAimHandleDir(HandSide hand) {
+        switch (hand) {
+            case HandSide.Right:
+                if (Vector3.Angle(RightHand.transform.forward, Head.transform.forward) > 90) {
+                    if (GunInteractDown(hand)) {
+                        FlipFlashlightDirection = true;
+                    }
+                }
+                else if (Vector3.Angle(RightHand.transform.forward, Head.transform.forward) < 90) {
+                    if (GunInteractDown(hand)) {
+                        FlipFlashlightDirection = false;
+                    }
+                }
+                return RightHand.transform.forward * (FlipFlashlightDirection?-1:1);
+            case HandSide.Left:
+                if (Vector3.Angle(LeftHand.transform.forward, Head.transform.forward) > 90) {
+                    if (GunInteractDown(hand)) {
+                        FlipFlashlightDirection = true;
+                    }
+                }
+                else if (Vector3.Angle(LeftHand.transform.forward, Head.transform.forward) < 90) {
+                    if (GunInteractDown(hand)) {
+                        FlipFlashlightDirection = false;
+                    }
+                }
+                return LeftHand.transform.forward * (FlipFlashlightDirection ? -1 : 1);
+            default:
+                return RightHand.transform.forward;
+        }
+    }
+
     public Vector3 GetAimDir(HandSide hand) {
         switch (hand) {
             case HandSide.Right:

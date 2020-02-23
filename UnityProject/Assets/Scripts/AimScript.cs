@@ -558,7 +558,7 @@ public class AimScript:MonoBehaviour{
     	return kGunDistance * (0.5f + PlayerPrefs.GetFloat("gun_distance", 1.0f)*0.5f);
     }
     
-    public Vector3 AimPos() {//TODO: Make gun aimpos based on controller position
+    public Vector3 AimPos() {
     	Vector3 aim_dir = AimDir();
         return VRInputController.instance.GetAimPos(primaryHand);// + aim_dir;
     }
@@ -1400,7 +1400,7 @@ public class AimScript:MonoBehaviour{
     	}
     }
     
-    public void UpdateAimSpring() {//TODO: rip this out
+    public void UpdateAimSpring() {
         return;
     	/*bool offset_aim_target = false;
     	if((character_input.GetButton("Hold To Aim") || aim_toggle) && !dead && (gun_instance != null)){
@@ -1423,7 +1423,7 @@ public class AimScript:MonoBehaviour{
     	}*/
     }
     
-    public void UpdateCameraRotationControls() {//TODO: none of this, rip it out
+    public void UpdateCameraRotationControls() {
     	/*rotation_y_min_leeway = Mathf.Lerp(0.0f,kRotationYMinLeeway,aim_spring.state);
     	rotation_y_max_leeway = Mathf.Lerp(0.0f,kRotationYMaxLeeway,aim_spring.state);
     	rotation_x_leeway = Mathf.Lerp(0.0f,kRotationXLeeway,aim_spring.state);
@@ -1462,7 +1462,7 @@ public class AimScript:MonoBehaviour{
     	}*/
     }
     
-    public void UpdateCameraAndPlayerTransformation() {//TODO: Angles never change, set position of parent instead, set it at feet.
+    public void UpdateCameraAndPlayerTransformation() {
         /*
         main_camera.transform.localEulerAngles = new Vector3(-view_rotation_y, view_rotation_x, head_tilt);
         main_camera.transform.localEulerAngles += new Vector3(head_recoil_spring_y.state, head_recoil_spring_x.state, 0.0f); */
@@ -1499,7 +1499,7 @@ public class AimScript:MonoBehaviour{
         main_camera.transform.position = tmp_cs2;*/
     }
     
-    public void UpdateGunTransformation() {//TODO: Lock to controller, no poses
+    public void UpdateGunTransformation() {
     	Vector3 aim_dir = AimDir();
     	Vector3 aim_pos = AimPos();	
     	
@@ -1528,11 +1528,11 @@ public class AimScript:MonoBehaviour{
     		y_recoil_spring.state); 
     }
     
-    public void UpdateFlashlightTransformation() {//TODO: Figure out what to do with the flashlight
-    	Vector3 flashlight_hold_pos = main_camera.transform.position + main_camera.transform.rotation*new Vector3(-0.15f,-0.01f,0.15f);
-    	Quaternion flashlight_hold_rot = main_camera.transform.rotation;
-    	
-    	Vector3 flashlight_pos = flashlight_hold_pos;
+    public void UpdateFlashlightTransformation() {
+        Vector3 flashlight_hold_pos = VRInputController.instance.GetAimHandlePos(secondaryHand);//main_camera.transform.position + main_camera.transform.rotation*new Vector3(-0.15f,-0.01f,0.15f);
+    	Quaternion flashlight_hold_rot = Quaternion.Slerp(held_flashlight.transform.rotation, Quaternion.LookRotation(VRInputController.instance.GetAimHandleDir(secondaryHand)), 0.1f);
+
+        Vector3 flashlight_pos = flashlight_hold_pos;
     	Quaternion flashlight_rot = flashlight_hold_rot;
     
     	held_flashlight.transform.position = flashlight_pos;
@@ -1585,7 +1585,7 @@ public class AimScript:MonoBehaviour{
     	held_flashlight.transform.rotation = flashlight_rot;
     }
     
-    public void UpdateMagazineTransformation() {//TODO: Make mag attach to other hand
+    public void UpdateMagazineTransformation() {
     	if(gun_instance != null){
     		mag_pos = gun_instance.transform.position;
     		mag_rot = gun_instance.transform.rotation;
@@ -1612,7 +1612,7 @@ public class AimScript:MonoBehaviour{
     	} 
     }
     
-    public void UpdateInventoryTransformation() {//TODO: inventory management, make mags sit around belt?
+    public void UpdateInventoryTransformation() {
     	int i = 0;
     	WeaponSlot slot = null;
         for(i=0; i<9; ++i){
@@ -1670,7 +1670,7 @@ public class AimScript:MonoBehaviour{
 
     public void UpdateLooseBulletDisplay() {
     	bool can_add_rounds = gun_instance && gun_instance.GetComponent<GunScript>().IsAddingRounds();
-    	if((mag_stage == HandMagStage.HOLD && (gun_instance == null)) || picked_up_bullet_delay > 0.0f || can_add_rounds){
+    	if((mag_stage == HandMagStage.HOLD) || picked_up_bullet_delay > 0.0f || can_add_rounds){
     		show_bullet_spring.target_state = 1.0f;
     		picked_up_bullet_delay = Mathf.Max(0.0f, picked_up_bullet_delay - Time.deltaTime);
     	} else {	
@@ -1682,26 +1682,36 @@ public class AimScript:MonoBehaviour{
     		Spring spring = loose_bullet_spring[i];
     		spring.Update();
     		GameObject bullet = loose_bullets[i];
-            if (primaryHand == HandSide.Right) {
-                bullet.transform.position = VRInputController.instance.LeftHand.transform.position;
-                /*if(main_camera.GetComponent<Camera>() != null){
-                    bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
-                }*/
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
-                bullet.transform.position += VRInputController.instance.LeftHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
-                bullet.transform.rotation = VRInputController.instance.LeftHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+
+            Vector3 headForw = VRInputController.instance.Head.transform.forward;
+            headForw.y = 0;
+
+            Vector3 Beltpos = VRInventoryManager.instance.transform.position + headForw.normalized * 0.3f; 
+
+
+            Vector3 InHandPos = VRInputController.instance.LeftHand.transform.position;
+
+            if (primaryHand == HandSide.Left) {
+                InHandPos = VRInputController.instance.RightHand.transform.position;
             }
-            else {
-                bullet.transform.position = VRInputController.instance.RightHand.transform.position;
-                /*if(main_camera.GetComponent<Camera>() != null){
-                    bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
-                }*/
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.02f, -0.01f, 0.0f);
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
-                bullet.transform.position += VRInputController.instance.RightHand.transform.rotation * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
-                bullet.transform.rotation = VRInputController.instance.RightHand.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+
+            bullet.transform.position = Vector3.Lerp(Beltpos, InHandPos, show_bullet_spring.state);
+
+            Quaternion headRot = Quaternion.LookRotation(headForw, Vector3.up);
+
+            Quaternion handRot = VRInputController.instance.LeftHand.transform.rotation;
+
+            if (primaryHand == HandSide.Left) {
+                handRot = VRInputController.instance.RightHand.transform.rotation;
             }
+
+            Quaternion bulletRot = Quaternion.Slerp(headRot, handRot, show_bullet_spring.state);
+
+            bullet.transform.position += bulletRot * new Vector3(0.02f, -0.01f, 0.0f);
+            bullet.transform.position += bulletRot * new Vector3(0.01f * i, 0.0f, 0.0f);//0.006f
+            bullet.transform.position += bulletRot * new Vector3(-0.03f, 0.03f, 0.0f) * (1.0f - show_bullet_spring.state);
+            bullet.transform.rotation = bulletRot * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f, 0.0f, 0.0f));
+
     		/*var tmp_cs4 = bullet.transform.localScale;
             tmp_cs4.x = spring.state;
             tmp_cs4.y = spring.state;
@@ -1715,7 +1725,7 @@ public class AimScript:MonoBehaviour{
     	}
     }
     
-    public void UpdateSprings() {//TODO: Stop updating some of these springs
+    public void UpdateSprings() {
     	slide_pose_spring.Update();
     	reload_pose_spring.Update();
     	press_check_pose_spring.Update();
@@ -2164,7 +2174,7 @@ public class AimScript:MonoBehaviour{
     const float maxRotationSpeed = 360.0f;
     
     // Update is called once per frame
-    public void FPSInputControllerUpdate() {//TODO: movement mapping
+    public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
     	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, VRInputController.instance.GetWalkVector(primaryHand).y, 0.0f);
     	
