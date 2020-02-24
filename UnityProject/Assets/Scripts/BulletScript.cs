@@ -92,6 +92,8 @@ public class BulletScript:MonoBehaviour{
     		if(Physics.Linecast(old_pos, transform.position, out hit, 1<<0 | 1<<9 | 1<<11)){
                 GameObject hit_obj = hit.collider.gameObject;
                 GameObject hit_transform_obj = hit.transform.gameObject;
+                Rigidbody hit_rigidbody = hit.collider.attachedRigidbody;
+
                 ShootableLight light_script = RecursiveHasScript(hit_obj, typeof(ShootableLight), 1) as ShootableLight;
                 AimScript aim_script = RecursiveHasScript(hit_obj, typeof(AimScript), 1) as AimScript;
                 RobotScript turret_script = RecursiveHasScript(hit_obj, typeof(RobotScript), 3) as RobotScript;
@@ -112,9 +114,14 @@ public class BulletScript:MonoBehaviour{
     					}
     				}					
     			}
-    			if(turret_script && turret_script.GetComponent<Rigidbody>()){
-    				turret_script.GetComponent<Rigidbody>().AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
-    			}
+
+                if(turret_script && turret_script.GetComponent<Rigidbody>()){
+                	turret_script.GetComponent<Rigidbody>().AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
+                }else if (hit_rigidbody) {
+                    hit_rigidbody.AddForceAtPosition(velocity * 0.01f, hit.point, ForceMode.Impulse);
+                }
+
+    			
                 bool broke_glass = false;
     			if(light_script){
     				broke_glass = light_script.WasShot(hit_obj, hit.point, velocity);
@@ -135,11 +142,11 @@ public class BulletScript:MonoBehaviour{
     					effect = Instantiate(puff_effect, hit.point, RandomOrientation());
     					PlaySoundFromGroup(sound_hit_body, 1.0f);
     					aim_script.WasShot();
-    				} else if(hit.collider.material.name == "metal (Instance)"){
+    				} else if(hit.collider.material.name.Contains("metal")){
     					PlaySoundFromGroup(sound_hit_metal, hostile ? 1.0f : 0.4f);					
     					hole = Instantiate(metal_bullet_hole_decal_obj, hit.point, Quaternion.FromToRotation(new Vector3(0,0,-1), hit.normal) * Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), new Vector3(0,0,1)));
     					effect = Instantiate(spark_effect, hit.point, RandomOrientation());
-    				} else if(hit.collider.material.name == "glass (Instance)"){
+    				} else if(hit.collider.material.name.Contains("glass")){
     					PlaySoundFromGroup(sound_hit_glass, hostile ? 1.0f : 0.4f);
                         if(!broke_glass){ // Don't make bullet hole if glass is no longer there
         					hole = Instantiate(glass_bullet_hole_obj, hit.point, RandomOrientation());
@@ -157,7 +164,9 @@ public class BulletScript:MonoBehaviour{
                         } else if(turret_script){
                             hole.transform.parent = turret_script.transform;
                             turret_script.AttachHole(hole.transform, hit.transform);
-    				    } else if(level_creator != null) {
+                        }else if (hit_rigidbody) {
+                            hole.transform.parent = hit.collider.transform;
+                        }else if(level_creator != null) {
                             hole.transform.parent = level_creator.GetPositionTileDecalsParent(hole.transform.position);
                         } 
                     }
