@@ -845,9 +845,9 @@ public class AimScript:MonoBehaviour{
 		}
     	if(character_input.GetButton("Slide Lock")) {
     		gun_script.PressureOnSlideLock();
-			if(character_input.GetButtonDown("Slide Lock")) {
-				gun_script.ToggleBoltLock();
-			}
+    	}
+    	if(character_input.GetButtonDown("Toggle Bolt Lock")) {
+    		gun_script.ToggleBoltLock();
     	}
     	if(character_input.GetButtonDown("Safety")){
     		gun_script.ToggleSafety();			
@@ -857,7 +857,6 @@ public class AimScript:MonoBehaviour{
     	}
     	if(character_input.GetButtonDown("Swing Out Cylinder")){
     		gun_script.SwingOutCylinder();
-    		//gun_script.ToggleLiftedStage();
     	}	
     	if(character_input.GetButtonDown("Close Cylinder")){
     		gun_script.CloseCylinder();
@@ -871,7 +870,7 @@ public class AimScript:MonoBehaviour{
     	if(character_input.GetButtonUp("Hammer")){
     		gun_script.ReleaseHammer();
     	}
-    	if(character_input.GetButtonDown("Hammer")){
+    	if(character_input.GetButtonDown("Toggle Stance")){
     		gun_script.InputToggleStance();
     	}
     	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
