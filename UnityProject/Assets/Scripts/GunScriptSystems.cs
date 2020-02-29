@@ -179,8 +179,11 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            gsc.safety_off = Mathf.Max(IsSafe() ? 0f : 1f, gsc.safety_off - Time.deltaTime * 10.0f);
-            // TODO make this transition nicer
+            if (gsc.is_safe) {
+                gsc.safety_off = Mathf.Max(0.0f, gsc.safety_off - Time.deltaTime * 10.0f);
+            } else {
+                gsc.safety_off = Mathf.Min(1.0f, gsc.safety_off + Time.deltaTime * 10.0f);
+            }
         }
     }
 
@@ -222,8 +225,11 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            tsc.safety_off = Mathf.Max(tsc.is_safe ? 0f : 1f, tsc.safety_off - Time.deltaTime * 10.0f);
-            // TODO make this transition nicer
+            if (tsc.is_safe) {
+                tsc.safety_off = Mathf.Max(0.0f, tsc.safety_off - Time.deltaTime * 10.0f);
+            } else {
+                tsc.safety_off = Mathf.Min(1.0f, tsc.safety_off + Time.deltaTime * 10.0f);
+            }
         }
     }
 

@@ -478,8 +478,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gun_system_version: 0
-  empty_casing: {fileID: 100002, guid: 71c0f7043e8f8fb459a162dfe0f685c3, type: 3}
-  full_casing: {fileID: 100002, guid: ceee127beca125b44a279173816d263c, type: 3}
+  empty_casing: {fileID: 100002, guid: 4bb58b5130b574747a5a88f2cf6cfee0, type: 3}
+  full_casing: {fileID: 100002, guid: c150f4a650cab7e4488444885f852f97, type: 3}
   camera_nearplane_override: 0.01
   aspect:
     value: 01000200030004000500070008000d000e000f001400160019001a001d00
@@ -522,11 +522,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound_gunshot_bigroom:
-  - {fileID: 8300000, guid: 285229a61b248c2488fb4ff56d1e03bd, type: 3}
+  - {fileID: 8300000, guid: 7109ec386fc6c8942b37526ce7101360, type: 3}
   sound_gunshot_smallroom:
-  - {fileID: 8300000, guid: 285229a61b248c2488fb4ff56d1e03bd, type: 3}
+  - {fileID: 8300000, guid: 7109ec386fc6c8942b37526ce7101360, type: 3}
   sound_gunshot_open:
-  - {fileID: 8300000, guid: 285229a61b248c2488fb4ff56d1e03bd, type: 3}
+  - {fileID: 8300000, guid: 7109ec386fc6c8942b37526ce7101360, type: 3}
   point_muzzleflash: {fileID: 2685340590543155329}
   point_muzzle: {fileID: 7609309767803029946}
   bullet_obj: {fileID: 100000, guid: 45aa8aee963396647970bee4b0342c1b, type: 3}
@@ -620,9 +620,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound_rifle_bolt_unlock:
-  - {fileID: 8300000, guid: c784014de1ee08c4790d848890d8ffa1, type: 3}
+  - {fileID: 8300000, guid: ad72f92273249ef4d82f5357ae377602, type: 3}
   sound_rifle_bolt_lock:
-  - {fileID: 8300000, guid: 5eee7851b2d2ba34c801ebe9916670e2, type: 3}
+  - {fileID: 8300000, guid: 5a6cfc9d933a8d54699c17c668da900e, type: 3}
   bolt: {fileID: 4026777810585696067}
   point_bolt_unlocked: {fileID: 1034075372548509168}
   toggle_speed: 7
@@ -639,9 +639,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sound_slide_back:
-  - {fileID: 8300000, guid: 6f56a109e143d9d41bd17bd829bab4cf, type: 3}
+  - {fileID: 8300000, guid: 0af28b3ded65bc948b74ebb6a0a4d363, type: 3}
   sound_slide_front:
-  - {fileID: 8300000, guid: 3312d4b8f0f8e2a45be54b940333409e, type: 3}
+  - {fileID: 8300000, guid: aa20508113dc1d44c8f14673697c2562, type: 3}
   sound_bullet_eject: []
   eject_round: 1
   chamber_round: 1
