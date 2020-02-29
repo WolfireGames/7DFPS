@@ -362,6 +362,9 @@ public class AimScript:MonoBehaviour{
     }
     
     public void StepRecoil(float amount) {
+        if (VRInputController.instance.isFrontGrabbing) {
+            amount *= 0.1f;
+        }
     	x_recoil_spring.vel += UnityEngine.Random.Range(100,400) * amount;
     	y_recoil_spring.vel += UnityEngine.Random.Range(-200,200) * amount;
     }
@@ -991,10 +994,10 @@ public class AimScript:MonoBehaviour{
     	
         var recoil_data = gun_script.GetRecoilData();
         if(recoil_data != null) {
-            x_recoil_spring.vel += recoil_data.recoil_transfer_x;
-            y_recoil_spring.vel += recoil_data.recoil_transfer_y;
-            rotation_x += recoil_data.rotation_transfer_x;
-            rotation_y += recoil_data.rotation_transfer_y;
+            x_recoil_spring.vel += recoil_data.recoil_transfer_x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+            y_recoil_spring.vel += recoil_data.recoil_transfer_y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+            rotation_x += recoil_data.rotation_transfer_x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+            rotation_y += recoil_data.rotation_transfer_y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
             recoil_data.recoil_transfer_x = 0.0f;
             recoil_data.recoil_transfer_y = 0.0f;
             recoil_data.rotation_transfer_x = 0.0f;

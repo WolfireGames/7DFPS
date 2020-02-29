@@ -26,6 +26,10 @@ public class VRInputController : MonoBehaviour
 
     public SteamVR_Action_Pose ControllerPose;
 
+    public bool isFrontGrabbing, canFrontGrab;
+
+    Transform muzzlepos;
+
     private void Awake() {
         instance = this;
     }
@@ -40,6 +44,10 @@ public class VRInputController : MonoBehaviour
             LHandSphere.SetActive(true);
             RHandSphere.SetActive(false);
         }
+
+        muzzlepos = VRInputBridge.instance.aimScript_ref.gun_instance.GetComponent<FiringComponent>().point_muzzle;
+        canFrontGrab = muzzlepos.localPosition.z > 0.3f;
+
     }
 
     public Vector3 GetAimPos(HandSide hand) {
@@ -52,6 +60,29 @@ public class VRInputController : MonoBehaviour
                 return RightHand.transform.position;
         }
     }
+
+    public Vector3 GetAimDir(HandSide hand) {
+        if (!isFrontGrabbing) { 
+            switch (hand) {
+                case HandSide.Right:
+                    return -RightHand.transform.up * 1.5f + RightHand.transform.forward;
+                case HandSide.Left:
+                    return -LeftHand.transform.up * 1.5f + LeftHand.transform.forward;
+                default:
+                    return RightHand.transform.forward;
+            }
+        }else{
+            switch (hand) {
+                case HandSide.Right:
+                    return ((LHandSphere.transform.position) - RHandSphere.transform.position).normalized;
+                case HandSide.Left:
+                    return ((RHandSphere.transform.position) - LHandSphere.transform.position).normalized;
+                default:
+                    return RightHand.transform.forward;
+            }
+        }
+    }
+
 
     bool checkedCylinderRenderer;
 
@@ -129,17 +160,7 @@ public class VRInputController : MonoBehaviour
         }
     }
 
-    public Vector3 GetAimDir(HandSide hand) {
-        switch (hand) {
-            case HandSide.Right:
-                return -RightHand.transform.up*1.5f + RightHand.transform.forward;
-            case HandSide.Left:
-                return -LeftHand.transform.up*1.5f + LeftHand.transform.forward;
-            default:
-                return RightHand.transform.forward;
-        }
-    }
-
+   
     public Vector3 GetAimUp(HandSide hand) {
         switch (hand) {
             case HandSide.Right:
@@ -244,7 +265,37 @@ public class VRInputController : MonoBehaviour
             TallestHead = Head.transform.localPosition.y+0.1f;
         }
 
-        
+        if (canFrontGrab) {
+            if (LHandSphere.activeSelf) {
+
+                if (Vector3.Distance(Vector3.Lerp(RightHand.transform.position, muzzlepos.position, 0.65f), LHandSphere.transform.position) < 0.1f) {
+                    isFrontGrabbing = ActionPress(HandSide.Left);
+                }
+
+                if (isFrontGrabbing) {
+                    LHandSphere.GetComponent<Renderer>().enabled = false;
+                    if (ActionPressUp(HandSide.Left)) {
+                        LHandSphere.GetComponent<Renderer>().enabled = true;
+                    }
+                    isFrontGrabbing = ActionPress(HandSide.Left);
+                }
+            }
+
+            if (RHandSphere.activeSelf) {
+
+                if (Vector3.Distance(Vector3.Lerp(LeftHand.transform.position, muzzlepos.position, 0.65f), RHandSphere.transform.position) < 0.1f) {
+                    isFrontGrabbing = ActionPress(HandSide.Right);
+                }
+
+                if (isFrontGrabbing) {
+                    RHandSphere.GetComponent<Renderer>().enabled = false;
+                    if (ActionPressUp(HandSide.Right)) {
+                        RHandSphere.GetComponent<Renderer>().enabled = true;
+                    }
+                    isFrontGrabbing = ActionPress(HandSide.Right);
+                }
+            }
+        }
 
         InventoryPos.transform.localPosition = (new Vector3(Head.transform.localPosition.x - (transform.InverseTransformDirection(Head.transform.forward).x * 0.15f), Head.transform.localPosition.y, Head.transform.localPosition.z - (transform.InverseTransformDirection(Head.transform.forward).z * 0.15f)) * Head.transform.localScale.x) - (Vector3.up * TallestHead / 3f);
         InventoryPos.transform.rotation = transform.rotation;

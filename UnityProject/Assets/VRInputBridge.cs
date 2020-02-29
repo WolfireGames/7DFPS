@@ -18,7 +18,6 @@ public class VRInputBridge : MonoBehaviour
 
     private IEnumerator Start() {
         yield return new WaitForSeconds(0.5f);
-        aimScript_ref = FindObjectOfType<AimScript>();
 
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE)){
             SlideObject = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().slide.GetComponent<Renderer>();
@@ -58,12 +57,12 @@ public class VRInputBridge : MonoBehaviour
         }
 
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)) {
-            SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponent<Renderer>();
+            //SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponent<Renderer>();
             if (SlidelockObject == null) {
-                SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponentInChildren<Renderer>();
+               // SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponentInChildren<Renderer>();
             }
             if (SlidelockObject == null) {
-                Debug.Log("LOCKABLE_BOLT Component Doesn't exist!");
+                //Debug.Log("LOCKABLE_BOLT Component Doesn't exist!");
             }
         }
 

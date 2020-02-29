@@ -121,6 +121,7 @@ public class GunScript : MonoBehaviour {
         gun_systems = GetGunSystems();
 
         // Init
+        aspect = aspect ^ (GunAspect.ALTERNATIVE_STANCE & aspect); // Remove ALTERNATIVE_STANCE if it is present
         gun_systems.LoadSystems(this, aspect);
         gun_systems.Initialize();
     }
