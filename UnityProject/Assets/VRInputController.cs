@@ -274,10 +274,10 @@ public class VRInputController : MonoBehaviour
 
                 if (isFrontGrabbing) {
                     LHandSphere.GetComponent<Renderer>().enabled = false;
-                    if (ActionPressUp(HandSide.Left)) {
-                        LHandSphere.GetComponent<Renderer>().enabled = true;
-                    }
                     isFrontGrabbing = ActionPress(HandSide.Left);
+                }
+                if (ActionPressUp(HandSide.Left)) {
+                    LHandSphere.GetComponent<Renderer>().enabled = true;
                 }
             }
 
@@ -289,10 +289,10 @@ public class VRInputController : MonoBehaviour
 
                 if (isFrontGrabbing) {
                     RHandSphere.GetComponent<Renderer>().enabled = false;
-                    if (ActionPressUp(HandSide.Right)) {
-                        RHandSphere.GetComponent<Renderer>().enabled = true;
-                    }
                     isFrontGrabbing = ActionPress(HandSide.Right);
+                }
+                if (ActionPressUp(HandSide.Right)) {
+                    RHandSphere.GetComponent<Renderer>().enabled = true;
                 }
             }
         }
