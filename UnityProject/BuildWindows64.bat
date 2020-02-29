@@ -3,7 +3,7 @@ del /f /Q /S "Build\win64"
 
 git rev-parse --verify HEAD > ref.txt
 
-"C:\Program Files\Unity\Editor\Unity" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildWindows64 -logFile unitylog.txt
+"%UNITY%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildWindows64 -logFile unitylog.txt
 
 if errorlevel 1 (
     echo Failure To Run

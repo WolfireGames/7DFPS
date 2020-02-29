@@ -871,11 +871,10 @@ public class AimScript:MonoBehaviour{
 
     	if(character_input.GetButton("Slide Lock", primaryHand)) {
             gun_script.PressureOnSlideLock();
-			if(character_input.GetButtonDown("Slide Lock", primaryHand)) {
-				gun_script.ToggleBoltLock();
-			}
-    	}
-
+        }
+        if (character_input.GetButtonDown("Slide Lock", primaryHand)) {
+            gun_script.ToggleBoltLock();
+        }
 
         if (character_input.GetButtonDown("Safety", primaryHand)){
     		gun_script.ToggleSafety();			
@@ -887,7 +886,6 @@ public class AimScript:MonoBehaviour{
     	
     	if(character_input.GetButtonDown("Swing Out Cylinder", primaryHand)){
     		gun_script.SwingOutCylinder();
-    		//gun_script.ToggleLiftedStage();
     	}	
     	if(character_input.GetButtonDown("Close Cylinder", primaryHand)){
     		gun_script.CloseCylinder();
@@ -901,6 +899,7 @@ public class AimScript:MonoBehaviour{
     	if(character_input.GetButtonUp("Hammer", primaryHand)){
     		gun_script.ReleaseHammer();
     	}
+
     	if(character_input.GetButtonDown("Hammer", primaryHand)){
     		gun_script.InputToggleStance();
     	}

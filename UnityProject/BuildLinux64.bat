@@ -1,7 +1,7 @@
 del /f /Q /S Receiver_linux64.zip
 del /f /Q /S "Build\linux64"
 
-"C:\Program Files\Unity\Editor\Unity" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildLinux64 -logFile unitylog.txt
+"%UNITY%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildLinux64 -logFile unitylog.txt
 
 if errorlevel 1 (
     echo Failure To Run

@@ -57,6 +57,16 @@ public class VRInputBridge : MonoBehaviour
             }
         }
 
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)) {
+            SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponent<Renderer>();
+            if (SlidelockObject == null) {
+                SlidelockObject = aimScript_ref.gun_script.GetComponent<LockableBoltComponent>().bolt.GetComponentInChildren<Renderer>();
+            }
+            if (SlidelockObject == null) {
+                Debug.Log("LOCKABLE_BOLT Component Doesn't exist!");
+            }
+        }
+
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.CYLINDER_VISUAL)) {
             CylinderObject = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.GetComponent<Renderer>();
             if (CylinderObject == null) {
