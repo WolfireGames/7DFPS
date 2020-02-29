@@ -8,7 +8,7 @@ public class VRInputBridge : MonoBehaviour
 
     public AimScript aimScript_ref;
 
-    Renderer SlideObject;
+    Renderer SlideObject, FiremodeObject, ThumbsafetyObject, SlidelockObject, HammerObject, CylinderObject, ExtractorObject;
     Bounds SlideBounds;
 
     void Awake()
@@ -20,10 +20,70 @@ public class VRInputBridge : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         aimScript_ref = FindObjectOfType<AimScript>();
 
-        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE)){//gun_instance.GetComponent<GunScript>().HasSlide()) {
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE)){
             SlideObject = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().slide.GetComponent<Renderer>();
             if(SlideObject == null) {
                 SlideObject = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().slide.GetComponentInChildren<Renderer>();
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.FIRE_MODE_VISUAL)) {
+            FiremodeObject = aimScript_ref.gun_script.GetComponent<FireModeVisualComponent>().fire_mode_toggle.GetComponent<Renderer>();
+            if (FiremodeObject == null) {
+                FiremodeObject = aimScript_ref.gun_script.GetComponent<FireModeVisualComponent>().fire_mode_toggle.GetComponentInChildren<Renderer>();
+            }
+            if (FiremodeObject == null) {
+                Debug.Log("FiremodeObject Component Doesn't exist!");
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.THUMB_SAFETY_VISUAL)) {
+            ThumbsafetyObject = aimScript_ref.gun_script.GetComponent<ThumbSafetyVisualComponent>().safety.GetComponent<Renderer>();
+            if (ThumbsafetyObject == null) {
+                ThumbsafetyObject = aimScript_ref.gun_script.GetComponent<ThumbSafetyVisualComponent>().safety.GetComponentInChildren<Renderer>();
+            }
+            if (ThumbsafetyObject == null) {
+                Debug.Log("ThumbsafetyObject Component Doesn't exist!");
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE_LOCK_VISUAL)) {
+            SlidelockObject = aimScript_ref.gun_script.GetComponent<SlideLockVisualComponent>().slide_lock.GetComponent<Renderer>();
+            if (SlidelockObject == null) {
+                SlidelockObject = aimScript_ref.gun_script.GetComponent<SlideLockVisualComponent>().slide_lock.GetComponentInChildren<Renderer>();
+            }
+            if (SlidelockObject == null) {
+                Debug.Log("SlidelockObject Component Doesn't exist!");
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.CYLINDER_VISUAL)) {
+            CylinderObject = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.GetComponent<Renderer>();
+            if (CylinderObject == null) {
+                CylinderObject = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.GetComponentInChildren<Renderer>();
+            }
+            if (CylinderObject == null) {
+                Debug.Log("CylinderObject Component Doesn't exist!");
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)) {
+            ExtractorObject = aimScript_ref.gun_script.GetComponent<RevolverCylinderComponent>().chamber_parent.GetComponent<Renderer>();
+            if (ExtractorObject == null) {
+                ExtractorObject = aimScript_ref.gun_script.GetComponent<RevolverCylinderComponent>().chamber_parent.GetComponentInChildren<Renderer>();
+            }
+            if (ExtractorObject == null) {
+                Debug.Log("ExtractorObject Component Doesn't exist!");
+            }
+        }
+
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.HAMMER_VISUAL)) {
+            HammerObject = aimScript_ref.gun_script.GetComponent<HammerVisualComponent>().hammer.GetComponent<Renderer>();
+            if (HammerObject == null) {
+                HammerObject = aimScript_ref.gun_script.GetComponent<HammerVisualComponent>().hammer.GetComponentInChildren<Renderer>();
+            }
+            if (HammerObject == null) {
+                Debug.Log("HammerObject Component Doesn't exist!");
             }
         }
 
@@ -32,20 +92,98 @@ public class VRInputBridge : MonoBehaviour
 
     public bool MagOut;
 
+    public bool CheckBoundsAndClicked(Renderer renderedComponent, HandSide side, bool shrink = false) {
+        if (renderedComponent == null) {
+            return false;
+        }
+        Bounds bound = renderedComponent.bounds;
+
+        if (shrink) {
+            bound.extents *= 0.5f;
+        }
+
+        if (side == HandSide.Left) {
+            if (bound.Contains(VRInputController.instance.LHandSphere.transform.position)) {
+                return VRInputController.instance.ActionPress(side);
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if (bound.Contains(VRInputController.instance.RHandSphere.transform.position)) {
+                return VRInputController.instance.ActionPress(side);
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    public bool CheckBoundsAndClickedDown(Renderer renderedComponent, HandSide side) {
+        if(renderedComponent == null) {
+            return false;
+        }
+        Bounds bound = renderedComponent.bounds;
+
+        if (side == HandSide.Left) {
+            if (bound.Contains(VRInputController.instance.LHandSphere.transform.position)) {
+                
+                return VRInputController.instance.ActionPressDown(side);
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if (bound.Contains(VRInputController.instance.RHandSphere.transform.position)) {
+                return VRInputController.instance.ActionPressDown(side);
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    public bool CheckBoundsAndClickedUp(Renderer renderedComponent, HandSide side) {
+        if (renderedComponent == null) {
+            return false;
+        }
+        Bounds bound = renderedComponent.bounds;
+
+        if (side == HandSide.Left) {
+            if (bound.Contains(VRInputController.instance.LHandSphere.transform.position)) {
+                return VRInputController.instance.ActionPressUp(side);
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if (bound.Contains(VRInputController.instance.RHandSphere.transform.position)) {
+                return VRInputController.instance.ActionPressUp(side);
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
     public bool GetButtonDown(string input_str, HandSide hand) {
         switch (input_str) {
             case "Slide Lock":
-                return VRInputController.instance.GunInteractDown(hand);
+                return VRInputController.instance.GunInteractDown(hand) || CheckBoundsAndClickedDown(SlidelockObject, aimScript_ref.secondaryHand);
             case "Safety":
-                return VRInputController.instance.GunInteract2Down(hand);
+                return VRInputController.instance.GunInteract2Down(hand) || CheckBoundsAndClickedDown(ThumbsafetyObject, aimScript_ref.secondaryHand);
             case "Auto Mod Toggle":
-                return VRInputController.instance.GunInteract3Down(hand);
+                return VRInputController.instance.GunInteract3Down(hand) || CheckBoundsAndClickedDown(FiremodeObject, aimScript_ref.secondaryHand);
             case "Pull Back Slide":
                 if(SlideObject == null) {
                     return false;
                 }
                 if (hand == HandSide.Left) {
                     SlideBounds = SlideObject.bounds;
+                    SlideBounds.extents *= 0.75f;
                     if (SlideBounds.Contains(VRInputController.instance.LHandSphere.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
@@ -55,6 +193,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 else {
                     SlideBounds = SlideObject.bounds;
+                    SlideBounds.extents *= 0.75f;
                     if (SlideBounds.Contains(VRInputController.instance.RHandSphere.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPressDown(hand);
                     }
@@ -64,10 +203,11 @@ public class VRInputBridge : MonoBehaviour
                 }
 
             case "Swing Out Cylinder":
-                return VRInputController.instance.GunInteractDown(hand);
+                return VRInputController.instance.GunInteractDown(hand) || CheckBoundsAndClickedDown(CylinderObject, aimScript_ref.secondaryHand);
 
             case "Close Cylinder":
-                return VRInputController.instance.GunInteractUp(hand);//Make more specific and 3D
+                bool GunClose = aimScript_ref.gun_instance.transform.right.y < -0.75f;
+                return GunClose || CheckBoundsAndClickedUp(CylinderObject, aimScript_ref.secondaryHand);//Make more specific and 3D
 
             case "Insert":
 
@@ -193,18 +333,18 @@ public class VRInputBridge : MonoBehaviour
             default:
                 return Input.GetButtonDown(input_str);
         }
-        
     }
+
     public bool GetButton(string input_str, HandSide hand) {
         switch (input_str) {
             case "Trigger":
                 return VRInputController.instance.ActionPress(hand);
             case "Slide Lock":
-                return VRInputController.instance.GunInteract(hand);
+                return VRInputController.instance.GunInteract(hand) || CheckBoundsAndClicked(SlidelockObject, aimScript_ref.secondaryHand);
             case "Extractor Rod":
-                return VRInputController.instance.GunInteract2(hand);//Make more specific and 3D
+                return VRInputController.instance.GunInteract2(hand) || CheckBoundsAndClicked(ExtractorObject, aimScript_ref.secondaryHand, true);
             case "Hammer":
-                return VRInputController.instance.GunInteract3(hand);
+                return VRInputController.instance.GunInteract3(hand) || CheckBoundsAndClicked(HammerObject, aimScript_ref.secondaryHand);
             case "Get":
                 return VRInputController.instance.CollectPress(hand);
             case "Pull Back Slide":
@@ -213,6 +353,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 if (hand == HandSide.Left) {
                     SlideBounds = SlideObject.bounds;
+                    SlideBounds.extents *= 0.75f;
                     if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPress(hand);
                     }
@@ -222,6 +363,7 @@ public class VRInputBridge : MonoBehaviour
                 }
                 else {
                     SlideBounds = SlideObject.bounds;
+                    SlideBounds.extents *= 0.75f;
                     if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position) || MagOut) {
                         return VRInputController.instance.ActionPress(hand);
                     }
@@ -237,11 +379,11 @@ public class VRInputBridge : MonoBehaviour
     public bool GetButtonUp(string input_str, HandSide hand) {
         switch (input_str) {
             case "Slide Lock":
-                return VRInputController.instance.GunInteractUp(hand);
+                return VRInputController.instance.GunInteractUp(hand) || CheckBoundsAndClickedUp(SlidelockObject, aimScript_ref.secondaryHand);
             case "Pull Back Slide":
-                return VRInputController.instance.ActionPressUp(hand);//Make more specific and 3D
+                return VRInputController.instance.ActionPressUp(hand);
             case "Hammer":
-                return VRInputController.instance.GunInteract3Up(hand);
+                return VRInputController.instance.GunInteract3Up(hand) || CheckBoundsAndClickedUp(HammerObject, aimScript_ref.secondaryHand);
             default:
                 return Input.GetButtonUp(input_str);
         }

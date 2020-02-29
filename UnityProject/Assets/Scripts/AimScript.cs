@@ -459,7 +459,8 @@ public class AimScript:MonoBehaviour{
     public Transform graphics;
     public CapsuleCollider playerCollider;
     
-    public void Start() { 
+    public void Start() {
+        VRInputBridge.instance.aimScript_ref = this;
         GameObject level_object = GameObject.Find("LevelObject");
 
         if(level_object != null) {
