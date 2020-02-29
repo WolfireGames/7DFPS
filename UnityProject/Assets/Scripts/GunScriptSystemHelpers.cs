@@ -213,7 +213,7 @@ namespace GunSystemsV1 {
             if(!mlc.mag_insert)
                 return cc.active_round_state == RoundState.EMPTY;
 
-            return mc.mag_script && mc.mag_script.NumRounds() <= 0;
+            return mc.mag_script && mc.mag_script.NumRounds() <= 0 && cc.active_round_state == RoundState.EMPTY;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
