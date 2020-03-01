@@ -363,9 +363,19 @@ namespace GunSystemsV1 {
             return true;
         }
 
+        bool IsWaitingForSlidePush() {
+            return !slide_c.block_slide_pull && slide_c.slide_amount > 0f;
+        }
+
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.INPUT_PUSH_SLIDE_FORWARD, PushSlide},
+            };
+        }
+
+        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
+            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
+                {GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH, IsWaitingForSlidePush},
             };
         }
 

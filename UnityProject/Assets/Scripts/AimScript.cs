@@ -815,9 +815,6 @@ public class AimScript:MonoBehaviour{
     		gun_script.ReleasePressureFromTrigger();
     	}
     	if(character_input.GetButtonDown("Slide Lock")){
-    		//if(gun_script.action_type == ActionType.BOLT)
-    		//	gun_script.ToggleBolt();
-    		//else
     		gun_script.ReleaseSlideLock();
     	}
     	if(character_input.GetButtonUp("Slide Lock")){
@@ -834,7 +831,7 @@ public class AimScript:MonoBehaviour{
     	}
 
 		if(character_input.GetButtonDown("Pull Back Slide")){
-			if(gun_script.ShouldPushSlideForward()) { // Slide input should push slide forward
+			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
@@ -1872,7 +1869,11 @@ public class AimScript:MonoBehaviour{
     			int max_rounds_slot = 0;
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
-    					display_text.Add(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()));
+						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
+    						display_text.Add(new DisplayLine("Push forward slide: tap [ r ]", gun_script.ShouldPushSlideForward()));
+						} else {
+    						display_text.Add(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()));
+						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
     						display_text.Add(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()));
     					}
@@ -1917,9 +1918,6 @@ public class AimScript:MonoBehaviour{
     						}
     					}
     				}
-    				//if(gun_script.magazineType == MagazineType.INTERNAL) {
-    				//	display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
-    				//}
     			} else {
     				if(CanLoadBulletsInMag()){
     					display_text.Add(new DisplayLine("Insert bullet in magazine: tap [ z ]", true));
