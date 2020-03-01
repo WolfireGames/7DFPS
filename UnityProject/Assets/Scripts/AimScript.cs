@@ -1819,7 +1819,7 @@ public class AimScript:MonoBehaviour{
     		if(gun_instance != null){
     			gun_script = gun_instance.GetComponent<GunScript>();
     		}
-    		display_text.Add(new DisplayLine(tapes_heard.Count + " tapes absorbed out of "+total_tapes.Count, true));
+    		display_text.Add(new DisplayLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true));
     		if(!show_help){
     			display_text.Add(new DisplayLine("View help: Press [ ? ]", !help_ever_shown));
     		} else {
@@ -1833,15 +1833,10 @@ public class AimScript:MonoBehaviour{
     			display_text.Add(new DisplayLine("Move: [ WASD ]", false));
     			display_text.Add(new DisplayLine("Jump: [ space ]", false));
     			display_text.Add(new DisplayLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby()));
-    			string str = null;
-                int empty_slot = 0;
                 if(held_flashlight != null){
-    				empty_slot = GetEmptySlot();
+    				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					str = "Put flashlight in inventory: tap [ ";
-    					str += empty_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, false));
+    					display_text.Add(new DisplayLine($"Put flashlight in inventory: tap [ {empty_slot} ]", false));
     				}
                     if(gun_instance == null && mag_stage == HandMagStage.EMPTY){
                         display_text.Add(new DisplayLine("Drop flashlight: tap [ e ]", false));
@@ -1854,10 +1849,7 @@ public class AimScript:MonoBehaviour{
     			} else {
     				int flashlight_slot = GetFlashlightSlot();
     				if(flashlight_slot != -1){
-    					str = "Equip flashlight: tap [ ";
-    					str += flashlight_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, true));
+    					display_text.Add(new DisplayLine($"Equip flashlight: tap [ {flashlight_slot} ]", true));
     				}
     			}
     			if(gun_instance != null){
@@ -1869,7 +1861,6 @@ public class AimScript:MonoBehaviour{
     			} else {
     				display_text.Add(new DisplayLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon()));
     			}
-    			int max_rounds_slot = 0;
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
     					display_text.Add(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()));
@@ -1911,15 +1902,12 @@ public class AimScript:MonoBehaviour{
     					} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
     						display_text.Add(new DisplayLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag()));
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
-    						max_rounds_slot = GetMostLoadedMag();
+    						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							display_text.Add(new DisplayLine("Equip magazine: tap [ "+max_rounds_slot+" ]", true));
+    							display_text.Add(new DisplayLine($"Equip magazine: tap [ {max_rounds_slot} ]", true));
     						}
     					}
     				}
-    				//if(gun_script.magazineType == MagazineType.INTERNAL) {
-    				//	display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
-    				//}
     			} else {
     				if(CanLoadBulletsInMag()){
     					display_text.Add(new DisplayLine("Insert bullet in magazine: tap [ z ]", true));
@@ -1929,12 +1917,9 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     			if(mag_stage == HandMagStage.HOLD){
-    				empty_slot = GetEmptySlot();
+    				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					str = "Put magazine in inventory: tap [ ";
-    					str += empty_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, ShouldPutMagInInventory()));
+    					display_text.Add(new DisplayLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory()));
     				}
     				display_text.Add(new DisplayLine("Drop magazine: tap [ e ]", false));
     			}
@@ -1948,15 +1933,15 @@ public class AimScript:MonoBehaviour{
     				}
     				if(gun_instance != null){
     					if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-    					display_text.Add(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
+    						display_text.Add(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
     					}
     					if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
     						display_text.Add(new DisplayLine("Inspect chamber: hold [ t ] and then [ r ]", false));
     					}
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
-    						max_rounds_slot = GetMostLoadedMag();
+    						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							display_text.Add(new DisplayLine("Quick load magazine: double tap [ "+max_rounds_slot+" ]", false));
+    							display_text.Add(new DisplayLine($"Quick load magazine: double tap [ {max_rounds_slot} ]", false));
     						}
     					}
     				}
