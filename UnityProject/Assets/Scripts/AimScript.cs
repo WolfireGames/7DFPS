@@ -808,9 +808,6 @@ public class AimScript:MonoBehaviour{
     		gun_script.ReleasePressureFromTrigger();
     	}
     	if(character_input.GetButtonDown("Slide Lock")){
-    		//if(gun_script.action_type == ActionType.BOLT)
-    		//	gun_script.ToggleBolt();
-    		//else
     		gun_script.ReleaseSlideLock();
     	}
     	if(character_input.GetButtonUp("Slide Lock")){
@@ -1690,26 +1687,6 @@ public class AimScript:MonoBehaviour{
     	UpdateCameraAndPlayerTransformation();	
     	if(gun_instance != null){
     		UpdateGunTransformation();
-			/*
-			if(held_flashlight != null) {
-				if(gun_instance.GetComponent<GunScript>().handed == HandedType.TWO_HANDED){
-					for(var i=0; i<weapon_slots.Length; i++) {
-						if(weapon_slots[i].type != WeaponSlotType.EMPTY) 
-							continue;
-
-						held_flashlight.GetComponent<FlashlightScript>().TurnOff();
-						weapon_slots[i].type = WeaponSlotType.FLASHLIGHT;
-						weapon_slots[i].obj = held_flashlight;
-						weapon_slots[i].spring.state = 0f;
-						weapon_slots[i].spring.target_state = 1f;
-						weapon_slots[i].start_pos = held_flashlight.transform.position - main_camera.transform.position;
-						weapon_slots[i].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
-						held_flashlight = null;
-						break;
-					}
-				}
-			}
-			*/
     	}
     	if(held_flashlight != null){
     		UpdateFlashlightTransformation();
