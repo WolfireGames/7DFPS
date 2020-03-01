@@ -11,6 +11,8 @@ public class VRInputBridge : MonoBehaviour
     Renderer SlideObject, FiremodeObject, ThumbsafetyObject, SlidelockObject, HammerObject, CylinderObject, ExtractorObject;
     Bounds SlideBounds;
 
+    bool RotatingCylinder;
+
     void Awake()
     {
         instance = this;
@@ -84,6 +86,8 @@ public class VRInputBridge : MonoBehaviour
             if (ExtractorObject == null) {
                 Debug.Log("ExtractorObject Component Doesn't exist!");
             }
+
+            RotatingCylinder = aimScript_ref.gun_script.GetComponent<RevolverCylinderComponent>().rotateable;
         }
 
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.HAMMER_VISUAL)) {
@@ -95,6 +99,8 @@ public class VRInputBridge : MonoBehaviour
                 Debug.Log("HammerObject Component Doesn't exist!");
             }
         }
+
+
 
         Camera.main.nearClipPlane = 0.01f;
     }
@@ -216,7 +222,12 @@ public class VRInputBridge : MonoBehaviour
 
             case "Close Cylinder":
                 bool GunClose = aimScript_ref.gun_instance.transform.right.y < -0.75f;
-                return GunClose || CheckBoundsAndClickedUp(CylinderObject, aimScript_ref.secondaryHand);//Make more specific and 3D
+
+                if (!RotatingCylinder) {
+                    GunClose = VRInputController.instance.GunInteractUp(hand);
+                }
+
+                return GunClose || CheckBoundsAndClickedUp(CylinderObject, aimScript_ref.secondaryHand);
 
             case "Insert":
 
