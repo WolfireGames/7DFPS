@@ -226,11 +226,13 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE, GunAspect.CHAMBER)]
+    [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.CHAMBER)]
     public class ManualLoadingHelperSystem : GunSystemBase {
         ManualLoadingComponent mlc;
-        MagazineComponent mc;
         ChamberComponent cc;
+
+        // Optional
+        MagazineComponent mc;
 
         bool ShouldInsertBullet() {
             if(!mlc.can_insert)
@@ -239,7 +241,7 @@ namespace GunSystemsV1 {
             if(!mlc.mag_insert)
                 return cc.active_round_state == RoundState.EMPTY;
 
-            return mc.mag_script && mc.mag_script.NumRounds() <= 0 && cc.active_round_state == RoundState.EMPTY;
+            return (!mc || mc.mag_script && mc.mag_script.NumRounds() <= 0) && cc.active_round_state == RoundState.EMPTY;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
