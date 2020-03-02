@@ -649,9 +649,21 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
+    public class SlideChamberClosingSystem : GunSystemBase {
+        SlideComponent sc;
+        ChamberComponent cc;
+
+        public override void Initialize() {
+            sc = gs.GetComponent<SlideComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+
+            cc.is_closed_predicates.Add(() => sc.slide_amount == 0);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.SLIDE)]
     public class SlideSystem : GunSystemBase {
         SlideComponent slide_c;
-        ChamberComponent cc;
 
         bool IsSlidePulledBack() {
             return slide_c.slide_stage != SlideStage.NOTHING;
@@ -689,9 +701,6 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             slide_c = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
-            cc.is_closed_predicates.Add(() => slide_c.slide_amount == 0);
         }
 
         public override void Update() {
