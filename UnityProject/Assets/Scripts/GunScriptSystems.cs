@@ -1026,7 +1026,11 @@ namespace GunSystemsV1 {
                 rcc.target_cylinder_offset = 0;
             }
 
-            if (rcc.rotateable && rcc.target_cylinder_offset != 0.0f) {
+            if(!rcc.can_manual_rotate) {
+                rcc.target_cylinder_offset = 0;
+            }
+
+            if (rcc.target_cylinder_offset != 0.0f) {
                 float target_cylinder_rotation = ((rcc.active_cylinder + rcc.target_cylinder_offset) * 360.0f / rcc.cylinder_capacity);
                 rcc.cylinder_rotation = Mathf.Lerp(target_cylinder_rotation, rcc.cylinder_rotation, Mathf.Pow(0.2f, Time.deltaTime));
                 if (rcc.cylinder_rotation > (rcc.active_cylinder + 0.5f) * 360.0f / rcc.cylinder_capacity) {
