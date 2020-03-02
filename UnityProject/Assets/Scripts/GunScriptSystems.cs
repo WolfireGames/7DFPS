@@ -990,16 +990,14 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER, GunAspect.EXTRACTOR_ROD)]
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class RevolverCylinderSystem : GunSystemBase {
         RevolverCylinderComponent rcc;
         HammerComponent hc;
-        ExtractorRodComponent erc;
 
         public override void Initialize() {
             rcc = gs.GetComponent<RevolverCylinderComponent>();
             hc = gs.GetComponent<HammerComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
 
             rcc.chambers = new Transform[rcc.cylinder_capacity];
             rcc.cylinders = new CylinderState[rcc.cylinder_capacity];
@@ -1180,30 +1178,16 @@ namespace GunSystemsV1 {
                 float old_extractor_rod_amount = erc.extractor_rod_amount;
                 erc.extractor_rod_amount += Time.deltaTime * 10.0f;
                 if (erc.extractor_rod_amount >= 1.0f) {
-                    for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                        CylinderState cylinder = rcc.cylinders[i];
-                        if(!erc.extracted && cylinder.game_object != null) {
-                            if (UnityEngine.Random.Range(0.0f, 3.0f) > cylinder.seated) {
-                                cylinder.falling = true;
-                                cylinder.seated -= UnityEngine.Random.Range(0.0f, 0.5f);
-                            } else {
-                                cylinder.falling = false;
-                            }
+                    if(erc.chamber_offset < 0) { // Extract in all chambers
+                        for (int i = 0; i < rcc.cylinder_capacity; ++i) {
+                            ExtractCylinder(rcc.cylinders[i]);
                         }
-
-                        if ((cylinder.game_object != null) && cylinder.falling) {
-                            cylinder.seated -= Time.deltaTime * 5.0f;
-                            if (cylinder.seated <= 0.0f) {
-                                GameObject bullet = cylinder.game_object;
-                                bullet.AddComponent<Rigidbody>();
-                                bullet.transform.parent = null;
-                                bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-                                bullet.GetComponent<Rigidbody>().velocity = gs.velocity;
-                                bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
-                                cylinder.game_object = null;
-                                cylinder.can_fire = false;
-                            }
+                    } else { // Extract in specific chamber
+                        int which_chamber = (rcc.active_cylinder + erc.chamber_offset) % rcc.cylinder_capacity;
+                        if (which_chamber < 0) {
+                            which_chamber += rcc.cylinder_capacity;
                         }
+                        ExtractCylinder(rcc.cylinders[which_chamber]);
                     }
                     erc.extractor_rod_amount = 1.0f;
                     erc.extractor_rod_stage = ExtractorRodStage.OPEN;
@@ -1219,6 +1203,31 @@ namespace GunSystemsV1 {
 
             if (erc.extractor_rod_stage == ExtractorRodStage.OPENING || erc.extractor_rod_stage == ExtractorRodStage.OPEN) {
                 erc.extractor_rod_stage = ExtractorRodStage.CLOSING;
+            }
+        }
+
+        private void ExtractCylinder(CylinderState cylinder) {
+            if(!erc.extracted && cylinder.game_object != null) {
+                if (UnityEngine.Random.Range(0.0f, 3.0f) > cylinder.seated) {
+                    cylinder.falling = true;
+                    cylinder.seated -= UnityEngine.Random.Range(0.0f, 0.5f);
+                } else {
+                    cylinder.falling = false;
+                }
+            }
+
+            if ((cylinder.game_object != null) && cylinder.falling) {
+                cylinder.seated -= Time.deltaTime * 5.0f;
+                if (cylinder.seated <= 0.0f) {
+                    GameObject bullet = cylinder.game_object;
+                    bullet.AddComponent<Rigidbody>();
+                    bullet.transform.parent = null;
+                    bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                    bullet.GetComponent<Rigidbody>().velocity = gs.velocity;
+                    bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
+                    cylinder.game_object = null;
+                    cylinder.can_fire = false;
+                }
             }
         }
     }
