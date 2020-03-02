@@ -35,16 +35,6 @@ public class WeaponSlot {
 };
 
 [System.Serializable]
-public class DisplayLine {
-	public string str;
-	public bool bold;
-	public DisplayLine(string _str,bool _bold){
-		bold = _bold;
-		str = _str;
-	}
-};
-
-[System.Serializable]
 public class CharacterMotorMovement {
 	// The maximum horizontal speed when moving
 	public float maxForwardSpeed = 10.0f;
@@ -219,6 +209,9 @@ public class AimScript:MonoBehaviour{
     float help_hold_time = 0.0f;
     bool help_ever_shown = false;
     bool just_started_help = false;
+    GUIStyle help_text_style = null;
+    float help_text_offset = 0f;
+    Color help_normal_color = new Color(.7f, .7f, .7f);
     
     // Aim down sights info
     bool aim_toggle = false;
@@ -282,7 +275,6 @@ public class AimScript:MonoBehaviour{
     // Magazine posing
     Spring hold_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
     Spring mag_ground_pose_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
-    //bool left_hand_occupied = false;
     Vector3 mag_ground_pos;
     Quaternion mag_ground_rot;
     Vector3 mag_pos;
@@ -460,6 +452,7 @@ public class AimScript:MonoBehaviour{
         }
 
     	holder = GameObject.Find("gui_skin_holder").GetComponent<GUISkinHolder>();
+    	help_text_style = holder.gui_skin.label;
     	weapon_holder = holder.weapon.GetComponent<WeaponHolder>();
     	magazine_obj = weapon_holder.mag_object;
     	gun_obj = weapon_holder.gun_object;
@@ -1694,26 +1687,6 @@ public class AimScript:MonoBehaviour{
     	UpdateCameraAndPlayerTransformation();	
     	if(gun_instance != null){
     		UpdateGunTransformation();
-			/*
-			if(held_flashlight != null) {
-				if(gun_instance.GetComponent<GunScript>().handed == HandedType.TWO_HANDED){
-					for(var i=0; i<weapon_slots.Length; i++) {
-						if(weapon_slots[i].type != WeaponSlotType.EMPTY) 
-							continue;
-
-						held_flashlight.GetComponent<FlashlightScript>().TurnOff();
-						weapon_slots[i].type = WeaponSlotType.FLASHLIGHT;
-						weapon_slots[i].obj = held_flashlight;
-						weapon_slots[i].spring.state = 0f;
-						weapon_slots[i].spring.target_state = 1f;
-						weapon_slots[i].start_pos = held_flashlight.transform.position - main_camera.transform.position;
-						weapon_slots[i].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * held_flashlight.transform.rotation;
-						held_flashlight = null;
-						break;
-					}
-				}
-			}
-			*/
     	}
     	if(held_flashlight != null){
     		UpdateFlashlightTransformation();
@@ -1809,196 +1782,180 @@ public class AimScript:MonoBehaviour{
     	return flashlight_slot;
     }
     
+    /// <summary> Draws a line in the help menu, can only be called from within OnGUI </summary>
+    private void DrawHelpLine(string text, bool bold = false) {
+        float width = Screen.width * 0.5f;
+        help_text_style.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
+        help_text_style.fontSize = 18;
+
+        help_text_style.normal.textColor = Color.black;
+        GUI.Label(new Rect(width - 4f, help_text_offset + 0.5f, width + 0.5f, help_text_offset + 20 + 0.5f), text, help_text_style);
+    
+        help_text_style.normal.textColor = bold ? Color.white : help_normal_color;
+        GUI.Label(new Rect(width - 4.5f, help_text_offset, width, help_text_offset + 30), text, help_text_style);
+        help_text_offset += 20;
+    }
+
     public void OnGUI() {
     	if(main_client_control && Event.current.type == EventType.Repaint){
-    		List<DisplayLine> display_text = new List<DisplayLine>();
     		GunScript gun_script = null;
     		if(gun_instance != null){
     			gun_script = gun_instance.GetComponent<GunScript>();
     		}
-    		display_text.Add(new DisplayLine(tapes_heard.Count + " tapes absorbed out of "+total_tapes.Count, true));
+
+    		help_text_offset = 0f;
+
+    		DrawHelpLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true);
     		if(!show_help){
-    			display_text.Add(new DisplayLine("View help: Press [ ? ]", !help_ever_shown));
+    			DrawHelpLine("View help: Press [ ? ]", !help_ever_shown);
     		} else {
-    			display_text.Add(new DisplayLine("Hide help: Press [ ? ]", false));
-    			display_text.Add(new DisplayLine("", false));
+    			DrawHelpLine("Hide help: Press [ ? ]");
+    			DrawHelpLine("");
     			if(tape_in_progress){
-    				display_text.Add(new DisplayLine("Pause/Resume tape player: [ x ]", false));
+    				DrawHelpLine("Pause/Resume tape player: [ x ]");
     			}
     			
-    			display_text.Add(new DisplayLine("Look: [ move mouse ]", false));
-    			display_text.Add(new DisplayLine("Move: [ WASD ]", false));
-    			display_text.Add(new DisplayLine("Jump: [ space ]", false));
-    			display_text.Add(new DisplayLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby()));
-    			string str = null;
-                int empty_slot = 0;
+    			DrawHelpLine("Look: [ move mouse ]");
+    			DrawHelpLine("Move: [ WASD ]");
+    			DrawHelpLine("Jump: [ space ]");
+    			DrawHelpLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby());
                 if(held_flashlight != null){
-    				empty_slot = GetEmptySlot();
+    				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					str = "Put flashlight in inventory: tap [ ";
-    					str += empty_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, false));
+    					DrawHelpLine($"Put flashlight in inventory: tap [ {empty_slot} ]");
     				}
                     if(gun_instance == null && mag_stage == HandMagStage.EMPTY){
-                        display_text.Add(new DisplayLine("Drop flashlight: tap [ e ]", false));
+                        DrawHelpLine("Drop flashlight: tap [ e ]");
                         if(held_flashlight.GetComponent<FlashlightScript>().switch_on){
-                            display_text.Add(new DisplayLine("Turn off flashlight: tap [ v ]", false));
+                            DrawHelpLine("Turn off flashlight: tap [ v ]");
                         } else {
-                            display_text.Add(new DisplayLine("Turn on flashlight: tap [ v ]", false));
+                            DrawHelpLine("Turn on flashlight: tap [ v ]");
                         }
                     }
     			} else {
     				int flashlight_slot = GetFlashlightSlot();
     				if(flashlight_slot != -1){
-    					str = "Equip flashlight: tap [ ";
-    					str += flashlight_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, true));
+    					DrawHelpLine($"Equip flashlight: tap [ {flashlight_slot} ]", true);
     				}
     			}
     			if(gun_instance != null){
-    				display_text.Add(new DisplayLine("Fire weapon: tap [ left mouse button ]", false));
-    				bool should_aim = (aim_spring.state < 0.5f);			
-    				display_text.Add(new DisplayLine("Aim weapon: hold [ right mouse button ]", should_aim));
-    				display_text.Add(new DisplayLine("Aim weapon: tap [ q ]", should_aim));
-    				display_text.Add(new DisplayLine("Holster weapon: tap [ ~ ]", ShouldHolsterGun()));
+    				DrawHelpLine("Fire weapon: tap [ left mouse button ]");
+    				bool should_aim = (aim_spring.state < 0.5f);
+    				DrawHelpLine("Aim weapon: hold [ right mouse button ]", should_aim);
+    				DrawHelpLine("Aim weapon: tap [ q ]", should_aim);
+    				DrawHelpLine("Holster weapon: tap [ ~ ]", ShouldHolsterGun());
     			} else {
-    				display_text.Add(new DisplayLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon()));
+    				DrawHelpLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon());
     			}
-    			int max_rounds_slot = 0;
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
 						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
-    						display_text.Add(new DisplayLine("Push forward slide: tap [ r ]", gun_script.ShouldPushSlideForward()));
+    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward());
 						} else {
-    						display_text.Add(new DisplayLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide()));
+    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
 						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-    						display_text.Add(new DisplayLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock()));
+    						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock());
     					}
     				}
     				if(gun_script.HasSafety()){
-    					display_text.Add(new DisplayLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn()?true:false));
+    					DrawHelpLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn());
     				}
     				if(gun_script.HasAutoMod()){
-    					display_text.Add(new DisplayLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod()?true:false));
+    					DrawHelpLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod());
     				}
     				if(gun_script.HasHammer()){
-    					display_text.Add(new DisplayLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer()?true:false));
+    					DrawHelpLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer());
     				}
     				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
-    					display_text.Add(new DisplayLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt()));
+    					DrawHelpLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt());
     				}
     				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
-    					display_text.Add(new DisplayLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance()));
+    					DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance());
     				}
     				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
-    						display_text.Add(new DisplayLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0)?true:false));
+    						DrawHelpLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
     					} else {
-    						display_text.Add(new DisplayLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0)?true:false));
-    						display_text.Add(new DisplayLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings()?true:false));
-    						display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
+    						DrawHelpLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
+    						DrawHelpLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings());
+    						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     					}
-    					display_text.Add(new DisplayLine("Spin cylinder: [ mousewheel ]", false));
+    					DrawHelpLine("Spin cylinder: [ mousewheel ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
-    					display_text.Add(new DisplayLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0)?true:false));
+    					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     				}
     				if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
-    						display_text.Add(new DisplayLine("Insert magazine: tap [ z ]", should_insert_mag));
+    						DrawHelpLine("Insert magazine: tap [ z ]", should_insert_mag);
     					} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
-    						display_text.Add(new DisplayLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag()));
+    						DrawHelpLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag());
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
-    						max_rounds_slot = GetMostLoadedMag();
+    						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							display_text.Add(new DisplayLine("Equip magazine: tap [ "+max_rounds_slot+" ]", true));
+    							DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true);
     						}
     					}
     				}
     			} else {
     				if(CanLoadBulletsInMag()){
-    					display_text.Add(new DisplayLine("Insert bullet in magazine: tap [ z ]", true));
+    					DrawHelpLine("Insert bullet in magazine: tap [ z ]", true);
     				}
     				if(CanRemoveBulletFromMag()){
-    					display_text.Add(new DisplayLine("Remove bullet from magazine: tap [ r ]", false));
+    					DrawHelpLine("Remove bullet from magazine: tap [ r ]");
     				}
     			}
     			if(mag_stage == HandMagStage.HOLD){
-    				empty_slot = GetEmptySlot();
+    				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					str = "Put magazine in inventory: tap [ ";
-    					str += empty_slot;
-    					str += " ]";
-    					display_text.Add(new DisplayLine(str, ShouldPutMagInInventory()));
+    					DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory());
     				}
-    				display_text.Add(new DisplayLine("Drop magazine: tap [ e ]", false));
+    				DrawHelpLine("Drop magazine: tap [ e ]");
     			}
     			
-    			display_text.Add(new DisplayLine("", false));
+    			DrawHelpLine("");
     			if(show_advanced_help){
-    				display_text.Add(new DisplayLine("Advanced help:", false));
-    				display_text.Add(new DisplayLine("Toggle crouch: [ c ]", false));
+    				DrawHelpLine("Advanced help:");
+    				DrawHelpLine("Toggle crouch: [ c ]");
     				if(aim_spring.state < 0.5f){
-    					display_text.Add(new DisplayLine("Run: tap repeatedly [ w ]", false));
+    					DrawHelpLine("Run: tap repeatedly [ w ]");
     				}
     				if(gun_instance != null){
     					if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-    					display_text.Add(new DisplayLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby()));
+    						DrawHelpLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby());
     					}
     					if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
-    						display_text.Add(new DisplayLine("Inspect chamber: hold [ t ] and then [ r ]", false));
+    						DrawHelpLine("Inspect chamber: hold [ t ] and then [ r ]");
     					}
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
-    						max_rounds_slot = GetMostLoadedMag();
+    						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							display_text.Add(new DisplayLine("Quick load magazine: double tap [ "+max_rounds_slot+" ]", false));
+    							DrawHelpLine($"Quick load magazine: double tap [ {max_rounds_slot} ]");
     						}
     					}
     				}
-    				display_text.Add(new DisplayLine("Reset game: hold [ l ]", false));
+    				DrawHelpLine("Reset game: hold [ l ]");
     			} else {
-    				display_text.Add(new DisplayLine("Advanced help: Hold [ ? ]", false));
+    				DrawHelpLine("Advanced help: Hold [ ? ]");
     			}
     		}
 
     		if(hasCheated) {
-    			display_text.Add(new DisplayLine("", false));
-    			display_text.Add(new DisplayLine("Cheats used", true));
+    			DrawHelpLine("");
+    			DrawHelpLine("Cheats used", true);
 
     			if(god_mode)
-    				display_text.Add(new DisplayLine("God Mode enabled", true));
+    				DrawHelpLine("God Mode enabled", true);
     			if(slomo_mode)
-    				display_text.Add(new DisplayLine("Slomo Mode enabled", Time.timeScale == 0.1f));
+    				DrawHelpLine("Slomo Mode enabled", Time.timeScale == 0.1f);
     		}
 
     		if(slomoWarningDuration > 0) {
-    			display_text.Add(new DisplayLine("Slomo button requires slomo cheat!", false));
+    			DrawHelpLine("Slomo button requires slomo cheat!");
     			slomoWarningDuration -= Time.deltaTime * 0.2f;
     		}
 
-    		GUIStyle style = holder.gui_skin.label;
-    		float width = Screen.width * 0.5f;
-    		int offset = 0;
-    		foreach(DisplayLine line in display_text){
-    			if(line.bold){
-    				style.fontStyle = FontStyle.Bold;
-    			} else {
-    				style.fontStyle = FontStyle.Normal;
-    			}
-    			style.fontSize = 18;
-    			style.normal.textColor = new Color(0.0f,0.0f,0.0f);
-    			GUI.Label(new Rect(width - 4f,offset+0.5f,width+0.5f,offset+20+0.5f),line.str, style);
-    			if(line.bold){
-    				style.normal.textColor = new Color(1.0f,1.0f,1.0f);
-    			} else {
-    				style.normal.textColor = new Color(0.7f,0.7f,0.7f);
-    			}
-    			GUI.Label(new Rect(width - 4.5f,(float)offset,width,(float)(offset+30)),line.str, style);
-    			offset += 20;
-    		}
     		if(dead_fade > 0.0f){
     		    if(texture_death_screen == null){
     		        Debug.LogError("Assign a Texture in the inspector.");
