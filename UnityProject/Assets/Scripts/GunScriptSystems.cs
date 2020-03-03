@@ -815,12 +815,13 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if ((tc.pressure_on_trigger != PressureState.NONE) && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
-                tc.trigger_pressed = 1.0f;
+            if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
+                    if(tc.fire_mode == FireMode.SINGLE) {
+                        tc.is_connected = true;
+                    }
                     hc.hammer_cocked = 0.0f;
                     gs.PlaySound(hc.sound_hammer_strike);
-                    tc.fired_once_this_pull = true;
                     if(cc.active_round_state == RoundState.READY) {
                         gs.Request(GunSystemRequests.DISCHARGE);
                     }
@@ -844,9 +845,11 @@ namespace GunSystemsV1 {
 
         public override void Update() {
             // Slide release
-            if ((tc.pressure_on_trigger != PressureState.NONE) && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
-                tc.trigger_pressed = 1.0f;
-                tc.fired_once_this_pull = true;
+            if (!tc.is_connected) {
+                if(tc.fire_mode == FireMode.SINGLE) {
+                    tc.is_connected = true;
+                }
+
                 gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
@@ -1073,25 +1076,25 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if (tc.pressure_on_trigger != PressureState.NONE) {
-                if ((tc.pressure_on_trigger != PressureState.NONE) && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
-                    tc.trigger_pressed = 1.0f;
-                    hc.hammer_cocked = 0.0f;
+            if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
+                hc.hammer_cocked = 0.0f;
+                if(tc.fire_mode == FireMode.SINGLE) {
+                    tc.is_connected = true;
+                }
 
-                    if (rcc.is_closed) {
-                        int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
-                        if (which_chamber < 0) {
-                            which_chamber += rcc.cylinder_capacity;
-                        }
-                        GameObject round = rcc.cylinders[which_chamber].game_object;
-                        if ((round != null) && rcc.cylinders[which_chamber].can_fire) {
-                            gs.Request(GunSystemRequests.DISCHARGE);
-                        } else {
-                            gs.PlaySound(hc.sound_hammer_strike, 0.5f);
-                        }
+                if (rcc.is_closed) {
+                    int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
+                    if (which_chamber < 0) {
+                        which_chamber += rcc.cylinder_capacity;
+                    }
+                    GameObject round = rcc.cylinders[which_chamber].game_object;
+                    if ((round != null) && rcc.cylinders[which_chamber].can_fire) {
+                        gs.Request(GunSystemRequests.DISCHARGE);
                     } else {
                         gs.PlaySound(hc.sound_hammer_strike, 0.5f);
                     }
+                } else {
+                    gs.PlaySound(hc.sound_hammer_strike, 0.5f);
                 }
             }
         }
@@ -1102,20 +1105,14 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
-                if (tc.pressure_on_trigger == PressureState.NONE) {
-                    tc.pressure_on_trigger = PressureState.INITIAL;
-                    tc.fired_once_this_pull = false;
-                } else {
-                    tc.pressure_on_trigger = PressureState.CONTINUING;
-                }
+                tc.pressure_on_trigger = true;
+                return true;
             }
-            return true;
+            return false;
         }
 
         public bool ReleaseTriggerPressure() {
-            tc.pressure_on_trigger = PressureState.NONE;
-            tc.trigger_pressed = 0.0f;
-            tc.fired_once_this_pull = false;
+            tc.pressure_on_trigger = false;
             return true;
         }
 
@@ -1128,6 +1125,21 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
+        }
+
+        public override void Update() {
+            tc.old_trigger_pressed = tc.trigger_pressed;
+            if (tc.pressure_on_trigger) {
+                tc.trigger_pressed = Mathf.Min(1.0f, tc.trigger_pressed + Time.deltaTime * 20.0f);
+            } else {
+                tc.trigger_pressed = Mathf.Max(0.0f, tc.trigger_pressed - Time.deltaTime * 20.0f);
+            }
+
+            if(tc.trigger_pressed != 1f) {
+                tc.is_connected = true; // Guns usually need to cycle before connecting again
+            } else if(tc.old_trigger_pressed != 1f) {
+                tc.is_connected = false; // We just pressed the trigger fully
+            }
         }
     }
 
@@ -1255,9 +1267,9 @@ namespace GunSystemsV1 {
         }
 
         bool RequestInputReleaseHammer() {
-            if (tc.pressure_on_trigger != PressureState.NONE || hc.hammer_cocked != 1.0f) {
+            if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
                 hc.thumb_on_hammer = Thumb.SLOW_LOWERING;
-                tc.trigger_pressed = 1.0f;
+                tc.is_connected = true;
             } else {
                 hc.thumb_on_hammer = Thumb.OFF_HAMMER;
             }
@@ -1279,7 +1291,6 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
             hc = gs.GetComponent<HammerComponent>();
-            tc.pressure_on_trigger = PressureState.NONE;
         }
 
         public override void Update() {
@@ -1319,8 +1330,8 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if(!hc.is_blocked) {
-                if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.pressure_on_trigger != PressureState.NONE && tc.trigger_pressed < 1.0f) {
+            if(!hc.is_blocked && !tc.is_connected) {
+                if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.trigger_pressed == 1f) {
                     hc.thumb_on_hammer = Thumb.TRIGGER_PULLED;
                 } else if (hc.thumb_on_hammer == Thumb.TRIGGER_PULLED && hc.hammer_cocked == 1.0f) {
                     hc.thumb_on_hammer = Thumb.OFF_HAMMER;
