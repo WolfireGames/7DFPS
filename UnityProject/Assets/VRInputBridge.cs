@@ -266,7 +266,6 @@ public class VRInputBridge : MonoBehaviour
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
                             if (MagOut && Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, magInsertPos) < 0.075f && VRInputController.instance.LHandSphere.transform.position.y < magInsertPos.y) {
-                                MagOut = false;
                                 return true;
                             }
                             else {
@@ -281,7 +280,6 @@ public class VRInputBridge : MonoBehaviour
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
                             if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RHandSphere.transform.position) < 0.05f && VRInputController.instance.RHandSphere.transform.position.y < magInsertPos.y) {
-                                MagOut = false;
                                 return true;
                             }
                             else {
@@ -293,9 +291,6 @@ public class VRInputBridge : MonoBehaviour
                 return false;
 
             case "Eject/Drop":
-                if (VRInputController.instance.GunInteractLongPressDown(hand)) {
-                    MagOut = true;
-                }
                 return VRInputController.instance.GunInteractLongPressDown(hand);
             case "Flashlight Toggle":
                 return VRInputController.instance.GunInteract2Down(hand);
@@ -424,7 +419,9 @@ public class VRInputBridge : MonoBehaviour
     }
 
     private void Update() {
-        Debug.DrawLine(VRInputController.instance.RightHand.transform.position, VRInputController.instance.RightHand.transform.position + VRInputController.instance.RightHand.transform.rotation*closeDirection, Color.red);
+        MagOut = (aimScript_ref.magazine_instance_in_hand != null);
+
+        //Debug.DrawLine(VRInputController.instance.RightHand.transform.position, VRInputController.instance.RightHand.transform.position + VRInputController.instance.RightHand.transform.rotation*closeDirection, Color.red);
     }
 
     public bool GetButtonUp(string input_str, HandSide hand) {
