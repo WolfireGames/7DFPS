@@ -19,6 +19,9 @@ public class RevolverCylinderComponent : GunComponent {
     public bool can_manual_rotate => can_manual_rotate_predicates.AllTrue();
     public bool rotateable = true;
 
+    public bool slide_cycling = false;
+    public bool hammer_cycling = true;
+
     [IsNonNull, HasTransformPath("extractor_rod")] public Transform chamber_parent; // We look for the point_rounds in here
 
     [IsNonNull] public GameObject empty_casing;

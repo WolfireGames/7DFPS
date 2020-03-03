@@ -1003,6 +1003,75 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
+    public class CylinderHammerCycleSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        HammerComponent hc;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            hc = gs.GetComponent<HammerComponent>();
+
+            if(!rcc.hammer_cycling)
+                gs.gun_systems.UnloadSystem(this);
+        }
+
+        public override void Update() {
+            if (rcc.hammer_cycling && hc.thumb_on_hammer != Thumb.SLOW_LOWERING) {
+                if (hc.hammer_cocked > 0.0f) {
+                    if (rcc.is_closed && hc.hammer_cocked == 1.0f && hc.prev_hammer_cocked != 1.0f) {
+                        ++rcc.active_cylinder;
+                        rcc.cylinder_rotation = rcc.active_cylinder * 360.0f / rcc.cylinder_capacity;
+                    }
+                    if (rcc.is_closed && hc.hammer_cocked < 1.0f) {
+                        rcc.cylinder_rotation = (rcc.active_cylinder + hc.hammer_cocked) * 360.0f / rcc.cylinder_capacity;
+                        rcc.target_cylinder_offset = (int)0.0f;
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary> A system to cycle cylinders, it does half the motion when the slide pulls back, and does the other half on the way back </summary>
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.SLIDE)]
+    public class CylinderSlideCycleSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        SlideComponent sc;
+
+        private bool reverse_direction = false;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+
+            if(!rcc.slide_cycling)
+                gs.gun_systems.UnloadSystem(this);
+        }
+
+        public override void Update() {
+            if (sc.slide_amount != sc.old_slide_amount) {
+                if(sc.slide_amount > sc.old_slide_amount) {
+                    rcc.cylinder_rotation = (rcc.active_cylinder + sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                    if(sc.slide_amount == 1f) {
+                        reverse_direction = true;
+                    }
+                }
+
+                if(sc.slide_amount < sc.old_slide_amount) {
+                    if(reverse_direction) {
+                        rcc.cylinder_rotation = (rcc.active_cylinder + 1 - sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                        if(sc.slide_amount == 0f) {
+                            rcc.active_cylinder++;
+                            reverse_direction = false;
+                        }
+                    } else {
+                        rcc.cylinder_rotation = (rcc.active_cylinder + sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                    }
+                }
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class RevolverCylinderSystem : GunSystemBase {
         RevolverCylinderComponent rcc;
         HammerComponent hc;
@@ -1021,19 +1090,6 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if (hc.thumb_on_hammer != Thumb.SLOW_LOWERING) {
-                if (hc.hammer_cocked > 0.0f) {
-                    if (rcc.is_closed && hc.hammer_cocked == 1.0f && hc.prev_hammer_cocked != 1.0f) {
-                        ++rcc.active_cylinder;
-                        rcc.cylinder_rotation = rcc.active_cylinder * 360.0f / rcc.cylinder_capacity;
-                    }
-                    if (rcc.is_closed && hc.hammer_cocked < 1.0f) {
-                        rcc.cylinder_rotation = (rcc.active_cylinder + hc.hammer_cocked) * 360.0f / rcc.cylinder_capacity;
-                        rcc.target_cylinder_offset = (int)0.0f;
-                    }
-                }
-            }
-
             if (rcc.is_closed && hc.hammer_cocked == 1.0f) {
                 rcc.target_cylinder_offset = 0;
             }
