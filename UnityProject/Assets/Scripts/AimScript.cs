@@ -1597,7 +1597,7 @@ public class AimScript:MonoBehaviour{
         }
        if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
        		mag_script mag_script = magazine_instance_in_hand.GetComponent<mag_script>();
-       		Vector3 hold_pos = VRInputController.instance.GetAimPos(secondaryHand);
+       		Vector3 hold_pos = VRInputController.instance.GetAimPos(secondaryHand,true);
     		Quaternion hold_rot = Quaternion.LookRotation(VRInputController.instance.GetAimDir(secondaryHand), VRInputController.instance.GetAimUp(secondaryHand));
        		hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
     	   	hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);

@@ -58,7 +58,7 @@ public class VRInputController : MonoBehaviour
                 triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponentInChildren<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
             }
             if (triggerRenderer != null) {
-                triggerDepthOffset = (VRInputBridge.instance.aimScript_ref.gun_script.transform.InverseTransformPoint(triggerRenderer.bounds.center).z * 0.5f) + 0.01f;
+                triggerDepthOffset = (VRInputBridge.instance.aimScript_ref.gun_script.transform.InverseTransformPoint(triggerRenderer.bounds.center).z * 0.5f) + 0.02f;
                 Debug.Log("Trigger depth offset set: " + triggerDepthOffset);
             }
             else {
@@ -74,14 +74,26 @@ public class VRInputController : MonoBehaviour
         return pose.GetVelocity(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
 
-    public Vector3 GetAimPos(HandSide hand) {
-        switch (hand) {
-            case HandSide.Right:
-                return RightHand.transform.position - GetAimDir(hand)* triggerDepthOffset;
-            case HandSide.Left:
-                return LeftHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
-            default:
-                return RightHand.transform.position;
+    public Vector3 GetAimPos(HandSide hand, bool isMag = false) {
+        if (!isMag) {
+            switch (hand) {
+                case HandSide.Right:
+                    return RightHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
+                case HandSide.Left:
+                    return LeftHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
+                default:
+                    return RightHand.transform.position;
+            }
+        }
+        else {
+            switch (hand) {
+                case HandSide.Right:
+                    return RightHand.transform.position - GetAimDir(hand) * 0.02f;
+                case HandSide.Left:
+                    return LeftHand.transform.position - GetAimDir(hand) * 0.02f;
+                default:
+                    return RightHand.transform.position;
+            }
         }
     }
 
@@ -233,7 +245,7 @@ public class VRInputController : MonoBehaviour
     }
 
     public bool CollectPress(HandSide hand) {
-        return CollectButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return CollectButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand);
     }
 
     public bool ActionPress(HandSide hand) {

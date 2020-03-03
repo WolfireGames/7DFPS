@@ -265,7 +265,7 @@ public class VRInputBridge : MonoBehaviour
                         }
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, magInsertPos) < 0.075f && VRInputController.instance.LHandSphere.transform.position.y < magInsertPos.y) {
+                            if (MagOut && Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, magInsertPos) < 0.1f && VRInputController.instance.LHandSphere.transform.position.y < magInsertPos.y) {
                                 return true;
                             }
                             else {
