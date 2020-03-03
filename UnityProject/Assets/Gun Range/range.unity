@@ -128,7 +128,7 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 100002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: m_TagString
+      propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
@@ -163,30 +163,18 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.size
-      value: 1
+    - target: {fileID: 400002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.data[1]
-      value: 
-      objectReference: {fileID: 8300000, guid: 3b86fc048f9fba947bae0be6c9fddbe0, type: 3}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.data[2]
-      value: 
-      objectReference: {fileID: 8300000, guid: 827cf703652628d498359a3ad47c849b, type: 3}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.data[3]
-      value: 
-      objectReference: {fileID: 8300000, guid: 7dad8541f08da5a499c5b9f289b122b1, type: 3}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.data[4]
-      value: 
-      objectReference: {fileID: 8300000, guid: fc304bbf2bfc3b044889a9f84ebdbca6, type: 3}
-    - target: {fileID: 11400004, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
-      propertyPath: sound_electrocute.Array.data[0]
-      value: 
-      objectReference: {fileID: 8300000, guid: debcc378ed7039a41b444dddbd0fe0e2, type: 3}
+    - target: {fileID: 400002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0.14400001
+      objectReference: {fileID: 0}
+    - target: {fileID: 400002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
 --- !u!1 &219551627
@@ -709,21 +697,6 @@ PrefabInstance:
     - target: {fileID: 97126787124197001, guid: a3795652e768a74498f9fe26345e3e78,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 97126787124197000, guid: a3795652e768a74498f9fe26345e3e78,
-        type: 3}
-      propertyPath: DebugGrabPos
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 97126786761922317, guid: a3795652e768a74498f9fe26345e3e78,
-        type: 3}
-      propertyPath: far clip plane
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 97126786966269922, guid: a3795652e768a74498f9fe26345e3e78,
-        type: 3}
-      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -20,6 +20,8 @@ public class VRInputController : MonoBehaviour
 
     public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness, PauseGame;
 
+    public SteamVR_Action_Pose pose;
+
     public GameObject LHandSphere, RHandSphere;
 
     public Renderer cylinderRenderer;
@@ -48,6 +50,10 @@ public class VRInputController : MonoBehaviour
         muzzlepos = VRInputBridge.instance.aimScript_ref.gun_instance.GetComponent<FiringComponent>().point_muzzle;
         canFrontGrab = muzzlepos.localPosition.z > 0.3f;
 
+    }
+
+    public Vector3 GetControllerVel(HandSide hand) {
+        return pose.GetVelocity(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
 
     public Vector3 GetAimPos(HandSide hand) {

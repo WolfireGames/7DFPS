@@ -109,7 +109,7 @@ GameObject:
   - component: {fileID: 5838867128396686475}
   m_Layer: 9
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -627,11 +627,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 941211323}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: 94992c3ed89e95d4a813d5cc3187f30f,
-        type: 3}
-      propertyPath: m_Name
-      value: FeetIndicatorGraphic
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 94992c3ed89e95d4a813d5cc3187f30f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -686,6 +681,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 94992c3ed89e95d4a813d5cc3187f30f,
+        type: 3}
+      propertyPath: m_Name
+      value: FeetIndicatorGraphic
       objectReference: {fileID: 0}
     - target: {fileID: -1504981713932161579, guid: 94992c3ed89e95d4a813d5cc3187f30f,
         type: 3}

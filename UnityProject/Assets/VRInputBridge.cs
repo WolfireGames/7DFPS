@@ -13,12 +13,18 @@ public class VRInputBridge : MonoBehaviour
 
     bool RotatingCylinder;
 
+    Vector3 closeDirection;
+
     void Awake()
     {
         instance = this;
     }
 
     private IEnumerator Start() {
+        yield return null;
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.YOKE_VISUAL)) {
+            closeDirection = WhichOffsetDirectionForFlipClose(aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().yoke_pivot_rel_rot, aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().yoke_pivot, aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().point_yoke_pivot_open);
+        }
         yield return new WaitForSeconds(0.5f);
 
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE)){
@@ -100,9 +106,28 @@ public class VRInputBridge : MonoBehaviour
             }
         }
 
-
+        
 
         Camera.main.nearClipPlane = 0.01f;
+    }
+
+    public Vector3 WhichOffsetDirectionForFlipClose(Quaternion YolkBaseRot ,Transform YolkPivot, Transform YolkPivotOpen) {
+        float distance = 0f;
+        Vector3 returnVec = Vector3.zero;
+        if(Vector3.Distance(YolkBaseRot*YolkPivot.up, YolkPivotOpen.up) > distance) {
+            returnVec = YolkBaseRot * YolkPivot.up - YolkPivotOpen.up;
+            distance = Vector3.Distance(YolkPivot.up, YolkPivotOpen.up);
+        }
+        if (Vector3.Distance(YolkBaseRot*YolkPivot.right, YolkPivotOpen.right) > distance) {
+            returnVec = YolkBaseRot * YolkPivot.right - YolkPivotOpen.right;
+            distance = Vector3.Distance(YolkPivot.right, YolkPivotOpen.right);
+        }
+        if (Vector3.Distance(YolkBaseRot*YolkPivot.forward, YolkPivotOpen.forward) > distance) {
+            returnVec = YolkBaseRot * YolkPivot.forward - YolkPivotOpen.forward;
+            distance = Vector3.Distance(YolkPivot.forward, YolkPivotOpen.forward);
+        }
+
+        return returnVec;
     }
 
     public bool MagOut;
@@ -221,11 +246,12 @@ public class VRInputBridge : MonoBehaviour
                 return VRInputController.instance.GunInteractDown(hand) || CheckBoundsAndClickedDown(CylinderObject, aimScript_ref.secondaryHand);
 
             case "Close Cylinder":
-                bool GunClose = aimScript_ref.gun_instance.transform.right.y < -0.75f;
+                bool GunClose = Vector3.Angle(closeDirection,VRInputController.instance.GetControllerVel(hand)) <= 70 && VRInputController.instance.GetControllerVel(hand).magnitude > 1.5f;//aimScript_ref.gun_instance.transform.right.y < -0.75f;
 
-                if (!RotatingCylinder) {
-                    GunClose = VRInputController.instance.GunInteractUp(hand);
-                }
+                
+                //if (!RotatingCylinder) {
+                 //   GunClose = VRInputController.instance.GunInteractUp(hand);
+                //}
 
                 return GunClose || CheckBoundsAndClickedUp(CylinderObject, aimScript_ref.secondaryHand);
 
@@ -396,6 +422,11 @@ public class VRInputBridge : MonoBehaviour
         }
         
     }
+
+    private void Update() {
+        Debug.DrawLine(VRInputController.instance.RightHand.transform.position, VRInputController.instance.RightHand.transform.position + VRInputController.instance.RightHand.transform.rotation*closeDirection, Color.red);
+    }
+
     public bool GetButtonUp(string input_str, HandSide hand) {
         switch (input_str) {
             case "Slide Lock":

@@ -980,7 +980,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 40
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 100
@@ -1349,12 +1349,17 @@ MonoBehaviour:
   PauseGame:
     actionPath: /actions/default/in/PauseGame
     needsReinit: 0
+  pose:
+    actionPath: /actions/default/in/Pose
+    needsReinit: 0
   LHandSphere: {fileID: 97126786637767872}
   RHandSphere: {fileID: 97126786501926037}
   cylinderRenderer: {fileID: 0}
   ControllerPose:
     actionPath: /actions/default/in/Pose
     needsReinit: 0
+  isFrontGrabbing: 0
+  canFrontGrab: 0
 --- !u!114 &97126787124197002
 MonoBehaviour:
   m_ObjectHideFlags: 0
