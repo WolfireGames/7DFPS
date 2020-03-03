@@ -23,13 +23,25 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_PUSHING)]
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.SLIDE_PUSHING)]
     [ExclusiveAspects(GunAspect.SLIDE_SPRING)]
     public class SlidePushingHelperSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent sc;
+        ChamberComponent cc;
+
+        // Optional
+        MagazineComponent mc;
+        ManualLoadingComponent mlc;
 
         bool ShouldPushSlide() {
-            return !slide_c.block_slide_pull && slide_c.slide_amount > 0f;
+            if(sc.block_slide_pull)
+                return false; // Don't push if blocked
+
+            if(sc.slide_amount <= 0f)
+                return false; // Don't don't push if already pushed
+
+            // Push if: (Round is waiting) OR (We got a mag with rounds) OR (Manual Loading requires a closed chamber)
+            return (cc.active_round_state == RoundState.LOADING || cc.active_round_state == RoundState.READY) || (mc && mc.mag_script && mc.mag_script.NumRounds() > 0) || (mlc && mlc.load_when_closed);
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -39,7 +51,10 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+            mc = gs.GetComponent<MagazineComponent>();
+            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
     }
 
@@ -62,14 +77,24 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.SLIDE, GunAspect.MAGAZINE, GunAspect.CHAMBER)]
+    [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideHelperSystem : GunSystemBase {
         SlideComponent sc;
-        MagazineComponent mc;
         ChamberComponent cc;
 
+        // Optional
+        MagazineComponent mc;
+        ManualLoadingComponent mlc;
+
         bool ShouldPullSlide() {
-            return !sc.block_slide_pull && (cc.active_round_state == RoundState.EMPTY || cc.active_round_state == RoundState.FIRED) && mc.mag_script && mc.mag_script.NumRounds() > 0;
+            if(sc.block_slide_pull)
+                return false; // Don't pull if blocked
+
+            if(cc.active_round_state == RoundState.READY || cc.active_round_state == RoundState.LOADING)
+                return false; // Don't pull if round ready
+
+            // Pull if: (We got a mag with rounds) OR (Manual Loading requires an open chamber)
+            return (mc && mc.mag_script && mc.mag_script.NumRounds() > 0) || (mlc && !mlc.load_when_closed);
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -82,6 +107,7 @@ namespace GunSystemsV1 {
             sc = gs.GetComponent<SlideComponent>();
             mc = gs.GetComponent<MagazineComponent>();
             cc = gs.GetComponent<ChamberComponent>();
+            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
     }
 
@@ -200,11 +226,13 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE, GunAspect.CHAMBER)]
+    [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.CHAMBER)]
     public class ManualLoadingHelperSystem : GunSystemBase {
         ManualLoadingComponent mlc;
-        MagazineComponent mc;
         ChamberComponent cc;
+
+        // Optional
+        MagazineComponent mc;
 
         bool ShouldInsertBullet() {
             if(!mlc.can_insert)
@@ -213,7 +241,7 @@ namespace GunSystemsV1 {
             if(!mlc.mag_insert)
                 return cc.active_round_state == RoundState.EMPTY;
 
-            return mc.mag_script && mc.mag_script.NumRounds() <= 0;
+            return (!mc || mc.mag_script && mc.mag_script.NumRounds() <= 0) && cc.active_round_state == RoundState.EMPTY;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {

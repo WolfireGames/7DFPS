@@ -824,7 +824,7 @@ public class AimScript:MonoBehaviour{
     	}
 
 		if(character_input.GetButtonDown("Pull Back Slide")){
-			if(gun_script.ShouldPushSlideForward()) { // Slide input should push slide forward
+			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
@@ -1849,7 +1849,11 @@ public class AimScript:MonoBehaviour{
     			}
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
-    					DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
+						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
+    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward());
+						} else {
+    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
+						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
     						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock());
     					}
