@@ -32,6 +32,8 @@ public class VRInputController : MonoBehaviour
 
     Transform muzzlepos;
 
+    float triggerDepthOffset;
+
     private void Awake() {
         instance = this;
     }
@@ -50,6 +52,22 @@ public class VRInputController : MonoBehaviour
         muzzlepos = VRInputBridge.instance.aimScript_ref.gun_instance.GetComponent<FiringComponent>().point_muzzle;
         canFrontGrab = muzzlepos.localPosition.z > 0.3f;
 
+        if (VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.TRIGGER_VISUAL)) {
+            Renderer triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponent<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
+            if(triggerRenderer == null) {
+                triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponentInChildren<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
+            }
+            if (triggerRenderer != null) {
+                triggerDepthOffset = (VRInputBridge.instance.aimScript_ref.gun_script.transform.InverseTransformPoint(triggerRenderer.bounds.center).z * 0.5f) + 0.01f;
+                Debug.Log("Trigger depth offset set: " + triggerDepthOffset);
+            }
+            else {
+                triggerDepthOffset = 0.02f;
+            }
+        }
+        else {
+            triggerDepthOffset = 0.02f;
+        }
     }
 
     public Vector3 GetControllerVel(HandSide hand) {
@@ -59,9 +77,9 @@ public class VRInputController : MonoBehaviour
     public Vector3 GetAimPos(HandSide hand) {
         switch (hand) {
             case HandSide.Right:
-                return RightHand.transform.position - GetAimDir(hand)*0.02f;
+                return RightHand.transform.position - GetAimDir(hand)* triggerDepthOffset;
             case HandSide.Left:
-                return LeftHand.transform.position - GetAimDir(hand) * 0.02f;
+                return LeftHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
             default:
                 return RightHand.transform.position;
         }
