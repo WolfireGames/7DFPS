@@ -1257,14 +1257,10 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER)]
-    public class HammerSystem : GunSystemBase {
+    [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.THUMB_COCKING)]
+    public class HammerDecockSystem : GunSystemBase {
         TriggerComponent tc;
         HammerComponent hc;
-
-        bool IsHammerCocked() {
-            return hc.hammer_cocked == 1.0f;
-        }
 
         bool RequestInputReleaseHammer() {
             if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
@@ -1274,12 +1270,6 @@ namespace GunSystemsV1 {
                 hc.thumb_on_hammer = Thumb.OFF_HAMMER;
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
-            };
         }
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
@@ -1294,18 +1284,42 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            hc.prev_hammer_cocked = hc.hammer_cocked;
-
-            if (hc.thumb_on_hammer == Thumb.OFF_HAMMER) {
-                if (hc.hammer_cocked > 0.0f && hc.hammer_cocked != 1.0f) {
-                    hc.hammer_cocked = 0.0f;
-                }
-            } else if (hc.thumb_on_hammer == Thumb.SLOW_LOWERING) {
+            if (hc.thumb_on_hammer == Thumb.SLOW_LOWERING) {
                 hc.hammer_cocked -= Time.deltaTime * 10.0f;
                 if (hc.hammer_cocked <= 0.0f) {
                     hc.hammer_cocked = 0.0f;
                     hc.thumb_on_hammer = Thumb.OFF_HAMMER;
                     gs.PlaySound(hc.sound_hammer_decock);
+                }
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.HAMMER)]
+    public class HammerSystem : GunSystemBase {
+        HammerComponent hc;
+
+        bool IsHammerCocked() {
+            return hc.hammer_cocked == 1.0f;
+        }
+
+        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
+            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
+                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
+            };
+        }
+
+
+        public override void Initialize() {
+            hc = gs.GetComponent<HammerComponent>();
+        }
+
+        public override void Update() {
+            hc.prev_hammer_cocked = hc.hammer_cocked;
+
+            if (hc.thumb_on_hammer == Thumb.OFF_HAMMER) {
+                if (hc.hammer_cocked > 0.0f && hc.hammer_cocked != 1.0f) {
+                    hc.hammer_cocked = 0.0f;
                 }
             } else if (hc.thumb_on_hammer == Thumb.ON_HAMMER || hc.thumb_on_hammer == Thumb.TRIGGER_PULLED) {
                 hc.hammer_cocked = Mathf.Min(1.0f, hc.hammer_cocked + Time.deltaTime * 10.0f);
