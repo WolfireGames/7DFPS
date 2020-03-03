@@ -287,7 +287,7 @@ public class AimScript:MonoBehaviour{
     Quaternion mag_ground_rot;
     Vector3 mag_pos;
     Quaternion mag_rot;
-    GameObject magazine_instance_in_hand;
+    public GameObject magazine_instance_in_hand;
 
     HandMagStage mag_stage = HandMagStage.EMPTY;
     bool queue_drop = false; // In case player pressed 'drop' again while mag is ejecting
@@ -861,7 +861,7 @@ public class AimScript:MonoBehaviour{
     	}
 
 		if(!VRInputBridge.instance.MagOut && character_input.GetButtonDown("Pull Back Slide", secondaryHand)){
-			if(gun_script.ShouldPushSlideForward()) { // Slide input should push slide forward
+			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
