@@ -1199,6 +1199,32 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.YOKE, GunAspect.YOKE_AUTO_EJECTOR)]
+    public class YokeAutoEjectSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        YokeComponent yc;
+
+        private bool triggered = true;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            yc = gs.GetComponent<YokeComponent>();
+        }
+
+        public override void Update() {
+            if(triggered && yc.yoke_stage == YokeStage.CLOSED) {
+                triggered = false;
+            }
+
+            if(!triggered && yc.yoke_stage == YokeStage.OPEN) {
+                foreach (CylinderState cylinder in rcc.cylinders.Where((cylinder) => cylinder.game_object)) {
+                    CylinderEjectionSystem.EjectRound(cylinder, gs.velocity * 0.75f - cylinder.game_object.transform.forward);
+                }
+                triggered = true;
+            }
+        }
+    }
+
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.REVOLVER_CYLINDER)]
     public class RevolverExtractorRodSystem : GunSystemBase {
         RevolverCylinderComponent rcc;
@@ -1300,15 +1326,27 @@ namespace GunSystemsV1 {
             if ((cylinder.game_object != null) && cylinder.falling) {
                 cylinder.seated -= Time.deltaTime * 5.0f;
                 if (cylinder.seated <= 0.0f) {
-                    GameObject bullet = cylinder.game_object;
-                    bullet.AddComponent<Rigidbody>();
-                    bullet.transform.parent = null;
-                    bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-                    bullet.GetComponent<Rigidbody>().velocity = gs.velocity;
-                    bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
-                    cylinder.game_object = null;
-                    cylinder.can_fire = false;
+                    CylinderEjectionSystem.EjectRound(cylinder, gs.velocity);
                 }
+            }
+        }
+    }
+
+    /// <summary> This system holds the static method "EjectRound" to be used from other systems that extract rounds from cylinders
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    public class CylinderEjectionSystem : GunSystemBase {
+
+        /// <summary> Eject a round if a gameobject is inside the cylinder </summary>
+        public static void EjectRound(CylinderState cylinder, Vector3 velocity) {
+            if(cylinder.game_object) {
+                GameObject bullet = cylinder.game_object;
+                bullet.AddComponent<Rigidbody>();
+                bullet.transform.parent = null;
+                bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                bullet.GetComponent<Rigidbody>().velocity = velocity;
+                bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
+                cylinder.game_object = null;
+                cylinder.can_fire = false;
             }
         }
     }
