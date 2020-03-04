@@ -817,7 +817,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
-                    if(tc.fire_mode == FireMode.SINGLE) {
+                    if(tc.fire_mode == FireMode.SINGLE || cc.active_round_state != RoundState.READY) {
                         tc.is_connected = true;
                     }
                     hc.hammer_cocked = 0.0f;
