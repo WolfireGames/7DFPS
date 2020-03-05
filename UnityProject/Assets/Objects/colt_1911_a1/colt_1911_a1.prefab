@@ -27,6 +27,7 @@ GameObject:
   - component: {fileID: -4806607044569499607}
   - component: {fileID: 3480435699394331292}
   - component: {fileID: 4818883412998868600}
+  - component: {fileID: 3067744348551474243}
   m_Layer: 0
   m_Name: colt_1911_a1
   m_TagString: Untagged
@@ -73,6 +74,7 @@ Transform:
   - {fileID: 7778059500727416225}
   - {fileID: 1715534290804578609}
   - {fileID: 7819187262622281838}
+  - {fileID: 4212521146366581395}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -204,7 +206,7 @@ MonoBehaviour:
   full_casing: {fileID: 100002, guid: 8e5f3108e4d99fc4d826896d2e55b754, type: 3}
   camera_nearplane_override: 0.1
   aspect:
-    value: 0100030004000500070008000a000c000e000f001000110012001300150016001b00220024002500
+    value: 0100030004000500070008000a000c000e000f001000110012001300150016001b001c00220024002500
 --- !u!114 &3261144228036680374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,6 +465,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grip_safety: {fileID: 400012}
   point_grip_safety_off: {fileID: 7778059500727416225}
+--- !u!114 &3067744348551474243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38500cb3e8552684bb0d562e3e19bafb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  point_trigger_pulled: {fileID: 4212521146366581395}
+  trigger: {fileID: 400026}
 --- !u!1 &100002
 GameObject:
   m_ObjectHideFlags: 0
@@ -2118,6 +2134,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400000}
   m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &113313349396529821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4212521146366581395}
+  m_Layer: 0
+  m_Name: point_trigger_pulled
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4212521146366581395
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113313349396529821}
+  m_LocalRotation: {x: 0.7071068, y: 0.000000047078487, z: -0.7071068, w: 0.000000047078487}
+  m_LocalPosition: {x: 0.0003864674, y: -0.03343426, z: 0.074}
+  m_LocalScale: {x: -1, y: -1, z: -0.91685337}
+  m_Children: []
+  m_Father: {fileID: 400000}
+  m_RootOrder: 28
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3543774982043516028
 GameObject:

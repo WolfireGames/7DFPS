@@ -563,7 +563,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public Vector3 AimPos() {
-    	Vector3 aim_dir = AimDir();
+    	//Vector3 aim_dir = AimDir();
         return VRInputController.instance.GetAimPos(primaryHand);// + aim_dir;
     }
     

@@ -32,7 +32,9 @@ public class VRInputController : MonoBehaviour
 
     Transform muzzlepos;
 
-    float triggerDepthOffset;
+    Vector3 localTriggerCenter, controllerTriggerCenter, relativeTriggerOffset;
+
+    bool readyInit;
 
     private void Awake() {
         instance = this;
@@ -58,15 +60,13 @@ public class VRInputController : MonoBehaviour
                 triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponentInChildren<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
             }
             if (triggerRenderer != null) {
-                triggerDepthOffset = (VRInputBridge.instance.aimScript_ref.gun_script.transform.InverseTransformPoint(triggerRenderer.bounds.center).z * 0.5f) + 0.02f;
-                Debug.Log("Trigger depth offset set: " + triggerDepthOffset);
+                localTriggerCenter = triggerRenderer.transform.root.InverseTransformPoint(triggerRenderer.bounds.center);
+                if (RightHand.transform.GetChild(0).Find("trigger").GetChild(0) != null) {
+                    controllerTriggerCenter = RightHand.transform.GetChild(0).Find("trigger").GetChild(0).localPosition;
+                }
+                relativeTriggerOffset = (localTriggerCenter - controllerTriggerCenter) - (Vector3.forward * 0.035f);
+                readyInit = true;
             }
-            else {
-                triggerDepthOffset = 0.02f;
-            }
-        }
-        else {
-            triggerDepthOffset = 0.02f;
         }
     }
 
@@ -75,12 +75,12 @@ public class VRInputController : MonoBehaviour
     }
 
     public Vector3 GetAimPos(HandSide hand, bool isMag = false) {
-        if (!isMag) {
+        if (!isMag && readyInit) {
             switch (hand) {
                 case HandSide.Right:
-                    return RightHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
+                    return RightHand.transform.position - (VRInputBridge.instance.aimScript_ref.gun_script.transform.rotation * (relativeTriggerOffset * transform.localScale.x));
                 case HandSide.Left:
-                    return LeftHand.transform.position - GetAimDir(hand) * triggerDepthOffset;
+                    return LeftHand.transform.position - (VRInputBridge.instance.aimScript_ref.gun_script.transform.rotation * (relativeTriggerOffset * transform.localScale.x));
                 default:
                     return RightHand.transform.position;
             }
@@ -310,7 +310,8 @@ public class VRInputController : MonoBehaviour
 
     void Update()
     {
-        if(TallestHead < Head.transform.localPosition.y) {
+        Debug.DrawLine(RightHand.transform.position, RightHand.transform.position - (RightHand.transform.rotation * relativeTriggerOffset), Color.red);
+        if (TallestHead < Head.transform.localPosition.y) {
             TallestHead = Head.transform.localPosition.y+0.1f;
         }
 
