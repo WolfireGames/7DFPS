@@ -60,7 +60,7 @@ public class VRInputController : MonoBehaviour
                 triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponentInChildren<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
             }
             if (triggerRenderer != null) {
-                localTriggerCenter = triggerRenderer.transform.root.InverseTransformPoint(triggerRenderer.bounds.center);
+                localTriggerCenter = triggerRenderer.transform.parent.InverseTransformPoint(triggerRenderer.bounds.center);
                 if (RightHand.transform.GetChild(0).Find("trigger").GetChild(0) != null) {
                     controllerTriggerCenter = RightHand.transform.GetChild(0).Find("trigger").GetChild(0).localPosition;
                 }
