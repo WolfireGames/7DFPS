@@ -226,4 +226,33 @@ namespace GunSystemsV1 {
             mlc.can_insert_predicates.Add( () => cc.is_closed == mlc.load_when_closed);
         }
     }
+
+    /// <summary> System to block cylinder rotation when an extractor rod is inside a chamber </summary>
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.EXTRACTOR_ROD)]
+    public class CylinderExtractorRotationBlockSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        ExtractorRodComponent erc;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            erc = gs.GetComponent<ExtractorRodComponent>();
+
+            if(erc.chamber_offset >= 0)
+                rcc.can_manual_rotate_predicates.Add( () => erc.extractor_rod_stage == ExtractorRodStage.CLOSED);
+        }
+    }
+
+    /// <summary> System to apply the constant cylinder rotation block caused by "!rotateable" </summary>
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    [Priority(PriorityAttribute.EARLY)]
+    public class CylinderRotationMainBlockSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+
+            if(!rcc.rotateable)
+                rcc.can_manual_rotate_predicates.Add( () => false);
+        }
+    }
 }

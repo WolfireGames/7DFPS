@@ -15,6 +15,13 @@ public class RevolverCylinderComponent : GunComponent {
     internal Predicates is_closed_predicates = new Predicates();
     public bool is_closed => is_closed_predicates.AllTrue();
 
+    internal Predicates can_manual_rotate_predicates = new Predicates();
+    public bool can_manual_rotate => can_manual_rotate_predicates.AllTrue();
+    public bool rotateable = true;
+
+    public bool slide_cycling = false;
+    public bool hammer_cycling = true;
+
     [IsNonNull, HasTransformPath("extractor_rod")] public Transform chamber_parent; // We look for the point_rounds in here
 
     [IsNonNull] public GameObject empty_casing;
@@ -25,8 +32,6 @@ public class RevolverCylinderComponent : GunComponent {
     [Range(0f, 1f)] public float seating_max = 1f;
     [Range(0f, 1f)] public float seating_firebonus_min = 0;
     [Range(0f, 1f)] public float seating_firebonus_max = 0.5f;
-
-    public bool rotateable = true;
 
     internal Transform[] chambers;
 
