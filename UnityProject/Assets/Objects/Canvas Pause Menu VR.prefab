@@ -1922,7 +1922,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1661100076815505198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2032,11 +2032,11 @@ MonoBehaviour:
     m_Options:
     - m_Text: No AA
       m_Image: {fileID: 0}
-    - m_Text: Fast Approximate AA (FXAA)
+    - m_Text: 2x MSAA
       m_Image: {fileID: 0}
-    - m_Text: Subpixel Morphological AA (SMAA)
+    - m_Text: 4x MSAA
       m_Image: {fileID: 0}
-    - m_Text: Temporal AA (TAA)
+    - m_Text: 8x MSAA
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9092,7 +9092,7 @@ GameObject:
   - component: {fileID: 3591178783177418345}
   - component: {fileID: 8943551683575440451}
   m_Layer: 5
-  m_Name: shadowed_lights
+  m_Name: dynamic_resolution
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12178,7 +12178,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Proximity Adaptive Shadows
+  m_Text: Dynamic Resolution Scaling
 --- !u!1 &6563323820531759059
 GameObject:
   m_ObjectHideFlags: 0

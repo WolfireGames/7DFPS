@@ -237,7 +237,7 @@ public class LevelCreatorScript:MonoBehaviour{
     		CreateTileIfNeeded(tile_x+i);
     	}
 
-    	if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
+    	//if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
     		foreach(Light light in shadowed_lights){
     			if(light == null){
     				Debug.Log("LIGHT IS MISSING");
@@ -254,6 +254,6 @@ public class LevelCreatorScript:MonoBehaviour{
     				}
     			}
     		}
-        }
+        //}
     }
 }

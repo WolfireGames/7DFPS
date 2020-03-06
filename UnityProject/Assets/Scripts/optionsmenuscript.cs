@@ -214,7 +214,8 @@ public class optionsmenuscript:MonoBehaviour{
     }
  
     public void SetAAMode(int mode) {
-        postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
+        QualitySettings.antiAliasing = mode;
+        //postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
     }
 
     public void SetVignette(bool enabled) {

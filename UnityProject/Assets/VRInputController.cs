@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
-
+using UnityEngine.XR;
 public enum HandSide {
     Right,
     Left
@@ -41,6 +41,11 @@ public class VRInputController : MonoBehaviour
     }
 
     IEnumerator Start() {
+        MaxRenderScale = SteamVR_Camera.sceneResolutionScale;
+        MinRenderScale = SteamVR_Camera.sceneResolutionScale * 0.1f;
+        //if (PlayerPrefs.GetInt("dynamic_resolution", 0) == 1) {
+            StartCoroutine(FPS());
+        //}
         yield return new WaitForSeconds(1f);
         if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left) {
             LHandSphere.SetActive(false);
@@ -66,6 +71,47 @@ public class VRInputController : MonoBehaviour
                 }
                 relativeTriggerOffset = (localTriggerCenter - controllerTriggerCenter) - (Vector3.forward * 0.035f);
                 readyInit = true;
+            }
+        }
+    }
+
+    public float MinRenderScale, MaxRenderScale;
+
+    public float frequency = 0.5f;
+    int fps;
+
+    private IEnumerator FPS() {
+        for (; ; ) {
+            // Capture frame-per-second
+            int lastFrameCount = Time.frameCount;
+            float lastTime = Time.realtimeSinceStartup;
+            yield return new WaitForSeconds(frequency);
+            float timeSpan = Time.realtimeSinceStartup - lastTime;
+            int frameCount = Time.frameCount - lastFrameCount;
+
+            // Display it
+            fps = Mathf.RoundToInt(frameCount / timeSpan);
+
+            if (PlayerPrefs.GetInt("dynamic_resolution", 0) == 1) {
+                float framtime;
+
+                XRStats.TryGetGPUTimeLastFrame(out framtime);
+
+                //Debug.Log(framtime + " - " + (1f / SteamVR.instance.hmd_DisplayFrequency) * 1000f + " at " + fps);
+
+                if (fps < SteamVR.instance.hmd_DisplayFrequency * 0.9f && framtime > (1f / SteamVR.instance.hmd_DisplayFrequency) * 1000f) {
+                    SteamVR_Camera.sceneResolutionScale *= 0.95f;
+                    //Debug.Log("Lowering render res! Min: " + MinRenderScale + " Max: " + MaxRenderScale);
+                }
+                else if (framtime < (1f / SteamVR.instance.hmd_DisplayFrequency) * 1000f) {
+                    SteamVR_Camera.sceneResolutionScale *= 1.05f;
+                    //Debug.Log("Raising render res! Min: " + MinRenderScale + " Max: " + MaxRenderScale);
+                }
+
+                SteamVR_Camera.sceneResolutionScale = Mathf.Clamp(SteamVR_Camera.sceneResolutionScale, MinRenderScale, MaxRenderScale);
+            }
+            else if (SteamVR_Camera.sceneResolutionScale != MaxRenderScale) { 
+                SteamVR_Camera.sceneResolutionScale = MaxRenderScale;
             }
         }
     }
@@ -209,7 +255,6 @@ public class VRInputController : MonoBehaviour
         }
     }
 
-   
     public Vector3 GetAimUp(HandSide hand) {
         switch (hand) {
             case HandSide.Right:
