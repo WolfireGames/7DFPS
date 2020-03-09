@@ -21,9 +21,12 @@ public class SelectionLaserScript : MonoBehaviour
         instance = this;
     }
 
+    VRProgressWatchControl wristWatch;
+
     Coroutine UpdateLoop;
 
     private void OnEnable() {
+        wristWatch = FindObjectOfType<VRProgressWatchControl>();
         StartCoroutine(UpdateLoopEnumerator());
     }
 
@@ -33,6 +36,7 @@ public class SelectionLaserScript : MonoBehaviour
 
     IEnumerator UpdateLoopEnumerator()
     {
+        wristWatch.UpdateWatchRotation();
         LeftHandLaser.transform.position = VRInputController.instance.LHandSphere.transform.position;
         RightHandLaser.transform.position = VRInputController.instance.RHandSphere.transform.position;
 

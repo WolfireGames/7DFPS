@@ -7,6 +7,8 @@ public class VRProgressWatchControl : MonoBehaviour
 {
     public Text TapeProgress, Timer, Milliseconds;
 
+    Renderer rend;
+
     AimScript asRef;
     SpeedrunTimer srRef;
 
@@ -17,10 +19,33 @@ public class VRProgressWatchControl : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         asRef = VRInputBridge.instance.aimScript_ref;
         srRef = asRef.GetComponent<SpeedrunTimer>();
+        rend = GetComponent<Renderer>();
+    }
+
+    public void UpdateWatchRotation() {
+        if (PlayerPrefs.GetInt("watch_visible", 1) == 1) {
+            transform.localEulerAngles = new Vector3(-PlayerPrefs.GetFloat("watch_rotation"), 0, 0);
+            rend.enabled = true;
+            TapeProgress.transform.parent.gameObject.SetActive(true);
+        }
+        else {
+            rend.enabled = false;
+            TapeProgress.transform.parent.gameObject.SetActive(false);
+        }
     }
 
     void Update()
     {
+        if (rend != null && PlayerPrefs.GetInt("watch_visible", 1) == 0) {
+            if (rend.enabled) {
+                rend.enabled = false;
+                TapeProgress.transform.parent.gameObject.SetActive(false);
+            }
+            return;
+        }
+        if(asRef == null) {
+            return;
+        }
         TapeProgressString = asRef.tapes_heard.Count + "/" + asRef.total_tapes.Count + " tapes absorbed";
         TapeProgressString = TapeProgressString.Replace("1", " 1");
 

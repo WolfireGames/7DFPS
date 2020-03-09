@@ -42,7 +42,7 @@ public class SpeedrunTimer : MonoBehaviour {
     }
 
     public void OnGUI() {
-        if(PlayerPrefs.GetInt("speedrun_timer", 0) != 1) {
+        if(PlayerPrefs.GetInt("speedrun_timer", 1) != 1) {
             return;
         }
 

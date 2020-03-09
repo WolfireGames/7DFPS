@@ -57,7 +57,7 @@ public class UGUIVRButton : MonoBehaviour {
 
             //Debug.Log("Slider width: " + rawPositionOffset);
 
-            slider.value = 1f - ((rawPositionOffset / sliderwidth));
+            slider.value = (1f - ((rawPositionOffset / sliderwidth))) * slider.maxValue;
             return;
         }
 
