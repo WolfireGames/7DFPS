@@ -314,9 +314,9 @@ public class AimScript:MonoBehaviour{
     // Tape player
     float start_tape_delay = 0.0f;
     float stop_tape_delay = 0.0f;
-    List<AudioClip> tapes_heard = new List<AudioClip>();
+    public List<AudioClip> tapes_heard = new List<AudioClip>();
     List<AudioClip> tapes_remaining = new List<AudioClip>();
-    List<AudioClip> total_tapes = new List<AudioClip>();
+    public List<AudioClip> total_tapes = new List<AudioClip>();
     bool tape_in_progress = false;
     int unplayed_tapes = 0;
     int tape_count = 11;
