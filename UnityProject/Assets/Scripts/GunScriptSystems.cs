@@ -659,9 +659,21 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
+    public class SlideChamberClosingSystem : GunSystemBase {
+        SlideComponent sc;
+        ChamberComponent cc;
+
+        public override void Initialize() {
+            sc = gs.GetComponent<SlideComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+
+            cc.is_closed_predicates.Add(() => sc.slide_amount == 0);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.SLIDE)]
     public class SlideSystem : GunSystemBase {
         SlideComponent slide_c;
-        ChamberComponent cc;
 
         bool IsSlidePulledBack() {
             return slide_c.slide_stage != SlideStage.NOTHING;
@@ -699,9 +711,6 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             slide_c = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
-            cc.is_closed_predicates.Add(() => slide_c.slide_amount == 0);
         }
 
         public override void Update() {
@@ -816,12 +825,13 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if ((tc.pressure_on_trigger != PressureState.NONE) && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
-                tc.trigger_pressed = 1.0f;
+            if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
+                    if(tc.fire_mode == FireMode.SINGLE || cc.active_round_state != RoundState.READY) {
+                        tc.is_connected = true;
+                    }
                     hc.hammer_cocked = 0.0f;
                     gs.PlaySound(hc.sound_hammer_strike);
-                    tc.fired_once_this_pull = true;
                     if(cc.active_round_state == RoundState.READY) {
                         gs.Request(GunSystemRequests.DISCHARGE);
                     }
@@ -845,9 +855,11 @@ namespace GunSystemsV1 {
 
         public override void Update() {
             // Slide release
-            if ((tc.pressure_on_trigger != PressureState.NONE) && (tc.fire_mode == FireMode.AUTOMATIC || (tc.fire_mode == FireMode.SINGLE && !tc.fired_once_this_pull))) {
-                tc.trigger_pressed = 1.0f;
-                tc.fired_once_this_pull = true;
+            if (!tc.is_connected) {
+                if(tc.fire_mode == FireMode.SINGLE) {
+                    tc.is_connected = true;
+                }
+
                 gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
@@ -1000,28 +1012,21 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER, GunAspect.EXTRACTOR_ROD)]
-    public class RevolverCylinderSystem : GunSystemBase {
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
+    public class CylinderHammerCycleSystem : GunSystemBase {
         RevolverCylinderComponent rcc;
         HammerComponent hc;
-        ExtractorRodComponent erc;
 
         public override void Initialize() {
             rcc = gs.GetComponent<RevolverCylinderComponent>();
             hc = gs.GetComponent<HammerComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
 
-            rcc.chambers = new Transform[rcc.cylinder_capacity];
-            rcc.cylinders = new CylinderState[rcc.cylinder_capacity];
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                string name = "point_chamber_" + (i+ 1);
-                rcc.chambers[i] = rcc.chamber_parent.Find(name);
-                rcc.cylinders[i] = new CylinderState();
-            }
+            if(!rcc.hammer_cycling)
+                gs.gun_systems.UnloadSystem(this);
         }
 
         public override void Update() {
-            if (hc.thumb_on_hammer != Thumb.SLOW_LOWERING) {
+            if (rcc.hammer_cycling && hc.thumb_on_hammer != Thumb.SLOW_LOWERING) {
                 if (hc.hammer_cocked > 0.0f) {
                     if (rcc.is_closed && hc.hammer_cocked == 1.0f && hc.prev_hammer_cocked != 1.0f) {
                         ++rcc.active_cylinder;
@@ -1033,12 +1038,77 @@ namespace GunSystemsV1 {
                     }
                 }
             }
+        }
+    }
 
+    /// <summary> A system to cycle cylinders, it does half the motion when the slide pulls back, and does the other half on the way back </summary>
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.SLIDE)]
+    public class CylinderSlideCycleSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        SlideComponent sc;
+
+        private bool reverse_direction = false;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+
+            if(!rcc.slide_cycling)
+                gs.gun_systems.UnloadSystem(this);
+        }
+
+        public override void Update() {
+            if (sc.slide_amount != sc.old_slide_amount) {
+                if(sc.slide_amount > sc.old_slide_amount) {
+                    rcc.cylinder_rotation = (rcc.active_cylinder + sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                    if(sc.slide_amount == 1f) {
+                        reverse_direction = true;
+                    }
+                }
+
+                if(sc.slide_amount < sc.old_slide_amount) {
+                    if(reverse_direction) {
+                        rcc.cylinder_rotation = (rcc.active_cylinder + 1 - sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                        if(sc.slide_amount == 0f) {
+                            rcc.active_cylinder++;
+                            reverse_direction = false;
+                        }
+                    } else {
+                        rcc.cylinder_rotation = (rcc.active_cylinder + sc.slide_amount / 2f) * 360.0f / rcc.cylinder_capacity;
+                    }
+                }
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
+    public class RevolverCylinderSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        HammerComponent hc;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            hc = gs.GetComponent<HammerComponent>();
+
+            rcc.chambers = new Transform[rcc.cylinder_capacity];
+            rcc.cylinders = new CylinderState[rcc.cylinder_capacity];
+            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
+                string name = "point_chamber_" + (i+ 1);
+                rcc.chambers[i] = rcc.chamber_parent.Find(name);
+                rcc.cylinders[i] = new CylinderState();
+            }
+        }
+
+        public override void Update() {
             if (rcc.is_closed && hc.hammer_cocked == 1.0f) {
                 rcc.target_cylinder_offset = 0;
             }
 
-            if (rcc.rotateable && rcc.target_cylinder_offset != 0.0f) {
+            if(!rcc.can_manual_rotate) {
+                rcc.target_cylinder_offset = 0;
+            }
+
+            if (rcc.target_cylinder_offset != 0.0f) {
                 float target_cylinder_rotation = ((rcc.active_cylinder + rcc.target_cylinder_offset) * 360.0f / rcc.cylinder_capacity);
                 rcc.cylinder_rotation = Mathf.Lerp(target_cylinder_rotation, rcc.cylinder_rotation, Mathf.Pow(0.2f, Time.deltaTime));
                 if (rcc.cylinder_rotation > (rcc.active_cylinder + 0.5f) * 360.0f / rcc.cylinder_capacity) {
@@ -1072,25 +1142,25 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if (tc.pressure_on_trigger != PressureState.NONE) {
-                if ((tc.pressure_on_trigger != PressureState.NONE) && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
-                    tc.trigger_pressed = 1.0f;
-                    hc.hammer_cocked = 0.0f;
+            if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
+                hc.hammer_cocked = 0.0f;
+                if(tc.fire_mode == FireMode.SINGLE) {
+                    tc.is_connected = true;
+                }
 
-                    if (rcc.is_closed) {
-                        int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
-                        if (which_chamber < 0) {
-                            which_chamber += rcc.cylinder_capacity;
-                        }
-                        GameObject round = rcc.cylinders[which_chamber].game_object;
-                        if ((round != null) && rcc.cylinders[which_chamber].can_fire) {
-                            gs.Request(GunSystemRequests.DISCHARGE);
-                        } else {
-                            gs.PlaySound(hc.sound_hammer_strike, 0.5f);
-                        }
+                if (rcc.is_closed) {
+                    int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
+                    if (which_chamber < 0) {
+                        which_chamber += rcc.cylinder_capacity;
+                    }
+                    GameObject round = rcc.cylinders[which_chamber].game_object;
+                    if ((round != null) && rcc.cylinders[which_chamber].can_fire) {
+                        gs.Request(GunSystemRequests.DISCHARGE);
                     } else {
                         gs.PlaySound(hc.sound_hammer_strike, 0.5f);
                     }
+                } else {
+                    gs.PlaySound(hc.sound_hammer_strike, 0.5f);
                 }
             }
         }
@@ -1101,20 +1171,14 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
-                if (tc.pressure_on_trigger == PressureState.NONE) {
-                    tc.pressure_on_trigger = PressureState.INITIAL;
-                    tc.fired_once_this_pull = false;
-                } else {
-                    tc.pressure_on_trigger = PressureState.CONTINUING;
-                }
+                tc.pressure_on_trigger = true;
+                return true;
             }
-            return true;
+            return false;
         }
 
         public bool ReleaseTriggerPressure() {
-            tc.pressure_on_trigger = PressureState.NONE;
-            tc.trigger_pressed = 0.0f;
-            tc.fired_once_this_pull = false;
+            tc.pressure_on_trigger = false;
             return true;
         }
 
@@ -1127,6 +1191,47 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
+        }
+
+        public override void Update() {
+            tc.old_trigger_pressed = tc.trigger_pressed;
+            if (tc.pressure_on_trigger) {
+                tc.trigger_pressed = Mathf.Min(1.0f, tc.trigger_pressed + Time.deltaTime * 20.0f);
+            } else {
+                tc.trigger_pressed = Mathf.Max(0.0f, tc.trigger_pressed - Time.deltaTime * 20.0f);
+            }
+
+            if(tc.trigger_pressed != 1f) {
+                tc.is_connected = true; // Guns usually need to cycle before connecting again
+            } else if(tc.old_trigger_pressed != 1f) {
+                tc.is_connected = false; // We just pressed the trigger fully
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.YOKE, GunAspect.YOKE_AUTO_EJECTOR)]
+    public class YokeAutoEjectSystem : GunSystemBase {
+        RevolverCylinderComponent rcc;
+        YokeComponent yc;
+
+        private bool triggered = true;
+
+        public override void Initialize() {
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+            yc = gs.GetComponent<YokeComponent>();
+        }
+
+        public override void Update() {
+            if(triggered && yc.yoke_stage == YokeStage.CLOSED) {
+                triggered = false;
+            }
+
+            if(!triggered && yc.yoke_stage == YokeStage.OPEN) {
+                foreach (CylinderState cylinder in rcc.cylinders.Where((cylinder) => cylinder.game_object)) {
+                    CylinderEjectionSystem.EjectRound(cylinder, gs.velocity * 0.75f - cylinder.game_object.transform.forward);
+                }
+                triggered = true;
+            }
         }
     }
 
@@ -1190,30 +1295,16 @@ namespace GunSystemsV1 {
                 float old_extractor_rod_amount = erc.extractor_rod_amount;
                 erc.extractor_rod_amount += Time.deltaTime * 10.0f;
                 if (erc.extractor_rod_amount >= 1.0f) {
-                    for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                        CylinderState cylinder = rcc.cylinders[i];
-                        if(!erc.extracted && cylinder.game_object != null) {
-                            if (UnityEngine.Random.Range(0.0f, 3.0f) > cylinder.seated) {
-                                cylinder.falling = true;
-                                cylinder.seated -= UnityEngine.Random.Range(0.0f, 0.5f);
-                            } else {
-                                cylinder.falling = false;
-                            }
+                    if(erc.chamber_offset < 0) { // Extract in all chambers
+                        for (int i = 0; i < rcc.cylinder_capacity; ++i) {
+                            ExtractCylinder(rcc.cylinders[i]);
                         }
-
-                        if ((cylinder.game_object != null) && cylinder.falling) {
-                            cylinder.seated -= Time.deltaTime * 5.0f;
-                            if (cylinder.seated <= 0.0f) {
-                                GameObject bullet = cylinder.game_object;
-                                bullet.AddComponent<Rigidbody>();
-                                bullet.transform.parent = null;
-                                bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-                                bullet.GetComponent<Rigidbody>().velocity = gs.velocity;
-                                bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
-                                cylinder.game_object = null;
-                                cylinder.can_fire = false;
-                            }
+                    } else { // Extract in specific chamber
+                        int which_chamber = (rcc.active_cylinder + erc.chamber_offset) % rcc.cylinder_capacity;
+                        if (which_chamber < 0) {
+                            which_chamber += rcc.cylinder_capacity;
                         }
+                        ExtractCylinder(rcc.cylinders[which_chamber]);
                     }
                     erc.extractor_rod_amount = 1.0f;
                     erc.extractor_rod_stage = ExtractorRodStage.OPEN;
@@ -1231,31 +1322,58 @@ namespace GunSystemsV1 {
                 erc.extractor_rod_stage = ExtractorRodStage.CLOSING;
             }
         }
+
+        private void ExtractCylinder(CylinderState cylinder) {
+            if(!erc.extracted && cylinder.game_object != null) {
+                if (UnityEngine.Random.Range(0.0f, 3.0f) > cylinder.seated) {
+                    cylinder.falling = true;
+                    cylinder.seated -= UnityEngine.Random.Range(0.0f, 0.5f);
+                } else {
+                    cylinder.falling = false;
+                }
+            }
+
+            if ((cylinder.game_object != null) && cylinder.falling) {
+                cylinder.seated -= Time.deltaTime * 5.0f;
+                if (cylinder.seated <= 0.0f) {
+                    CylinderEjectionSystem.EjectRound(cylinder, gs.velocity);
+                }
+            }
+        }
     }
 
-    [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER)]
-    public class HammerSystem : GunSystemBase {
+    /// <summary> This system holds the static method "EjectRound" to be used from other systems that extract rounds from cylinders
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    public class CylinderEjectionSystem : GunSystemBase {
+
+        /// <summary> Eject a round if a gameobject is inside the cylinder </summary>
+        public static void EjectRound(CylinderState cylinder, Vector3 velocity) {
+            if(cylinder.game_object) {
+                GameObject bullet = cylinder.game_object;
+                bullet.AddComponent<Rigidbody>();
+                bullet.transform.parent = null;
+                bullet.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                bullet.GetComponent<Rigidbody>().velocity = velocity;
+                bullet.GetComponent<Rigidbody>().angularVelocity = new Vector3(UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f), UnityEngine.Random.Range(-40.0f, 40.0f));
+                cylinder.game_object = null;
+                cylinder.can_fire = false;
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.THUMB_COCKING)]
+    public class HammerDecockSystem : GunSystemBase {
         TriggerComponent tc;
         HammerComponent hc;
 
-        bool IsHammerCocked() {
-            return hc.hammer_cocked == 1.0f;
-        }
-
         bool RequestInputReleaseHammer() {
-            if (tc.pressure_on_trigger != PressureState.NONE || hc.hammer_cocked != 1.0f) {
+            if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
                 hc.thumb_on_hammer = Thumb.SLOW_LOWERING;
-                tc.trigger_pressed = 1.0f;
+                tc.is_connected = true;
             } else {
                 hc.thumb_on_hammer = Thumb.OFF_HAMMER;
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
-            };
         }
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
@@ -1267,7 +1385,37 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
             hc = gs.GetComponent<HammerComponent>();
-            tc.pressure_on_trigger = PressureState.NONE;
+        }
+
+        public override void Update() {
+            if (hc.thumb_on_hammer == Thumb.SLOW_LOWERING) {
+                hc.hammer_cocked -= Time.deltaTime * 10.0f;
+                if (hc.hammer_cocked <= 0.0f) {
+                    hc.hammer_cocked = 0.0f;
+                    hc.thumb_on_hammer = Thumb.OFF_HAMMER;
+                    gs.PlaySound(hc.sound_hammer_decock);
+                }
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.HAMMER)]
+    public class HammerSystem : GunSystemBase {
+        HammerComponent hc;
+
+        bool IsHammerCocked() {
+            return hc.hammer_cocked == 1.0f;
+        }
+
+        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
+            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
+                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
+            };
+        }
+
+
+        public override void Initialize() {
+            hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
@@ -1276,13 +1424,6 @@ namespace GunSystemsV1 {
             if (hc.thumb_on_hammer == Thumb.OFF_HAMMER) {
                 if (hc.hammer_cocked > 0.0f && hc.hammer_cocked != 1.0f) {
                     hc.hammer_cocked = 0.0f;
-                }
-            } else if (hc.thumb_on_hammer == Thumb.SLOW_LOWERING) {
-                hc.hammer_cocked -= Time.deltaTime * 10.0f;
-                if (hc.hammer_cocked <= 0.0f) {
-                    hc.hammer_cocked = 0.0f;
-                    hc.thumb_on_hammer = Thumb.OFF_HAMMER;
-                    gs.PlaySound(hc.sound_hammer_decock);
                 }
             } else if (hc.thumb_on_hammer == Thumb.ON_HAMMER || hc.thumb_on_hammer == Thumb.TRIGGER_PULLED) {
                 hc.hammer_cocked = Mathf.Min(1.0f, hc.hammer_cocked + Time.deltaTime * 10.0f);
@@ -1307,8 +1448,8 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if(!hc.is_blocked) {
-                if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.pressure_on_trigger != PressureState.NONE && tc.trigger_pressed < 1.0f) {
+            if(!hc.is_blocked && !tc.is_connected) {
+                if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.trigger_pressed == 1f) {
                     hc.thumb_on_hammer = Thumb.TRIGGER_PULLED;
                 } else if (hc.thumb_on_hammer == Thumb.TRIGGER_PULLED && hc.hammer_cocked == 1.0f) {
                     hc.thumb_on_hammer = Thumb.OFF_HAMMER;
