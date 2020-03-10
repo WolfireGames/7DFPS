@@ -20,6 +20,7 @@ public class VRProgressWatchControl : MonoBehaviour
         asRef = VRInputBridge.instance.aimScript_ref;
         srRef = asRef.GetComponent<SpeedrunTimer>();
         rend = GetComponent<Renderer>();
+        UpdateWatchRotation();
     }
 
     public void UpdateWatchRotation() {
