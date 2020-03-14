@@ -327,6 +327,9 @@ public class GunScriptEditor : Editor {
 
         // Validate every component
         foreach (GunComponent component in gun_script.GetComponents<GunComponent>()) {
+            if(!required_components.Contains(component.GetType())) {
+                continue; // This component is attached but not actually used, don't list errors!
+            }
             bool valid = true;
 
             // Validate every field
@@ -351,8 +354,11 @@ public class GunScriptEditor : Editor {
         bool is_null = (component == null || field.GetValue(component) == null || field.GetValue(component).Equals(null));
 
         foreach(object attribute in field.GetCustomAttributes(true)) {
-            if(is_null && attribute is HasTransformPathAttribute path_attribute) // Try to restore a reference if it is missing 
-                RestoreReference(field, component, path_attribute.paths);
+            if(is_null && attribute is HasTransformPathAttribute path_attribute) { // Try to restore a reference if it is missing
+                if(RestoreReference(field, component, path_attribute.paths)) {
+                    valid = ValidateField(field, component); // Revalidate when we assigned something
+                }
+            }
 
             if(attribute is IsNonNull) // This field needs to be set
                 if(is_null)
@@ -378,14 +384,15 @@ public class GunScriptEditor : Editor {
     }
 
     /// <summary> Try to find a transform inside the gun with any of the specified names, and set the field to it. </summary>
-    private void RestoreReference(FieldInfo field, GunComponent component, string[] names) {
+    private bool RestoreReference(FieldInfo field, GunComponent component, string[] names) {
         foreach (string name in names) {
             Transform transform = gun_script.transform.Find(name, true);
             if(transform != null) {
                 field.SetValue(component, transform);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     /// <summary> Use Reflection to check if all systems have proper attributes defined and Debug.Log everything is used, but not specified </summary>
