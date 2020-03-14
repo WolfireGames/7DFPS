@@ -74,6 +74,28 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.LASER_POINTER_VISUAL)]
+    public class LaserPointerVisualSystem : GunSystemBase {
+        LaserPointerVisualComponent lpvc;
+        GameObject point_object;
+
+        public override void Initialize() {
+            lpvc = gs.GetComponent<LaserPointerVisualComponent>();
+            point_object = GameObject.Instantiate(lpvc.laser_point, lpvc.point_laser_origin.transform);
+        }
+
+        public override void Update() {
+            RaycastHit hit;
+            if(Physics.Raycast(lpvc.point_laser_origin.position, lpvc.point_laser_origin.transform.forward, out hit, 50, 1<<0 | 1<<8 | 1<<11)) {
+                point_object.SetActive(true);
+                point_object.transform.position = hit.point;
+                point_object.transform.rotation = Quaternion.LookRotation(hit.normal);
+            } else {
+                point_object.SetActive(false);
+            }
+        }
+    }
+
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_SPRING_VISUAL)]
     public class SlideSpringVisualSystem : GunSystemBase {
         SlideComponent psc;
