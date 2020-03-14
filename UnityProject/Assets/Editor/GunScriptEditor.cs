@@ -327,6 +327,9 @@ public class GunScriptEditor : Editor {
 
         // Validate every component
         foreach (GunComponent component in gun_script.GetComponents<GunComponent>()) {
+            if(!required_components.Contains(component.GetType())) {
+                continue; // This component is attached but not actually used, don't list errors!
+            }
             bool valid = true;
 
             // Validate every field
