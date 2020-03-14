@@ -74,8 +74,8 @@ public class optionsmenuscript:MonoBehaviour{
     }*/
 
     private void LockCursor() {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     private void UnlockCursor() {
