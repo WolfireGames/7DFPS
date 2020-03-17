@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Linq;
 
+[RequireComponent(typeof(AudioSource))]
 public class ProjectileScript : MonoBehaviour {
     public List<AudioClip> sound_hit_concrete;
     public List<AudioClip> sound_hit_metal;
@@ -12,12 +13,9 @@ public class ProjectileScript : MonoBehaviour {
     public List<AudioClip> sound_hit_ricochet;
     public List<AudioClip> sound_glass_break;
 
-    public GameObject bullet_hole_decal_obj;
     public GameObject bullet_hole_obj;
     public GameObject glass_bullet_hole_obj;
     public GameObject metal_bullet_hole_obj;
-    public GameObject glass_bullet_hole_decal_obj;
-    public GameObject metal_bullet_hole_decal_obj;
     public GameObject spark_effect;
     public GameObject puff_effect;
 
@@ -144,7 +142,7 @@ public class ProjectileScript : MonoBehaviour {
                 aim_script.WasShot();
             } else if(col.collider.material.name.Contains("metal")) {
                 PlaySoundFromGroup(sound_hit_metal, 0.4f);
-                hole = TryInstantiate(metal_bullet_hole_decal_obj, contact.point, Quaternion.FromToRotation(new Vector3(0,0,-1), contact.normal) * Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), new Vector3(0,0,1)));
+                hole = TryInstantiate(metal_bullet_hole_obj, contact.point, Quaternion.FromToRotation(new Vector3(0,0,-1), contact.normal) * Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), new Vector3(0,0,1)));
                 effect = TryInstantiate(spark_effect, contact.point, RandomOrientation());
             } else if(col.collider.material.name.Contains("glass")){
                 PlaySoundFromGroup(sound_hit_glass, 0.4f);
@@ -154,7 +152,7 @@ public class ProjectileScript : MonoBehaviour {
                 effect = TryInstantiate(spark_effect, contact.point, RandomOrientation());
             } else {
                 PlaySoundFromGroup(sound_hit_concrete, 0.4f);
-                hole = TryInstantiate(bullet_hole_decal_obj, contact.point, Quaternion.FromToRotation(new Vector3(0,0,-1), contact.normal) * Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), new Vector3(0,0,1)));
+                hole = TryInstantiate(bullet_hole_obj, contact.point, Quaternion.FromToRotation(new Vector3(0,0,-1), contact.normal) * Quaternion.AngleAxis(UnityEngine.Random.Range(0,360), new Vector3(0,0,1)));
                 effect = TryInstantiate(puff_effect, contact.point, RandomOrientation());
             }
 
@@ -184,6 +182,7 @@ public class ProjectileScript : MonoBehaviour {
                     transform.parent = aim_script.main_camera.transform;
                 } else if(robot_script) {
                     transform.parent = robot_script.transform;
+                    robot_script.AttachHole(transform, col.transform);
                 } else if (rigidbody) {
                     transform.parent = col.transform;
                 } else if(level_creator) {
