@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Linq;
 
+[RequireComponent(typeof(AudioSource))]
 public class ProjectileScript : MonoBehaviour {
     public List<AudioClip> sound_hit_concrete;
     public List<AudioClip> sound_hit_metal;
