@@ -182,6 +182,7 @@ public class ProjectileScript : MonoBehaviour {
                     transform.parent = aim_script.main_camera.transform;
                 } else if(robot_script) {
                     transform.parent = robot_script.transform;
+                    robot_script.AttachHole(transform, col.transform);
                 } else if (rigidbody) {
                     transform.parent = col.transform;
                 } else if(level_creator) {
