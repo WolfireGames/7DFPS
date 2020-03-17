@@ -1656,7 +1656,13 @@ namespace GunSystemsV1 {
                     float radius = UnityEngine.Random.Range(0, fc.inaccuracy);
                     bullet.transform.Rotate(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
                 }
-                bullet.GetComponent<BulletScript>().SetVelocity(bullet.transform.forward * fc.exit_velocity);
+
+                if(bullet.GetComponent<BulletScript>()) {
+                    bullet.GetComponent<BulletScript>().SetVelocity(bullet.transform.forward * fc.exit_velocity);
+                } else if(bullet.GetComponent<ProjectileScript>()) {
+                    bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * fc.exit_velocity, ForceMode.Impulse);
+                    Debug.DrawLine(bullet.transform.position, bullet.transform.position + bullet.transform.forward * 20, Color.magenta, 10f);
+                }
             }
 
             fc.fire_count++;
