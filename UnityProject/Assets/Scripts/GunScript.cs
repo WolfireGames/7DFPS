@@ -61,6 +61,7 @@ public enum GunSystemRequests {
     INPUT_STOP_AIM,
     DISCHARGE,
     SPEND_ROUND,
+    DESTROY_ROUND,
 };
 
 /// <summary> Base class for every Gun System </summary>
