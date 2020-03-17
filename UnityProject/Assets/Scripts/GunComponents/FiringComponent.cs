@@ -16,6 +16,8 @@ public class FiringComponent : GunComponent {
     public int projectile_count = 1;
     public float inaccuracy = 0f;
 
+    [Tooltip("Instead of spending the round, destory it completely, leaving the nothing inside the gun")]
+    public bool caseless_ammunition = false;
     [Range(-2, 2)] public float recoil_multiplier = 1f;
 
     //Incremented everytime a round is successfully launched.
