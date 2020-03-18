@@ -183,15 +183,32 @@ public class ProjectileScript : MonoBehaviour {
                 } else if(robot_script) {
                     transform.parent = robot_script.transform;
                     robot_script.AttachHole(transform, col.transform);
-                } else if (rigidbody) {
-                    transform.parent = col.transform;
                 } else if(level_creator) {
                     transform.parent = level_creator.GetPositionTileDecalsParent(transform.position);
+                } else {
+                    transform.parent = col.transform;
                 }
-                DestroyColliders(); // Destory colliders when we attached to something to prevent weird behaviour
             }
 
             on_collision.Invoke();
+        }
+    }
+
+    /// <summary> Call Physics.IgnoreCollision for every collider in the parent to prevent unintended collision behaviour </summary>
+    public void PreventIntercollisionWithParent() {
+        if(!transform.parent) { // No parent
+            return;
+        }
+
+        Collider[] colliders = transform.parent.gameObject.GetComponents<Collider>();
+        foreach (Collider collider in colliders) {
+            if(own_colliders.Contains(collider)) {
+                continue;
+            }
+
+            foreach (Collider own_collider in own_colliders) {
+                Physics.IgnoreCollision(collider, own_collider);
+            }
         }
     }
 
