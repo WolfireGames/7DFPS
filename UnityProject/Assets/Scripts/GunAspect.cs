@@ -43,6 +43,7 @@ public static class GunAspectHelper {
         {GunAspect.GRIP_SAFETY_VISUAL, new GUIContent("Grip Safety Visual")},
         {GunAspect.SLIDE_SPRING_VISUAL, new GUIContent("Slide Spring Visual")},
         {GunAspect.YOKE_AUTO_EJECTOR, new GUIContent("Yoke Auto Ejector", "When opening the yoke, eject every round in the cylinder.")},
+        {GunAspect.LASER_POINTER_VISUAL, new GUIContent("Laser Pointer Visual", "Adds a static laser to your gun")},
         {GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, new GUIContent("Ammo Count Animator Visual", "Update an Animator's variables to reflect rounds inside the gun:\n\"rounds_in_mag\": amount of rounds in a magazine or cylinder (-1) if no magazine is inside.\n\"round_chambered\": is a round chambered")},
     };
 
@@ -155,9 +156,10 @@ public class GunAspect {
     public const ushort THUMB_SAFETY_VISUAL = 36;
     public const ushort GRIP_SAFETY_VISUAL = 37;
     public const ushort YOKE_AUTO_EJECTOR = 38;
-    public const ushort AMMO_COUNT_ANIMATOR_VISUAL = 39;
+    public const ushort LASER_POINTER_VISUAL = 39;
+    public const ushort AMMO_COUNT_ANIMATOR_VISUAL = 40;
 
-    private const ushort MAX_VALUE = 39; // Used to determine an all bits enum
+    private const ushort MAX_VALUE = 40; // Used to determine an all bits enum
     public static readonly ushort[] ALL = System.Array.ConvertAll<int, ushort>(Enumerable.Range(0, MAX_VALUE + 1).ToArray(), item => (ushort)item);
 
     public ushort[] value = new ushort[0];
