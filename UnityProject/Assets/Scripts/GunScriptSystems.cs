@@ -1594,9 +1594,26 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        public bool DestroyRound() {
+            int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
+            if (which_chamber < 0) {
+                which_chamber += rcc.cylinder_capacity;
+            }
+
+            GameObject round = rcc.cylinders[which_chamber].game_object;
+            if (round) {
+                rcc.cylinders[which_chamber].can_fire = false;
+                GameObject.Destroy(round);
+
+                return true;
+            }
+            return false;
+        }
+
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.SPEND_ROUND, SpendRound},
+                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
             };
         }
 
@@ -1623,9 +1640,20 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        public bool DestroyRound() {
+            if(cc.active_round != null) {
+                cc.active_round_state = RoundState.EMPTY;
+
+                GameObject.Destroy(cc.active_round);
+                return true;
+            }
+            return false;
+        }
+
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.SPEND_ROUND, SpendRound},
+                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
             };
         }
 
@@ -1645,7 +1673,11 @@ namespace GunSystemsV1 {
             GameObject bullet = null;
             gs.PlaySound(fc.sound_gunshot_smallroom, 1.0f);
             
-            gs.Request(GunSystemRequests.SPEND_ROUND);
+            if(fc.caseless_ammunition) {
+                gs.Request(GunSystemRequests.DESTROY_ROUND);
+            } else {
+                gs.Request(GunSystemRequests.SPEND_ROUND);
+            }
 
             for(var i = 0; i < fc.projectile_count; i++) {
                 GameObject.Instantiate(fc.muzzle_flash, fc.point_muzzleflash.position, fc.point_muzzleflash.rotation);
@@ -1656,7 +1688,13 @@ namespace GunSystemsV1 {
                     float radius = UnityEngine.Random.Range(0, fc.inaccuracy);
                     bullet.transform.Rotate(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
                 }
-                bullet.GetComponent<BulletScript>().SetVelocity(bullet.transform.forward * fc.exit_velocity);
+
+                if(bullet.GetComponent<BulletScript>()) {
+                    bullet.GetComponent<BulletScript>().SetVelocity(bullet.transform.forward * fc.exit_velocity);
+                } else if(bullet.GetComponent<ProjectileScript>()) {
+                    bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * fc.exit_velocity, ForceMode.Impulse);
+                    Debug.DrawLine(bullet.transform.position, bullet.transform.position + bullet.transform.forward * 20, Color.magenta, 10f);
+                }
             }
 
             fc.fire_count++;
