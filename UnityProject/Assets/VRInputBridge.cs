@@ -372,6 +372,8 @@ public class VRInputBridge : MonoBehaviour
                 else {
                     return false;
                 }
+            case "Hammer":
+                return VRInputController.instance.GunInteract3Down(hand) || CheckBoundsAndClickedDown(HammerObject, aimScript_ref.secondaryHand);
             default:
                 return Input.GetButtonDown(input_str);
         }
