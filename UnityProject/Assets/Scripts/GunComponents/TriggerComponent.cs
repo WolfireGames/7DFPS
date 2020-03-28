@@ -1,7 +1,3 @@
-using UnityEngine;
-
-public enum FireMode { AUTOMATIC, SINGLE, DISABLED };
-
 [GunDataAttribute(GunAspect.TRIGGER)]
 public class TriggerComponent : GunComponent {
     internal Predicates trigger_pressable_predicates = new Predicates();

@@ -773,11 +773,10 @@ namespace GunSystemsV1 {
 
         bool RequestToggleFireMode() {
             gs.PlaySound(fmc.sound_firemode_toggle);
-            if (fmc.auto_mod_stage == AutoModStage.DISABLED) {
-                fmc.auto_mod_stage = AutoModStage.ENABLED;
-            } else if (fmc.auto_mod_stage == AutoModStage.ENABLED) {
-                fmc.auto_mod_stage = AutoModStage.DISABLED;
-            }
+
+            fmc.target_fire_mode_index++;
+            if(fmc.target_fire_mode_index >= fmc.fire_modes.Length)
+                fmc.target_fire_mode_index = 0;
             return true;
         }
 
@@ -793,20 +792,21 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if (fmc.auto_mod_stage == AutoModStage.ENABLED) {
-                fmc.auto_mod_amount = Mathf.Min(1.0f, fmc.auto_mod_amount + Time.deltaTime * 10.0f);
-            } else if (fmc.auto_mod_stage == AutoModStage.DISABLED) {
-                fmc.auto_mod_amount = Mathf.Max(0.0f, fmc.auto_mod_amount - Time.deltaTime * 10.0f);
-            }
-
-            if (fmc.auto_mod_amount == 1.0f) {
-                tc.fire_mode = FireMode.AUTOMATIC;
-            } else if (fmc.auto_mod_amount == 0.0f) {
-                tc.fire_mode = FireMode.SINGLE;
+            if(fmc.target_fire_mode_index == fmc.current_fire_mode_index) { // idle
+                tc.fire_mode = fmc.current_fire_mode;
             } else {
-                //Fall back to disabled while changing, because you can't shoot in an undefined setting 
-                //(Or can you? We should test on a real glock)
                 tc.fire_mode = FireMode.DISABLED;
+
+                var target = (float)fmc.target_fire_mode_index / (fmc.fire_modes.Length - 1);
+                if(fmc.target_fire_mode_index > fmc.current_fire_mode_index) {
+                    fmc.fire_mode_amount = Mathf.Min(target, fmc.fire_mode_amount + Time.deltaTime * 10.0f);
+                } else {
+                    fmc.fire_mode_amount = Mathf.Max(target, fmc.fire_mode_amount - Time.deltaTime * 10.0f);
+                }
+
+                if(fmc.fire_mode_amount == target) {
+                    fmc.current_fire_mode_index = fmc.target_fire_mode_index;
+                }
             }
         }
     }

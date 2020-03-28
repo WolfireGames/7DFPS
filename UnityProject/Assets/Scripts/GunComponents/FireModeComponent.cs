@@ -1,11 +1,15 @@
 using UnityEngine;
 
-public enum AutoModStage { ENABLED, DISABLED };
+public enum FireMode { AUTOMATIC, SINGLE, DISABLED, BURST_THREE };
 
 [GunDataAttribute(GunAspect.FIRE_MODE)]
 public class FireModeComponent : GunComponent {
     public AudioClip[] sound_firemode_toggle = new AudioClip[0];
+    public FireMode[] fire_modes = new FireMode[] {FireMode.SINGLE, FireMode.AUTOMATIC};
 
-    internal AutoModStage auto_mod_stage = AutoModStage.DISABLED;
-    internal float auto_mod_amount = 0.0f;
+    internal FireMode current_fire_mode => fire_modes[current_fire_mode_index];
+    internal int current_fire_mode_index = 0;
+    internal int target_fire_mode_index = 0;
+
+    internal float fire_mode_amount = 0;
 }

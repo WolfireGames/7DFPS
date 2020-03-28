@@ -211,13 +211,13 @@ namespace GunSystemsV1 {
     public class FireModeHelperSystem : GunSystemBase {
         FireModeComponent fmc;
 
-        bool ShouldToggleAutoMode() {
-            return fmc.auto_mod_stage == AutoModStage.ENABLED;
+        bool ShouldToggleFireMode() {
+            return fmc.current_fire_mode == FireMode.AUTOMATIC || fmc.current_fire_mode == FireMode.DISABLED;
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_TOGGLE_AUTO_MODE, ShouldToggleAutoMode}
+                {GunSystemQueries.SHOULD_TOGGLE_FIRE_MODE, ShouldToggleFireMode}
             };
         }
 

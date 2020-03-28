@@ -21,7 +21,7 @@ public enum GunSystemQueries {
     SHOULD_INSERT_BULLET,
     IS_CYLINDER_OPEN,
     IS_IN_ALTERNATIVE_STANCE,
-    SHOULD_TOGGLE_AUTO_MODE,
+    SHOULD_TOGGLE_FIRE_MODE,
     IS_HAMMER_COCKED,
     SHOULD_PULL_BACK_HAMMER,
     IS_PRESS_CHECK,
@@ -378,7 +378,7 @@ public class GunScript : MonoBehaviour {
     }
 
     public bool ShouldToggleAutoMod() {
-        return Query(GunSystemQueries.SHOULD_TOGGLE_AUTO_MODE);
+        return Query(GunSystemQueries.SHOULD_TOGGLE_FIRE_MODE);
     }
 
     public bool ShouldToggleStance() {
