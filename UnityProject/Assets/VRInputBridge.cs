@@ -107,7 +107,9 @@ public class VRInputBridge : MonoBehaviour
             }
         }
 
-        
+        if (aimScript_ref.gun_script.HasGunComponent(GunAspect.SLIDE_LOCK) && aimScript_ref.gun_script.HasGunComponent(GunAspect.THUMB_COCKING)) {
+            hc = aimScript_ref.gun_script.GetComponent<HammerComponent>();
+        }
 
         Camera.main.nearClipPlane = 0.01f;
     }
@@ -421,8 +423,14 @@ public class VRInputBridge : MonoBehaviour
         
     }
 
+    HammerComponent hc;
+
     private void Update() {
         MagOut = (aimScript_ref.magazine_instance_in_hand != null);
+
+        if (hc != null && !GetButton("Hammer", aimScript_ref.primaryHand)) {
+            hc.thumb_on_hammer = Thumb.OFF_HAMMER;
+        }
 
         //Debug.DrawLine(VRInputController.instance.RightHand.transform.position, VRInputController.instance.RightHand.transform.position + VRInputController.instance.RightHand.transform.rotation*closeDirection, Color.red);
     }
