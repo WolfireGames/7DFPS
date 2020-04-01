@@ -1201,10 +1201,12 @@ namespace GunSystemsV1 {
                 tc.trigger_pressed = Mathf.Max(0.0f, tc.trigger_pressed - Time.deltaTime * 20.0f);
             }
 
-            if(tc.trigger_pressed != 1f) {
-                tc.is_connected = true; // Guns usually need to cycle before connecting again
-            } else if(tc.old_trigger_pressed != 1f) {
-                tc.is_connected = false; // We just pressed the trigger fully
+            if(tc.fire_mode != FireMode.DISABLED) {
+                if(tc.trigger_pressed != 1f) {
+                    tc.is_connected = true; // Guns usually need to cycle before connecting again
+                } else if(tc.old_trigger_pressed != 1f) {
+                    tc.is_connected = false; // We just pressed the trigger fully
+                }
             }
         }
     }
