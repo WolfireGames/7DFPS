@@ -264,7 +264,12 @@ public class VRInputBridge : MonoBehaviour
                     
                     if (aimScript_ref.primaryHand == HandSide.Right) {
                         if (hand == HandSide.Left) {
-                            return VRInputController.instance.GunInteractDown(hand);//Magazine bullet insert
+                            if (aimScript_ref.gun_instance != null) {
+                                return VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
+                            }
+                            else {
+                                return VRInputController.instance.GunInteractDown(HandSide.Right);//Magazine bullet insert
+                            }
                         }
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
@@ -278,7 +283,12 @@ public class VRInputBridge : MonoBehaviour
                     }
                     else {
                         if (hand == HandSide.Right) {
-                            return VRInputController.instance.GunInteractDown(hand);//Lefthanded version
+                            if (aimScript_ref.gun_instance != null) {
+                                return VRInputController.instance.GunInteractDown(HandSide.Right);//Lefthanded version
+                            }
+                            else {
+                                return VRInputController.instance.GunInteractDown(HandSide.Left);//Lefthanded version
+                            }
                         }
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
@@ -370,6 +380,13 @@ public class VRInputBridge : MonoBehaviour
             case "Tape Player":
                 if (VRInventoryManager.instance.TapePlayer) {
                     return VRInputController.instance.ActionPressDown(hand);
+                }
+                else {
+                    return false;
+                }
+            case "Holster":
+                if (VRInventoryManager.instance.Holster) {
+                    return VRInputController.instance.CollectPressDown(hand);
                 }
                 else {
                     return false;

@@ -6,7 +6,7 @@ public class VRInventoryManager : MonoBehaviour
 {
     public static VRInventoryManager instance;
     public Transform[] slots;
-    public Transform TapePL;
+    public Transform TapePL, HolstTrans, PlayerRotate;
 
     public Material DefaultMat, HighlightMat;
 
@@ -14,10 +14,15 @@ public class VRInventoryManager : MonoBehaviour
 
     public int HighlightSlot = -1;
 
-    public bool TapePlayer;
+    int holsterMult = 1;
+
+    public bool TapePlayer, Holster;
+
+    float DefaultX;
 
     private void Awake() {
         instance = this;
+        DefaultX = HolstTrans.localPosition.x;
     }
 
     void Start()
@@ -64,6 +69,10 @@ public class VRInventoryManager : MonoBehaviour
             return;
         }
 
+        Vector3 flattenedForward = VRInputController.instance.Head.transform.forward;
+        flattenedForward.y = 0f;
+        PlayerRotate.rotation = Quaternion.LookRotation(flattenedForward, Vector3.up);
+
         for (int i = 0; i < slots.Length-1; i++) {
             if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
                 if (Vector3.Distance(VRInputController.instance.LeftHand.transform.position, slots[i].position) < 0.05f) {
@@ -100,6 +109,34 @@ public class VRInventoryManager : MonoBehaviour
             else {
                 TapePlayer = false;
             }
+        }
+
+        if (PlayerPrefs.GetInt("alt_holster", 0) == 1) {
+            holsterMult = -1;
+        }
+        else {
+            holsterMult = 1;
+        }
+
+        if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
+            if (Vector3.Distance(VRInputController.instance.RightHand.transform.position, HolstTrans.position) < 0.075f) {
+                Holster = true;
+            }
+            else {
+                Holster = false;
+            }
+
+            HolstTrans.localPosition = new Vector3(DefaultX * holsterMult, 0.13f, 0);
+        }
+        else {
+            if (Vector3.Distance(VRInputController.instance.LeftHand.transform.position, HolstTrans.position) < 0.075f) {
+                Holster = true;
+            }
+            else {
+                Holster = false;
+            }
+
+            HolstTrans.localPosition = new Vector3(-DefaultX * holsterMult, 0.13f, 0);
         }
     }
 }

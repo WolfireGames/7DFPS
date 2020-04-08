@@ -1,197 +1,192 @@
 {
-   "action_manifest_version" : 0,
-   "alias_info" : {},
-   "app_key" : "application.generated.unity.receiver.exe",
-   "bindings" : {
-	"/actions/default": {
-		"chords": [
-			{
-				"output": "/actions/default/in/pausegame",
-				"inputs": [
-					[
-						"/user/hand/left/input/application_menu",
-						"click"
-					],
-					[
-						"/user/hand/right/input/application_menu",
-						"click"
-					]
-				]
-			},
-			{
-				"output": "/actions/default/in/swaphandedness",
-				"inputs": [
-					[
-						"/user/hand/left/input/grip",
-						"click"
-					],
-					[
-						"/user/hand/right/input/grip",
-						"click"
-					]
-				]
-			}
-		],
-		"poses": [
-			{
-				"output": "/actions/default/in/pose",
-				"path": "/user/hand/left/pose/raw"
-			},
-			{
-				"output": "/actions/default/in/pose",
-				"path": "/user/hand/right/pose/raw"
-			}
-		],
-		"haptics": [
-			{
-				"output": "/actions/default/out/haptic",
-				"path": "/user/hand/left/output/haptic"
-			},
-			{
-				"output": "/actions/default/out/haptic",
-				"path": "/user/hand/right/output/haptic"
-			}
-		],
-		"sources": [
-			{
-				"path": "/user/hand/left/input/grip",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/collectnearby"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/grip",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/collectnearby"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/left/input/grip",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/guninteractlongpress"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/grip",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/guninteractlongpress"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/left/input/application_menu",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/guninteract"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/application_menu",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/guninteract"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/left/input/trigger",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/action"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/trigger",
-				"mode": "button",
-				"inputs": {
-					"click": {
-						"output": "/actions/default/in/action"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/left/input/trackpad",
-				"mode": "trackpad",
-				"inputs": {
-					"position": {
-						"output": "/actions/default/in/locomotion"
-					},
-					"click": {
-						"output": "/actions/default/in/jump"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/trackpad",
-				"mode": "trackpad",
-				"inputs": {
-					"position": {
-						"output": "/actions/default/in/locomotion"
-					},
-					"click": {
-						"output": "/actions/default/in/jump"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/left/input/trackpad",
-				"mode": "dpad",
-				"parameters": {
-					"sub_mode": "click"
-				},
-				"inputs": {
-					"east": {
-						"output": "/actions/default/in/snapturnleft"
-					},
-					"west": {
-						"output": "/actions/default/in/snapturnright"
-					}
-				}
-			},
-			{
-				"path": "/user/hand/right/input/trackpad",
-				"mode": "dpad",
-				"parameters": {
-					"sub_mode": "click"
-				},
-				"inputs": {
-					"east": {
-						"output": "/actions/default/in/snapturnleft"
-					},
-					"west": {
-						"output": "/actions/default/in/snapturnright"
-					}
-				}
-			}
-		],
-		"skeleton": [
-			{
-				"output": "/actions/default/in/skeletonlefthand",
-				"path": "/user/hand/left/input/skeleton/left"
-			},
-			{
-				"output": "/actions/default/in/skeletonrighthand",
-				"path": "/user/hand/right/input/skeleton/right"
-			}
-		]
-	}
-},
+  "app_key": "application.generated.unity.receiver.exe",
+  "bindings": {
+    "/actions/default": {
+      "chords": [
+        {
+          "output": "/actions/default/in/pausegame",
+          "inputs": [
+            [
+              "/user/hand/left/input/application_menu",
+              "click"
+            ],
+            [
+              "/user/hand/right/input/application_menu",
+              "click"
+            ]
+          ]
+        }
+      ],
+      "poses": [
+        {
+          "output": "/actions/default/in/pose",
+          "path": "/user/hand/left/pose/raw"
+        },
+        {
+          "output": "/actions/default/in/pose",
+          "path": "/user/hand/right/pose/raw"
+        }
+      ],
+      "haptics": [
+        {
+          "output": "/actions/default/out/haptic",
+          "path": "/user/hand/left/output/haptic"
+        },
+        {
+          "output": "/actions/default/out/haptic",
+          "path": "/user/hand/right/output/haptic"
+        }
+      ],
+      "sources": [
+        {
+          "path": "/user/hand/left/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/collectnearby"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/collectnearby"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/guninteractlongpress"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/grip",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/guninteractlongpress"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/application_menu",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/guninteract"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/application_menu",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/guninteract"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/trigger",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/action"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/trigger",
+          "mode": "button",
+          "parameters": {},
+          "inputs": {
+            "click": {
+              "output": "/actions/default/in/action"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/trackpad",
+          "mode": "trackpad",
+          "parameters": {},
+          "inputs": {
+            "position": {
+              "output": "/actions/default/in/locomotion"
+            },
+            "click": {
+              "output": "/actions/default/in/jump"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/trackpad",
+          "mode": "trackpad",
+          "parameters": {},
+          "inputs": {
+            "position": {
+              "output": "/actions/default/in/locomotion"
+            },
+            "click": {
+              "output": "/actions/default/in/jump"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/left/input/trackpad",
+          "mode": "dpad",
+          "parameters": {
+            "sub_mode": "click"
+          },
+          "inputs": {
+            "east": {
+              "output": "/actions/default/in/snapturnleft"
+            },
+            "west": {
+              "output": "/actions/default/in/snapturnright"
+            }
+          }
+        },
+        {
+          "path": "/user/hand/right/input/trackpad",
+          "mode": "dpad",
+          "parameters": {
+            "sub_mode": "click"
+          },
+          "inputs": {
+            "east": {
+              "output": "/actions/default/in/snapturnleft"
+            },
+            "west": {
+              "output": "/actions/default/in/snapturnright"
+            }
+          }
+        }
+      ],
+      "skeleton": [
+        {
+          "output": "/actions/default/in/skeletonlefthand",
+          "path": "/user/hand/left/input/skeleton/left"
+        },
+        {
+          "output": "/actions/default/in/skeletonrighthand",
+          "path": "/user/hand/right/input/skeleton/right"
+        }
+      ]
+    }
+  },
   "controller_type": "vive_controller",
   "description": "",
   "name": "vive_controller"

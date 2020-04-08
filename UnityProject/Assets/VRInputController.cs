@@ -301,6 +301,10 @@ public class VRInputController : MonoBehaviour
         return CollectButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand);
     }
 
+    public bool CollectPressDown(HandSide hand) {
+        return CollectButton.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+    }
+
     public bool ActionPress(HandSide hand) {
         return ActionButton.GetState(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
@@ -403,20 +407,23 @@ public class VRInputController : MonoBehaviour
         InventoryPos.transform.localPosition = (new Vector3(Head.transform.localPosition.x - (transform.InverseTransformDirection(Head.transform.forward).x * 0.15f), Head.transform.localPosition.y, Head.transform.localPosition.z - (transform.InverseTransformDirection(Head.transform.forward).z * 0.15f)) * Head.transform.localScale.x) - (Vector3.up * TallestHead / 3f);
         InventoryPos.transform.rotation = transform.rotation;
 
-        if (ChangeHandedness.GetStateDown(SteamVR_Input_Sources.Any)) {
-            if(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Right) {
-                VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Left;
-                VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Right;
-                LHandSphere.SetActive(false);
-                RHandSphere.SetActive(true);
-            }
-            else {
-                VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Right;
-                VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Left;
-                LHandSphere.SetActive(true);
-                RHandSphere.SetActive(false);
-            }
+        //if (ChangeHandedness.GetStateDown(SteamVR_Input_Sources.Any)) {
+        //    PlayerPrefs.SetInt("left_handed", PlayerPrefs.GetInt("left_handed") == 1?0:1);
+        //}
+
+        if (PlayerPrefs.GetInt("left_handed",0) == 1) {
+            VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Left;
+            VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Right;
+            LHandSphere.SetActive(false);
+            RHandSphere.SetActive(true);
         }
+        else {
+            VRInputBridge.instance.aimScript_ref.primaryHand = HandSide.Right;
+            VRInputBridge.instance.aimScript_ref.secondaryHand = HandSide.Left;
+            LHandSphere.SetActive(true);
+            RHandSphere.SetActive(false);
+        }
+
         //InventoryPos.transform.LookAt(Head.transform.forward - new Vector3(0, Head.transform.forward.y, 0));
         //InventoryPos.transform.position += InventoryPos.transform.forward * 0.5f;
     }

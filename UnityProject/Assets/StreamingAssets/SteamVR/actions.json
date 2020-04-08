@@ -69,10 +69,6 @@
       "requirement": "mandatory"
     },
     {
-      "name": "/actions/default/in/SwapHandedness",
-      "type": "boolean"
-    },
-    {
       "name": "/actions/default/in/PauseGame",
       "type": "boolean"
     },
@@ -163,8 +159,7 @@
       "/actions/default/in/Action": "Use - Grab",
       "/actions/default/in/CollectNearby": "Collect Nearby Objects",
       "/actions/default/in/Jump": "Jump",
-      "/actions/default/in/Locomotion": "Movement",
-      "/actions/default/in/SwapHandedness": "Swap Handedness"
+      "/actions/default/in/Locomotion": "Movement"
     }
   ]
 }

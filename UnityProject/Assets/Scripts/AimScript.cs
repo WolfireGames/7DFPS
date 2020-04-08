@@ -336,7 +336,9 @@ public class AimScript:MonoBehaviour{
     int target_weapon_slot = -2;
 
     WeaponSlot[] weapon_slots = new WeaponSlot[10];
-    
+
+    WeaponSlot gun_slot = new WeaponSlot();
+
     // Player state
     float health = 1.0f;
     bool dying = false;
@@ -678,9 +680,9 @@ public class AimScript:MonoBehaviour{
     }
     
     public bool HandleInventoryControls() {	
-    	/*if(character_input.GetButtonDown("Holster")){
+    	if(character_input.GetButtonDown("Holster", primaryHand)){
     		target_weapon_slot = -1;
-    	}*/
+    	}
 
     	if(character_input.GetButtonDown("Inventory 1",secondaryHand)){
     		target_weapon_slot = 0;
@@ -780,31 +782,37 @@ public class AimScript:MonoBehaviour{
     			weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
     			weapon_slots[target_weapon_slot].spring.state = 1.0f;
     			target_weapon_slot = -2;
-    		} else if((gun_instance != null) && target_weapon_slot == -1){
-    			// Put gun away
-    			if(target_weapon_slot == -1){
+    		} else if(target_weapon_slot == -1){
+                // Put gun away
+                /*if(target_weapon_slot == -1){
     				for(int i=0; i<10; ++i){
     					if(weapon_slots[i].type == WeaponSlotType.EMPTY){
     						target_weapon_slot = i;
     						break;
     					}
     				}
-    			}
-    			if(target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
-    				for(int i=0; i<10; ++i){
-    					if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == gun_instance){
-    						weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
-    					}
-    				}
-    				weapon_slots[target_weapon_slot].type = WeaponSlotType.GUN;
-    				weapon_slots[target_weapon_slot].obj = gun_instance;
-    				weapon_slots[target_weapon_slot].spring.state = 0.0f;
-    				weapon_slots[target_weapon_slot].spring.target_state = 1.0f;
-    				weapon_slots[target_weapon_slot].start_pos = gun_instance.transform.position - main_camera.transform.position;
-    				weapon_slots[target_weapon_slot].start_rot = Quaternion.Inverse(main_camera.transform.rotation) * gun_instance.transform.rotation;
-    				gun_instance = null;
-    				target_weapon_slot = -2;
-    			}
+    			}*/
+                //if(target_weapon_slot == -1){// && gun_slot.type == WeaponSlotType.EMPTY
+                //for(int i=0; i<10; ++i){
+                if (gun_instance == null) {
+                    gun_instance = gun_slot.obj;
+                    gun_slot.type = WeaponSlotType.EMPTYING;
+                    gun_slot.spring.target_state = 0.0f;
+                    gun_slot.spring.state = 1.0f;
+                    target_weapon_slot = -2;
+                }
+                else if(gun_instance != null){
+                    //}
+                    gun_slot.type = WeaponSlotType.GUN;
+                    gun_slot.obj = gun_instance;
+                    gun_slot.spring.state = 0.0f;
+                    gun_slot.spring.target_state = 1.0f;
+                    gun_slot.start_pos = gun_instance.transform.position - main_camera.transform.position;
+                    gun_slot.start_rot = Quaternion.Inverse(main_camera.transform.rotation) * gun_instance.transform.rotation;
+                    gun_instance = null;
+                    target_weapon_slot = -2;
+                }
+    			//}
     		} else if(target_weapon_slot >= 0 && (gun_instance == null)){
     			if(weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
     				target_weapon_slot = -2;
@@ -1096,7 +1104,7 @@ public class AimScript:MonoBehaviour{
         if (gun_instance != null) {
             HandleGunControls(insert_mag_with_number_key);
         }
-        if(mag_stage == HandMagStage.HOLD){
+        if((gun_instance == null || PlayerPrefs.GetInt("vanilla_controls",1) == 0) && mag_stage == HandMagStage.HOLD){
     		if(character_input.GetButtonDown("Insert",secondaryHand)){
     			if(loose_bullets.Count > 0){
     				if(magazine_instance_in_hand.GetComponent<mag_script>().AddRound()){
@@ -1404,7 +1412,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateAimSpring() {
-        return;
+        //return;
     	/*bool offset_aim_target = false;
     	if((character_input.GetButton("Hold To Aim") || aim_toggle) && !dead && (gun_instance != null)){
     		aim_spring.target_state = 1.0f;
@@ -1665,6 +1673,39 @@ public class AimScript:MonoBehaviour{
     		}
     		slot.spring.Update();
     	}
+
+        slot = gun_slot;
+        if (slot.obj != null) {
+
+            Vector3 start_pos = VRInventoryManager.instance.HolstTrans.position + slot.start_pos;
+            Quaternion start_rot = VRInventoryManager.instance.HolstTrans.rotation * slot.start_rot;
+            if (slot.type == WeaponSlotType.EMPTYING) {
+                start_pos = slot.obj.transform.position;
+                start_rot = slot.obj.transform.rotation;
+                if (Mathf.Abs(slot.spring.vel) <= 0.01f && slot.spring.state <= 0.01f) {
+                    slot.type = WeaponSlotType.EMPTY;
+                    slot.spring.state = 0.0f;
+                    slot.obj = null;
+                }
+            }
+
+            Vector3 target_pos = VRInventoryManager.instance.HolstTrans.position + Vector3.up * 0.05f;
+
+            slot.obj.transform.position = mix(
+                start_pos,
+                target_pos,
+                slot.spring.state);
+
+            slot.obj.transform.rotation = mix(
+                start_rot,
+                VRInventoryManager.instance.HolstTrans.rotation,
+                slot.spring.state);
+            Renderer[] renderers = slot.obj.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers) {
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            slot.spring.Update();
+        }
     }
 
     //public void UpdateLooseBulletDisplay() {
@@ -1673,6 +1714,7 @@ public class AimScript:MonoBehaviour{
 
     public void UpdateLooseBulletDisplay() {
     	bool can_add_rounds = gun_instance && gun_instance.GetComponent<GunScript>().IsAddingRounds();
+
     	if((mag_stage == HandMagStage.HOLD) || picked_up_bullet_delay > 0.0f || can_add_rounds){
     		show_bullet_spring.target_state = 1.0f;
     		picked_up_bullet_delay = Mathf.Max(0.0f, picked_up_bullet_delay - Time.deltaTime);
@@ -1694,8 +1736,15 @@ public class AimScript:MonoBehaviour{
 
             Vector3 InHandPos = VRInputController.instance.LeftHand.transform.position;
 
+            if(gun_instance == null && primaryHand == HandSide.Right) {
+                InHandPos = VRInputController.instance.RightHand.transform.position;
+            }
+
             if (primaryHand == HandSide.Left) {
                 InHandPos = VRInputController.instance.RightHand.transform.position;
+                if (gun_instance == null) {
+                    InHandPos = VRInputController.instance.LeftHand.transform.position;
+                }
             }
 
             bullet.transform.position = Vector3.Lerp(Beltpos, InHandPos, show_bullet_spring.state);
@@ -1704,8 +1753,15 @@ public class AimScript:MonoBehaviour{
 
             Quaternion handRot = VRInputController.instance.LeftHand.transform.rotation;
 
+            if (gun_instance == null && primaryHand == HandSide.Right) {
+                handRot = VRInputController.instance.RightHand.transform.rotation;
+            }
+
             if (primaryHand == HandSide.Left) {
                 handRot = VRInputController.instance.RightHand.transform.rotation;
+                if (gun_instance == null) {
+                    handRot = VRInputController.instance.LeftHand.transform.rotation;
+                }
             }
 
             Quaternion bulletRot = Quaternion.Slerp(headRot, handRot, show_bullet_spring.state);

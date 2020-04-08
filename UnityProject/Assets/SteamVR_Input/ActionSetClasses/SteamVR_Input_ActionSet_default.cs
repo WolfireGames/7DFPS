@@ -129,14 +129,6 @@ namespace Valve.VR
             }
         }
         
-        public virtual SteamVR_Action_Boolean SwapHandedness
-        {
-            get
-            {
-                return SteamVR_Actions.default_SwapHandedness;
-            }
-        }
-        
         public virtual SteamVR_Action_Boolean PauseGame
         {
             get
