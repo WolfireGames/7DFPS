@@ -1192,6 +1192,11 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER)]
     public class GunTriggerSystem : GunSystemBase {
+        /// The gun trigger works based on triggers of regular firearms, "TriggerComponent.IsConnected" is the variable holding the hammer,
+        /// when it returns FALSE, then the hammer should strike, depending on the firemode, it reconnects (in a firearm it reconnects on a separate location that prevents another pull)
+        /// It only disconnects again, if the user stops applying pressure to the trigger and pulls it again.
+        /// TriggerComponent.IsConnected is only FALSE, when the firemode systems and trigger systems determine that the gun should be able to fire!
+
         TriggerComponent tc;
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
