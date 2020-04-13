@@ -35,12 +35,18 @@ public class ModManager : MonoBehaviour {
         if(PlayerPrefs.GetInt("mods_enabled", 0) != 1)
             return;
 
-        if(availableMods == null) { //DEBUG load all mods
-            UpdateMods();
-            foreach (var mod in availableMods)
-                LoadMod(mod);
+        if(availableMods == null)
+            LoadCache();
+
+        if(availableMods.Count != GetModFolderCount()) { // Is our Cache up to date?
+            UnloadAll();
+            ImportMods();
+            UpdateCache();
         }
         
+        foreach (var mod in availableMods)
+            LoadMod(mod);
+
         InsertMods();
     }
 
@@ -96,6 +102,12 @@ public class ModManager : MonoBehaviour {
         SetModLoaded(mod, false);
     }
 
+    public void UnloadAll() {
+        foreach (var mod in availableMods) {
+            mod.Unload();
+        }
+    }
+
     private List<Mod> GetModList(ModType modType) {
         switch (modType) {
             case ModType.Gun: return loadedGunMods;
@@ -116,6 +128,9 @@ public class ModManager : MonoBehaviour {
 
     private void SetModLoaded(Mod mod, bool loadMod) {
         List<Mod> list = GetModList(mod.modType);
+
+        if(loadMod == mod.loaded) // Is the mod already loaded/unloaded?
+            return;
 
         if(loadMod) {
             mod.Load();
@@ -143,14 +158,20 @@ public class ModManager : MonoBehaviour {
         throw new System.InvalidOperationException($"Unable to find Mod Type for \"{assetBundle.name}\"");
     }
 
-    public static void UpdateMods() {
-        var folders = Directory.GetDirectories(GetModsfolderPath(), "modfile_*", SearchOption.AllDirectories);
-        availableMods = new List<Mod>();
-        
+    public static string[] GetModPaths() {
+        return Directory.GetDirectories(GetModsfolderPath(), "modfile_*", SearchOption.AllDirectories);
+    }
+
+    public static int GetModFolderCount() {
+        return GetModPaths().Count();
+    }
+
+    public static void ImportMods() {
         Debug.Log($"Importing mods..");
-        foreach(var path in folders) {
+        availableMods = new List<Mod>();
+        foreach(var path in GetModPaths()) {
             try {
-                UpdateMod(path);
+                ImportMod(path);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
@@ -158,7 +179,7 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    private static void UpdateMod(string path) {
+    private static void ImportMod(string path) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -184,6 +205,38 @@ public class ModManager : MonoBehaviour {
         modBundle.Unload(true);
         Debug.Log($" + {bundleName} ({mod.modType})");
     }
+
+    private static void LoadCache() {
+        string path = Path.Combine(ModManager.GetModsfolderPath(), "cache");
+
+        if(File.Exists(path))
+            availableMods = new List<Mod> (JsonUtility.FromJson<Cache>(File.ReadAllText(path)).mods);
+        else
+            availableMods = new List<Mod> ();
+    }
+
+    private static void UpdateCache() {
+        try {
+            string path = Path.Combine(ModManager.GetModsfolderPath(), "cache");
+
+            if(File.Exists(path))
+                File.Delete(path);
+
+            File.Create(path).Close();
+            File.WriteAllText(path, JsonUtility.ToJson(new Cache(availableMods.ToArray())));
+        } catch (Exception e) {
+            Debug.LogError(e);
+        }
+    }
+
+    [System.Serializable]
+    private struct Cache {
+        public Mod[] mods;
+
+        public Cache (Mod[] mods) {
+            this.mods = mods;
+        }
+    }
 }
 
 public enum ModLoadType {
@@ -198,16 +251,18 @@ public enum ModType {
     LevelTile
 }
 
+
+[System.Serializable]
 public class Mod {
     public ModType modType;
-    public string name = "None";
+    [NonSerialized] public string name = "None";
 
-    public bool loaded = false;
+    [NonSerialized] public bool loaded = false;
     
     public string path;
-    public AssetBundle assetBundle;
+    [NonSerialized] public AssetBundle assetBundle;
 
-    public GameObject mainAsset;
+    [NonSerialized] public GameObject mainAsset;
 
     public Mod(string path) {
         this.path = path;
