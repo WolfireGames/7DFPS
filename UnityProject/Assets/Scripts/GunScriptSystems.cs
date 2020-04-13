@@ -476,7 +476,6 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
-    [Priority(PriorityAttribute.LATE)]
     public class SlideChamberingSystem : GunSystemBase {
         SlideComponent slide_c;
         ChamberComponent chamber_c;
