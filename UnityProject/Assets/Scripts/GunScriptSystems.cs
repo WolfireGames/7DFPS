@@ -476,6 +476,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
+    [Priority(PriorityAttribute.LATE)]
     public class SlideChamberingSystem : GunSystemBase {
         SlideComponent slide_c;
         ChamberComponent chamber_c;
@@ -490,7 +491,11 @@ namespace GunSystemsV1 {
 
         public override void Update() {
             if (!slide_c.slide_lock) {
-                if(slide_c.old_slide_amount > slide_c.slide_chambering_position && ((!slide_c.chamber_on_pull && slide_c.slide_stage == SlideStage.NOTHING) || (slide_c.chamber_on_pull && slide_c.slide_stage != SlideStage.NOTHING))) {
+                if(slide_c.chamber_on_pull) {
+                    if(slide_c.slide_amount > slide_c.slide_chambering_position && slide_c.slide_stage != SlideStage.NOTHING) {
+                        gs.ChamberRoundFromMag();
+                    }
+                } else if(slide_c.old_slide_amount > slide_c.slide_chambering_position && slide_c.slide_amount <= slide_c.slide_chambering_position) {
                     gs.ChamberRoundFromMag();
                 }
                 

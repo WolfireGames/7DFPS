@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using ExtentionUtil;
+using System.Linq;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE_LOCK_VISUAL)]
@@ -231,6 +232,51 @@ namespace GunSystemsV1 {
         public override void Update() {
             gsvc.grip_safety.LerpPosition(gsvc.rel_pos, gsvc.point_grip_safety_off, gsc.safety_off);
             gsvc.grip_safety.LerpRotation(gsvc.rel_rot, gsvc.point_grip_safety_off, gsc.safety_off);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.MAGAZINE)]
+    public class AmmoCounterMagazineVisualSystem : GunSystemBase {
+        AmmoCountAnimatorVisualComponent acavc;
+        MagazineComponent mc;
+
+        public override void Initialize() {
+            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
+            mc = gs.GetComponent<MagazineComponent>();
+        }
+
+        public override void Update() {
+            acavc.animator.SetInteger("rounds_in_mag", mc.mag_script ? mc.mag_script.NumRounds() : -1);
+        }
+    }
+
+    [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.REVOLVER_CYLINDER)]
+    public class AmmoCounterCylinderVisualSystem : GunSystemBase {
+        AmmoCountAnimatorVisualComponent acavc;
+        RevolverCylinderComponent rcc;
+
+        public override void Initialize() {
+            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
+            rcc = gs.GetComponent<RevolverCylinderComponent>();
+        }
+
+        public override void Update() {
+            acavc.animator.SetInteger("rounds_in_mag", rcc.cylinders.Count( (cylinder) => cylinder.can_fire ));
+        }
+    }
+
+    [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.CHAMBER)]
+    public class AmmoCounterChamberVisualSystem : GunSystemBase {
+        AmmoCountAnimatorVisualComponent acavc;
+        ChamberComponent cc;
+
+        public override void Initialize() {
+            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
+            cc = gs.GetComponent<ChamberComponent>();
+        }
+
+        public override void Update() {
+            acavc.animator.SetBool("round_chambered", cc.active_round_state != RoundState.EMPTY);
         }
     }
 }
