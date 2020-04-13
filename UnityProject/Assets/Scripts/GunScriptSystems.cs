@@ -766,8 +766,36 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
+    [InclusiveAspects(GunAspect.TRIGGER, GunAspect.FIRING)]
     public class FireModeSystem : GunSystemBase {
+        TriggerComponent tc;
+        FiringComponent fc;
+
+        int old_fire_count = 0;
+
+        public override void Initialize() {
+            tc = gs.GetComponent<TriggerComponent>();
+            fc = gs.GetComponent<FiringComponent>();
+        }
+
+        public override void Update() {
+            if(old_fire_count != fc.fire_count) {
+                switch (tc.fire_mode) {
+                    case FireMode.SINGLE:
+                        tc.is_connected = true;
+                        break;
+                    case FireMode.BURST_THREE:
+                        if(fc.fire_count % 3 == 0)
+                            tc.is_connected = true;
+                        break;
+                }
+            }
+            old_fire_count = fc.fire_count;
+        }
+    }
+
+    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
+    public class FireModeToggleSystem : GunSystemBase {
         FireModeComponent fmc;
         TriggerComponent tc;
 
@@ -827,9 +855,6 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
-                    if(tc.fire_mode == FireMode.SINGLE || cc.active_round_state != RoundState.READY) {
-                        tc.is_connected = true;
-                    }
                     hc.hammer_cocked = 0.0f;
                     gs.PlaySound(hc.sound_hammer_strike);
                     if(cc.active_round_state == RoundState.READY) {
@@ -856,10 +881,6 @@ namespace GunSystemsV1 {
         public override void Update() {
             // Slide release
             if (!tc.is_connected) {
-                if(tc.fire_mode == FireMode.SINGLE) {
-                    tc.is_connected = true;
-                }
-
                 gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
@@ -1144,10 +1165,6 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 hc.hammer_cocked = 0.0f;
-                if(tc.fire_mode == FireMode.SINGLE) {
-                    tc.is_connected = true;
-                }
-
                 if (rcc.is_closed) {
                     int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
                     if (which_chamber < 0) {
