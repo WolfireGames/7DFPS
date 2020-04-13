@@ -261,7 +261,6 @@ public enum ModType {
     LevelTile
 }
 
-
 [System.Serializable]
 public class Mod {
     public ModType modType;
@@ -286,19 +285,8 @@ public class Mod {
         loaded = true;
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
-
-        if(modType == ModType.Gun)
-            SetupGun();
     }
 
-    private void SetupGun() {
-        WeaponHolder weaponHolder = mainAsset.GetComponent<WeaponHolder>();
-
-        // Set the display name to the bundle name if no custom name is provided
-        if(weaponHolder.display_name == "My Gun")
-            weaponHolder.display_name = name;
-    }
-    
     public void Unload() {
         if(!loaded)
             return;
