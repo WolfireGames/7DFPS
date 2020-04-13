@@ -775,7 +775,7 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         FiringComponent fc;
 
-        int old_fire_count = 0;
+        int current_trigger_cycle = 0;
 
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
@@ -783,18 +783,18 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if(old_fire_count != fc.fire_count) {
+            if(current_trigger_cycle != tc.trigger_cycle) {
                 switch (tc.fire_mode) {
                     case FireMode.SINGLE:
                         tc.is_connected = true;
                         break;
                     case FireMode.BURST_THREE:
-                        if(fc.fire_count % 3 == 0)
+                        if(tc.trigger_cycle % 3 == 0)
                             tc.is_connected = true;
                         break;
                 }
             }
-            old_fire_count = fc.fire_count;
+            current_trigger_cycle = tc.trigger_cycle;
         }
     }
 
@@ -859,6 +859,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
+                    tc.trigger_cycle++;
                     hc.hammer_cocked = 0.0f;
                     gs.PlaySound(hc.sound_hammer_strike);
                     if(cc.active_round_state == RoundState.READY) {
@@ -885,6 +886,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             // Slide release
             if (!tc.is_connected) {
+                tc.trigger_cycle++;
                 gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
@@ -1169,6 +1171,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 hc.hammer_cocked = 0.0f;
+                tc.trigger_cycle++;
                 if (rcc.is_closed) {
                     int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
                     if (which_chamber < 0) {
@@ -1465,19 +1468,28 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         HammerComponent hc;
 
+        int current_trigger_cycle = 0;
+
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
             hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
-            if(!hc.is_blocked && !tc.is_connected) {
+            if(!hc.is_blocked && CanPull() && !tc.is_connected) {
                 if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.trigger_pressed == 1f) {
                     hc.thumb_on_hammer = Thumb.TRIGGER_PULLED;
                 } else if (hc.thumb_on_hammer == Thumb.TRIGGER_PULLED && hc.hammer_cocked == 1.0f) {
                     hc.thumb_on_hammer = Thumb.OFF_HAMMER;
                 }
             }
+
+            if(!CanPull() && tc.is_connected)
+                current_trigger_cycle = tc.trigger_cycle;
+        }
+
+        private bool CanPull() {
+            return current_trigger_cycle == tc.trigger_cycle;
         }
     }
 
