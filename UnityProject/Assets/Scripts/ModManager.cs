@@ -44,7 +44,8 @@ public class ModManager : MonoBehaviour {
             UpdateCache();
         }
         
-        foreach (var mod in availableMods)
+        // Load everything but guns
+        foreach (var mod in availableMods.Where((mod) => mod.modType != ModType.Gun))
             LoadMod(mod);
 
         InsertMods();
@@ -59,11 +60,16 @@ public class ModManager : MonoBehaviour {
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var guns = new List<GameObject>(guiSkinHolder.weapons);
-            if(loadedGunMods.Count > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+            var availableGuns = availableMods.Where((mod) => mod.modType == ModType.Gun);
+            if(availableGuns.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
                 guns.Clear();
 
-            foreach (var mod in loadedGunMods)
-                guns.Add(mod.mainAsset);
+            foreach (var mod in availableGuns) {
+                WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
+                placeholder.mod = mod;
+                placeholder.display_name = mod.name;
+                guns.Add(placeholder.gameObject);
+            }
             guiSkinHolder.weapons = guns.ToArray();
         }
 
@@ -197,8 +203,12 @@ public class ModManager : MonoBehaviour {
 
         // Generate Mod Object
         var mod = new Mod(assetPath);
-        mod.name = bundleName;
+        mod.name = Path.GetFileName(bundleName);
         mod.modType = GetModTypeFromBundle(modBundle);
+
+        // Determine gun display name for the cache
+        if(mod.modType == ModType.Gun)
+            mod.name = modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name;
 
         // Register mod and clean up
         availableMods.Add(mod);
@@ -255,7 +265,7 @@ public enum ModType {
 [System.Serializable]
 public class Mod {
     public ModType modType;
-    [NonSerialized] public string name = "None";
+    public string name = "None";
 
     [NonSerialized] public bool loaded = false;
     
