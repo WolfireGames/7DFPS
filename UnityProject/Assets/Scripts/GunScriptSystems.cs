@@ -1201,7 +1201,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             tc.old_trigger_pressed = tc.trigger_pressed;
             if (tc.pressure_on_trigger) {
-                tc.trigger_pressed = Mathf.Min(1.0f, tc.trigger_pressed + Time.deltaTime * 20.0f);
+                tc.trigger_pressed = Mathf.Min(1.0f, tc.trigger_pressed + Time.deltaTime * 200.0f);
             } else {
                 tc.trigger_pressed = Mathf.Max(0.0f, tc.trigger_pressed - Time.deltaTime * 20.0f);
             }
