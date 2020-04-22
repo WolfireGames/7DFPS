@@ -48,10 +48,10 @@ public class LevelCreatorScript:MonoBehaviour{
     		foreach(Transform child in enemies){
     			if(UnityEngine.Random.Range(0.0f,1.0f) <= challenge){
                      GameObject go = null;
-                     if(child.gameObject.name == "flying_shock_drone_spawn"){
+                     if(child.gameObject.name.Contains("flying_shock_drone_spawn")){
                         go = (GameObject)Instantiate( drone,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
                         go.transform.parent = level_enemies.transform;
-                     } else if(child.gameObject.name == "stationary_turret_fixed_spawn"){
+                     } else if(child.gameObject.name.Contains("stationary_turret_fixed_spawn")){
                         go = (GameObject)Instantiate( turret,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
                         go.transform.parent = level_enemies.transform;
                      }
