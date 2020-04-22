@@ -152,10 +152,10 @@
           },
           "inputs": {
             "east": {
-              "output": "/actions/default/in/snapturnleft"
+              "output": "/actions/default/in/snapturnright"
             },
             "west": {
-              "output": "/actions/default/in/snapturnright"
+              "output": "/actions/default/in/snapturnleft"
             }
           }
         },
@@ -167,10 +167,10 @@
           },
           "inputs": {
             "east": {
-              "output": "/actions/default/in/snapturnleft"
+              "output": "/actions/default/in/snapturnright"
             },
             "west": {
-              "output": "/actions/default/in/snapturnright"
+              "output": "/actions/default/in/snapturnleft"
             }
           }
         }

@@ -850,9 +850,6 @@ public class AimScript:MonoBehaviour{
     	}
 
         if (character_input.GetButtonDown("Slide Lock", primaryHand)) {
-            //if(gun_script.action_type == ActionType.BOLT)
-            //	gun_script.ToggleBolt();
-            //else
             gun_script.ReleaseSlideLock();
         }
 
@@ -883,6 +880,7 @@ public class AimScript:MonoBehaviour{
     	if(character_input.GetButton("Slide Lock", primaryHand)) {
             gun_script.PressureOnSlideLock();
         }
+
         if (character_input.GetButtonDown("Slide Lock", primaryHand)) {
             gun_script.ToggleBoltLock();
         }

@@ -570,6 +570,7 @@ Transform:
   m_Children:
   - {fileID: 97126785924210651}
   - {fileID: 97126786501926038}
+  - {fileID: 5299556762861413804}
   m_Father: {fileID: 97126787124197001}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1316,6 +1317,8 @@ MonoBehaviour:
   RightHand: {fileID: 97126786551128646}
   Head: {fileID: 97126786761922315}
   InventoryPos: {fileID: 97126786425315881}
+  RightMeleeGrip: {fileID: 7177750469745541969}
+  LeftMeleeGrip: {fileID: 905713422941839089}
   TallestHead: 0.1
   Locomotion:
     actionPath: /actions/default/in/Locomotion
@@ -1615,6 +1618,7 @@ Transform:
   - {fileID: 97126787226600259}
   - {fileID: 97126786637767873}
   - {fileID: 5840877615613774047}
+  - {fileID: 7795665756886194707}
   m_Father: {fileID: 97126787124197001}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1661,6 +1665,36 @@ MonoBehaviour:
     m_TypeName: Valve.VR.SteamVR_Behaviour_Pose_DeviceIndexChangedEvent, SteamVR,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   broadcastDeviceChanges: 1
+--- !u!1 &905713422941839089
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7795665756886194707}
+  m_Layer: 14
+  m_Name: MeleeGrip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7795665756886194707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 905713422941839089}
+  m_LocalRotation: {x: 0.66292757, y: -0, z: -0.00000005960463, w: 0.7486835}
+  m_LocalPosition: {x: 0, y: -0.0167, z: -0.1311}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 97126787699724068}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 83.047005, y: 0, z: 0}
 --- !u!1 &937513075349856729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,8 +1721,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 937513075349856729}
   m_LocalRotation: {x: 0.01856981, y: -0.93944395, z: 0.34159568, w: -0.020312844}
-  m_LocalPosition: {x: 0.13689996, y: 0.12099981, z: 0}
-  m_LocalScale: {x: 0.1000002, y: 0.10000007, z: 0.10000017}
+  m_LocalPosition: {x: 0.135, y: 0.13, z: 0}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children: []
   m_Father: {fileID: 2531098121916298938}
   m_RootOrder: 0
@@ -2109,6 +2143,36 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1.45
   m_Text: 00:00
+--- !u!1 &7177750469745541969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5299556762861413804}
+  m_Layer: 14
+  m_Name: MeleeGrip
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5299556762861413804
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7177750469745541969}
+  m_LocalRotation: {x: 0.66292757, y: -0, z: -0.00000005960463, w: 0.7486835}
+  m_LocalPosition: {x: 0, y: -0.01670003, z: -0.13110006}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 97126786551128647}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 83.047005, y: 0, z: 0}
 --- !u!114 &7527503406472996415
 MonoBehaviour:
   m_ObjectHideFlags: 0

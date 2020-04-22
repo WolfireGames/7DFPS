@@ -12,13 +12,13 @@ public class VRInputController : MonoBehaviour
 {
     public static VRInputController instance;
 
-    public GameObject LeftHand,RightHand,Head,InventoryPos;
+    public GameObject LeftHand,RightHand,Head,InventoryPos, RightMeleeGrip,LeftMeleeGrip;
 
     public float TallestHead = 0.1f;
 
     public SteamVR_Action_Vector2 Locomotion;
 
-    public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, ChangeHandedness, PauseGame;
+    public SteamVR_Action_Boolean ActionButton, JumpButton, CollectButton, GunInteract1Btn, GunInteract2Btn, GunInteract3Btn, GunInteractLongBtn, RotateLeft, RotateRight, PauseGame;
 
     public SteamVR_Action_Pose pose;
 
@@ -35,6 +35,10 @@ public class VRInputController : MonoBehaviour
     Vector3 localTriggerCenter, controllerTriggerCenter, relativeTriggerOffset;
 
     bool readyInit;
+
+    MeleeWeaponInfo meleeWeapon;
+
+    public Material gunMat;
 
     private void Awake() {
         instance = this;
@@ -56,8 +60,15 @@ public class VRInputController : MonoBehaviour
             RHandSphere.SetActive(false);
         }
 
-        muzzlepos = VRInputBridge.instance.aimScript_ref.gun_instance.GetComponent<FiringComponent>().point_muzzle;
-        canFrontGrab = muzzlepos.localPosition.z > 0.3f;
+        if(VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.FIRING)){
+            muzzlepos = VRInputBridge.instance.aimScript_ref.gun_instance.GetComponent<FiringComponent>().point_muzzle;
+            canFrontGrab = muzzlepos.localPosition.z > 0.3f;
+        }else{
+            canFrontGrab = false;
+        }
+        
+
+        
 
         if (VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.TRIGGER_VISUAL)) {
             Renderer triggerRenderer = VRInputBridge.instance.aimScript_ref.gun_script.GetComponent<TriggerVisualComponent>().trigger.GetComponent<MeshRenderer>();
@@ -73,6 +84,55 @@ public class VRInputController : MonoBehaviour
                 readyInit = true;
             }
         }
+
+        meleeWeapon = VRInputBridge.instance.aimScript_ref.gun_script.gameObject.GetComponentInChildren<MeleeWeaponInfo>();
+        if (meleeWeapon != null) {
+            MeleeWeaponInfo info = meleeWeapon;
+            localTriggerCenter = VRInputBridge.instance.aimScript_ref.gun_script.transform.InverseTransformPoint(info.MainGrip.position);
+            meleeWeapon.MainGrip.GetComponentInParent<Animator>().SetBool("VRPose",true);
+            controllerTriggerCenter = RightMeleeGrip.transform.localPosition;
+            relativeTriggerOffset = (localTriggerCenter - controllerTriggerCenter);
+            readyInit = true;
+        }
+
+        /*Renderer[] gunRenderers = VRInputBridge.instance.aimScript_ref.gun_script.GetComponentsInChildren<Renderer>();
+
+        bool WasGunShader = gunRenderers[0].material.shader.name.ToLower().Contains("gunshader");
+
+        if (WasGunShader) {
+            float oldDeet = gunRenderers[0].material.GetFloat(0);
+            float oldScale = gunRenderers[0].material.GetFloat(1);
+            float oldMetallic = gunRenderers[0].material.GetFloat(2);
+            float oldSmoothness = gunRenderers[0].material.GetFloat(3);
+
+            gunMat.SetFloat(0, oldDeet);
+            gunMat.SetFloat(1, oldScale);
+            gunMat.SetFloat(2, oldMetallic);
+            gunMat.SetFloat(3, oldSmoothness);
+
+            if(gunRenderers[0].material.mainTexture != null) {
+                gunMat.SetTexture(0, gunRenderers[0].material.mainTexture);
+            }
+
+            foreach (Renderer rend in gunRenderers) {
+                rend.material = gunMat;
+            }
+        }
+        else {
+            float oldMetallic = gunRenderers[0].material.GetFloat(0);
+            float oldSmoothness = gunRenderers[0].material.GetFloat(1);
+
+            gunMat.SetFloat(0, oldMetallic);
+            gunMat.SetFloat(1, oldSmoothness);
+
+            if (gunRenderers[0].material.mainTexture != null) {
+                gunMat.SetTexture(0, gunRenderers[0].material.mainTexture);
+            }
+
+            foreach (Renderer rend in gunRenderers) {
+                rend.material = gunMat;
+            }
+        }*/
     }
 
     public float MinRenderScale, MaxRenderScale;
@@ -363,6 +423,17 @@ public class VRInputController : MonoBehaviour
 
     public bool GunInteract3Up(HandSide hand) {
         return GunInteract3Btn.GetStateUp(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+    }
+
+    private void LateUpdate() {
+        if (meleeWeapon != null) {
+            if (LHandSphere.activeSelf) {
+                meleeWeapon.MainGrip.rotation = RightMeleeGrip.transform.rotation;
+            }
+            else {
+                meleeWeapon.MainGrip.rotation = LeftMeleeGrip.transform.rotation;
+            }
+        }
     }
 
     void Update()

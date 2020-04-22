@@ -222,7 +222,7 @@ public class Mod {
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
 
-        if(modType == ModType.Gun)
+        if (modType == ModType.Gun)
             SetupGun();
     }
 

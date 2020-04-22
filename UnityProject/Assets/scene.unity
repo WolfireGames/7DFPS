@@ -314,6 +314,11 @@ PrefabInstance:
       propertyPath: far clip plane
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 97126787124197000, guid: a3795652e768a74498f9fe26345e3e78,
+        type: 3}
+      propertyPath: gunMat
+      value: 
+      objectReference: {fileID: 2100000, guid: 35e7483c737740a4ca995a395c5d9d6b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3795652e768a74498f9fe26345e3e78, type: 3}
 --- !u!1 &1854270035
