@@ -1,33 +1,58 @@
 If you are reading this message it means you have interest in creating a mod for receiver.
 
 To create a gun mod:
-    - Make a new folder and give it a unique name including your username
-    - Copy "1911_holder" and "colt_1911_ai" from "Assets/Objects"
 
-    - Rename "1911_holder" to "gun_holder"
+    - Make a new folder inside the "Mods" folder and give it a unique name including your username. 
+	Generally you want "username_modname" as a format but this really doesn't matter much.
+
+    - Copy "1911_holder" and "colt_1911_ai" from "Assets/Objects/colt_1911_a1" if you want to use the 1911 as a base. 
+	If not, start from scratch or pick one of the other guns that applies best to your own gun.
+
+    - Rename "1911_holder" to "gun_holder" - this step is very important as it identifies this mod as a gun mod. 
+	You *NEED* a gun_holder prefab in your mod's folder.
+
     - Make adjustments to the gun as you like, you can give it a new model or change it's stats
 
-    - At the top Navigate to Wolfire -> Modding -> Export Gun Mod
-    Your mod will be Inside "Mods/Gun" ready to be inserted into the game.
+    - At the top Navigate to Wolfire -> Modding -> Export Mod.
+    Your mod will be put inside the mods folder and you can hit play while in the "scene" scene, 
+	then navigate to options and hit "Restart Round" to select your gun and test it.
+
 
 
 To create a tile mod:
-    - Make a new folder and give it a unique name including your username
-    - Create an empty object in your scene, call it "tiles_holder".
-    - From your scene, drag it into your mod folder.
 
-    - Take the provided "LevelTileGuide.blend" and build the level geometry, the floors in this file aid in lining up doors with other tiles.
-    - Once you created your Level Tile, drag it into the the scene view
-    - You will likely need to right click your level tile and "unpack prefab"
+    - Make a new folder and give it a unique name including your username. 
+	See gun mod intro for common naming conventions.
+
+    - Copy the "tiles_holder" object inside the "Mods/ReferenceTileguide" folder into your own tile's folder - this step is very important as it identifies this mod as a tile mod. 
+	You *NEED* a tiles_holder prefab in your mod's folder.
+
+    - Take the provided "LevelTileGuideFBX.fbx" model file and build the level geometry, the floors in this file aid in lining up doors with other tiles.
+	Feel free to tear down the walls or mess with them in weird ways, as you just need to make sure the doors line up.
+	I recommend looking at the built in level tiles for inspiration, these are inside the "Level Objects" folder.
+
+    - Once you created your level tile geometry, make a new gameobject in the scene view and name it whatever your level tile name is going to be.
+	Make a new gameobject inside this one and name it "LevelGeometry".	
+	Drag your created level tile models into the LevelGeometry gameobject and make sure they have mesh colliders on parts you want the player to collide with.
+	Alternately spawn in the "LevelTileGuideReferencePrefab" inside "Mods/ReferenceTileguide" and look at how that one is set up.
     
-    - Attach the "Level Script" Component
-    - Add three empty gameobjects to your new tile. "enemies", "player_spawn" and "items"
-    - Inside "Assets/Objects/LevelMarkers" are various objects you can now place into your tile.
-    - Make sure you remove extra "_1" added to the objects you have added.
-    - Make sure to put item_piles into the items gameobject
+    - Attach the "Level Script" Component to your root game object by hitting "add component" and then typing "level script" though the script will likely show up before you're done typing.
 
-    - Make a prefab out of your level tile
-    - Open the prefab view of your "tiles_holder", add your tile prefab to it.
+    - Add three empty gameobjects to your new tile. "enemies", "player_spawn" and "items". 
+	These names need to match exactly, and the game objects need to be zero'd out and scaled to 1,1,1.
 
-    - At the top Navigate to Wolfire -> Modding -> Export Level Tile Mod
-    Your mod will be Inside "Mods/LevelTile" ready to be inserted into the game.
+    - Drag in the reference prefab inside the "Mods/ReferenceTileguide" folder called "LevelTileGuideReferencePrefab" and look at how it is structured inside, make sure your own tile mirrors that structure.
+	This prefab also contains both enemy spawn prefabs and the item and player spawn prefabs inside. 
+	You can hit "select" while you have one selected at the top of the inspector to find them easily in the game's "Objects" folder.
+
+    - Make a prefab out of your level tile by dragging it into the folder you created in step 1.
+
+    - Click on your "tiles_holder", add your tile prefab to the "Mod Tiles Holder" Tile_prefabs list by dragging its prefab into it.
+	This is a list, so you can add multiple tile prefabs to it and the modloader will compile in all of the added ones inside the modfile.
+
+    - At the top Navigate to Wolfire -> Modding -> Export Mod.
+    Your mod will be put inside the mods folder and you can hit play while in the "scene" scene, 
+	then navigate to options scroll all the way down, turn the tile mods into "modded only" to test your tile without having to find it by running around.
+
+
+	If you run into any unexpected issues feel free to ask for help in the #receiver_modding channel on the official Wolfire discord!
