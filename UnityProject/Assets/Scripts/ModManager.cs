@@ -66,6 +66,7 @@ public class ModManager : MonoBehaviour {
 
             foreach (var mod in availableGuns) {
                 WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
+                placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
                 placeholder.mod = mod;
                 placeholder.display_name = mod.name;
                 guns.Add(placeholder.gameObject);
