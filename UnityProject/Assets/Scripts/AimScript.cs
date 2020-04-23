@@ -2172,37 +2172,38 @@ public class AimScript:MonoBehaviour{
     float forward_input_delay = 10.0f;
     float old_vert_axis = 0.0f;
     bool bool_running = false;
+
+    bool ToggleRun = false;
     
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, 0.0f, VRInputController.instance.GetWalkVector(primaryHand).y);
+    	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, 0.0f, VRInputController.instance.GetWalkVector(primaryHand).y * (bool_running?2f:1f));
     	
-    	if(old_vert_axis < 0.9f && forward_input_delay < 0.05f && VRInputController.instance.GetWalkVector(primaryHand).magnitude > 0.9f){
-    		if(!crouching && !IsAiming()){
+    	if((old_vert_axis < 0.9f && directionVector.magnitude > 0.9f) || ToggleRun) {
+    		if(!crouching && forward_input_delay < 0.4f && !IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
-    			bool_running = true;			
-    		}
-    		forward_input_delay = 0.0f;
+    			bool_running = true;
+                ToggleRun = true;
+            }
+            
+            forward_input_delay = 0.0f;
     	}
 
-        if (directionVector.magnitude > 0.9f) {
-            forward_input_delay += Time.deltaTime;
+        if (ToggleRun && directionVector.magnitude < 0.25f) {
+            ToggleRun = false;
+            forward_input_delay = 10.0f;
         }
-        else if (directionVector.magnitude < 0.75f) {
-            forward_input_delay = 0.0f;
+
+        forward_input_delay += Time.deltaTime;
+
+        if (forward_input_delay > 0.4f || directionVector.magnitude < 0.25f || IsAiming()) {
             SetRunning(0.0f);
             bool_running = false;
+            ToggleRun = false;
         }
 
-    	if(IsAiming() || VRInputController.instance.GetWalkVector(primaryHand).magnitude < 0.75f) {
-    		SetRunning(0.0f);
-    		bool_running = false;
-    	}
-    	/*if(bool_running){
-    		directionVector.z = 1.0f;
-    	}*/
-    	old_vert_axis = VRInputController.instance.GetWalkVector(primaryHand).y;
+    	old_vert_axis = directionVector.magnitude;
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
