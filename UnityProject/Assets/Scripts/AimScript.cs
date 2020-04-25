@@ -839,6 +839,8 @@ public class AimScript:MonoBehaviour{
 
     public GunScript gun_script;
 
+    bool WasPulledBack;
+
     public void HandleGunControls(bool insert_mag_with_number_key) {
         if (gun_script == null) {
             gun_script = GetGunScript();
@@ -865,7 +867,24 @@ public class AimScript:MonoBehaviour{
     		}
     	}
 
-		if(!VRInputBridge.instance.MagOut && character_input.GetButtonDown("Pull Back Slide", secondaryHand)){
+        if (!VRInputBridge.instance.MagOut && character_input.GetButton("Pull Back Slide Press Check", secondaryHand)) {
+            if (!character_input.GetButton("Pull Back Slide", secondaryHand) && !gun_script.Query(GunSystemQueries.IS_SLIDE_LOCKED)) {
+                gun_script.Request(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK);
+            }
+
+        }
+
+        if (!VRInputBridge.instance.MagOut && character_input.GetButton("Pull Back Slide", secondaryHand) && !WasPulledBack) {
+            if (gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
+                gun_script.PushSlideForward();
+            }
+            else {
+                gun_script.InputPullSlideBack();
+            }
+            WasPulledBack = true;
+        }
+
+        if (!VRInputBridge.instance.MagOut && character_input.GetButtonDown("Pull Back Slide", secondaryHand)){
 			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
@@ -875,7 +894,8 @@ public class AimScript:MonoBehaviour{
 
 		if(!VRInputBridge.instance.MagOut && character_input.GetButtonUp("Pull Back Slide", secondaryHand)){
 			gun_script.ReleaseSlide();
-		}
+            WasPulledBack = false;
+        }
 
     	if(character_input.GetButton("Slide Lock", primaryHand)) {
             gun_script.PressureOnSlideLock();

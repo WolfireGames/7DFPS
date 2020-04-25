@@ -224,26 +224,7 @@ public class VRInputBridge : MonoBehaviour
                 if(SlideObject == null) {
                     return false;
                 }
-                if (hand == HandSide.Left) {
-                    SlideBounds = SlideObject.bounds;
-                    SlideBounds.extents *= 0.75f;
-                    if (SlideBounds.Contains(VRInputController.instance.LHandSphere.transform.position) || MagOut) {
-                        return VRInputController.instance.ActionPressDown(hand);
-                    }
-                    else {
-                        return false;
-                    }
-                }
-                else {
-                    SlideBounds = SlideObject.bounds;
-                    SlideBounds.extents *= 0.75f;
-                    if (SlideBounds.Contains(VRInputController.instance.RHandSphere.transform.position) || MagOut) {
-                        return VRInputController.instance.ActionPressDown(hand);
-                    }
-                    else {
-                        return false;
-                    }
-                }
+                return CheckSlidePullDown(hand);
 
             case "Swing Out Cylinder":
                 return VRInputController.instance.GunInteractDown(hand) || CheckBoundsAndClickedDown(CylinderObject, aimScript_ref.secondaryHand);
@@ -398,6 +379,69 @@ public class VRInputBridge : MonoBehaviour
         }
     }
 
+    public bool CheckSlidePullDown(HandSide hand) {
+        Vector3 SlidePullPos = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_end.position;
+
+        Vector3 HandPos = VRInputController.instance.LHandSphere.transform.position;
+        SlideBounds = SlideObject.bounds;
+        //SlideBounds.extents *= 0.75f;
+
+        if (hand == HandSide.Right) {
+            HandPos = VRInputController.instance.RHandSphere.transform.position;
+        }
+
+        float frontPosDistance = Vector3.Distance(HandPos, aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_start.position);
+
+        if (SlideBounds.Contains(HandPos) && Vector3.Distance(HandPos, SlidePullPos) < frontPosDistance) {// 
+            return VRInputController.instance.ActionPressDown(hand);
+        }
+        else {
+            return false;
+        }
+    }
+
+    public bool CheckSlidePull(HandSide hand) {
+        Vector3 SlidePullPos = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_end.position;
+
+        Vector3 HandPos = VRInputController.instance.LHandSphere.transform.position;
+        SlideBounds = SlideObject.bounds;
+        //SlideBounds.extents *= 0.75f;
+
+        if (hand == HandSide.Right) {
+            HandPos = VRInputController.instance.RHandSphere.transform.position;
+        }
+
+        float frontPosDistance = Vector3.Distance(HandPos, aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_start.position);
+
+        if (SlideBounds.Contains(HandPos) && Vector3.Distance(HandPos, SlidePullPos) < frontPosDistance) {// && Vector3.Distance(HandPos, SlidePullPos) < endposDistance/2f)
+            return VRInputController.instance.ActionPress(hand);
+        }
+        else {
+            return false;
+        }
+    }
+
+    public bool CheckSlidePressCheck(HandSide hand) {
+        Vector3 SlidePressCheckPos = aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_start.position;
+
+        Vector3 HandPos = VRInputController.instance.LHandSphere.transform.position;
+        SlideBounds = SlideObject.bounds;
+        //SlideBounds.extents *= 0.75f;
+
+        if (hand == HandSide.Right) {
+            HandPos = VRInputController.instance.RHandSphere.transform.position;
+        }
+
+        float presscheckDistance = Vector3.Distance(HandPos, aimScript_ref.gun_script.GetComponent<SlideVisualComponent>().point_slide_end.position);
+
+        if ((SlideBounds.Contains(HandPos) && Vector3.Distance(HandPos, SlidePressCheckPos) < presscheckDistance)) {
+            return VRInputController.instance.ActionPress(hand);
+        }
+        else {
+            return false;
+        }
+    }
+
     public bool GetButton(string input_str, HandSide hand) {
         switch (input_str) {
             case "Trigger":
@@ -414,26 +458,12 @@ public class VRInputBridge : MonoBehaviour
                 if (SlideObject == null) {
                     return false;
                 }
-                if (hand == HandSide.Left) {
-                    SlideBounds = SlideObject.bounds;
-                    SlideBounds.extents *= 0.75f;
-                    if (SlideBounds.Contains(VRInputController.instance.LeftHand.transform.position) || MagOut) {
-                        return VRInputController.instance.ActionPress(hand);
-                    }
-                    else {
-                        return false;
-                    }
+                return CheckSlidePull(hand);
+            case "Pull Back Slide Press Check":
+                if (SlideObject == null) {
+                    return false;
                 }
-                else {
-                    SlideBounds = SlideObject.bounds;
-                    SlideBounds.extents *= 0.75f;
-                    if (SlideBounds.Contains(VRInputController.instance.RightHand.transform.position) || MagOut) {
-                        return VRInputController.instance.ActionPress(hand);
-                    }
-                    else {
-                        return false;
-                    }
-                }
+                return CheckSlidePressCheck(hand);
             default:
                 return Input.GetButton(input_str);
         }
