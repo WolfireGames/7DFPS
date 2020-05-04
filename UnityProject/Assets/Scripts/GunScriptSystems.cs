@@ -476,7 +476,6 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
-    [Priority(PriorityAttribute.LATE)]
     public class SlideChamberingSystem : GunSystemBase {
         SlideComponent slide_c;
         ChamberComponent chamber_c;
@@ -771,18 +770,45 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
+    [InclusiveAspects(GunAspect.TRIGGER, GunAspect.FIRING)]
     public class FireModeSystem : GunSystemBase {
+        TriggerComponent tc;
+        FiringComponent fc;
+
+        int current_trigger_cycle = 0;
+
+        public override void Initialize() {
+            tc = gs.GetComponent<TriggerComponent>();
+            fc = gs.GetComponent<FiringComponent>();
+        }
+
+        public override void Update() {
+            if(current_trigger_cycle != tc.trigger_cycle) {
+                switch (tc.fire_mode) {
+                    case FireMode.SINGLE:
+                        tc.is_connected = true;
+                        break;
+                    case FireMode.BURST_THREE:
+                        if(tc.trigger_cycle % 3 == 0)
+                            tc.is_connected = true;
+                        break;
+                }
+            }
+            current_trigger_cycle = tc.trigger_cycle;
+        }
+    }
+
+    [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
+    public class FireModeToggleSystem : GunSystemBase {
         FireModeComponent fmc;
         TriggerComponent tc;
 
         bool RequestToggleFireMode() {
             gs.PlaySound(fmc.sound_firemode_toggle);
-            if (fmc.auto_mod_stage == AutoModStage.DISABLED) {
-                fmc.auto_mod_stage = AutoModStage.ENABLED;
-            } else if (fmc.auto_mod_stage == AutoModStage.ENABLED) {
-                fmc.auto_mod_stage = AutoModStage.DISABLED;
-            }
+
+            fmc.target_fire_mode_index++;
+            if(fmc.target_fire_mode_index >= fmc.fire_modes.Length)
+                fmc.target_fire_mode_index = 0;
             return true;
         }
 
@@ -798,20 +824,21 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            if (fmc.auto_mod_stage == AutoModStage.ENABLED) {
-                fmc.auto_mod_amount = Mathf.Min(1.0f, fmc.auto_mod_amount + Time.deltaTime * 10.0f);
-            } else if (fmc.auto_mod_stage == AutoModStage.DISABLED) {
-                fmc.auto_mod_amount = Mathf.Max(0.0f, fmc.auto_mod_amount - Time.deltaTime * 10.0f);
-            }
-
-            if (fmc.auto_mod_amount == 1.0f) {
-                tc.fire_mode = FireMode.AUTOMATIC;
-            } else if (fmc.auto_mod_amount == 0.0f) {
-                tc.fire_mode = FireMode.SINGLE;
+            if(fmc.target_fire_mode_index == fmc.current_fire_mode_index) { // idle
+                tc.fire_mode = fmc.current_fire_mode;
             } else {
-                //Fall back to disabled while changing, because you can't shoot in an undefined setting 
-                //(Or can you? We should test on a real glock)
                 tc.fire_mode = FireMode.DISABLED;
+
+                var target = (float)fmc.target_fire_mode_index / (fmc.fire_modes.Length - 1);
+                if(fmc.target_fire_mode_index > fmc.current_fire_mode_index) {
+                    fmc.fire_mode_amount = Mathf.Min(target, fmc.fire_mode_amount + Time.deltaTime * 10.0f);
+                } else {
+                    fmc.fire_mode_amount = Mathf.Max(target, fmc.fire_mode_amount - Time.deltaTime * 10.0f);
+                }
+
+                if(fmc.fire_mode_amount == target) {
+                    fmc.current_fire_mode_index = fmc.target_fire_mode_index;
+                }
             }
         }
     }
@@ -832,9 +859,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
-                    if(tc.fire_mode == FireMode.SINGLE || cc.active_round_state != RoundState.READY) {
-                        tc.is_connected = true;
-                    }
+                    tc.trigger_cycle++;
                     hc.hammer_cocked = 0.0f;
                     gs.PlaySound(hc.sound_hammer_strike);
                     if(cc.active_round_state == RoundState.READY) {
@@ -861,10 +886,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             // Slide release
             if (!tc.is_connected) {
-                if(tc.fire_mode == FireMode.SINGLE) {
-                    tc.is_connected = true;
-                }
-
+                tc.trigger_cycle++;
                 gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
             }
 
@@ -1149,10 +1171,7 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 hc.hammer_cocked = 0.0f;
-                if(tc.fire_mode == FireMode.SINGLE) {
-                    tc.is_connected = true;
-                }
-
+                tc.trigger_cycle++;
                 if (rcc.is_closed) {
                     int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
                     if (which_chamber < 0) {
@@ -1173,6 +1192,11 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER)]
     public class GunTriggerSystem : GunSystemBase {
+        /// The gun trigger works based on triggers of regular firearms, "TriggerComponent.IsConnected" is the variable holding the hammer,
+        /// when it returns FALSE, then the hammer should strike, depending on the firemode, it reconnects (in a firearm it reconnects on a separate location that prevents another pull)
+        /// It only disconnects again, if the user stops applying pressure to the trigger and pulls it again.
+        /// TriggerComponent.IsConnected is only FALSE, when the firemode systems and trigger systems determine that the gun should be able to fire!
+
         TriggerComponent tc;
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
@@ -1206,10 +1230,12 @@ namespace GunSystemsV1 {
                 tc.trigger_pressed = Mathf.Max(0.0f, tc.trigger_pressed - Time.deltaTime * 20.0f);
             }
 
-            if(tc.trigger_pressed != 1f) {
-                tc.is_connected = true; // Guns usually need to cycle before connecting again
-            } else if(tc.old_trigger_pressed != 1f) {
-                tc.is_connected = false; // We just pressed the trigger fully
+            if(tc.fire_mode != FireMode.DISABLED) {
+                if(tc.trigger_pressed != 1f) {
+                    tc.is_connected = true; // Guns usually need to cycle before connecting again
+                } else if(tc.old_trigger_pressed != 1f) {
+                    tc.is_connected = false; // We just pressed the trigger fully
+                }
             }
         }
     }
@@ -1447,19 +1473,28 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         HammerComponent hc;
 
+        int current_trigger_cycle = 0;
+
         public override void Initialize() {
             tc = gs.GetComponent<TriggerComponent>();
             hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
-            if(!hc.is_blocked && !tc.is_connected) {
+            if(!hc.is_blocked && CanPull() && !tc.is_connected) {
                 if (hc.thumb_on_hammer == Thumb.OFF_HAMMER && tc.trigger_pressed == 1f) {
                     hc.thumb_on_hammer = Thumb.TRIGGER_PULLED;
                 } else if (hc.thumb_on_hammer == Thumb.TRIGGER_PULLED && hc.hammer_cocked == 1.0f) {
                     hc.thumb_on_hammer = Thumb.OFF_HAMMER;
                 }
             }
+
+            if(!CanPull() && tc.is_connected)
+                current_trigger_cycle = tc.trigger_cycle;
+        }
+
+        private bool CanPull() {
+            return current_trigger_cycle == tc.trigger_cycle;
         }
     }
 
