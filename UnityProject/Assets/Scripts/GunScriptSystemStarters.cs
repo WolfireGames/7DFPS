@@ -204,14 +204,7 @@ namespace GunSystemsV1 {
 
         public override void Initialize() {
             fmc = gs.GetComponent<FireModeComponent>();
-
-            if(Random.Bool()) {
-                fmc.auto_mod_stage = AutoModStage.ENABLED;
-                fmc.auto_mod_amount = 1f;
-            } else {
-                fmc.auto_mod_stage = AutoModStage.DISABLED;
-                fmc.auto_mod_amount = 0f;
-            }
+            fmc.current_fire_mode_index = Random.Int(0, fmc.fire_modes.Length);
         }
     }
 }

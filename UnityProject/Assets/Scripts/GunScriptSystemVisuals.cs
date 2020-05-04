@@ -192,8 +192,8 @@ namespace GunSystemsV1 {
         }
 
         public override void Update() {
-            fmvc.fire_mode_toggle.LerpPosition(fmvc.rel_pos, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
-            fmvc.fire_mode_toggle.LerpRotation(fmvc.rel_rot, fmvc.point_fire_mode_enabled, fmc.auto_mod_amount);
+            fmvc.fire_mode_toggle.LerpPosition(fmvc.rel_pos, fmvc.point_fire_mode_enabled, fmc.fire_mode_amount);
+            fmvc.fire_mode_toggle.LerpRotation(fmvc.rel_rot, fmvc.point_fire_mode_enabled, fmc.fire_mode_amount);
         }
     }
 

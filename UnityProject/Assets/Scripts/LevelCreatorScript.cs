@@ -48,15 +48,18 @@ public class LevelCreatorScript:MonoBehaviour{
     	if(enemies != null){
     		foreach(Transform child in enemies){
     			if(UnityEngine.Random.Range(0.0f,1.0f) <= challenge){
-                     GameObject go = null;
-                     if(child.gameObject.name == "flying_shock_drone_spawn"){
+                    GameObject go = null;
+                    if(child.gameObject.name.Contains("flying_shock_drone_spawn")){
                         go = (GameObject)Instantiate( drone,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
                         go.transform.parent = level_enemies.transform;
-                     } else if(child.gameObject.name == "stationary_turret_fixed_spawn"){
+                    } else if(child.gameObject.name.Contains("stationary_turret_fixed_spawn")){
                         go = (GameObject)Instantiate( turret,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
                         go.transform.parent = level_enemies.transform;
-                     }
-    			}
+                    } else {
+                        child_obj = (GameObject)Instantiate(child.gameObject, new Vector3(0.0f, 0.0f, (float)(where_cs1 * 20)) + child.localPosition + enemies.localPosition, child.localRotation);
+                        child_obj.transform.parent = level_enemies.transform;
+                    }
+                }
     		}
     	}
     	Transform items = level_obj.transform.Find("items");
@@ -66,7 +69,7 @@ public class LevelCreatorScript:MonoBehaviour{
     				child_obj = (GameObject)Instantiate(child.gameObject, new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + items.localPosition, items.localRotation);
     				child_obj.transform.parent = level_items.transform;
     			}
-    		}
+            }
     	}
     	if(player){
     		Transform players = level_obj.transform.Find("player_spawn");

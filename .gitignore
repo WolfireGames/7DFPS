@@ -40,6 +40,7 @@ UnityProject/Assets/Mods/*
 !UnityProject/Assets/Mods/HowToMakeAMod.txt
 !UnityProject/Assets/Mods/LevelTileGuide.blend
 !UnityProject/Assets/Mods/inbuild_*
+!UnityProject/Assets/Mods/Reference*
 
 # Temp folder
 UnityProject/Assets/ShaderForge/*
