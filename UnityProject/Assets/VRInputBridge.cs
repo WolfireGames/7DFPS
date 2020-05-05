@@ -245,16 +245,22 @@ public class VRInputBridge : MonoBehaviour
                     
                     if (aimScript_ref.primaryHand == HandSide.Right) {
                         if (hand == HandSide.Left) {
-                            if (aimScript_ref.gun_instance != null) {
-                                return VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
+                            if (aimScript_ref.gun_instance != null) {//If gun_instance is null your gun is in its holster, which swaps which hand inserts bullets.
+                                if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
+                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position;
+                                    return (Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, bulletInsertPos) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
+                                }
+                                else {
+                                    return VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
+                                }
                             }
                             else {
-                                return VRInputController.instance.GunInteractDown(HandSide.Right);//Magazine bullet insert
+                                return (Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, VRInputController.instance.RHandSphere.transform.position) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Right);//Magazine bullet insert
                             }
                         }
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)){//Magazine into gun insert, have to hold the mag under the gun.
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
-                            if (MagOut && Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, magInsertPos) < 0.1f && VRInputController.instance.LHandSphere.transform.position.y < magInsertPos.y) {
+                            if (MagOut && Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, magInsertPos) < 0.1f && VRInputController.instance.GetControllerVel(HandSide.Left).magnitude > 0.5f && Vector3.Dot(VRInputController.instance.GetControllerVel(HandSide.Left),aimScript_ref.gun_script.transform.up) < 0.3f ) {
                                 return true;
                             }
                             else {
@@ -264,16 +270,22 @@ public class VRInputBridge : MonoBehaviour
                     }
                     else {
                         if (hand == HandSide.Right) {
-                            if (aimScript_ref.gun_instance != null) {
-                                return VRInputController.instance.GunInteractDown(HandSide.Right);//Lefthanded version
+                            if (aimScript_ref.gun_instance != null) {//If gun_instance is null your gun is in its holster, which swaps which hand inserts bullets.
+                                if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
+                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position;
+                                    return (Vector3.Distance(bulletInsertPos, VRInputController.instance.RHandSphere.transform.position) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Right);//Lefthanded version
+                                }
+                                else {
+                                    return VRInputController.instance.GunInteractDown(HandSide.Right);//Lefthanded version
+                                }
                             }
                             else {
-                                return VRInputController.instance.GunInteractDown(HandSide.Left);//Lefthanded version
+                                return (Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, VRInputController.instance.RHandSphere.transform.position) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Left);//Lefthanded version
                             }
                         }
                         else if (aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
                             Vector3 magInsertPos = aimScript_ref.gun_script.GetComponent<ExternalMagazineComponent>().point_mag_to_insert.position;
-                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RHandSphere.transform.position) < 0.05f && VRInputController.instance.RHandSphere.transform.position.y < magInsertPos.y) {
+                            if (MagOut && Vector3.Distance(magInsertPos, VRInputController.instance.RHandSphere.transform.position) < 0.05f && VRInputController.instance.GetControllerVel(HandSide.Right).magnitude > 0.5f && Vector3.Dot(VRInputController.instance.GetControllerVel(HandSide.Right), aimScript_ref.gun_script.transform.up) < 0.3f) {
                                 return true;
                             }
                             else {
@@ -449,7 +461,7 @@ public class VRInputBridge : MonoBehaviour
             case "Slide Lock":
                 return VRInputController.instance.GunInteract(hand) || CheckBoundsAndClicked(SlidelockObject, aimScript_ref.secondaryHand);
             case "Extractor Rod":
-                return VRInputController.instance.GunInteract2(hand) || CheckBoundsAndClicked(ExtractorObject, aimScript_ref.secondaryHand, true);
+                return (VRInputController.instance.GunInteract2(hand) || CheckBoundsAndClicked(ExtractorObject, aimScript_ref.secondaryHand, true)) && aimScript_ref.IsAiming();
             case "Hammer":
                 return VRInputController.instance.GunInteract3(hand) || CheckBoundsAndClicked(HammerObject, aimScript_ref.secondaryHand);
             case "Get":
