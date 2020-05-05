@@ -20,6 +20,7 @@ public class GUISkinHolder:MonoBehaviour{
     
     public void Awake() {
         weapon = GetGunHolder();
+        weapon.GetComponent<WeaponHolder>().Load();
     }
 
     private GameObject GetGunHolder() {
