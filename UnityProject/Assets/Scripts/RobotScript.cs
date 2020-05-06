@@ -93,7 +93,7 @@ public class RobotScript:MonoBehaviour{
 
     public bool LimitedRotation;
     bool FlipRotate, Waiting;
-    public float RotationRange;
+    public float RotationRange, EndWaitTime = 2f;
     float WaitTime;
 
     public CameraPivotState camera_pivot_state = CameraPivotState.WAIT_DOWN;
@@ -316,7 +316,7 @@ public class RobotScript:MonoBehaviour{
                         }
                         else {
                             WaitTime += Time.deltaTime;
-                            if (WaitTime > 2f) {
+                            if (WaitTime > EndWaitTime) {
                                 Waiting = false;
                                 WaitTime = 0f;
                             }
