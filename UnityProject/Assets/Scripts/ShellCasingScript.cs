@@ -12,7 +12,9 @@ public class ShellCasingScript:MonoBehaviour{
     public float glint_delay = 0.0f;
     public float glint_progress = 0.0f;
     Light glint_light;
-    
+    Rigidbody rigidBody;
+    Collider coll;
+
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
     	int which_shot = UnityEngine.Random.Range(0,group.Count);
     	GetComponent<AudioSource>().PlayOneShot(group[which_shot], volume * Preferences.sound_volume);
@@ -24,6 +26,8 @@ public class ShellCasingScript:MonoBehaviour{
     		glint_light = transform.Find("light_pos").GetComponent<Light>();
     		glint_light.enabled = false;
     	}
+        rigidBody = GetComponent<Rigidbody>();
+        coll = GetComponent<Collider>();
     }
     
     public void CollisionSound() {
@@ -34,22 +38,22 @@ public class ShellCasingScript:MonoBehaviour{
     }
     
     public void FixedUpdate() {
-    	Rigidbody rigidbody = GetComponent<Rigidbody>();
+    	
 
-    	if(rigidbody && !rigidbody.IsSleeping()) {
-    		Collider collider = GetComponent<Collider>();
-    		if(collider != null && collider.enabled) {
+    	if(rigidBody && !rigidBody.IsSleeping()) {
+    		
+    		if(coll != null && coll.enabled) {
     			life_time += Time.deltaTime;
     			RaycastHit hit = new RaycastHit();
     			if(Physics.Linecast(old_pos, transform.position, out hit, 1)){
     				transform.position = hit.point;
-    				rigidbody.velocity *= -0.3f;
+    				rigidBody.velocity *= -0.3f;
     			}
     			if(life_time > 3.0f){
-    				rigidbody.Sleep();
+    				rigidBody.Sleep();
     			}
     		}
-    	} else if(rigidbody && glint_light != null) {
+    	} else if(rigidBody && glint_light != null) {
     		if(glint_delay == 0.0f){
     			glint_delay = UnityEngine.Random.Range(1.0f,5.0f);
     		}

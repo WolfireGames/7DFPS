@@ -8,13 +8,18 @@ public class tapescript:MonoBehaviour{
     Vector3 old_pos;
 
     Light lightObject;
-    
+
+    Rigidbody rigidBody;
+    Collider coll;
+
     public void Awake() {
     	lightObject = transform.Find("light_obj").GetComponent<Light>();
     }
 
     public void Start() {
         old_pos = transform.position;
+        rigidBody = GetComponent<Rigidbody>();
+        coll = GetComponent<Collider>();
     }
     
     public void Update() {
@@ -22,16 +27,15 @@ public class tapescript:MonoBehaviour{
     }
     
     public void FixedUpdate() {
-    	Rigidbody rigidbody = GetComponent<Rigidbody>();
-    	if(rigidbody != null && !rigidbody.IsSleeping() && (GetComponent<Collider>() != null) && GetComponent<Collider>().enabled){
+    	if(rigidBody != null && !rigidBody.IsSleeping() && (coll != null) && coll.enabled){
     		life_time += Time.deltaTime;
     		RaycastHit hit = new RaycastHit();
     		if(Physics.Linecast(old_pos, transform.position, out hit, 1)){
     			transform.position = hit.point;
-    			rigidbody.velocity *= -0.3f;
+    			rigidBody.velocity *= -0.3f;
     		}
     		if(life_time > 2.0f){
-    			rigidbody.Sleep();
+    			rigidBody.Sleep();
     		}
     	}
     	old_pos = transform.position;

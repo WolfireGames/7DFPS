@@ -23,6 +23,9 @@ public class mag_script : MonoBehaviour {
     public bool disable_interp = true;
 
 	public float bulletReloadTime = 1 / 20f;
+
+    Rigidbody rigBod;
+    Collider coll;
     
     public bool RemoveRound() {
     	if(num_rounds == 0){
@@ -79,6 +82,9 @@ public class mag_script : MonoBehaviour {
     			round.GetComponent<Renderer>().enabled = false;
     		}
     	}
+
+        rigBod = GetComponent<Rigidbody>();
+        coll = GetComponent<Collider>();
     }
     
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
@@ -96,17 +102,17 @@ public class mag_script : MonoBehaviour {
     }
     
     public void FixedUpdate() {
-    	if((GetComponent<Rigidbody>() != null) && !GetComponent<Rigidbody>().IsSleeping() && (GetComponent<Collider>() != null) && GetComponent<Collider>().enabled){
+    	if((rigBod != null) && !rigBod.IsSleeping() && (coll != null) && coll.enabled){
     		life_time += Time.deltaTime;
     		RaycastHit hit = new RaycastHit();
     		if(Physics.Linecast(old_pos, transform.position, out hit, 1)){
     			transform.position = hit.point;
-    			transform.GetComponent<Rigidbody>().velocity *= -0.3f;
+                rigBod.velocity *= -0.3f;
     		}
     		if(life_time > 2.0f){
-    			GetComponent<Rigidbody>().Sleep();
+                rigBod.Sleep();
     		}
-    	} else if(GetComponent<Rigidbody>() == null){
+    	} else if(rigBod == null){
     		life_time = 0.0f;
     		collided = false;
     	}
