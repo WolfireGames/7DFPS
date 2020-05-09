@@ -247,7 +247,7 @@ public class VRInputBridge : MonoBehaviour
                         if (hand == HandSide.Left) {
                             if (aimScript_ref.gun_instance != null) {//If gun_instance is null your gun is in its holster, which swaps which hand inserts bullets.
                                 if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
-                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position;
+                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.HasGunComponent(GunAspect.CYLINDER_VISUAL)?aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position: aimScript_ref.gun_script.GetComponent<InternalMagazineComponent>().magazine_script.transform.position;
                                     return (Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, bulletInsertPos) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
                                 }
                                 else {
@@ -272,7 +272,7 @@ public class VRInputBridge : MonoBehaviour
                         if (hand == HandSide.Right) {
                             if (aimScript_ref.gun_instance != null) {//If gun_instance is null your gun is in its holster, which swaps which hand inserts bullets.
                                 if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
-                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position;
+                                    Vector3 bulletInsertPos = aimScript_ref.gun_script.HasGunComponent(GunAspect.CYLINDER_VISUAL) ? aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position : aimScript_ref.gun_script.GetComponent<InternalMagazineComponent>().magazine_script.transform.position;
                                     return (Vector3.Distance(bulletInsertPos, VRInputController.instance.RHandSphere.transform.position) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Right);//Lefthanded version
                                 }
                                 else {
