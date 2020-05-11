@@ -190,7 +190,9 @@ public class AimScript:MonoBehaviour{
     public HandSide primaryHand, secondaryHand;
     // Networking
     public bool main_client_control = true;
-    
+
+    bool VRTeleportEnabled;
+
     // Assets and prefabs
     GameObject magazine_obj;
     GameObject gun_obj;
@@ -466,9 +468,14 @@ public class AimScript:MonoBehaviour{
     
     public void Start() {
         VRInputBridge.instance.aimScript_ref = this;
+
+        if (PlayerPrefs.GetInt("vr_teleport") == 1) {
+            VRTeleportEnabled = true;
+        }
+
         GameObject level_object = GameObject.Find("LevelObject");
 
-        if(level_object != null) {
+        if (level_object != null) {
             level_creator = level_object.GetComponent<LevelCreatorScript>();
         }
 
@@ -2199,6 +2206,10 @@ public class AimScript:MonoBehaviour{
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
     	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, 0.0f, VRInputController.instance.GetWalkVector(primaryHand).y * (bool_running?2f:1f));
+
+        if (VRTeleportEnabled) {
+            directionVector = Vector3.zero;
+        }
     	
     	if((old_vert_axis < 0.9f && directionVector.magnitude > 0.9f) || ToggleRun) {
     		if(!crouching && forward_input_delay < 0.4f && !IsAiming()){
@@ -2250,11 +2261,29 @@ public class AimScript:MonoBehaviour{
     // This makes the character turn to face the current movement speed per default.
     bool autoRotate = false;
     const float maxRotationSpeed = 360.0f;
-    
+
+    public void RecheckTeleportEnabled() {
+        if (PlayerPrefs.GetInt("vr_teleport") == 1) {
+            VRTeleportEnabled = true;
+        }
+        else {
+            VRTeleportEnabled = false;
+        }
+    }
+
+    public void TeleportTo(Vector3 positionalOffset) {
+        transform.position += positionalOffset + (Vector3.up * (0.8f * (crouching?0.5f:1f))) - (character_controller.transform.rotation * character_controller.center);
+        character_controller.Move(Vector3.zero);
+    }
+
     // Update is called once per frame
     public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
     	Vector3 directionVector = new Vector3(VRInputController.instance.GetWalkVector(primaryHand).x, VRInputController.instance.GetWalkVector(primaryHand).y, 0.0f);
+
+        if (VRTeleportEnabled) {
+            directionVector = Vector3.zero;
+        }
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
