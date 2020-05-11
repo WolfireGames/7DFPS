@@ -18,13 +18,17 @@ public class TeleportParabola : MonoBehaviour
 
     public bool VRTeleportEnabled;
 
-    bool Teleported, CanTeleport;
+    bool Teleported, CanTeleport, Reverted;
+
+    int revertCount;
 
     float LastHitPoint = 0f;
 
     public TeleportCircleColor circle;
 
     public AudioSource StepPlay;
+
+    public Vector3 LastTeleport;
 
     public void Start()
     {
@@ -53,7 +57,7 @@ public class TeleportParabola : MonoBehaviour
             clampedYVel.y = Mathf.Clamp(clampedYVel.y, -1f, 0.5f);
 
             if (VRInputBridge.instance.aimScript_ref.secondaryHand == side) {
-                if (VRInputController.instance.GetWalkVector(VRInputBridge.instance.aimScript_ref.primaryHand).magnitude > 0.5f && VRInputBridge.instance.aimScript_ref.grounded) {
+                if (VRInputController.instance.GetRawWalkVector(side).y > 0.5f && VRInputBridge.instance.aimScript_ref.grounded) {
                     Teleported = false;
                     bool HitSomething = false;
                     for (int i = 0; i < parabolaResolution; i++) {
@@ -97,14 +101,28 @@ public class TeleportParabola : MonoBehaviour
                     line.SetPositions(parabolaPoints.ToArray());
                     parabolaPoints.Clear();
                     line.enabled = true;
-                    
+                    if ((VRInputController.instance.TeleportPressDown(side) && PlayerPrefs.GetInt("vr_teleport_jump_required") == 1) && !Teleported && CanTeleport) {
+                        LastTeleport = VRInputBridge.instance.transform.position;
+                        Vector3 telpoint = ParabolicCurve3D(transform.position, clampedYVel * startVelocity, gravity, LastHitPoint);
+                        VRInputBridge.instance.aimScript_ref.TeleportTo(telpoint - VRInputBridge.instance.aimScript_ref.transform.position);
+                        Teleported = true;
+                        StepPlay.Play();
+                    }
                 }
-                else {
+                else if (VRInputController.instance.GetRawWalkVector(side).y < -0.5f && (PlayerPrefs.GetInt("vr_teleport_jump_required") == 0 || (VRInputController.instance.TeleportPressDown(side) && PlayerPrefs.GetInt("vr_teleport_jump_required") == 1)) && !Reverted && LastTeleport != Vector3.zero) {
+                    VRInputBridge.instance.aimScript_ref.TeleportTo(LastTeleport - VRInputBridge.instance.aimScript_ref.transform.position);
+                    Reverted = true;
+                }
+                else if (VRInputController.instance.GetRawWalkVector(side).magnitude < 0.5f){ 
                     parabolaPoints.Clear();
                     line.enabled = false;
                     circle.gameObject.SetActive(false);
-                    if (!Teleported && CanTeleport) {
-                        VRInputBridge.instance.aimScript_ref.TeleportTo(ParabolicCurve3D(transform.position, clampedYVel * startVelocity, gravity, LastHitPoint) - VRInputBridge.instance.aimScript_ref.transform.position);
+                    Reverted = false;
+
+                    if (PlayerPrefs.GetInt("vr_teleport_jump_required") == 0 && !Teleported && CanTeleport) {
+                        LastTeleport = VRInputBridge.instance.transform.position;
+                        Vector3 telpoint = ParabolicCurve3D(transform.position, clampedYVel * startVelocity, gravity, LastHitPoint);
+                        VRInputBridge.instance.aimScript_ref.TeleportTo(telpoint - VRInputBridge.instance.aimScript_ref.transform.position);
                         Teleported = true;
                         StepPlay.Play();
                     } 

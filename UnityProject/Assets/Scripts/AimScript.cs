@@ -2255,7 +2255,10 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = transform.rotation * directionVector;
-    	inputJump = VRInputController.instance.JumpPress(primaryHand);	
+    	inputJump = VRInputController.instance.JumpPress(primaryHand);
+        if (VRTeleportEnabled) {
+            inputJump = false;
+        }
     }
     
     // This makes the character turn to face the current movement speed per default.

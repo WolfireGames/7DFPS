@@ -334,6 +334,11 @@ public class VRInputController : MonoBehaviour
         }
     }
 
+    public Vector2 GetRawWalkVector(HandSide hand) {
+        SteamVR_Input_Sources source = (hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        return Locomotion.GetAxis(source);
+    }
+
     public Vector2 GetWalkVector(HandSide hand) {
         SteamVR_Input_Sources source = (hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand);
         Vector3 rawAxis = new Vector3(Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).x, 0, Locomotion.GetAxis(hand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand).y);
@@ -355,6 +360,10 @@ public class VRInputController : MonoBehaviour
 
     public bool JumpPress(HandSide hand) {
         return JumpButton.GetState(hand == HandSide.Right ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+    }
+
+    public bool TeleportPressDown(HandSide hand) {
+        return JumpButton.GetStateDown(hand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
     }
 
     public bool CollectPress(HandSide hand) {

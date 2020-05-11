@@ -11,7 +11,7 @@ public class VRInputBridge : MonoBehaviour
     Renderer SlideObject, FiremodeObject, ThumbsafetyObject, SlidelockObject, HammerObject, CylinderObject, ExtractorObject;
     Bounds SlideBounds;
 
-    bool RotatingCylinder;
+    bool RotatingCylinder, MeleeWeapon;
 
     Vector3 closeDirection;
 
@@ -112,6 +112,8 @@ public class VRInputBridge : MonoBehaviour
         }
 
         Camera.main.nearClipPlane = 0.01f;
+
+        MeleeWeapon = (aimScript_ref.gun_script.GetComponentInChildren<MeleeWeaponInfo>() != null);
     }
 
     public Vector3 WhichOffsetDirectionForFlipClose(Quaternion YolkBaseRot ,Transform YolkPivot, Transform YolkPivotOpen) {
@@ -246,7 +248,7 @@ public class VRInputBridge : MonoBehaviour
                     if (aimScript_ref.primaryHand == HandSide.Right) {
                         if (hand == HandSide.Left) {
                             if (aimScript_ref.gun_instance != null) {//If gun_instance is null your gun is in its holster, which swaps which hand inserts bullets.
-                                if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
+                                if (!aimScript_ref.gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE) && !MeleeWeapon) {
                                     Vector3 bulletInsertPos = aimScript_ref.gun_script.HasGunComponent(GunAspect.CYLINDER_VISUAL)?aimScript_ref.gun_script.GetComponent<CylinderVisualComponent>().cylinder_assembly.position: aimScript_ref.gun_script.GetComponent<InternalMagazineComponent>().magazine_script.transform.position;
                                     return (Vector3.Distance(VRInputController.instance.LHandSphere.transform.position, bulletInsertPos) < 0.2f) && VRInputController.instance.GunInteractDown(HandSide.Left);//Magazine bullet insert
                                 }
