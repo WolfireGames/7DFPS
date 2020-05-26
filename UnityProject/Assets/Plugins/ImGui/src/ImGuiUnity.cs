@@ -437,6 +437,8 @@ public class ImGuiUnity : MonoBehaviour {
             io.KeySuper = Input.GetKey(KeyCode.RightWindows) || Input.GetKey(KeyCode.LeftWindows);
         }
 
+        // TODO: io.NavInputs seems to be invalid. Find out why.
+        /*
         if (enableGameController)
         {
             RangeAccessor<float> buttonsDown = io.NavInputs;
@@ -467,6 +469,7 @@ public class ImGuiUnity : MonoBehaviour {
                 buttonsDown[(int)ImGuiNavInput.KeyUp] = vertical;
             }
         }
+        */
     }
 
     void SetKeyMappings()
