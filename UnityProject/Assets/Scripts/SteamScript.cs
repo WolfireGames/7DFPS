@@ -32,13 +32,13 @@ public class SteamScript : MonoBehaviour
 
         ImGui.Text("Available mods:");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
-        foreach (Mod mod in ModManager.availableMods) {
-            ImGui.Text(mod.name);
-            ImGui.SameLine(120);
-            if (ImGui.Button("Upload to Steam Workshop")) {
-                // todo
+            foreach (Mod mod in ModManager.availableMods) {
+                ImGui.Text(mod.name);
+                ImGui.SameLine(120);
+                if (ImGui.Button("Upload to Steam Workshop")) {
+                    // todo
+                }
             }
-        }
         }
 
         ImGui.End();
