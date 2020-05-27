@@ -4,6 +4,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class optionsmenuscript:MonoBehaviour{
     public static bool show_menu = false;
+    public static bool show_steam_ui = false;
 
     public GameObject menu;
     public GameObject menuOptions;
@@ -216,6 +217,10 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void OpenModsFolder() {
         Application.OpenURL($"\"{ModManager.GetModsfolderPath()}\"");
+    }
+
+    public void ToggleSteamUI() {
+        show_steam_ui = !show_steam_ui;
     }
 
     public void ReopenCurrentScene() {
