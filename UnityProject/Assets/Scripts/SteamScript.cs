@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.IO;
 using UnityEngine;
 using Steamworks;
 using ImGuiNET;
 
 public class SteamScript : MonoBehaviour
 {
-    public static AppId_t RECEIVER2_APP_ID = new AppId_t(234190);
+    public static AppId_t RECEIVER1_APP_ID = new AppId_t(234190);
 
     string steamName;
     SteamworksUGCItem uploadingItem;
@@ -56,10 +55,16 @@ public class SteamScript : MonoBehaviour
 
 
 public class SteamworksUGCItem {
-    PublishedFileId_t steamworks_id;
-    Mod mod;
+    private PublishedFileId_t steamworks_id;
+    private ERemoteStoragePublishedFileVisibility visibility;
+    private UGCUpdateHandle_t update_handle;
+
+    private Mod mod;
+    private string title;
+    private string description;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
+    private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
 
 
     private void OnCreateItemResult(CreateItemResult_t pResult, bool failed) {
@@ -76,24 +81,75 @@ public class SteamworksUGCItem {
             Debug.LogError("Error creating Steam Workshop item");
         }
 
-        //RequestUpload("Initial Upload", visibility, k_UploadDataControl_UploadAll);
+        RequestUpload("Initial Upload");
+    }
+
+
+    private void OnSubmitItemUpdateResult(SubmitItemUpdateResult_t pResult, bool failed) {
+        if (failed == false) {
+            if (pResult.m_eResult != EResult.k_EResultOK) {
+                Debug.LogError("Steam SubmitItemUpdate error " + pResult.m_eResult.ToString());
+            }
+
+            if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
+                Debug.LogWarning("User needs to accept workshop legal agreement");
+            }
+        } else {
+            Debug.LogError("Error on Steam Workshop item update");
+        }
     }
 
 
     public SteamworksUGCItem(Mod _mod) {
+        visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
+            m_SubmitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
         }
     }
 
 
     public void RequestCreation() {
         if (steamworks_id == PublishedFileId_t.Invalid) {
-            SteamAPICall_t hSteamAPICall = SteamUGC.CreateItem(SteamScript.RECEIVER2_APP_ID, EWorkshopFileType.k_EWorkshopFileTypeCommunity);
+            SteamAPICall_t hSteamAPICall = SteamUGC.CreateItem(SteamScript.RECEIVER1_APP_ID, EWorkshopFileType.k_EWorkshopFileTypeCommunity);
             m_CreateItemResult.Set(hSteamAPICall);
         } else {
             Debug.LogError("Requested creation of an already created Steamworks item");
         }
+    }
+
+
+    void RequestUpload(string update_message) {
+        // TODO: verify for upload
+
+        Debug.Log("Doing Steam Workshop upload");
+        title = mod.name;
+        description = "Test";
+                
+        update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
+
+        SteamUGC.SetItemTitle(update_handle, title);
+
+        SteamUGC.SetItemDescription(update_handle, description);
+
+        SteamUGC.SetItemUpdateLanguage(update_handle, "english");
+
+        //SteamUGC.SetItemMetadata(update_handle, metadata);
+
+        SteamUGC.SetItemVisibility(update_handle, visibility);
+
+        //SteamUGC.SetItemPreview(update_handle, previewpath); 
+
+        string modpath = Path.GetDirectoryName(mod.path);
+        if (Directory.Exists(modpath)) {
+            SteamUGC.SetItemContent(update_handle, modpath);
+        } else {
+            Debug.LogError("Invalid path for mod, unable to upload " + modpath);
+            return;
+        }
+
+        SteamAPICall_t hSteamAPICall = SteamUGC.SubmitItemUpdate(update_handle, update_message);
+        m_SubmitItemUpdateResult.Set(hSteamAPICall);
     }
 }
