@@ -76,6 +76,7 @@ public class SteamworksUGCItem {
 
             if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
                 Debug.LogWarning("User needs to accept workshop legal agreement");
+                Application.OpenURL("https://steamcommunity.com/sharedfiles/workshoplegalagreement");
             }
         } else {
             Debug.LogError("Error creating Steam Workshop item");
@@ -94,6 +95,9 @@ public class SteamworksUGCItem {
             if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
                 Debug.LogWarning("User needs to accept workshop legal agreement");
             }
+
+            string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
+            SteamFriends.ActivateGameOverlayToWebPage(itemPath);
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
