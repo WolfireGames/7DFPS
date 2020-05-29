@@ -26,6 +26,9 @@ public class SteamScript : MonoBehaviour
         if (optionsmenuscript.show_steam_ui) {
             DrawSteamWindow();
         }
+        if (uploadingItem != null && uploadingItem.waiting_for_create) {
+            uploadingItem.DrawItemWindow();
+        }
     }
 
 
@@ -43,7 +46,7 @@ public class SteamScript : MonoBehaviour
                 if (ImGui.Button("Upload to Steam Workshop")) {
                     if (uploadingItem == null) {
                         uploadingItem = new SteamworksUGCItem(mod);
-                        uploadingItem.RequestCreation();
+                        uploadingItem.waiting_for_create = true;
                     }
                 }
             }
@@ -55,13 +58,16 @@ public class SteamScript : MonoBehaviour
 
 
 public class SteamworksUGCItem {
+    public bool waiting_for_create;
+
     private PublishedFileId_t steamworks_id;
     private ERemoteStoragePublishedFileVisibility visibility;
     private UGCUpdateHandle_t update_handle;
 
     private Mod mod;
     private string title;
-    private string description;
+    private char[] description;
+    private char[] previewImagePath;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
@@ -101,10 +107,15 @@ public class SteamworksUGCItem {
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
+
+        waiting_for_create = false;
     }
 
 
     public SteamworksUGCItem(Mod _mod) {
+        waiting_for_create = false;
+        description = new char[1024]; description[0] = '\0';
+        previewImagePath = new char[512]; previewImagePath[0] = '\0';
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
         if (SteamManager.Initialized) {
@@ -114,7 +125,7 @@ public class SteamworksUGCItem {
     }
 
 
-    public void RequestCreation() {
+    private void RequestCreation() {
         if (steamworks_id == PublishedFileId_t.Invalid) {
             SteamAPICall_t hSteamAPICall = SteamUGC.CreateItem(SteamScript.RECEIVER1_APP_ID, EWorkshopFileType.k_EWorkshopFileTypeCommunity);
             m_CreateItemResult.Set(hSteamAPICall);
@@ -124,18 +135,17 @@ public class SteamworksUGCItem {
     }
 
 
-    void RequestUpload(string update_message) {
+    private void RequestUpload(string update_message) {
         // TODO: verify for upload
 
         Debug.Log("Doing Steam Workshop upload");
         title = mod.name;
-        description = "Test";
                 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
         SteamUGC.SetItemTitle(update_handle, title);
 
-        SteamUGC.SetItemDescription(update_handle, description);
+        SteamUGC.SetItemDescription(update_handle, new string(description));
 
         SteamUGC.SetItemUpdateLanguage(update_handle, "english");
 
@@ -143,7 +153,7 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
-        //SteamUGC.SetItemPreview(update_handle, previewpath); 
+        SteamUGC.SetItemPreview(update_handle, new string(previewImagePath));
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
@@ -155,5 +165,24 @@ public class SteamworksUGCItem {
 
         SteamAPICall_t hSteamAPICall = SteamUGC.SubmitItemUpdate(update_handle, update_message);
         m_SubmitItemUpdateResult.Set(hSteamAPICall);
+    }
+
+
+    public void DrawItemWindow() {
+        ImGui.Begin("Steam Workshop item " + title);
+
+        ImGui.InputText("Description", description);
+        ImGui.InputText("Preview Image", previewImagePath);
+
+        ImGui.Dummy(new Vector2(0.0f, 10.0f));
+        
+        if (ImGui.Button("Submit")) {
+            RequestCreation();
+        }
+        if (ImGui.Button("Cancel")) {
+            waiting_for_create = false;
+        }
+
+        ImGui.End();
     }
 }
