@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 using UnityEngine;
 using Steamworks;
 using ImGuiNET;
@@ -77,12 +79,22 @@ public class SteamworksUGCItem {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam CreateItem error " + pResult.m_eResult.ToString());
-            }
-            steamworks_id = pResult.m_nPublishedFileId;
+            } else {
+                steamworks_id = pResult.m_nPublishedFileId;
 
-            if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
-                Debug.LogWarning("User needs to accept workshop legal agreement");
-                Application.OpenURL("https://steamcommunity.com/sharedfiles/workshoplegalagreement");
+                // Store Steamworks ID in mod folder for future use
+                string idPath = Path.GetDirectoryName(mod.path) + "/steamworks_id.txt";
+                try {
+                    File.Create(idPath).Close();
+                    File.WriteAllText(idPath, steamworks_id.ToString());
+                } catch (Exception e) {
+                    Debug.LogError("Failed to write Steam Workshop file ID for mod: " + e);
+                }
+
+                if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
+                    Debug.LogWarning("User needs to accept workshop legal agreement");
+                    Application.OpenURL("https://steamcommunity.com/sharedfiles/workshoplegalagreement");
+                }
             }
         } else {
             Debug.LogError("Error creating Steam Workshop item");
@@ -118,6 +130,20 @@ public class SteamworksUGCItem {
         previewImagePath = new char[512]; previewImagePath[0] = '\0';
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
+
+        string idPath = Path.GetDirectoryName(mod.path) + "/steamworks_id.txt";
+        if (File.Exists(idPath)) {
+            try {
+                string idText = File.ReadAllText(idPath);
+                ulong id = 0;
+                if (ulong.TryParse(idText, out id)) {
+                    steamworks_id = new PublishedFileId_t(id);
+                }
+            } catch (Exception e) {
+                Debug.LogError("Error reading Steam Workshop file ID for mod: " + e);
+            }
+        }
+
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
             m_SubmitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
@@ -130,7 +156,7 @@ public class SteamworksUGCItem {
             SteamAPICall_t hSteamAPICall = SteamUGC.CreateItem(SteamScript.RECEIVER1_APP_ID, EWorkshopFileType.k_EWorkshopFileTypeCommunity);
             m_CreateItemResult.Set(hSteamAPICall);
         } else {
-            Debug.LogError("Requested creation of an already created Steamworks item");
+            RequestUpload("Update");
         }
     }
 
