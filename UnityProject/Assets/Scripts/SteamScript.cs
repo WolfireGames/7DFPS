@@ -96,7 +96,7 @@ public class SteamworksUGCItem {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam SubmitItemUpdate error " + pResult.m_eResult.ToString());
-            }
+            } else {
 
             if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
                 Debug.LogWarning("User needs to accept workshop legal agreement");
@@ -104,6 +104,7 @@ public class SteamworksUGCItem {
 
             string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
             SteamFriends.ActivateGameOverlayToWebPage(itemPath);
+            }
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
@@ -153,7 +154,10 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
-        SteamUGC.SetItemPreview(update_handle, new string(previewImagePath));
+        string path = new string(previewImagePath);
+        if (File.Exists(path)) {
+            SteamUGC.SetItemPreview(update_handle, path);
+        }
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
