@@ -97,13 +97,12 @@ public class SteamworksUGCItem {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam SubmitItemUpdate error " + pResult.m_eResult.ToString());
             } else {
+                if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
+                    Debug.LogWarning("User needs to accept workshop legal agreement");
+                }
 
-            if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
-                Debug.LogWarning("User needs to accept workshop legal agreement");
-            }
-
-            string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
-            SteamFriends.ActivateGameOverlayToWebPage(itemPath);
+                string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
+                SteamFriends.ActivateGameOverlayToWebPage(itemPath);
             }
         } else {
             Debug.LogError("Error on Steam Workshop item update");
