@@ -42,11 +42,12 @@ public class SteamScript : MonoBehaviour
 
         ImGui.Text("Available mods:");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
+            int i = 0;
             foreach (Mod mod in ModManager.availableMods) {
                 ImGui.Text(mod.name);
                 ImGui.SameLine(120);
-                if (ImGui.Button("Upload to Steam Workshop")) {
-                    if (uploadingItem == null) {
+                if (ImGui.Button("Upload to Steam Workshop##" + i++)) {
+                    if (uploadingItem == null || !uploadingItem.waiting_for_create) {
                         uploadingItem = new SteamworksUGCItem(mod);
                         uploadingItem.waiting_for_create = true;
                     }
