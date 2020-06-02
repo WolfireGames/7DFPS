@@ -51,6 +51,20 @@ public class ModManager : MonoBehaviour {
         InsertMods();
     }
 
+    public Mod LoadSteamItem(string path) {
+        Mod mod = ImportMod(path);
+        UpdateCache();
+        
+        // Load everything but guns
+        if (mod.modType != ModType.Gun) {
+            LoadMod(mod);
+        }
+
+        InsertMods();
+
+        return mod;
+    }
+
     public static string GetModsfolderPath() {
         return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
@@ -186,7 +200,7 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    private static void ImportMod(string path) {
+    private static Mod ImportMod(string path) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -215,6 +229,8 @@ public class ModManager : MonoBehaviour {
         availableMods.Add(mod);
         modBundle.Unload(true);
         Debug.Log($" + {bundleName} ({mod.modType})");
+
+        return mod;
     }
 
     private static void LoadCache() {
