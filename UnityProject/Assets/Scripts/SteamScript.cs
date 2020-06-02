@@ -9,8 +9,43 @@ public class SteamScript : MonoBehaviour
 {
     public static AppId_t RECEIVER1_APP_ID = new AppId_t(234190);
 
-    string steamName;
-    SteamworksUGCItem uploadingItem;
+    public ModManager modManager;
+
+    private string steamName;
+    private SteamworksUGCItem uploadingItem;
+
+    protected Callback<ItemInstalled_t> m_ItemInstalled;
+
+
+    private void OnItemInstalled(ItemInstalled_t pCallback) {
+        if (pCallback.m_unAppID != RECEIVER1_APP_ID) {
+            // Not our game
+            return;
+        }
+
+        ulong sizeOnDisk = 0;
+        string folder;
+        uint folderSize = 0;
+        uint timeStamp = 0;
+
+        if (SteamUGC.GetItemInstallInfo(pCallback.m_nPublishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
+            try {
+                modManager.LoadSteamItem(folder);
+            } catch (System.Exception e) {
+                Debug.LogWarning($"Failed to import {folder}: {e.Message}");
+            }
+            // Store Steamworks ID?
+        } else {
+            Debug.LogWarning("Got Steam ItemInstalled message for non-installed Workshop item");
+        }
+    }
+
+
+    private void OnEnable() {
+        if (SteamManager.Initialized) {
+            m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
+        }
+    }
 
 
     // Start is called before the first frame update
@@ -163,8 +198,6 @@ public class SteamworksUGCItem {
 
 
     private void RequestUpload(string update_message) {
-        // TODO: verify for upload
-
         Debug.Log("Doing Steam Workshop upload");
         title = mod.name;
                 
