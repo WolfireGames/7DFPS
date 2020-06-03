@@ -15,6 +15,7 @@ public class SteamScript : MonoBehaviour
     private SteamworksUGCItem uploadingItem;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
+    private CallResult<SteamUGCQueryCompleted_t> m_callSteamUGCQueryCompleted;
 
 
     private void OnItemInstalled(ItemInstalled_t pCallback) {
@@ -41,9 +42,27 @@ public class SteamScript : MonoBehaviour
     }
 
 
+    private void OnUGCSteamUGCQueryCompleted(SteamUGCQueryCompleted_t pResult, bool failed) {
+        Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
+
+        if (failed == false) {
+            for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
+                SteamUGCDetails_t details;
+                SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
+                //LoadModIntoGame(details.m_nPublishedFileId);
+            }
+        } else {
+            Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
+        }
+
+        SteamUGC.ReleaseQueryUGCRequest(pResult.m_handle);
+    }
+
+
     private void OnEnable() {
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
+            m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
         }
     }
 
@@ -54,6 +73,8 @@ public class SteamScript : MonoBehaviour
 
         if (SteamManager.Initialized) {
             steamName = SteamFriends.GetPersonaName();
+
+            QueryPersonalWorkshopItems();
         }
     }
 
@@ -66,6 +87,24 @@ public class SteamScript : MonoBehaviour
         if (uploadingItem != null && uploadingItem.waiting_for_create) {
             uploadingItem.DrawItemWindow();
         }
+    }
+
+
+    void QueryPersonalWorkshopItems() {
+        CSteamID userid = SteamUser.GetSteamID();
+
+        UGCQueryHandle_t query_handle = SteamUGC.CreateQueryUserUGCRequest(
+            userid.GetAccountID(),
+            EUserUGCList.k_EUserUGCList_Published,
+            EUGCMatchingUGCType.k_EUGCMatchingUGCType_All,
+            EUserUGCListSortOrder.k_EUserUGCListSortOrder_TitleAsc,
+            RECEIVER1_APP_ID,
+            RECEIVER1_APP_ID,
+            1
+        );
+
+        SteamAPICall_t call = SteamUGC.SendQueryUGCRequest(query_handle);
+        m_callSteamUGCQueryCompleted.Set(call);
     }
 
 
