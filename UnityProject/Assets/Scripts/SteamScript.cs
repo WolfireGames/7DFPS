@@ -24,12 +24,17 @@ public class SteamScript : MonoBehaviour
             return;
         }
 
+        LoadModIntoGame(pCallback.m_nPublishedFileId);
+    }
+
+
+    private void LoadModIntoGame(PublishedFileId_t publishedFileId) {
         ulong sizeOnDisk = 0;
         string folder;
         uint folderSize = 0;
         uint timeStamp = 0;
 
-        if (SteamUGC.GetItemInstallInfo(pCallback.m_nPublishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
+        if (SteamUGC.GetItemInstallInfo(publishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
             try {
                 modManager.LoadSteamItem(folder);
             } catch (System.Exception e) {
@@ -49,7 +54,7 @@ public class SteamScript : MonoBehaviour
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
-                //LoadModIntoGame(details.m_nPublishedFileId);
+                LoadModIntoGame(details.m_nPublishedFileId);
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
