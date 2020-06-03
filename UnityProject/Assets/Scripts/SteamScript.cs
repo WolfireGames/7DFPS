@@ -15,10 +15,21 @@ public class SteamScript : MonoBehaviour
     private SteamworksUGCItem uploadingItem;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
+    protected Callback<DownloadItemResult_t> m_DownloadItemResult;
     private CallResult<SteamUGCQueryCompleted_t> m_callSteamUGCQueryCompleted;
 
 
     private void OnItemInstalled(ItemInstalled_t pCallback) {
+        if (pCallback.m_unAppID != RECEIVER1_APP_ID) {
+            // Not our game
+            return;
+        }
+
+        LoadModIntoGame(pCallback.m_nPublishedFileId);
+    }
+
+
+    private void OnItemDownloaded(DownloadItemResult_t pCallback) {
         if (pCallback.m_unAppID != RECEIVER1_APP_ID) {
             // Not our game
             return;
@@ -35,7 +46,7 @@ public class SteamScript : MonoBehaviour
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
-                LoadModIntoGame(details.m_nPublishedFileId);
+                SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
@@ -67,6 +78,7 @@ public class SteamScript : MonoBehaviour
     private void OnEnable() {
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
+            m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
         }
     }
