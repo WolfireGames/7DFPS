@@ -28,6 +28,23 @@ public class SteamScript : MonoBehaviour
     }
 
 
+    private void OnUGCSteamUGCQueryCompleted(SteamUGCQueryCompleted_t pResult, bool failed) {
+        Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
+
+        if (failed == false) {
+            for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
+                SteamUGCDetails_t details;
+                SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
+                LoadModIntoGame(details.m_nPublishedFileId);
+            }
+        } else {
+            Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
+        }
+
+        SteamUGC.ReleaseQueryUGCRequest(pResult.m_handle);
+    }
+
+
     private void LoadModIntoGame(PublishedFileId_t publishedFileId) {
         ulong sizeOnDisk = 0;
         string folder;
@@ -44,23 +61,6 @@ public class SteamScript : MonoBehaviour
         } else {
             Debug.LogWarning("Got Steam ItemInstalled message for non-installed Workshop item");
         }
-    }
-
-
-    private void OnUGCSteamUGCQueryCompleted(SteamUGCQueryCompleted_t pResult, bool failed) {
-        Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
-
-        if (failed == false) {
-            for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
-                SteamUGCDetails_t details;
-                SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
-                LoadModIntoGame(details.m_nPublishedFileId);
-            }
-        } else {
-            Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
-        }
-
-        SteamUGC.ReleaseQueryUGCRequest(pResult.m_handle);
     }
 
 
