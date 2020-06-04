@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Text;
+using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 using ImGuiNET;
@@ -265,6 +265,10 @@ public class SteamworksUGCItem {
         SteamUGC.SetItemUpdateLanguage(update_handle, "english");
 
         //SteamUGC.SetItemMetadata(update_handle, metadata);
+
+        List<string> tags = new List<string>();
+        tags.Add(mod.GetTypeString());
+        SteamUGC.SetItemTags(update_handle, tags);
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
