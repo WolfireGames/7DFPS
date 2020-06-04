@@ -311,6 +311,18 @@ public class Mod {
         loaded = false;
         assetBundle.Unload(true);
     }
+
+    public string GetTypeString() {
+        switch (modType) {
+            case ModType.Gun:
+                return "Gun";
+            case ModType.LevelTile:
+                return "Tile";
+            case ModType.Tapes:
+                return "Tapes";
+        }
+        return "";
+    }
 }
 
 [System.Serializable]
