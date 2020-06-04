@@ -134,6 +134,8 @@ public class SteamScript : MonoBehaviour
             foreach (Mod mod in ModManager.availableMods) {
                 ImGui.Text(mod.name);
                 ImGui.SameLine(120);
+                ImGui.Text(mod.GetTypeString());
+                ImGui.SameLine();
                 if (ImGui.Button("Upload to Steam Workshop##" + i++)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
                         uploadingItem = new SteamworksUGCItem(mod);
@@ -215,10 +217,16 @@ public class SteamworksUGCItem {
 
     public SteamworksUGCItem(Mod _mod) {
         waiting_for_create = false;
-        description = new char[1024]; description[0] = '\0';
-        previewImagePath = new char[512]; previewImagePath[0] = '\0';
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
+        title = mod.name;
+        description = new char[1024]; description[0] = '\0';
+        previewImagePath = new char[512]; previewImagePath[0] = '\0';
+
+        if (SteamManager.Initialized) {
+            m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
+            m_SubmitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
+        }
 
         string idPath = Path.GetDirectoryName(mod.path) + "/steamworks_id.txt";
         if (File.Exists(idPath)) {
@@ -231,11 +239,6 @@ public class SteamworksUGCItem {
             } catch (Exception e) {
                 Debug.LogError("Error reading Steam Workshop file ID for mod: " + e);
             }
-        }
-
-        if (SteamManager.Initialized) {
-            m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
-            m_SubmitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
         }
     }
 
@@ -252,7 +255,6 @@ public class SteamworksUGCItem {
 
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
-        title = mod.name;
                 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
@@ -285,9 +287,14 @@ public class SteamworksUGCItem {
 
 
     public void DrawItemWindow() {
-        ImGui.Begin("Steam Workshop item " + title);
+        ImGui.Begin("Steam Workshop item");
+
+        ImGui.Text("Title: " + title);
+
+        ImGui.Text("Type: " + mod.GetTypeString());
 
         ImGui.InputText("Description", description);
+
         // Disabled for now doesn't seem to work (not present in Overgrowth either)?
         //ImGui.InputText("Preview Image", previewImagePath);
 
