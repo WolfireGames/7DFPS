@@ -11,7 +11,6 @@ public class SteamScript : MonoBehaviour
 
     public ModManager modManager;
 
-    private string steamName;
     private SteamworksUGCItem uploadingItem;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
@@ -93,8 +92,6 @@ public class SteamScript : MonoBehaviour
         uploadingItem = null;
 
         if (SteamManager.Initialized) {
-            steamName = SteamFriends.GetPersonaName();
-
             QueryPersonalWorkshopItems();
         }
     }
@@ -130,12 +127,8 @@ public class SteamScript : MonoBehaviour
 
 
     void DrawSteamWindow() {
-        ImGui.Begin("Steam Test Window");
-
-        ImGui.Text("Steam user name: " + steamName);
-        ImGui.Dummy(new Vector2(0.0f, 10.0f));
-
-        ImGui.Text("Available mods:");
+        ImGui.Begin("Steam Workshop upload");
+        ImGui.Text("Local installed mods");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
             int i = 0;
             foreach (Mod mod in ModManager.availableMods) {
@@ -295,7 +288,8 @@ public class SteamworksUGCItem {
         ImGui.Begin("Steam Workshop item " + title);
 
         ImGui.InputText("Description", description);
-        ImGui.InputText("Preview Image", previewImagePath);
+        // Disabled for now doesn't seem to work (not present in Overgrowth either)?
+        //ImGui.InputText("Preview Image", previewImagePath);
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
         
