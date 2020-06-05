@@ -12,9 +12,11 @@ public class SteamScript : MonoBehaviour
     public ModManager modManager;
 
     private SteamworksUGCItem uploadingItem;
+    private List<SteamUGCDetails_t> steamItems;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
     protected Callback<DownloadItemResult_t> m_DownloadItemResult;
+    private CallResult<DeleteItemResult_t> m_DeleteItemResult;
     private CallResult<SteamUGCQueryCompleted_t> m_callSteamUGCQueryCompleted;
 
 
@@ -25,6 +27,8 @@ public class SteamScript : MonoBehaviour
         }
 
         LoadModIntoGame(pCallback.m_nPublishedFileId);
+        // Refresh list
+        QueryPersonalWorkshopItems();
     }
 
 
@@ -35,6 +39,16 @@ public class SteamScript : MonoBehaviour
         }
 
         LoadModIntoGame(pCallback.m_nPublishedFileId);
+        // Refresh list
+        QueryPersonalWorkshopItems();
+    }
+
+
+    private void OnItemDeleted(DeleteItemResult_t pResult, bool failed) {
+        if (failed == false) {
+            // Refresh list
+            QueryPersonalWorkshopItems();
+        }
     }
 
 
@@ -42,10 +56,13 @@ public class SteamScript : MonoBehaviour
         Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
 
         if (failed == false) {
+            steamItems.Clear();
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
-                SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
+                steamItems.Add(details);
+                // Don't download automatically
+                //SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
@@ -82,6 +99,7 @@ public class SteamScript : MonoBehaviour
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
             m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
+            m_DeleteItemResult = CallResult<DeleteItemResult_t>.Create(OnItemDeleted);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
         }
     }
@@ -90,6 +108,7 @@ public class SteamScript : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         uploadingItem = null;
+        steamItems = new List<SteamUGCDetails_t>();
 
         if (SteamManager.Initialized) {
             QueryPersonalWorkshopItems();
@@ -127,7 +146,7 @@ public class SteamScript : MonoBehaviour
 
 
     void DrawSteamWindow() {
-        ImGui.Begin("Steam Workshop upload");
+        ImGui.Begin("Steam Workshop items");
         ImGui.Text("Local installed mods");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
             int i = 0;
@@ -141,6 +160,25 @@ public class SteamScript : MonoBehaviour
                         uploadingItem = new SteamworksUGCItem(mod);
                         uploadingItem.waiting_for_create = true;
                     }
+                }
+            }
+        }
+
+        ImGui.Text("Subscribed Steamworks items");
+        int j = 0;
+        foreach (SteamUGCDetails_t details in steamItems) {
+            ImGui.Text(details.m_rgchTitle);
+            ImGui.SameLine(120);
+            ImGui.Text(details.m_rgchTags);
+            ImGui.SameLine();
+            uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
+            if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
+                if (ImGui.Button("Install##" + j++)) {
+                    SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
+                }
+            } else {
+                if (ImGui.Button("Uninstall (needs restart)##" + j++)) {
+                    SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
                 }
             }
         }
