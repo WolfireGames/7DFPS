@@ -118,8 +118,8 @@ public class SteamScript : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        if (optionsmenuscript.show_steam_ui) {
-            DrawSteamWindow();
+        if (optionsmenuscript.show_mod_ui) {
+            DrawModWindow();
         }
         if (uploadingItem != null && uploadingItem.waiting_for_create) {
             uploadingItem.DrawItemWindow();
@@ -145,8 +145,8 @@ public class SteamScript : MonoBehaviour
     }
 
 
-    void DrawSteamWindow() {
-        ImGui.Begin("Steam Workshop items");
+    void DrawModWindow() {
+        ImGui.Begin("Mod window");
         ImGui.Text("Local installed mods");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
             int i = 0;

@@ -2119,7 +2119,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Show Steam UI
+  m_Text: Show Mod UI
 --- !u!1 &951151886925582407
 GameObject:
   m_ObjectHideFlags: 0
@@ -4985,7 +4985,7 @@ GameObject:
   - component: {fileID: 5617491143965868002}
   - component: {fileID: 5597301624355168768}
   m_Layer: 5
-  m_Name: Open_SteamUI
+  m_Name: Open_ModUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5092,7 +5092,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7163399577596914369}
-        m_MethodName: ToggleSteamUI
+        m_MethodName: ToggleModUI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5115,8 +5115,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windows: 1
-  linux: 0
-  mac: 0
+  linux: 1
+  mac: 1
   others: 0
 --- !u!1 &2866556412210443881
 GameObject:
@@ -11864,7 +11864,7 @@ GameObject:
   - component: {fileID: 8778324304619936}
   - component: {fileID: 2429119108762096171}
   m_Layer: 5
-  m_Name: Steam_UI
+  m_Name: Mod_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
