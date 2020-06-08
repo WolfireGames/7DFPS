@@ -84,6 +84,7 @@ public class optionsmenuscript:MonoBehaviour{
     
     public void HideMenu() {
         show_menu = false;
+        show_mod_ui = false;
         menu.SetActive(false);
         LockCursor();
         Time.timeScale = 1.0f;

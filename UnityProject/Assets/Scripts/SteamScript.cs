@@ -183,6 +183,10 @@ public class SteamScript : MonoBehaviour
             }
         }
 
+        if (ImGui.Button("Close")) {
+            optionsmenuscript.show_mod_ui = false;
+        }
+
         ImGui.End();
     }
 }
