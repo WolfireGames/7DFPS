@@ -155,12 +155,23 @@ public class SteamScript : MonoBehaviour
                 ImGui.SameLine(120);
                 ImGui.Text(mod.GetTypeString());
                 ImGui.SameLine();
-                if (ImGui.Button("Upload to Steam Workshop##" + i++)) {
+                if (ImGui.Button("Upload to Steam Workshop##" + i)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
                         uploadingItem = new SteamworksUGCItem(mod);
                         uploadingItem.waiting_for_create = true;
                     }
                 }
+                ImGui.SameLine();
+                if (mod.loaded) {
+                    if (ImGui.Button("Unload##" + i)) {
+                        modManager.UnloadMod(mod);
+                    }
+                } else {
+                    if (ImGui.Button("Load##" + i)) {
+                        modManager.LoadMod(mod);
+                    }
+                }
+                i++;
             }
         }
 
