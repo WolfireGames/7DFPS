@@ -63,6 +63,10 @@ public class SteamScript : MonoBehaviour
                 steamItems.Add(details);
                 // Don't download automatically
                 //SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
+                uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
+                if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
+                    LoadModIntoGame(details.m_nPublishedFileId);
+                }
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
@@ -90,7 +94,7 @@ public class SteamScript : MonoBehaviour
             }
             // Store Steamworks ID?
         } else {
-            Debug.LogWarning("Got Steam ItemInstalled message for non-installed Workshop item");
+            Debug.LogWarning("Attempted to load non-installed Steam Workshop item ID " + publishedFileId);
         }
     }
 
