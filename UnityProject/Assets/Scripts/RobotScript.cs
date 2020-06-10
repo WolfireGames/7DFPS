@@ -321,18 +321,22 @@ public class RobotScript:MonoBehaviour{
                         }
                         else {
                             WaitTime += Time.deltaTime;
-                            if(WaitTime > EndWaitTime) {
+
+                            if (WaitTime > EndWaitTime) {
+
                                 Waiting = false;
                                 WaitTime = 0f;
                             }
                         }
-                        if(Mathf.Abs(rotation_y.target_state) > RotationRange) {
+
+                        if (Mathf.Abs(rotation_y.target_state) > RotationRange) {
                             FlipRotate = !FlipRotate;
                             Waiting = true;
                         }
                         rotation_y.target_state = Mathf.Clamp(rotation_y.target_state, -RotationRange, RotationRange);
                     }
-    				break;
+
+                    break;
     			case AIState.AIMING:
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:

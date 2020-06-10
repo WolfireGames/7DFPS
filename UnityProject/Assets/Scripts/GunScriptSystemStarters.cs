@@ -112,16 +112,40 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.CHAMBER)]
+    [InclusiveAspects(GunAspect.CHAMBER, GunAspect.SLIDE)]
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
+
+    public class ChamberWithSliderStartSystem : GunSystemBase {
+        ChamberComponent cc;
+        SlideComponent sc;
+
+        public override void Initialize() {
+            cc = gs.GetComponent<ChamberComponent>();
+            sc = gs.GetComponent<SlideComponent>();
+
+            //if(Random.Bool() && !gs.IsSlidePulledBack() && !gs.IsSlideLocked()) { // IsSlidePulledBack and IsSlideLocked are part of uninitialized GunSystems and can't be used here
+            if(Random.Bool() && sc.slide_stage == SlideStage.NOTHING && !sc.slide_lock) {
+                cc.active_round = GameObject.Instantiate(gs.full_casing, cc.point_chambered_round.position, cc.point_chambered_round.rotation, gs.transform);
+                cc.active_round.transform.localScale = Vector3.one;
+                cc.active_round_state = RoundState.READY;
+
+                RemoveChildrenShadows(cc.active_round);
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.CHAMBER)]
+    [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING, GunAspect.SLIDE)]
+    [Priority(PriorityAttribute.VERY_EARLY + 1)]
+
     public class ChamberStartSystem : GunSystemBase {
         ChamberComponent cc;
 
         public override void Initialize() {
             cc = gs.GetComponent<ChamberComponent>();
 
-            if(Random.Bool() && !gs.IsSlidePulledBack() && !gs.IsSlideLocked()) {
+            if(Random.Bool()) {
                 cc.active_round = GameObject.Instantiate(gs.full_casing, cc.point_chambered_round.position, cc.point_chambered_round.rotation, gs.transform);
                 cc.active_round.transform.localScale = Vector3.one;
                 cc.active_round_state = RoundState.READY;

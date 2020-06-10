@@ -51,7 +51,7 @@ public class TeleportParabola : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (VRTeleportEnabled) {
+        if (VRTeleportEnabled && VRInputBridge.instance.aimScript_ref != null) {
             Vector3 clampedYVel = transform.forward;
 
             clampedYVel.y = Mathf.Clamp(clampedYVel.y, -1f, 0.5f);

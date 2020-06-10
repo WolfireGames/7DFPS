@@ -23,6 +23,8 @@ public class VRInputBridge : MonoBehaviour
     private IEnumerator Start() {
         yield return null;
         yield return null;
+        yield return null;
+        yield return null;
         if (aimScript_ref.gun_script.HasGunComponent(GunAspect.YOKE_VISUAL)) {
             closeDirection = WhichOffsetDirectionForFlipClose(aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().yoke_pivot_rel_rot, aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().yoke_pivot, aimScript_ref.gun_script.GetComponent<YokeVisualComponent>().point_yoke_pivot_open);
         }
