@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE_LOCK_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class SlideLockVisualSystem : GunSystemBase {
         SlideLockVisualComponent slvc;
 
@@ -23,6 +24,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.HAMMER_VISUAL, GunAspect.HAMMER)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class HammerVisualSystem : GunSystemBase {
         HammerVisualComponent hvc;
         HammerComponent hc;
@@ -42,6 +44,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.TRIGGER_VISUAL, GunAspect.TRIGGER)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class TriggerVisualSystem : GunSystemBase {
         TriggerVisualComponent tvc;
         TriggerComponent tc;
@@ -61,6 +64,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class SlideVisualSystem : GunSystemBase {
         SlideComponent psc;
         SlideVisualComponent svc;
@@ -76,6 +80,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.LASER_POINTER_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class LaserPointerVisualSystem : GunSystemBase {
         LaserPointerVisualComponent lpvc;
         GameObject point_object;
@@ -98,6 +103,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_SPRING_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class SlideSpringVisualSystem : GunSystemBase {
         SlideComponent psc;
         SlideSpringVisualComponent ssvc;
@@ -119,6 +125,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.EXTRACTOR_ROD_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class ExtractorRodSystem : GunSystemBase {
         ExtractorRodVisualComponent ervc;
         ExtractorRodComponent erc;
@@ -138,6 +145,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.CYLINDER_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class CylinderVisualSystem : GunSystemBase {
         CylinderVisualComponent cvc;
         RevolverCylinderComponent rcc;
@@ -160,6 +168,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.YOKE, GunAspect.YOKE_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class YokeVisualSystem : GunSystemBase {
         YokeVisualComponent yvc;
         YokeComponent yc;
@@ -179,6 +188,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.FIRE_MODE_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class FireModeVisualSystem : GunSystemBase {
         FireModeComponent fmc;
         FireModeVisualComponent fmvc;
@@ -198,6 +208,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.THUMB_SAFETY_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class ThumbSafetyVisualSystem : GunSystemBase {
         ThumbSafetyComponent tsc;
         ThumbSafetyVisualComponent tsvc;
@@ -217,6 +228,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.GRIP_SAFETY, GunAspect.GRIP_SAFETY_VISUAL)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class GripSafetyVisualSystem : GunSystemBase {
         GripSafetyComponent gsc;
         GripSafetyVisualComponent gsvc;
@@ -236,6 +248,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.MAGAZINE)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class AmmoCounterMagazineVisualSystem : GunSystemBase {
         AmmoCountAnimatorVisualComponent acavc;
         MagazineComponent mc;
@@ -251,6 +264,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.REVOLVER_CYLINDER)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class AmmoCounterCylinderVisualSystem : GunSystemBase {
         AmmoCountAnimatorVisualComponent acavc;
         RevolverCylinderComponent rcc;
@@ -266,6 +280,7 @@ namespace GunSystemsV1 {
     }
 
     [InclusiveAspects(GunAspect.AMMO_COUNT_ANIMATOR_VISUAL, GunAspect.CHAMBER)]
+    [Priority(PriorityAttribute.VERY_LATE)]
     public class AmmoCounterChamberVisualSystem : GunSystemBase {
         AmmoCountAnimatorVisualComponent acavc;
         ChamberComponent cc;
