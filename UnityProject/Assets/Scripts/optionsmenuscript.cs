@@ -4,6 +4,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class optionsmenuscript:MonoBehaviour{
     public static bool show_menu = false;
+    public static bool show_mod_ui = false;
 
     public GameObject menu;
     public GameObject menuOptions;
@@ -94,6 +95,7 @@ public class optionsmenuscript:MonoBehaviour{
     
     public void HideMenu() {
         show_menu = false;
+        show_mod_ui = false;
         menu.SetActive(false);
         LockCursor();
         Time.timeScale = 1.0f;
@@ -228,6 +230,10 @@ public class optionsmenuscript:MonoBehaviour{
 
     public void OpenModsFolder() {
         Application.OpenURL($"\"{ModManager.GetModsfolderPath()}\"");
+    }
+
+    public void ToggleModUI() {
+        show_mod_ui = !show_mod_ui;
     }
 
     public void ReopenCurrentScene() {
