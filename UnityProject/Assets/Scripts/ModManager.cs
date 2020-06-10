@@ -302,12 +302,6 @@ public class Mod {
         loaded = true;
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
-<<<<<<< HEAD
-
-        if (modType == ModType.Gun)
-            SetupGun();
-=======
->>>>>>> flatgame-repo/steamworks
     }
 
     public void Unload() {
