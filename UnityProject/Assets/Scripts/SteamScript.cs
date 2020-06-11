@@ -78,8 +78,9 @@ public class SteamScript : MonoBehaviour
 
     private void LoadModIntoGame(PublishedFileId_t publishedFileId) {
         ulong sizeOnDisk = 0;
-        string folder;
-        uint folderSize = 0;
+        uint folderSize = 512;
+        char[] temp = new char[folderSize];
+        string folder = new string(temp);
         uint timeStamp = 0;
 
         uint retval = SteamUGC.GetItemState(publishedFileId);
