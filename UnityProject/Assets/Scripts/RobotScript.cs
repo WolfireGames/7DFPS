@@ -91,6 +91,11 @@ public class RobotScript:MonoBehaviour{
     
     public Vector3 target_pos;
 
+    public bool LimitedRotation;
+    bool FlipRotate, Waiting;
+    public float RotationRange, EndWaitTime = 2f;
+    float WaitTime;
+
     public CameraPivotState camera_pivot_state = CameraPivotState.WAIT_DOWN;
     public float camera_pivot_delay = 0.0f;
     public float camera_pivot_angle = 0.0f;
@@ -302,8 +307,27 @@ public class RobotScript:MonoBehaviour{
         if(motor_alive){
     		switch(ai_state){
     			case AIState.IDLE:
-    				rotation_y.target_state += Time.deltaTime * 100.0f;
-    				break;
+                    if (!LimitedRotation) {
+                        rotation_y.target_state += Time.deltaTime * 100.0f;
+                    }
+                    else {
+                        if (!Waiting) {
+                            rotation_y.target_state += Time.deltaTime * 100.0f * (FlipRotate ? -1f : 1f);
+                        }
+                        else {
+                            WaitTime += Time.deltaTime;
+                            if (WaitTime > EndWaitTime) {
+                                Waiting = false;
+                                WaitTime = 0f;
+                            }
+                        }
+                        if (Mathf.Abs(rotation_y.target_state) > RotationRange) {
+                            FlipRotate = !FlipRotate;
+                            Waiting = true;
+                        }
+                        rotation_y.target_state = Mathf.Clamp(rotation_y.target_state, -RotationRange, RotationRange);
+                    }
+                    break;
     			case AIState.AIMING:
     			case AIState.ALERT:
     			case AIState.ALERT_COOLDOWN:

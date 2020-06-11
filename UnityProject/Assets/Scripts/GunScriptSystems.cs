@@ -1116,14 +1116,6 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             rcc = gs.GetComponent<RevolverCylinderComponent>();
             hc = gs.GetComponent<HammerComponent>();
-
-            rcc.chambers = new Transform[rcc.cylinder_capacity];
-            rcc.cylinders = new CylinderState[rcc.cylinder_capacity];
-            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                string name = "point_chamber_" + (i+ 1);
-                rcc.chambers[i] = rcc.chamber_parent.Find(name);
-                rcc.cylinders[i] = new CylinderState();
-            }
         }
 
         public override void Update() {
