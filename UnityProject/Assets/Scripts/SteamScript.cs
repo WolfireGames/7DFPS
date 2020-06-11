@@ -61,10 +61,10 @@ public class SteamScript : MonoBehaviour
                 steamItems.Add(details);
                 // Load items at startup, but not after later queries
                 if (loadItems) {
-                uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
-                if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
-                    LoadModIntoGame(details.m_nPublishedFileId);
-                }
+                    uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
+                    if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
+                        LoadModIntoGame(details.m_nPublishedFileId);
+                    }
                 }
             }
         } else {
