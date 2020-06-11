@@ -134,7 +134,7 @@ public class TeleportParabola : MonoBehaviour
                 VRInputBridge.instance.aimScript_ref.RecheckTeleportEnabled();
             }
         }
-        else {
+        else if (VRInputBridge.instance.aimScript_ref != null) { 
             circle.gameObject.SetActive(false);
             line.enabled = false;
             if (VRInputBridge.instance.aimScript_ref.secondaryHand == side && PlayerPrefs.GetInt("vr_teleport") == 1) {
