@@ -60,7 +60,7 @@ public class ModManager : MonoBehaviour {
             LoadMod(mod);
         }
 
-        InsertMods();
+        InsertMods(true);
 
         return mod;
     }
@@ -69,13 +69,13 @@ public class ModManager : MonoBehaviour {
         return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
 
-    public void InsertMods() {
+    public void InsertMods(bool clear = false) {
         // Insert all gun mods
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var guns = new List<GameObject>(guiSkinHolder.weapons);
             var availableGuns = availableMods.Where((mod) => mod.modType == ModType.Gun);
-            if(availableGuns.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+            if(availableGuns.Count() > 0 && (gun_load_type == ModLoadType.EXCLUSIVE || clear))
                 guns.Clear();
 
             foreach (var mod in availableGuns) {
@@ -93,7 +93,7 @@ public class ModManager : MonoBehaviour {
             ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
             if(tile_load_type != ModLoadType.DISABLED) {
                 var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-                if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                if(loadedLevelMods.Count > 0 && (tile_load_type == ModLoadType.EXCLUSIVE || clear))
                     tiles.Clear();
 
                 foreach (var mod in loadedLevelMods)
@@ -106,7 +106,7 @@ public class ModManager : MonoBehaviour {
         // Insert all Tape mods
         ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
         if(tape_load_type != ModLoadType.DISABLED) {
-            if(loadedTapeMods.Count > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
+            if(loadedTapeMods.Count > 0 && (tape_load_type == ModLoadType.EXCLUSIVE || clear))
                 guiSkinHolder.sound_tape_content.Clear();
 
             foreach (var mod in loadedTapeMods)
