@@ -11,6 +11,7 @@ public class SteamScript : MonoBehaviour
 
     public ModManager modManager;
 
+    private bool loadItems;
     private SteamworksUGCItem uploadingItem;
     private List<SteamUGCDetails_t> steamItems;
 
@@ -38,9 +39,6 @@ public class SteamScript : MonoBehaviour
             return;
         }
 
-        LoadModIntoGame(pCallback.m_nPublishedFileId);
-        // Refresh list
-        QueryPersonalWorkshopItems();
     }
 
 
@@ -61,16 +59,18 @@ public class SteamScript : MonoBehaviour
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
                 steamItems.Add(details);
-                // Don't download automatically
-                //SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
+                // Load items at startup, but not after later queries
+                if (loadItems) {
                 uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
                 if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
                     LoadModIntoGame(details.m_nPublishedFileId);
+                }
                 }
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
         }
+        loadItems = false;
 
         SteamUGC.ReleaseQueryUGCRequest(pResult.m_handle);
     }
@@ -106,6 +106,8 @@ public class SteamScript : MonoBehaviour
             m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
             m_DeleteItemResult = CallResult<DeleteItemResult_t>.Create(OnItemDeleted);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
+
+            loadItems = true;
         }
     }
 
@@ -137,7 +139,7 @@ public class SteamScript : MonoBehaviour
 
         UGCQueryHandle_t query_handle = SteamUGC.CreateQueryUserUGCRequest(
             userid.GetAccountID(),
-            EUserUGCList.k_EUserUGCList_Published,
+            EUserUGCList.k_EUserUGCList_Subscribed,
             EUGCMatchingUGCType.k_EUGCMatchingUGCType_All,
             EUserUGCListSortOrder.k_EUserUGCListSortOrder_TitleAsc,
             RECEIVER1_APP_ID,
