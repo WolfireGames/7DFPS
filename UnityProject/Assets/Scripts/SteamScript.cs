@@ -63,6 +63,10 @@ public class SteamScript : MonoBehaviour
                 steamItems.Add(details);
                 // Don't download automatically
                 //SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
+                uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
+                if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
+                    LoadModIntoGame(details.m_nPublishedFileId);
+                }
             }
         } else {
             Debug.LogError("OnUGCSteamUGCQueryCompleted() error " + pResult.m_eResult);
@@ -74,8 +78,9 @@ public class SteamScript : MonoBehaviour
 
     private void LoadModIntoGame(PublishedFileId_t publishedFileId) {
         ulong sizeOnDisk = 0;
-        string folder;
-        uint folderSize = 0;
+        uint folderSize = 512;
+        char[] temp = new char[folderSize];
+        string folder = new string(temp);
         uint timeStamp = 0;
 
         uint retval = SteamUGC.GetItemState(publishedFileId);
@@ -90,7 +95,7 @@ public class SteamScript : MonoBehaviour
             }
             // Store Steamworks ID?
         } else {
-            Debug.LogWarning("Got Steam ItemInstalled message for non-installed Workshop item");
+            Debug.LogWarning("Attempted to load non-installed Steam Workshop item ID " + publishedFileId);
         }
     }
 
@@ -146,13 +151,16 @@ public class SteamScript : MonoBehaviour
 
 
     void DrawModWindow() {
+        const float hSpacing = 200.0f;
+        ImGui.SetNextWindowSize(new Vector2(480.0f, 300.0f), ImGuiCond.FirstUseEver);
+
         ImGui.Begin("Mod window");
         ImGui.Text("Local installed mods");
         if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
             int i = 0;
             foreach (Mod mod in ModManager.availableMods) {
                 ImGui.Text(mod.name);
-                ImGui.SameLine(120);
+                ImGui.SameLine(hSpacing);
                 ImGui.Text(mod.GetTypeString());
                 ImGui.SameLine();
                 if (ImGui.Button("Upload to Steam Workshop##" + i)) {
@@ -179,7 +187,7 @@ public class SteamScript : MonoBehaviour
         int j = 0;
         foreach (SteamUGCDetails_t details in steamItems) {
             ImGui.Text(details.m_rgchTitle);
-            ImGui.SameLine(120);
+            ImGui.SameLine(hSpacing);
             ImGui.Text(details.m_rgchTags);
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
