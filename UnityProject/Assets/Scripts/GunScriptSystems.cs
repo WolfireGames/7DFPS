@@ -1825,6 +1825,14 @@ namespace GunSystemsV1 {
                             }
                             this.queries.Merge(queries);
                         }
+                        
+                        // Fill component data on GunSystems
+                        foreach(FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)) {
+                            if(typeof(GunComponent).IsAssignableFrom(field.FieldType)) {
+                                field.SetValue(gsb, gs.GetComponent(field.FieldType));
+                            }
+                        }
+
                         loaded_systems.Add(gsb, GetPriority(type));
                     }
                 }
