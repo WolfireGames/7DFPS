@@ -11,6 +11,8 @@ public class ModManager : MonoBehaviour {
 
     public static List<Mod> availableMods;
 
+    private static int numSteamMods = 0;
+
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
     public InbuildMod[] inbuildMods;
@@ -38,7 +40,7 @@ public class ModManager : MonoBehaviour {
         if(availableMods == null)
             LoadCache();
 
-        if(availableMods.Count != GetModFolderCount()) { // Is our Cache up to date?
+        if(availableMods.Count != GetModFolderCount() + PlayerPrefs.GetInt("num_steam_mods", 0)) { // Is our Cache up to date?
             UnloadAll();
             ImportMods();
             UpdateCache();
@@ -60,7 +62,47 @@ public class ModManager : MonoBehaviour {
             LoadMod(mod);
         }
 
-        InsertMods(true);
+        // Insert mods into lists
+        switch (mod.modType) {
+            case ModType.Gun: {
+                ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
+                if (gun_load_type != ModLoadType.DISABLED) {
+                    var guns = new List<GameObject>(guiSkinHolder.weapons);
+                    WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
+                    placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
+                    placeholder.mod = mod;
+                    placeholder.display_name = mod.name;
+                    guns.Add(placeholder.gameObject);
+                    guiSkinHolder.weapons = guns.ToArray();
+                }
+                break;
+            }
+            case ModType.LevelTile: {
+                if (levelCreatorScript) {
+                    ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
+                    if (tile_load_type != ModLoadType.DISABLED) {
+                        var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+                        foreach (GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs) {
+                            tiles.Add(tile);
+                        }
+                        levelCreatorScript.level_tiles = tiles.ToArray();
+                    }
+                }
+                break;
+            }
+            case ModType.Tapes: {
+                ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
+                if (tape_load_type != ModLoadType.DISABLED) {
+                    foreach (AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes) {
+                        guiSkinHolder.sound_tape_content.Add(tape);
+                    }
+                }
+                break;
+            }
+        }
+
+        numSteamMods++;
+        PlayerPrefs.SetInt("num_steam_mods", numSteamMods);
 
         return mod;
     }
@@ -69,13 +111,13 @@ public class ModManager : MonoBehaviour {
         return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
 
-    public void InsertMods(bool clear = false) {
+    public void InsertMods() {
         // Insert all gun mods
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var guns = new List<GameObject>(guiSkinHolder.weapons);
             var availableGuns = availableMods.Where((mod) => mod.modType == ModType.Gun);
-            if(availableGuns.Count() > 0 && (gun_load_type == ModLoadType.EXCLUSIVE || clear))
+            if(availableGuns.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
                 guns.Clear();
 
             foreach (var mod in availableGuns) {
@@ -93,7 +135,7 @@ public class ModManager : MonoBehaviour {
             ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
             if(tile_load_type != ModLoadType.DISABLED) {
                 var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-                if(loadedLevelMods.Count > 0 && (tile_load_type == ModLoadType.EXCLUSIVE || clear))
+                if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
                     tiles.Clear();
 
                 foreach (var mod in loadedLevelMods)
@@ -106,7 +148,7 @@ public class ModManager : MonoBehaviour {
         // Insert all Tape mods
         ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
         if(tape_load_type != ModLoadType.DISABLED) {
-            if(loadedTapeMods.Count > 0 && (tape_load_type == ModLoadType.EXCLUSIVE || clear))
+            if(loadedTapeMods.Count > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
                 guiSkinHolder.sound_tape_content.Clear();
 
             foreach (var mod in loadedTapeMods)
