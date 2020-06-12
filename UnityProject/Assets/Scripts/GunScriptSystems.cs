@@ -9,8 +9,8 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]
     [ExclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class ManualLoadingMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        ManualLoadingComponent mlc;
+        MagazineComponent mc = null;
+        ManualLoadingComponent mlc = null;
 
         private bool InputAddRound() {
             if(!mlc.can_insert) {
@@ -53,7 +53,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MANUAL_LOADING)]
     [ExclusiveAspects(GunAspect.MAGAZINE, GunAspect.REVOLVER_CYLINDER)]
     public class ManualLoadingSystem : GunSystemBase {
-        ManualLoadingComponent mlc;
+        ManualLoadingComponent mlc = null;
 
         public bool AddRound() {
             if(!mlc.can_insert)
@@ -88,7 +88,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.CHAMBER)]
     public class ChamberSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
         public bool PutRoundInChamber() {
             if (cc.active_round_state == RoundState.EMPTY) {
@@ -113,7 +113,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
     public class MagazineChamberingSystem : GunSystemBase {
-        MagazineComponent mc;
+        MagazineComponent mc = null;
 
         public bool ChamberRoundFromMag() {
             if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
@@ -134,7 +134,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.GRIP_SAFETY)]
     public class GripSafetySystem : GunSystemBase {
-        GripSafetyComponent gsc;
+        GripSafetyComponent gsc = null;
 
         public bool RequestInputStartAim() {
             gsc.is_safe = false;
@@ -168,8 +168,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.SLIDE)]
     public class ThumbSafetySystem : GunSystemBase {
-        SlideComponent sc; // TODO Thumb safety requires Pistol Slide, move that out somehow
-        ThumbSafetyComponent tsc;
+        SlideComponent sc = null; // TODO Thumb safety requires Pistol Slide, move that out somehow
+        ThumbSafetyComponent tsc = null;
 
         bool IsSafetyOn() {
             return tsc.is_safe;
@@ -209,8 +209,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.INTERNAL_MAGAZINE)]
     public class InternalMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        InternalMagazineComponent imc;
+        MagazineComponent mc = null;
+        InternalMagazineComponent imc = null;
 
         bool IsMagazineInGun() {
             return true;
@@ -229,9 +229,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.RECOIL)]
     public class ExternalMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        ExternalMagazineComponent emc;
-        RecoilComponent rc;
+        MagazineComponent mc = null;
+        ExternalMagazineComponent emc = null;
+        RecoilComponent rc = null;
 
         bool IsReadyToRemoveMagazine() {
             return mc.ready_to_remove_mag;
@@ -327,7 +327,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_PUSHING)]
     [ExclusiveAspects(GunAspect.SLIDE_SPRING)]
     public class SlidePushingSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
         private bool pushing = false;
 
         bool PushSlide() {
@@ -366,7 +366,7 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.SLIDE_PUSHING)]
     [Priority(PriorityAttribute.EARLY)]
     public class SlideSpringSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
         bool InputReleaseSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
@@ -389,8 +389,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideEjectingSystem : GunSystemBase {
-        SlideComponent slide_c;
-        ChamberComponent cc;
+        SlideComponent slide_c = null;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
             if(!slide_c.eject_round)
@@ -414,9 +414,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.SLIDE_LOCK)]
     public class EmptyInternalMagSlideLockSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
-        MagazineComponent mc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
+        MagazineComponent mc = null;
 
         public override void Initialize() {
             sc.should_slide_lock_predicates.Add(ShouldSlideLock);
@@ -429,8 +429,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberingSystem : GunSystemBase {
-        SlideComponent slide_c;
-        ChamberComponent chamber_c;
+        SlideComponent slide_c = null;
+        ChamberComponent chamber_c = null;
 
         public override void Initialize() {
             if(!slide_c.chamber_round)
@@ -466,7 +466,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_RELEASE_BUTTON)]
     public class SlideLockSwichSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
         bool pressure_on_switch = false;
 
         bool InputReleaseSlideLock() {
@@ -498,7 +498,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
     public class SlideLockSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         bool IsSlideLocked() {
             return sc.slide_lock;
@@ -543,7 +543,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE)]
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class PressCheckSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
         bool IsPressCheck() {
             return slide_c.slide_stage == SlideStage.HOLD && slide_c.slide_amount == slide_c.press_check_position;
@@ -577,8 +577,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.FIRING)]
     public class SlideKickSystem : GunSystemBase {
-        SlideComponent emc;
-        FiringComponent fc;
+        SlideComponent emc = null;
+        FiringComponent fc = null;
 
         public override void Initialize() {
             if(!emc.kick_slide_back)
@@ -600,8 +600,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberClosingSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
             cc.is_closed_predicates.Add(() => sc.slide_amount == 0);
@@ -610,7 +610,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE)]
     public class SlideSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
         bool IsSlidePulledBack() {
             return slide_c.slide_stage != SlideStage.NOTHING;
@@ -671,7 +671,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
     public class AlternativeStanceSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
+        AlternativeStanceComponent asc = null;
 
         private bool InputToggleStance() {
             asc.is_alternative = !asc.is_alternative;
@@ -697,8 +697,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.FIRING)]
     public class FireModeSystem : GunSystemBase {
-        TriggerComponent tc;
-        FiringComponent fc;
+        TriggerComponent tc = null;
+        //FiringComponent fc = null; TODO This is never used, can GunAspect.FIRING be removed without consequences?
 
         int current_trigger_cycle = 0;
 
@@ -720,8 +720,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
     public class FireModeToggleSystem : GunSystemBase {
-        FireModeComponent fmc;
-        TriggerComponent tc;
+        FireModeComponent fmc = null;
+        TriggerComponent tc = null;
 
         bool RequestToggleFireMode() {
             gs.PlaySound(fmc.sound_firemode_toggle);
@@ -761,9 +761,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.HAMMER, GunAspect.CHAMBER)]
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class AutomaticFireSystem : GunSystemBase {
-        TriggerComponent tc;
-        ChamberComponent cc;
-        HammerComponent hc;
+        TriggerComponent tc = null;
+        ChamberComponent cc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
@@ -782,9 +782,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.LATE)]
     public class OpenBoltFireSystem : GunSystemBase {
-        TriggerComponent tc;
-        ChamberComponent cc;
-        SlideComponent sc;
+        TriggerComponent tc = null;
+        ChamberComponent cc = null;
+        SlideComponent sc = null;
 
         public override void Update() {
             // Slide release
@@ -806,7 +806,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class OpenBoltSlideLockSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             sc.should_slide_lock_predicates.Add(() => true);
@@ -815,8 +815,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.MANUAL_LOADING)]
     public class CylinderLoadingSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        ManualLoadingComponent mlc;
+        RevolverCylinderComponent rcc = null;
+        ManualLoadingComponent mlc = null;
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
@@ -865,7 +865,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.YOKE)]
     public class YokeSystem : GunSystemBase {
-        YokeComponent yc;
+        YokeComponent yc = null;
 
         bool InputCloseCylinder() {
             if (yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING) { // TODO add erc.extractor_rod_stage == ExtractorRodStage.CLOSED
@@ -933,8 +933,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class CylinderHammerCycleSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        HammerComponent hc;
+        RevolverCylinderComponent rcc = null;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             if(!rcc.hammer_cycling)
@@ -960,8 +960,8 @@ namespace GunSystemsV1 {
     /// <summary> A system to cycle cylinders, it does half the motion when the slide pulls back, and does the other half on the way back </summary>
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.SLIDE)]
     public class CylinderSlideCycleSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        SlideComponent sc;
+        RevolverCylinderComponent rcc = null;
+        SlideComponent sc = null;
 
         private bool reverse_direction = false;
 
@@ -996,8 +996,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class RevolverCylinderSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        HammerComponent hc;
+        RevolverCylinderComponent rcc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (rcc.is_closed && hc.hammer_cocked == 1.0f) {
@@ -1031,9 +1031,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.TRIGGER, GunAspect.HAMMER)]
     public class RevolverFireSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        TriggerComponent tc;
-        HammerComponent hc;
+        RevolverCylinderComponent rcc = null;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
@@ -1064,7 +1064,7 @@ namespace GunSystemsV1 {
         /// It only disconnects again, if the user stops applying pressure to the trigger and pulls it again.
         /// TriggerComponent.IsConnected is only FALSE, when the firemode systems and trigger systems determine that the gun should be able to fire!
 
-        TriggerComponent tc;
+        TriggerComponent tc = null;
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
                 tc.pressure_on_trigger = true;
@@ -1105,8 +1105,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.YOKE, GunAspect.YOKE_AUTO_EJECTOR)]
     public class YokeAutoEjectSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        YokeComponent yc;
+        RevolverCylinderComponent rcc = null;
+        YokeComponent yc = null;
 
         private bool triggered = true;
 
@@ -1126,8 +1126,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.REVOLVER_CYLINDER)]
     public class RevolverExtractorRodSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        ExtractorRodComponent erc;
+        RevolverCylinderComponent rcc = null;
+        ExtractorRodComponent erc = null;
 
         public bool RequestInputUseExtractorRod() {
             if (erc.can_extract) {
@@ -1247,8 +1247,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.THUMB_COCKING)]
     public class HammerDecockSystem : GunSystemBase {
-        TriggerComponent tc;
-        HammerComponent hc;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
         bool RequestInputReleaseHammer() {
             if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
@@ -1280,7 +1280,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER)]
     public class HammerSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         bool IsHammerCocked() {
             return hc.hammer_cocked == 1.0f;
@@ -1313,8 +1313,8 @@ namespace GunSystemsV1 {
     */
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.TRIGGER_COCKING)]
     public class TriggerCockingSystem : GunSystemBase {
-        TriggerComponent tc;
-        HammerComponent hc;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
         int current_trigger_cycle = 0;
 
@@ -1338,7 +1338,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.THUMB_COCKING)]
     public class ThumbCockingSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         bool RequestInputPressureOnHammer() {
             if(hc.is_blocked)
@@ -1357,8 +1357,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.SLIDE, GunAspect.SLIDE_COCKING)]
     public class SlideCockingSystem : GunSystemBase {
-        SlideComponent sc;
-        HammerComponent hc;
+        SlideComponent sc = null;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
@@ -1374,8 +1374,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
     public class SlideBoltBlockSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        SlideComponent sc;
+        LockableBoltComponent bc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             bc.block_toggle_predicates.Add(() => sc.slide_amount > 0f || sc.slide_stage == SlideStage.PULLBACK);
@@ -1384,7 +1384,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.LOCKABLE_BOLT)]
     public class LockableBoltSystem : GunSystemBase {
-        LockableBoltComponent bc;
+        LockableBoltComponent bc = null;
 
         private bool ToggleBolt() {
             if(bc.block_toggle) 
@@ -1442,7 +1442,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class RoundSpendingCylinderSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
         public bool SpendRound() {
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
@@ -1489,7 +1489,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.CHAMBER)]
     public class RoundSpendingChamberSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
         public bool SpendRound() {
             if(cc.active_round != null) {
@@ -1532,7 +1532,7 @@ namespace GunSystemsV1 {
     */
     [InclusiveAspects(GunAspect.FIRING)]
     public class FiringSystem : GunSystemBase {
-        FiringComponent fc;
+        FiringComponent fc = null;
 
         public bool Discharge() {
             GameObject bullet = null;
@@ -1575,8 +1575,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.RECOIL, GunAspect.FIRING)]
     public class FiringRecoilSystem : GunSystemBase {
-        FiringComponent fc;
-        RecoilComponent rc;
+        FiringComponent fc = null;
+        RecoilComponent rc = null;
 
         public override void Update() {
             if(rc.old_fire_count != fc.fire_count) {
@@ -1592,8 +1592,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.RECOIL, GunAspect.AIM_SWAY)]
     public class AimSwaySystem : GunSystemBase {
-        AimSwayComponent asc;
-        RecoilComponent rc;
+        AimSwayComponent asc = null;
+        RecoilComponent rc = null;
 
         public override void Update() {
             rc.recoil_transfer_x -= asc.horizontal_strength * Mathf.Sin(4 * Time.time * asc.speed + (float)Math.PI / 4f) * Time.deltaTime;

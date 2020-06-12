@@ -24,7 +24,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class StanceStartSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
+        AlternativeStanceComponent asc = null;
 
         public override void Initialize() {
             asc.is_alternative = Random.Bool();
@@ -34,7 +34,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.YOKE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class YokeStartSystem : GunSystemBase {
-        YokeComponent yc;
+        YokeComponent yc = null;
 
         public override void Initialize() {
             // Determine if the cylinder should be open or not
@@ -51,7 +51,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class CylinderStartSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
         public override void Initialize() {
             // Initialize Cylinder
@@ -81,8 +81,8 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class BoltSlideStartSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        SlideComponent sc;
+        LockableBoltComponent bc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(Random.Bool()) {
@@ -107,8 +107,8 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ChamberWithSliderStartSystem : GunSystemBase {
-        ChamberComponent cc;
-        SlideComponent sc;
+        ChamberComponent cc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             //if(Random.Bool() && !gs.IsSlidePulledBack() && !gs.IsSlideLocked()) { // IsSlidePulledBack and IsSlideLocked are part of uninitialized GunSystems and can't be used here
@@ -126,7 +126,7 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING, GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ChamberStartSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
             if(Random.Bool()) {
@@ -143,7 +143,7 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.LOCKABLE_BOLT)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class SlideLockStartSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(Random.Bool()) {
@@ -160,7 +160,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.INTERNAL_MAGAZINE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class HammerIntMagStartSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             hc.prev_hammer_cocked = 1f;
@@ -172,7 +172,7 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.INTERNAL_MAGAZINE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class HammerStartSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             if(Random.Bool()) {
@@ -185,8 +185,8 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ThumbSafetySlideStartSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
-        SlideComponent sc;
+        ThumbSafetyComponent tsc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(!tsc.block_slide || sc.slide_amount == 0f) {
@@ -202,7 +202,7 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class ThumbSafetyStartSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
+        ThumbSafetyComponent tsc = null;
 
         public override void Initialize() {
             if(Random.Bool()) {
@@ -215,7 +215,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.FIRE_MODE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class FireModeStartSystem : GunSystemBase {
-        FireModeComponent fmc;
+        FireModeComponent fmc = null;
 
         public override void Initialize() {
             fmc.current_fire_mode_index = Random.Int(0, fmc.fire_modes.Length);

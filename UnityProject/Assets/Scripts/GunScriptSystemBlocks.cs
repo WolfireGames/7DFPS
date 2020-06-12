@@ -7,8 +7,8 @@ using ExtentionUtil;
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.THUMB_SAFETY)]
     public class ThumbSafetyTriggerBlockSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
-        TriggerComponent tc;
+        ThumbSafetyComponent tsc = null;
+        TriggerComponent tc = null;
 
         public override void Initialize() {
             if(tsc.block_trigger) {
@@ -19,8 +19,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.THUMB_SAFETY)]
     public class ThumbSafetySlideBlockSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
-        SlideComponent sc;
+        ThumbSafetyComponent tsc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(tsc.block_slide) {
@@ -31,8 +31,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.GRIP_SAFETY)]
     public class GripSafetyTriggerBlockSystem : GunSystemBase {
-        GripSafetyComponent gsc;
-        TriggerComponent tc;
+        GripSafetyComponent gsc = null;
+        TriggerComponent tc = null;
 
         public override void Initialize() {
             if(gsc.block_trigger) {
@@ -43,8 +43,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.GRIP_SAFETY)]
     public class GripSafetySlideBlockSystem : GunSystemBase {
-        GripSafetyComponent gsc;
-        SlideComponent sc;
+        GripSafetyComponent gsc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(gsc.block_slide) {
@@ -55,8 +55,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE, GunAspect.TRIGGER)]
     public class StanceTriggerBlockSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-        TriggerComponent tc;
+        AlternativeStanceComponent asc = null;
+        TriggerComponent tc = null;
 
         public override void Initialize() {
             if(asc.alt_stance_blocks_trigger)
@@ -69,8 +69,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE, GunAspect.SLIDE)]
     public class StanceSlideBlockSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-        SlideComponent sc;
+        AlternativeStanceComponent asc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             if(asc.alt_stance_blocks_slide)
@@ -83,8 +83,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE, GunAspect.LOCKABLE_BOLT)]
     public class StanceBoltBlockSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-        LockableBoltComponent lbc;
+        AlternativeStanceComponent asc = null;
+        LockableBoltComponent lbc = null;
 
         public override void Initialize() {
             if(asc.alt_stance_blocks_bolt)
@@ -97,8 +97,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE, GunAspect.EXTERNAL_MAGAZINE)]
     public class StanceMagazineBlockSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-        ExternalMagazineComponent emc;
+        AlternativeStanceComponent asc = null;
+        ExternalMagazineComponent emc = null;
 
         public override void Initialize() {
             if(asc.alt_stance_blocks_mag)
@@ -111,8 +111,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE, GunAspect.MANUAL_LOADING)]
     public class StanceManualLoadingBlockSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-        ManualLoadingComponent mlc;
+        AlternativeStanceComponent asc = null;
+        ManualLoadingComponent mlc = null;
 
         public override void Initialize() {
             if(asc.alt_stance_blocks_mag)
@@ -125,8 +125,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.YOKE)]
     public class OpenYokeTriggerBlockSystem : GunSystemBase {
-        YokeComponent yc;
-        TriggerComponent tc;
+        YokeComponent yc = null;
+        TriggerComponent tc = null;
 
         public override void Initialize() {
             if(yc.open_yoke_blocks_trigger) {
@@ -137,8 +137,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.YOKE)]
     public class OpenYokeHammerBlockSystem : GunSystemBase {
-        YokeComponent yc;
-        HammerComponent hc;
+        YokeComponent yc = null;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             if(yc.open_yoke_blocks_hammer) {
@@ -149,8 +149,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.YOKE)]
     public class YokeExtractorRodBlockSystem : GunSystemBase {
-        YokeComponent yc;
-        ExtractorRodComponent erc;
+        YokeComponent yc = null;
+        ExtractorRodComponent erc = null;
 
         public override void Initialize() {
             if(yc.closed_yoke_blocks_extractor) {
@@ -161,8 +161,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.YOKE, GunAspect.REVOLVER_CYLINDER)]
     public class YokeCylinderClosingSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        YokeComponent yc;
+        RevolverCylinderComponent rcc = null;
+        YokeComponent yc = null;
 
         public override void Initialize() {
             rcc.is_closed_predicates.Add( () => yc.yoke_stage == YokeStage.CLOSED );
@@ -171,8 +171,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
     public class BoltSlideBlockSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        SlideComponent sc;
+        LockableBoltComponent bc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
             sc.block_slide_pull_predicates.Add( () => bc.bolt_stage != BoltActionStage.UNLOCKED);
@@ -181,8 +181,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.LOCKABLE_BOLT)]
     public class BoltTriggerBlockSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        TriggerComponent tc;
+        LockableBoltComponent bc = null;
+        TriggerComponent tc = null;
 
         public override void Initialize() {
             tc.trigger_pressable_predicates.Add( () => bc.bolt_stage == BoltActionStage.LOCKED);
@@ -191,8 +191,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.CHAMBER, GunAspect.MANUAL_LOADING)]
     public class ManualLoadingChamberBlockSystem : GunSystemBase {
-        ManualLoadingComponent mlc;
-        ChamberComponent cc;
+        ManualLoadingComponent mlc = null;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
             mlc.can_insert_predicates.Add( () => cc.is_closed == mlc.load_when_closed);
@@ -202,8 +202,8 @@ namespace GunSystemsV1 {
     /// <summary> System to block cylinder rotation when an extractor rod is inside a chamber </summary>
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.EXTRACTOR_ROD)]
     public class CylinderExtractorRotationBlockSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        ExtractorRodComponent erc;
+        RevolverCylinderComponent rcc = null;
+        ExtractorRodComponent erc = null;
 
         public override void Initialize() {
             if(erc.chamber_offset >= 0)
@@ -215,7 +215,7 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     [Priority(PriorityAttribute.EARLY)]
     public class CylinderRotationMainBlockSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
         public override void Initialize() {
             if(!rcc.rotateable)

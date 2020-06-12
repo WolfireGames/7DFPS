@@ -4,8 +4,8 @@ using System.Linq;
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE)]
     public class ExternalMagazineHelperSystem : GunSystemBase {
-        MagazineComponent mc;
-        ExternalMagazineComponent emc;
+        MagazineComponent mc = null;
+        ExternalMagazineComponent emc = null;
 
         public bool ShouldEjectMagazine() {
             return mc.mag_script && mc.mag_script.NumRounds() == 0 && emc.can_eject;
@@ -21,12 +21,12 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.SLIDE_PUSHING)]
     [ExclusiveAspects(GunAspect.SLIDE_SPRING)]
     public class SlidePushingHelperSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
 
         // Optional
-        MagazineComponent mc;
-        ManualLoadingComponent mlc;
+        MagazineComponent mc = null;
+        ManualLoadingComponent mlc = null;
 
         bool ShouldPushSlide() {
             if(sc.block_slide_pull)
@@ -48,7 +48,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
     public class SlideLockHelperSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         public bool ShouldReleaseSlideLock() {
             return sc.slide_lock;
@@ -63,12 +63,12 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideHelperSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
 
         // Optional
-        MagazineComponent mc;
-        ManualLoadingComponent mlc;
+        MagazineComponent mc = null;
+        ManualLoadingComponent mlc = null;
 
         bool ShouldPullSlide() {
             if(sc.block_slide_pull)
@@ -90,15 +90,15 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
     public class StanceHelperSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
+        AlternativeStanceComponent asc = null;
 
         // Optional
-        SlideComponent sc;
-        MagazineComponent mc;
-        ChamberComponent cc;
-        LockableBoltComponent lbc;
-        ManualLoadingComponent mlc;
-        RevolverCylinderComponent rcc;
+        SlideComponent sc = null;
+        MagazineComponent mc = null;
+        ChamberComponent cc = null;
+        LockableBoltComponent lbc = null;
+        ManualLoadingComponent mlc = null;
+        RevolverCylinderComponent rcc = null;
 
         bool ShouldToggleStance() {
             // Find out what we want to do, this isn't a pretty approach, but it doesn't lock up other components
@@ -152,8 +152,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.LOCKABLE_BOLT, GunAspect.CHAMBER)]
     public class BoltHelperSystem : GunSystemBase {
-        LockableBoltComponent lbc;
-        ChamberComponent cc;
+        LockableBoltComponent lbc = null;
+        ChamberComponent cc = null;
 
         bool ShouldToggleBolt() {
             return !lbc.block_toggle && (
@@ -171,7 +171,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.FIRE_MODE)]
     public class FireModeHelperSystem : GunSystemBase {
-        FireModeComponent fmc;
+        FireModeComponent fmc = null;
 
         bool ShouldToggleFireMode() {
             return fmc.current_fire_mode == FireMode.AUTOMATIC || fmc.current_fire_mode == FireMode.DISABLED;
@@ -186,11 +186,11 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.CHAMBER)]
     public class ManualLoadingHelperSystem : GunSystemBase {
-        ManualLoadingComponent mlc;
-        ChamberComponent cc;
+        ManualLoadingComponent mlc = null;
+        ChamberComponent cc = null;
 
         // Optional
-        MagazineComponent mc;
+        MagazineComponent mc = null;
 
         bool ShouldInsertBullet() {
             if(!mlc.can_insert)
@@ -211,7 +211,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class CylinderHelperSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
         bool ShouldInsertBullet() {
             return rcc.cylinders.Any((cylinder) => !cylinder.game_object);
@@ -241,7 +241,7 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.THUMB_COCKING)]
     public class HammerHelperSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         bool ShouldPullBackHammer() {
             return hc.hammer_cocked != 1.0f;
