@@ -1470,7 +1470,7 @@ namespace GunSystemsV1 {
                         }
                         
                         // Fill component data on GunSystems
-                        foreach(FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)) {
+                        foreach(FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
                             if(typeof(GunComponent).IsAssignableFrom(field.FieldType)) {
                                 field.SetValue(gsb, gs.GetComponent(field.FieldType));
                             }
@@ -1489,7 +1489,7 @@ namespace GunSystemsV1 {
         public Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> GetSystemRequests(GunSystemBase system, Type type) {
             var requests = new Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest>();
             
-            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)) {
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
                 GunSystemRequestAttribute att = method.GetCustomAttribute<GunSystemRequestAttribute>();
                 if(att != null) {
                     requests.Add(att.request, (GunSystemBase.GunSystemRequest) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemRequest), system, method));
@@ -1503,7 +1503,7 @@ namespace GunSystemsV1 {
         public Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> GetSystemQueries(GunSystemBase system, Type type) {
             var queries = new Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery>();
             
-            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)) {
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
                 GunSystemQueryAttribute att = method.GetCustomAttribute<GunSystemQueryAttribute>();
                 if(att != null) {
                     queries.Add(att.query, (GunSystemBase.GunSystemQuery) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemQuery), system, method));
