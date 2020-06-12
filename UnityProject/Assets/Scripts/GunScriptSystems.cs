@@ -12,6 +12,7 @@ namespace GunSystemsV1 {
         MagazineComponent mc = null;
         ManualLoadingComponent mlc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         private bool InputAddRound() {
             if(!mlc.can_insert) {
                 return false;
@@ -45,9 +46,7 @@ namespace GunSystemsV1 {
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
             };
-        }
     }
 
     [InclusiveAspects(GunAspect.MANUAL_LOADING)]

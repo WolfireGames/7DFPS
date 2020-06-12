@@ -7,14 +7,9 @@ namespace GunSystemsV1 {
         MagazineComponent mc = null;
         ExternalMagazineComponent emc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_EJECT_MAGAZINE)]
         public bool ShouldEjectMagazine() {
             return mc.mag_script && mc.mag_script.NumRounds() == 0 && emc.can_eject;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_EJECT_MAGAZINE, ShouldEjectMagazine},
-            };
         }
     }
 
@@ -28,6 +23,7 @@ namespace GunSystemsV1 {
         MagazineComponent mc = null;
         ManualLoadingComponent mlc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_PUSH_SLIDE)]
         bool ShouldPushSlide() {
             if(sc.block_slide_pull)
                 return false; // Don't push if blocked
@@ -38,26 +34,15 @@ namespace GunSystemsV1 {
             // Push if: (Round is waiting) OR (We got a mag with rounds) OR (Manual Loading requires a closed chamber)
             return (cc.active_round_state == RoundState.LOADING || cc.active_round_state == RoundState.READY) || (mc && mc.mag_script && mc.mag_script.NumRounds() > 0) || (mlc && mlc.load_when_closed);
         }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_PUSH_SLIDE, ShouldPushSlide},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
     public class SlideLockHelperSystem : GunSystemBase {
         SlideComponent sc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_RELEASE_SLIDE_LOCK)]
         public bool ShouldReleaseSlideLock() {
             return sc.slide_lock;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_RELEASE_SLIDE_LOCK, ShouldReleaseSlideLock},
-            };
         }
     }
 
@@ -70,6 +55,7 @@ namespace GunSystemsV1 {
         MagazineComponent mc = null;
         ManualLoadingComponent mlc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_PULL_SLIDE)]
         bool ShouldPullSlide() {
             if(sc.block_slide_pull)
                 return false; // Don't pull if blocked
@@ -79,12 +65,6 @@ namespace GunSystemsV1 {
 
             // Pull if: (We got a mag with rounds) OR (Manual Loading requires an open chamber)
             return (mc && mc.mag_script && mc.mag_script.NumRounds() > 0) || (mlc && !mlc.load_when_closed);
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_PULL_SLIDE, ShouldPullSlide},
-            };
         }
     }
 
@@ -100,6 +80,7 @@ namespace GunSystemsV1 {
         ManualLoadingComponent mlc = null;
         RevolverCylinderComponent rcc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_TOGGLE_STANCE)]
         bool ShouldToggleStance() {
             // Find out what we want to do, this isn't a pretty approach, but it doesn't lock up other components
             bool wants_bolt_toggled = cc && lbc && (
@@ -142,12 +123,6 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_TOGGLE_STANCE, ShouldToggleStance},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.LOCKABLE_BOLT, GunAspect.CHAMBER)]
@@ -155,17 +130,12 @@ namespace GunSystemsV1 {
         LockableBoltComponent lbc = null;
         ChamberComponent cc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_TOGGLE_BOLT)]
         bool ShouldToggleBolt() {
             return !lbc.block_toggle && (
                 cc.active_round_state != RoundState.READY && lbc.bolt_stage == BoltActionStage.LOCKED ||
                 cc.active_round_state == RoundState.READY && lbc.bolt_stage == BoltActionStage.UNLOCKED
             );
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_TOGGLE_BOLT, ShouldToggleBolt},
-            };
         }
     }
 
@@ -173,14 +143,9 @@ namespace GunSystemsV1 {
     public class FireModeHelperSystem : GunSystemBase {
         FireModeComponent fmc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_TOGGLE_FIRE_MODE)]
         bool ShouldToggleFireMode() {
             return fmc.current_fire_mode == FireMode.AUTOMATIC || fmc.current_fire_mode == FireMode.DISABLED;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_TOGGLE_FIRE_MODE, ShouldToggleFireMode}
-            };
         }
     }
 
@@ -192,6 +157,7 @@ namespace GunSystemsV1 {
         // Optional
         MagazineComponent mc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_INSERT_BULLET)]
         bool ShouldInsertBullet() {
             if(!mlc.can_insert)
                 return false;
@@ -201,41 +167,30 @@ namespace GunSystemsV1 {
 
             return (!mc || mc.mag_script && mc.mag_script.NumRounds() <= 0) && cc.active_round_state == RoundState.EMPTY;
         }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_INSERT_BULLET, ShouldInsertBullet},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class CylinderHelperSystem : GunSystemBase {
         RevolverCylinderComponent rcc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_INSERT_BULLET)]
         bool ShouldInsertBullet() {
             return rcc.cylinders.Any((cylinder) => !cylinder.game_object);
         }
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_EXTRACT_CASINGS)]
         bool ShouldExtractCasings() {
             return rcc.cylinders.Any((cylinder) => cylinder.game_object && !cylinder.can_fire);
         }
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_CLOSE_CYLINDER)]
         bool ShouldCloseCylinder() {
             return !rcc.cylinders.Any((cylinder) => !cylinder.can_fire);
         }
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_OPEN_CYLINDER)]
         bool ShouldOpenCylinder() {
             return rcc.cylinders.Any((cylinder) => !cylinder.can_fire);
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_OPEN_CYLINDER, ShouldOpenCylinder},
-                {GunSystemQueries.SHOULD_CLOSE_CYLINDER, ShouldCloseCylinder},
-                {GunSystemQueries.SHOULD_EXTRACT_CASINGS, ShouldExtractCasings},
-                {GunSystemQueries.SHOULD_INSERT_BULLET, ShouldInsertBullet},
-            };
         }
     }
 
@@ -243,14 +198,9 @@ namespace GunSystemsV1 {
     public class HammerHelperSystem : GunSystemBase {
         HammerComponent hc = null;
 
+        [GunSystemQuery(GunSystemQueries.SHOULD_PULL_BACK_HAMMER)]
         bool ShouldPullBackHammer() {
             return hc.hammer_cocked != 1.0f;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.SHOULD_PULL_BACK_HAMMER, ShouldPullBackHammer}
-            };
         }
     }
 }
