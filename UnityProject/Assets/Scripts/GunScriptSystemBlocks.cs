@@ -7,40 +7,48 @@ using ExtentionUtil;
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.THUMB_SAFETY)]
     public class ThumbSafetyTriggerBlockSystem : GunSystemBase {
+        ThumbSafetyComponent tsc;
+        TriggerComponent tc;
+
         public override void Initialize() {
-            ThumbSafetyComponent safety = gs.GetComponent<ThumbSafetyComponent>();
-            if(safety.block_trigger) {
-                gs.GetComponent<TriggerComponent>().trigger_pressable_predicates.Add(() => !safety.is_safe);
+            if(tsc.block_trigger) {
+                tc.trigger_pressable_predicates.Add(() => !tsc.is_safe);
             }
         }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.THUMB_SAFETY)]
     public class ThumbSafetySlideBlockSystem : GunSystemBase {
+        ThumbSafetyComponent tsc;
+        SlideComponent sc;
+
         public override void Initialize() {
-            ThumbSafetyComponent safety = gs.GetComponent<ThumbSafetyComponent>();
-            if(safety.block_slide) {
-                gs.GetComponent<SlideComponent>().block_slide_pull_predicates.Add(() => safety.is_safe);
+            if(tsc.block_slide) {
+                sc.block_slide_pull_predicates.Add(() => tsc.is_safe);
             }
         }
     }
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.GRIP_SAFETY)]
     public class GripSafetyTriggerBlockSystem : GunSystemBase {
+        GripSafetyComponent gsc;
+        TriggerComponent tc;
+
         public override void Initialize() {
-            GripSafetyComponent safety = gs.GetComponent<GripSafetyComponent>();
-            if(safety.block_trigger) {
-                gs.GetComponent<TriggerComponent>().trigger_pressable_predicates.Add(() => !safety.is_safe);
+            if(gsc.block_trigger) {
+                tc.trigger_pressable_predicates.Add(() => !gsc.is_safe);
             }
         }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.GRIP_SAFETY)]
     public class GripSafetySlideBlockSystem : GunSystemBase {
+        GripSafetyComponent gsc;
+        SlideComponent sc;
+
         public override void Initialize() {
-            GripSafetyComponent safety = gs.GetComponent<GripSafetyComponent>();
-            if(safety.block_slide) {
-                gs.GetComponent<SlideComponent>().block_slide_pull_predicates.Add(() => safety.is_safe);
+            if(gsc.block_slide) {
+                sc.block_slide_pull_predicates.Add(() => gsc.is_safe);
             }
         }
     }
