@@ -11,6 +11,8 @@ public class ModManager : MonoBehaviour {
 
     public static List<Mod> availableMods;
 
+    private static int numSteamMods = 0;
+
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
     public InbuildMod[] inbuildMods;
@@ -38,7 +40,7 @@ public class ModManager : MonoBehaviour {
         if(availableMods == null)
             LoadCache();
 
-        if(availableMods.Count != GetModFolderCount()) { // Is our Cache up to date?
+        if(availableMods.Count != GetModFolderCount() + PlayerPrefs.GetInt("num_steam_mods", 0)) { // Is our Cache up to date?
             UnloadAll();
             ImportMods();
             UpdateCache();
@@ -98,6 +100,9 @@ public class ModManager : MonoBehaviour {
                 break;
             }
         }
+
+        numSteamMods++;
+        PlayerPrefs.SetInt("num_steam_mods", numSteamMods);
 
         return mod;
     }
