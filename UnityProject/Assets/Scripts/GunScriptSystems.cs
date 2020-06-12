@@ -34,19 +34,10 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         private bool IsAddingRounds() {
             return mlc.can_insert;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRound},
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-            };
     }
 
     [InclusiveAspects(GunAspect.MANUAL_LOADING)]
@@ -60,6 +51,7 @@ namespace GunSystemsV1 {
             return gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER);
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         public bool InputAddRound() {
             if(AddRound()) {
                 gs.PlaySound(mlc.sound_round_insertion);
@@ -68,20 +60,9 @@ namespace GunSystemsV1 {
             return false;
         }
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRound},
-            };
-        }
-
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         private bool IsAddingRounds() {
             return mlc.can_insert;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
-            };
         }
     }
 
@@ -89,6 +70,7 @@ namespace GunSystemsV1 {
     public class ChamberSystem : GunSystemBase {
         ChamberComponent cc = null;
 
+        [GunSystemRequest(GunSystemRequests.PUT_ROUND_IN_CHAMBER)]
         public bool PutRoundInChamber() {
             if (cc.active_round_state == RoundState.EMPTY) {
                 cc.active_round = (GameObject)GameObject.Instantiate(gs.full_casing, cc.point_load_round.position, cc.point_load_round.rotation);
@@ -102,18 +84,13 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.PUT_ROUND_IN_CHAMBER, PutRoundInChamber}
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
     public class MagazineChamberingSystem : GunSystemBase {
         MagazineComponent mc = null;
 
+        [GunSystemRequest(GunSystemRequests.CHAMBER_ROUND_FROM_MAG)]
         public bool ChamberRoundFromMag() {
             if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
                 if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
@@ -123,33 +100,22 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.CHAMBER_ROUND_FROM_MAG, ChamberRoundFromMag},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.GRIP_SAFETY)]
     public class GripSafetySystem : GunSystemBase {
         GripSafetyComponent gsc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_START_AIM)]
         public bool RequestInputStartAim() {
             gsc.is_safe = false;
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_STOP_AIM)]
         public bool RequestInputStopAim() {
             gsc.is_safe = true;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_START_AIM, RequestInputStartAim},
-                {GunSystemRequests.INPUT_STOP_AIM, RequestInputStopAim},
-            };
         }
 
         public bool IsSafe() {
@@ -170,10 +136,12 @@ namespace GunSystemsV1 {
         SlideComponent sc = null; // TODO Thumb safety requires Pistol Slide, move that out somehow
         ThumbSafetyComponent tsc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SAFETY_ON)]
         bool IsSafetyOn() {
             return tsc.is_safe;
         }
 
+        [GunSystemRequest(GunSystemRequests.TOGGLE_SAFETY)]
         bool RequestToggleSafety() {
             if (tsc.is_safe) {
                 tsc.is_safe = false;
@@ -183,18 +151,6 @@ namespace GunSystemsV1 {
                 gs.PlaySound(tsc.sound_safety);
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.TOGGLE_SAFETY, RequestToggleSafety}
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SAFETY_ON,IsSafetyOn}
-            };
         }
 
         public override void Update() {
@@ -211,14 +167,9 @@ namespace GunSystemsV1 {
         MagazineComponent mc = null;
         InternalMagazineComponent imc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_IN_GUN)]
         bool IsMagazineInGun() {
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_MAGAZINE_IN_GUN, IsMagazineInGun},
-            };
         }
 
         public override void Initialize() {
@@ -232,18 +183,22 @@ namespace GunSystemsV1 {
         ExternalMagazineComponent emc = null;
         RecoilComponent rc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE)]
         bool IsReadyToRemoveMagazine() {
             return mc.ready_to_remove_mag;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_EJECTING)]
         bool IsMagazineEjecting() {
             return mc.mag_stage == MagStage.REMOVING;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_IN_GUN)]
         bool IsMagazineInGun() {
             return mc.mag_script != null;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_EJECT_MAGAZINE)]
         public bool InputEjectMagazine() {
             gs.PlaySound(emc.sound_mag_eject_button);
             if (emc.can_eject && mc.mag_stage != MagStage.OUT) {
@@ -254,6 +209,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_INSERT_MAGAZINE)]
         public bool InputInsertMagazine() {
             if(!mc.mag_script) {
                 return false; // No mag to push in
@@ -263,21 +219,6 @@ namespace GunSystemsV1 {
             gs.PlaySound(emc.sound_mag_insertion);
             mc.mag_seated = 0.0f;
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_MAGAZINE_IN_GUN, IsMagazineInGun},
-                {GunSystemQueries.IS_MAGAZINE_EJECTING, IsMagazineEjecting},
-                {GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE, IsReadyToRemoveMagazine}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_EJECT_MAGAZINE, InputEjectMagazine},
-                {GunSystemRequests.INPUT_INSERT_MAGAZINE, InputInsertMagazine},
-            };
         }
 
         public override void Initialize() {
@@ -329,26 +270,16 @@ namespace GunSystemsV1 {
         SlideComponent slide_c = null;
         private bool pushing = false;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PUSH_SLIDE_FORWARD)]
         bool PushSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
             pushing = true;
             return true;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)]
         bool IsWaitingForSlidePush() {
             return !slide_c.block_slide_pull && slide_c.slide_amount > 0f;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PUSH_SLIDE_FORWARD, PushSlide},
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH, IsWaitingForSlidePush},
-            };
         }
 
         public override void Update() {
@@ -367,15 +298,10 @@ namespace GunSystemsV1 {
     public class SlideSpringSystem : GunSystemBase {
         SlideComponent slide_c = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_SLIDE)]
         bool InputReleaseSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_RELEASE_SLIDE, InputReleaseSlide},
-            };
         }
 
         public override void Update() {
@@ -468,15 +394,18 @@ namespace GunSystemsV1 {
         SlideComponent sc = null;
         bool pressure_on_switch = false;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK)]
         bool InputReleaseSlideLock() {
             return gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
         }
 
+        [GunSystemRequest(GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK)]
         bool ApplyPressureToSlideLock() {
             pressure_on_switch = true;
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK)]
         bool ReleasePressureToSlideLock() {
             pressure_on_switch = false;
             return true;
@@ -485,39 +414,21 @@ namespace GunSystemsV1 {
         public override void Initialize() {
             sc.should_slide_lock_predicates.Add(() => pressure_on_switch);
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
-                {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
-                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
     public class SlideLockSystem : GunSystemBase {
         SlideComponent sc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SLIDE_LOCKED)]
         bool IsSlideLocked() {
             return sc.slide_lock;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_SLIDE_LOCK)]
         bool ReleaseSlideLock() {
             sc.slide_lock = false;
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SLIDE_LOCKED, IsSlideLocked},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.RELEASE_SLIDE_LOCK, ReleaseSlideLock},
-            };
         }
 
         public override void Update() {
@@ -544,10 +455,12 @@ namespace GunSystemsV1 {
     public class PressCheckSystem : GunSystemBase {
         SlideComponent slide_c = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_PRESS_CHECK)]
         bool IsPressCheck() {
             return slide_c.slide_stage == SlideStage.HOLD && slide_c.slide_amount == slide_c.press_check_position;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK)]
         bool InputPressCheck() {
             if (slide_c.slide_stage == SlideStage.NOTHING && !slide_c.block_slide_pull) {
                 slide_c.slide_stage = SlideStage.PULLBACK;
@@ -559,18 +472,6 @@ namespace GunSystemsV1 {
                 gs.PlaySound(slide_c.sound_slide_back);
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_PRESS_CHECK, IsPressCheck}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK, InputPressCheck},
-            };
         }
     }
 
@@ -611,10 +512,12 @@ namespace GunSystemsV1 {
     public class SlideSystem : GunSystemBase {
         SlideComponent slide_c = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SLIDE_PULLED_BACK)]
         bool IsSlidePulledBack() {
             return slide_c.slide_stage != SlideStage.NOTHING;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PULL_SLIDE_BACK)]
         bool RequestInputPullSlideBack() {
             if (slide_c.block_slide_pull == false) {
                 slide_c.slide_stage = SlideStage.PULLBACK;
@@ -627,22 +530,10 @@ namespace GunSystemsV1 {
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.PULL_SLIDE_BACK)]
         bool RequestPullSlideBack() {
             slide_c.slide_amount = 1.0f;
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SLIDE_PULLED_BACK,IsSlidePulledBack},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.PULL_SLIDE_BACK, RequestPullSlideBack},
-                {GunSystemRequests.INPUT_PULL_SLIDE_BACK, RequestInputPullSlideBack},
-            };
         }
 
         public override void Update() {
@@ -672,25 +563,15 @@ namespace GunSystemsV1 {
     public class AlternativeStanceSystem : GunSystemBase {
         AlternativeStanceComponent asc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_TOGGLE_STANCE)]
         private bool InputToggleStance() {
             asc.is_alternative = !asc.is_alternative;
             return true;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_IN_ALTERNATIVE_STANCE)]
         private bool IsInAlternativeStance() {
             return asc.is_alternative;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_IN_ALTERNATIVE_STANCE, IsInAlternativeStance},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_TOGGLE_STANCE, InputToggleStance},
-            };
         }
     }
 
@@ -722,6 +603,7 @@ namespace GunSystemsV1 {
         FireModeComponent fmc = null;
         TriggerComponent tc = null;
 
+        [GunSystemRequest(GunSystemRequests.TOGGLE_FIRE_MODE)]
         bool RequestToggleFireMode() {
             gs.PlaySound(fmc.sound_firemode_toggle);
 
@@ -729,12 +611,6 @@ namespace GunSystemsV1 {
             if(fmc.target_fire_mode_index >= fmc.fire_modes.Length)
                 fmc.target_fire_mode_index = 0;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.TOGGLE_FIRE_MODE, RequestToggleFireMode}
-            };
         }
 
         public override void Update() {
@@ -817,12 +693,7 @@ namespace GunSystemsV1 {
         RevolverCylinderComponent rcc = null;
         ManualLoadingComponent mlc = null;
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRoundToCylinder},
-            };
-        }
-
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         bool InputAddRoundToCylinder() {
             if (rcc.is_closed == mlc.load_when_closed) {
                 int best_chamber = -1;
@@ -866,6 +737,7 @@ namespace GunSystemsV1 {
     public class YokeSystem : GunSystemBase {
         YokeComponent yc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_CLOSE_CYLINDER)]
         bool InputCloseCylinder() {
             if (yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING) { // TODO add erc.extractor_rod_stage == ExtractorRodStage.CLOSED
                 yc.yoke_stage = YokeStage.CLOSING;
@@ -874,6 +746,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_SWING_OUT_CYLINDER)]
         bool InputSwingOutCylinder() {
             if (yc.yoke_stage == YokeStage.CLOSED || yc.yoke_stage == YokeStage.CLOSING) {
                 yc.yoke_stage = YokeStage.OPENING;
@@ -882,30 +755,18 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_CYLINDER_OPEN)]
         bool IsCylinderOpen() {
             return yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         public bool IsAddingRounds() {
             if (yc.yoke_stage == YokeStage.OPEN) {
                 return true;
             } else {
                 return false;
             }
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
-                {GunSystemQueries.IS_CYLINDER_OPEN, IsCylinderOpen},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_SWING_OUT_CYLINDER, InputSwingOutCylinder},
-                {GunSystemRequests.INPUT_CLOSE_CYLINDER, InputCloseCylinder},
-            };
         }
 
         public override void Update() {
@@ -1064,6 +925,7 @@ namespace GunSystemsV1 {
         /// TriggerComponent.IsConnected is only FALSE, when the firemode systems and trigger systems determine that the gun should be able to fire!
 
         TriggerComponent tc = null;
+        [GunSystemRequest(GunSystemRequests.APPLY_TRIGGER_PRESSURE)]
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
                 tc.pressure_on_trigger = true;
@@ -1072,16 +934,10 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_TRIGGER_PRESSURE)]
         public bool ReleaseTriggerPressure() {
             tc.pressure_on_trigger = false;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.APPLY_TRIGGER_PRESSURE, ApplyTriggerPressure},
-                {GunSystemRequests.RELEASE_TRIGGER_PRESSURE, ReleaseTriggerPressure}
-            };
         }
 
         public override void Update() {
@@ -1128,6 +984,7 @@ namespace GunSystemsV1 {
         RevolverCylinderComponent rcc = null;
         ExtractorRodComponent erc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_USE_EXTRACTOR_ROD)]
         public bool RequestInputUseExtractorRod() {
             if (erc.can_extract) {
                 erc.extractor_rod_stage = ExtractorRodStage.OPENING;
@@ -1140,23 +997,12 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_EJECTING_ROUNDS)]
         public bool IsEjectingRounds() {
             if (erc.extractor_rod_stage != ExtractorRodStage.CLOSED) {
                 return true;
             }
             return false;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_EJECTING_ROUNDS, IsEjectingRounds}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_USE_EXTRACTOR_ROD,RequestInputUseExtractorRod}
-            };
         }
 
         public override void Update() {
@@ -1249,6 +1095,7 @@ namespace GunSystemsV1 {
         TriggerComponent tc = null;
         HammerComponent hc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_HAMMER)]
         bool RequestInputReleaseHammer() {
             if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
                 hc.thumb_on_hammer = Thumb.SLOW_LOWERING;
@@ -1257,12 +1104,6 @@ namespace GunSystemsV1 {
                 hc.thumb_on_hammer = Thumb.OFF_HAMMER;
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_RELEASE_HAMMER,RequestInputReleaseHammer}
-            };
         }
 
         public override void Update() {
@@ -1281,14 +1122,9 @@ namespace GunSystemsV1 {
     public class HammerSystem : GunSystemBase {
         HammerComponent hc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_HAMMER_COCKED)]
         bool IsHammerCocked() {
             return hc.hammer_cocked == 1.0f;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
-            };
         }
 
         public override void Update() {
@@ -1339,18 +1175,13 @@ namespace GunSystemsV1 {
     public class ThumbCockingSystem : GunSystemBase {
         HammerComponent hc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PRESSURE_ON_HAMMER)]
         bool RequestInputPressureOnHammer() {
             if(hc.is_blocked)
                 return false;
 
             hc.thumb_on_hammer = Thumb.ON_HAMMER;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PRESSURE_ON_HAMMER,RequestInputPressureOnHammer}
-            };
         }
     }
 
@@ -1385,6 +1216,7 @@ namespace GunSystemsV1 {
     public class LockableBoltSystem : GunSystemBase {
         LockableBoltComponent bc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_TOGGLE_BOLT_LOCK)]
         private bool ToggleBolt() {
             if(bc.block_toggle) 
                 return false;
@@ -1400,12 +1232,6 @@ namespace GunSystemsV1 {
                     return true;
             }
             return false;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_TOGGLE_BOLT_LOCK, ToggleBolt},
-            };
         }
 
         public override void Initialize() {
@@ -1443,6 +1269,7 @@ namespace GunSystemsV1 {
     public class RoundSpendingCylinderSystem : GunSystemBase {
         RevolverCylinderComponent rcc = null;
 
+        [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
@@ -1462,6 +1289,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.DESTROY_ROUND)]
         public bool DestroyRound() {
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
@@ -1477,19 +1305,13 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.SPEND_ROUND, SpendRound},
-                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
-            };
-        }
     }
 
     [InclusiveAspects(GunAspect.CHAMBER)]
     public class RoundSpendingChamberSystem : GunSystemBase {
         ChamberComponent cc = null;
 
+        [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
             if(cc.active_round != null) {
                 cc.active_round_state = RoundState.FIRED;
@@ -1504,6 +1326,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.DESTROY_ROUND)]
         public bool DestroyRound() {
             if(cc.active_round != null) {
                 cc.active_round_state = RoundState.EMPTY;
@@ -1512,13 +1335,6 @@ namespace GunSystemsV1 {
                 return true;
             }
             return false;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.SPEND_ROUND, SpendRound},
-                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
-            };
         }
 
         public override void Initialize() {
@@ -1533,6 +1349,7 @@ namespace GunSystemsV1 {
     public class FiringSystem : GunSystemBase {
         FiringComponent fc = null;
 
+        [GunSystemRequest(GunSystemRequests.DISCHARGE)]
         public bool Discharge() {
             GameObject bullet = null;
             gs.PlaySound(fc.sound_gunshot_smallroom, 1.0f);
@@ -1563,12 +1380,6 @@ namespace GunSystemsV1 {
 
             fc.fire_count++;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.DISCHARGE, Discharge},
-            };
         }
     }
 
