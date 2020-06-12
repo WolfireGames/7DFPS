@@ -16,11 +16,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.SHOULD_EJECT_MAGAZINE, ShouldEjectMagazine},
             };
         }
-
-        public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            emc = gs.GetComponent<ExternalMagazineComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.SLIDE_PUSHING)]
@@ -49,13 +44,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.SHOULD_PUSH_SLIDE, ShouldPushSlide},
             };
         }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
@@ -64,10 +52,6 @@ namespace GunSystemsV1 {
 
         public bool ShouldReleaseSlideLock() {
             return sc.slide_lock;
-        }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -101,13 +85,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.SHOULD_PULL_SLIDE, ShouldPullSlide},
             };
-        }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
     }
 
@@ -171,16 +148,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.SHOULD_TOGGLE_STANCE, ShouldToggleStance},
             };
         }
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            lbc = gs.GetComponent<LockableBoltComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.LOCKABLE_BOLT, GunAspect.CHAMBER)]
@@ -200,11 +167,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.SHOULD_TOGGLE_BOLT, ShouldToggleBolt},
             };
         }
-
-        public override void Initialize() {
-            lbc = gs.GetComponent<LockableBoltComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.FIRE_MODE)]
@@ -219,10 +181,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.SHOULD_TOGGLE_FIRE_MODE, ShouldToggleFireMode}
             };
-        }
-
-        public override void Initialize() {
-            fmc = gs.GetComponent<FireModeComponent>();
         }
     }
 
@@ -248,12 +206,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.SHOULD_INSERT_BULLET, ShouldInsertBullet},
             };
-        }
-
-        public override void Initialize() {
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
         }
     }
 
@@ -285,10 +237,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.SHOULD_INSERT_BULLET, ShouldInsertBullet},
             };
         }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.THUMB_COCKING)]
@@ -303,10 +251,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.SHOULD_PULL_BACK_HAMMER, ShouldPullBackHammer}
             };
-        }
-
-        public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
         }
     }
 }

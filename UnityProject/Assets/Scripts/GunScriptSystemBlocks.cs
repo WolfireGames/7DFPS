@@ -51,9 +51,6 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
 
         public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-
             if(asc.alt_stance_blocks_trigger)
                 tc.trigger_pressable_predicates.Add( () => !asc.is_alternative);
 
@@ -68,9 +65,6 @@ namespace GunSystemsV1 {
         SlideComponent sc;
 
         public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             if(asc.alt_stance_blocks_slide)
                 sc.block_slide_pull_predicates.Add( () => asc.is_alternative);
 
@@ -85,9 +79,6 @@ namespace GunSystemsV1 {
         LockableBoltComponent lbc;
 
         public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            lbc = gs.GetComponent<LockableBoltComponent>();
-
             if(asc.alt_stance_blocks_bolt)
                 lbc.block_toggle_predicates.Add( () => asc.is_alternative);
 
@@ -102,9 +93,6 @@ namespace GunSystemsV1 {
         ExternalMagazineComponent emc;
 
         public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            emc = gs.GetComponent<ExternalMagazineComponent>();
-
             if(asc.alt_stance_blocks_mag)
                 emc.can_eject_predicates.Add( () => !asc.is_alternative);
 
@@ -119,9 +107,6 @@ namespace GunSystemsV1 {
         ManualLoadingComponent mlc;
 
         public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-
             if(asc.alt_stance_blocks_mag)
                 mlc.can_insert_predicates.Add( () => !asc.is_alternative);
 
@@ -136,9 +121,6 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
 
         public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-
             if(yc.open_yoke_blocks_trigger) {
                 tc.trigger_pressable_predicates.Add(() => yc.yoke_stage == YokeStage.CLOSED);
             }
@@ -151,9 +133,6 @@ namespace GunSystemsV1 {
         HammerComponent hc;
 
         public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-
             if(yc.open_yoke_blocks_hammer) {
                 hc.is_blocked_predicates.Add( () => yc.yoke_stage != YokeStage.CLOSED );
             }
@@ -166,9 +145,6 @@ namespace GunSystemsV1 {
         ExtractorRodComponent erc;
 
         public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
-
             if(yc.closed_yoke_blocks_extractor) {
                 erc.can_extract_predicates.Add( () => yc.yoke_stage == YokeStage.OPEN );
             }
@@ -181,9 +157,6 @@ namespace GunSystemsV1 {
         YokeComponent yc;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            yc = gs.GetComponent<YokeComponent>();
-
             rcc.is_closed_predicates.Add( () => yc.yoke_stage == YokeStage.CLOSED );
         }
     }
@@ -194,9 +167,6 @@ namespace GunSystemsV1 {
         SlideComponent sc;
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             sc.block_slide_pull_predicates.Add( () => bc.bolt_stage != BoltActionStage.UNLOCKED);
         }
     }
@@ -207,9 +177,6 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-
             tc.trigger_pressable_predicates.Add( () => bc.bolt_stage == BoltActionStage.LOCKED);
         }
     }
@@ -220,9 +187,6 @@ namespace GunSystemsV1 {
         ChamberComponent cc;
 
         public override void Initialize() {
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
             mlc.can_insert_predicates.Add( () => cc.is_closed == mlc.load_when_closed);
         }
     }
@@ -234,9 +198,6 @@ namespace GunSystemsV1 {
         ExtractorRodComponent erc;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
-
             if(erc.chamber_offset >= 0)
                 rcc.can_manual_rotate_predicates.Add( () => erc.extractor_rod_stage == ExtractorRodStage.CLOSED);
         }
@@ -249,8 +210,6 @@ namespace GunSystemsV1 {
         RevolverCylinderComponent rcc;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-
             if(!rcc.rotateable)
                 rcc.can_manual_rotate_predicates.Add( () => false);
         }

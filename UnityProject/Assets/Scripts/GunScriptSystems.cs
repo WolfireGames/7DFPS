@@ -48,11 +48,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
             };
         }
-
-        public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.MANUAL_LOADING)]
@@ -89,10 +84,6 @@ namespace GunSystemsV1 {
                 {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
             };
         }
-
-        public override void Initialize() {
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.CHAMBER)]
@@ -118,10 +109,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.PUT_ROUND_IN_CHAMBER, PutRoundInChamber}
             };
         }
-
-        public override void Initialize() {
-            cc = gs.GetComponent<ChamberComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
@@ -142,10 +129,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.CHAMBER_ROUND_FROM_MAG, ChamberRoundFromMag},
             };
-        }
-
-        public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
         }
     }
 
@@ -172,10 +155,6 @@ namespace GunSystemsV1 {
 
         public bool IsSafe() {
             return gsc.is_safe;
-        }
-
-        public override void Initialize() {
-            gsc = gs.GetComponent<GripSafetyComponent>();
         }
 
         public override void Update() {
@@ -219,11 +198,6 @@ namespace GunSystemsV1 {
             };
         }
 
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            tsc = gs.GetComponent<ThumbSafetyComponent>();
-        }
-
         public override void Update() {
             if (tsc.is_safe) {
                 tsc.safety_off = Mathf.Max(0.0f, tsc.safety_off - Time.deltaTime * 10.0f);
@@ -249,9 +223,6 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            imc = gs.GetComponent<InternalMagazineComponent>();
-
             mc.mag_script = imc.magazine_script;
         }
     }
@@ -311,10 +282,6 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            emc = gs.GetComponent<ExternalMagazineComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-
             mc.mag_script = GameObject.Instantiate(emc.magazine_obj, gs.transform).GetComponent<mag_script>();
             RemoveChildrenShadows(mc.mag_script.gameObject);
         }
@@ -385,10 +352,6 @@ namespace GunSystemsV1 {
             };
         }
 
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-        }
-
         public override void Update() {
             slide_c.old_slide_amount = slide_c.slide_amount;
             if (pushing) {
@@ -408,10 +371,6 @@ namespace GunSystemsV1 {
         bool InputReleaseSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
             return true;
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
         }
 
         public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
@@ -434,9 +393,6 @@ namespace GunSystemsV1 {
         ChamberComponent cc;
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
             if(!slide_c.eject_round)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -463,10 +419,6 @@ namespace GunSystemsV1 {
         MagazineComponent mc;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-
             sc.should_slide_lock_predicates.Add(ShouldSlideLock);
         }
 
@@ -481,9 +433,6 @@ namespace GunSystemsV1 {
         ChamberComponent chamber_c;
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-            chamber_c = gs.GetComponent<ChamberComponent>();
-
             if(!slide_c.chamber_round)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -535,8 +484,6 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-
             sc.should_slide_lock_predicates.Add(() => pressure_on_switch);
         }
 
@@ -560,10 +507,6 @@ namespace GunSystemsV1 {
         bool ReleaseSlideLock() {
             sc.slide_lock = false;
             return true;
-        }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
         }
 
         public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
@@ -630,10 +573,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK, InputPressCheck},
             };
         }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.FIRING)]
@@ -642,9 +581,6 @@ namespace GunSystemsV1 {
         FiringComponent fc;
 
         public override void Initialize() {
-            emc = gs.GetComponent<SlideComponent>();
-            fc = gs.GetComponent<FiringComponent>();
-
             if(!emc.kick_slide_back)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -668,9 +604,6 @@ namespace GunSystemsV1 {
         ChamberComponent cc;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
             cc.is_closed_predicates.Add(() => sc.slide_amount == 0);
         }
     }
@@ -711,10 +644,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.PULL_SLIDE_BACK, RequestPullSlideBack},
                 {GunSystemRequests.INPUT_PULL_SLIDE_BACK, RequestInputPullSlideBack},
             };
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
         }
 
         public override void Update() {
@@ -764,10 +693,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.INPUT_TOGGLE_STANCE, InputToggleStance},
             };
         }
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.FIRING)]
@@ -776,11 +701,6 @@ namespace GunSystemsV1 {
         FiringComponent fc;
 
         int current_trigger_cycle = 0;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            fc = gs.GetComponent<FiringComponent>();
-        }
 
         public override void Update() {
             if(current_trigger_cycle != tc.trigger_cycle) {
@@ -818,11 +738,6 @@ namespace GunSystemsV1 {
             };
         }
 
-        public override void Initialize() {
-            fmc = gs.GetComponent<FireModeComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-        }
-
         public override void Update() {
             if(fmc.target_fire_mode_index == fmc.current_fire_mode_index) { // idle
                 tc.fire_mode = fmc.current_fire_mode;
@@ -850,12 +765,6 @@ namespace GunSystemsV1 {
         ChamberComponent cc;
         HammerComponent hc;
 
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
-
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
                 if (cc.is_closed) {
@@ -876,12 +785,6 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
         ChamberComponent cc;
         SlideComponent sc;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-        }
 
         public override void Update() {
             // Slide release
@@ -906,8 +809,6 @@ namespace GunSystemsV1 {
         SlideComponent sc;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-
             sc.should_slide_lock_predicates.Add(() => true);
         }
     }
@@ -921,11 +822,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.INPUT_ADD_ROUND, InputAddRoundToCylinder},
             };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
 
         bool InputAddRoundToCylinder() {
@@ -970,10 +866,6 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.YOKE)]
     public class YokeSystem : GunSystemBase {
         YokeComponent yc;
-
-        public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-        }
 
         bool InputCloseCylinder() {
             if (yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING) { // TODO add erc.extractor_rod_stage == ExtractorRodStage.CLOSED
@@ -1045,9 +937,6 @@ namespace GunSystemsV1 {
         HammerComponent hc;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-
             if(!rcc.hammer_cycling)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -1077,9 +966,6 @@ namespace GunSystemsV1 {
         private bool reverse_direction = false;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             if(!rcc.slide_cycling)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -1112,11 +998,6 @@ namespace GunSystemsV1 {
     public class RevolverCylinderSystem : GunSystemBase {
         RevolverCylinderComponent rcc;
         HammerComponent hc;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
 
         public override void Update() {
             if (rcc.is_closed && hc.hammer_cocked == 1.0f) {
@@ -1153,12 +1034,6 @@ namespace GunSystemsV1 {
         RevolverCylinderComponent rcc;
         TriggerComponent tc;
         HammerComponent hc;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
 
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
@@ -1210,10 +1085,6 @@ namespace GunSystemsV1 {
             };
         }
 
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-        }
-
         public override void Update() {
             tc.old_trigger_pressed = tc.trigger_pressed;
             if (tc.pressure_on_trigger) {
@@ -1238,11 +1109,6 @@ namespace GunSystemsV1 {
         YokeComponent yc;
 
         private bool triggered = true;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            yc = gs.GetComponent<YokeComponent>();
-        }
 
         public override void Update() {
             if(triggered && yc.yoke_stage == YokeStage.CLOSED) {
@@ -1292,11 +1158,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemRequests, GunSystemRequest>() {
                 {GunSystemRequests.INPUT_USE_EXTRACTOR_ROD,RequestInputUseExtractorRod}
             };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
         }
 
         public override void Update() {
@@ -1405,11 +1266,6 @@ namespace GunSystemsV1 {
             };
         }
 
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
-
         public override void Update() {
             if (hc.thumb_on_hammer == Thumb.SLOW_LOWERING) {
                 hc.hammer_cocked -= Time.deltaTime * 10.0f;
@@ -1434,11 +1290,6 @@ namespace GunSystemsV1 {
             return new Dictionary<GunSystemQueries, GunSystemQuery>() {
                 {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
             };
-        }
-
-
-        public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
@@ -1466,11 +1317,6 @@ namespace GunSystemsV1 {
         HammerComponent hc;
 
         int current_trigger_cycle = 0;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
 
         public override void Update() {
             if(!hc.is_blocked && CanPull() && !tc.is_connected) {
@@ -1507,10 +1353,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.INPUT_PRESSURE_ON_HAMMER,RequestInputPressureOnHammer}
             };
         }
-
-        public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.SLIDE, GunAspect.SLIDE_COCKING)]
@@ -1536,9 +1378,6 @@ namespace GunSystemsV1 {
         SlideComponent sc;
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             bc.block_toggle_predicates.Add(() => sc.slide_amount > 0f || sc.slide_stage == SlideStage.PULLBACK);
         }
     }
@@ -1571,8 +1410,6 @@ namespace GunSystemsV1 {
         }
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-
             bc.bolt_unlocked_rot = bc.point_bolt_unlocked.localRotation;
             bc.bolt_locked_rot = bc.bolt.localRotation;
         }
@@ -1647,10 +1484,6 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.SPEND_ROUND, SpendRound},
                 {GunSystemRequests.DESTROY_ROUND, DestroyRound},
             };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
         }
     }
 
@@ -1738,21 +1571,12 @@ namespace GunSystemsV1 {
                 {GunSystemRequests.DISCHARGE, Discharge},
             };
         }
-
-        public override void Initialize() {
-            fc = gs.GetComponent<FiringComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.RECOIL, GunAspect.FIRING)]
     public class FiringRecoilSystem : GunSystemBase {
         FiringComponent fc;
         RecoilComponent rc;
-
-        public override void Initialize() {
-            fc = gs.GetComponent<FiringComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-        }
 
         public override void Update() {
             if(rc.old_fire_count != fc.fire_count) {
@@ -1770,11 +1594,6 @@ namespace GunSystemsV1 {
     public class AimSwaySystem : GunSystemBase {
         AimSwayComponent asc;
         RecoilComponent rc;
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AimSwayComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-        }
 
         public override void Update() {
             rc.recoil_transfer_x -= asc.horizontal_strength * Mathf.Sin(4 * Time.time * asc.speed + (float)Math.PI / 4f) * Time.deltaTime;

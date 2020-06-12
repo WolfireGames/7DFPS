@@ -9,8 +9,6 @@ namespace GunSystemsV1 {
         SlideLockVisualComponent slvc;
 
         public override void Initialize() {
-            slvc = gs.GetComponent<SlideLockVisualComponent>();
-        
             slvc.rel_pos = slvc.slide_lock.localPosition;
             slvc.rel_rot = slvc.slide_lock.localRotation;
         }
@@ -30,9 +28,6 @@ namespace GunSystemsV1 {
         HammerComponent hc;
 
         public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
-            hvc = gs.GetComponent<HammerVisualComponent>();
-
             hvc.hammer_rel_pos = hvc.hammer.localPosition;
             hvc.hammer_rel_rot = hvc.hammer.localRotation;
         }
@@ -50,9 +45,6 @@ namespace GunSystemsV1 {
         TriggerComponent tc;
 
         public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            tvc = gs.GetComponent<TriggerVisualComponent>();
-
             tvc.trigger_rel_pos = tvc.trigger.localPosition;
             tvc.trigger_rel_rot = tvc.trigger.localRotation;
         }
@@ -69,11 +61,6 @@ namespace GunSystemsV1 {
         SlideComponent psc;
         SlideVisualComponent svc;
 
-        public override void Initialize() {
-            psc = gs.GetComponent<SlideComponent>();
-            svc = gs.GetComponent<SlideVisualComponent>();
-        }
-
         public override void Update() {
             svc.slide.LerpPosition(svc.point_slide_start, svc.point_slide_end, psc.slide_amount);
         }
@@ -86,7 +73,6 @@ namespace GunSystemsV1 {
         GameObject point_object;
 
         public override void Initialize() {
-            lpvc = gs.GetComponent<LaserPointerVisualComponent>();
             point_object = GameObject.Instantiate(lpvc.laser_point, lpvc.point_laser_origin.transform);
         }
 
@@ -109,9 +95,6 @@ namespace GunSystemsV1 {
         SlideSpringVisualComponent ssvc;
 
         public override void Initialize() {
-            psc = gs.GetComponent<SlideComponent>();
-            ssvc = gs.GetComponent<SlideSpringVisualComponent>();
-
             ssvc.rel_pos = ssvc.recoil_spring.localPosition;
             ssvc.rel_rot = ssvc.recoil_spring.localRotation;
             ssvc.rel_scale = ssvc.recoil_spring.localScale;
@@ -131,9 +114,6 @@ namespace GunSystemsV1 {
         ExtractorRodComponent erc;
 
         public override void Initialize() {
-            ervc = gs.GetComponent<ExtractorRodVisualComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
-
             ervc.extractor_rod_rel_pos = ervc.extractor_rod.localPosition;
             ervc.extractor_rod_rel_rot = ervc.extractor_rod.localRotation;
         }
@@ -149,11 +129,6 @@ namespace GunSystemsV1 {
     public class CylinderVisualSystem : GunSystemBase {
         CylinderVisualComponent cvc;
         RevolverCylinderComponent rcc;
-
-        public override void Initialize() {
-            cvc = gs.GetComponent<CylinderVisualComponent>();
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-        }
 
         public override void Update() {
             if(rcc.rotateable) {
@@ -174,9 +149,6 @@ namespace GunSystemsV1 {
         YokeComponent yc;
 
         public override void Initialize() {
-            yvc = gs.GetComponent<YokeVisualComponent>();
-            yc = gs.GetComponent<YokeComponent>();
-
             yvc.yoke_pivot_rel_pos = yvc.yoke_pivot.localPosition;
             yvc.yoke_pivot_rel_rot = yvc.yoke_pivot.localRotation;
         }
@@ -194,9 +166,6 @@ namespace GunSystemsV1 {
         FireModeVisualComponent fmvc;
 
         public override void Initialize() {
-            fmc = gs.GetComponent<FireModeComponent>();
-            fmvc = gs.GetComponent<FireModeVisualComponent>();
-
             fmvc.rel_pos = fmvc.fire_mode_toggle.localPosition;
             fmvc.rel_rot = fmvc.fire_mode_toggle.localRotation;
         }
@@ -214,9 +183,6 @@ namespace GunSystemsV1 {
         ThumbSafetyVisualComponent tsvc;
 
         public override void Initialize() {
-            tsc = gs.GetComponent<ThumbSafetyComponent>();
-            tsvc = gs.GetComponent<ThumbSafetyVisualComponent>();
-
             tsvc.rel_pos = tsvc.safety.localPosition;
             tsvc.rel_rot = tsvc.safety.localRotation;
         }
@@ -234,9 +200,6 @@ namespace GunSystemsV1 {
         GripSafetyVisualComponent gsvc;
 
         public override void Initialize() {
-            gsc = gs.GetComponent<GripSafetyComponent>();
-            gsvc = gs.GetComponent<GripSafetyVisualComponent>();
-
             gsvc.rel_pos = gsvc.grip_safety.localPosition;
             gsvc.rel_rot = gsvc.grip_safety.localRotation;
         }
@@ -253,11 +216,6 @@ namespace GunSystemsV1 {
         AmmoCountAnimatorVisualComponent acavc;
         MagazineComponent mc;
 
-        public override void Initialize() {
-            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-        }
-
         public override void Update() {
             acavc.animator.SetInteger("rounds_in_mag", mc.mag_script ? mc.mag_script.NumRounds() : -1);
         }
@@ -269,11 +227,6 @@ namespace GunSystemsV1 {
         AmmoCountAnimatorVisualComponent acavc;
         RevolverCylinderComponent rcc;
 
-        public override void Initialize() {
-            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-        }
-
         public override void Update() {
             acavc.animator.SetInteger("rounds_in_mag", rcc.cylinders.Count( (cylinder) => cylinder.can_fire ));
         }
@@ -284,11 +237,6 @@ namespace GunSystemsV1 {
     public class AmmoCounterChamberVisualSystem : GunSystemBase {
         AmmoCountAnimatorVisualComponent acavc;
         ChamberComponent cc;
-
-        public override void Initialize() {
-            acavc = gs.GetComponent<AmmoCountAnimatorVisualComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-        }
 
         public override void Update() {
             acavc.animator.SetBool("round_chambered", cc.active_round_state != RoundState.EMPTY);
