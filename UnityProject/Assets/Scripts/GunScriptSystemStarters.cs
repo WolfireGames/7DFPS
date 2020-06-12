@@ -21,18 +21,6 @@ namespace GunSystemsV1 {
         }
     }
 
-    [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
-    [Priority(PriorityAttribute.VERY_EARLY)]
-    public class StanceStartSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
-
-            asc.is_alternative = Random.Bool();
-        }
-    }
-
     [InclusiveAspects(GunAspect.YOKE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class YokeStartSystem : GunSystemBase {
