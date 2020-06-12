@@ -1601,6 +1601,20 @@ namespace GunSystemsV1 {
         }
     }
 
+    public class GunSystemRequestAttribute : Attribute {
+        public GunSystemRequests request;
+        public GunSystemRequestAttribute(GunSystemRequests request) {
+            this.request = request;
+        }
+    }
+
+    public class GunSystemQueryAttribute : Attribute {
+        public GunSystemQueries query;
+        public GunSystemQueryAttribute(GunSystemQueries query) {
+            this.query = query;
+        }
+    }
+
     public class GunSystems : GunSystemsContainer {
         GunSystemBase[] systems;
 
@@ -1619,8 +1633,8 @@ namespace GunSystemsV1 {
                         GunSystemBase gsb = (GunSystemBase)Activator.CreateInstance(type);
                         gsb.gs = gs;
 
-                        Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests = gsb.GetPossibleRequests();
-                        Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries = gsb.GetPossibleQuestions();
+                        Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests = GetSystemRequests(gsb, type);
+                        Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries = GetSystemQueries(gsb, type);
 
                         if (requests != null) {
                             foreach (KeyValuePair<GunSystemRequests, GunSystemBase.GunSystemRequest> request in requests) {
@@ -1659,6 +1673,34 @@ namespace GunSystemsV1 {
 
             // Add systems in order of their priority attribute
             systems = (from item in loaded_systems orderby item.Value select item.Key).ToArray();
+        }
+        
+        /// <summary> Returns a dictionary with each request a system has specified </summary>
+        public Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> GetSystemRequests(GunSystemBase system, Type type) {
+            var requests = new Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest>();
+            
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)) {
+                GunSystemRequestAttribute att = method.GetCustomAttribute<GunSystemRequestAttribute>();
+                if(att != null) {
+                    requests.Add(att.request, (GunSystemBase.GunSystemRequest) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemRequest), system, method));
+                }
+            }
+
+            return requests;
+        }
+
+        /// <summary> Returns a dictionary with each query a system has specified </summary>
+        public Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> GetSystemQueries(GunSystemBase system, Type type) {
+            var queries = new Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery>();
+            
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)) {
+                GunSystemQueryAttribute att = method.GetCustomAttribute<GunSystemQueryAttribute>();
+                if(att != null) {
+                    queries.Add(att.query, (GunSystemBase.GunSystemQuery) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemQuery), system, method));
+                }
+            }
+
+            return queries;
         }
 
         public int GetPriority(Type system) {
