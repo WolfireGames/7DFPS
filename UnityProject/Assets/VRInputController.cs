@@ -51,6 +51,10 @@ public class VRInputController : MonoBehaviour
             StartCoroutine(FPS());
         //}
         yield return new WaitForSeconds(1f);
+        while (RightHand.transform.localPosition == Vector3.zero) {
+            yield return null;
+        }
+
         if (VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left) {
             LHandSphere.SetActive(false);
             RHandSphere.SetActive(true);
