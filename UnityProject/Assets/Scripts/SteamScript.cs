@@ -9,11 +9,10 @@ public class SteamScript : MonoBehaviour
 {
     public static AppId_t RECEIVER1_APP_ID = new AppId_t(234190);
 
-    public ModManager modManager;
-
     private bool loadItems;
     private SteamworksUGCItem uploadingItem;
     private List<SteamUGCDetails_t> steamItems;
+    private ModManager modManager;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
     protected Callback<DownloadItemResult_t> m_DownloadItemResult;
@@ -100,24 +99,20 @@ public class SteamScript : MonoBehaviour
     }
 
 
-    private void OnEnable() {
+    void Awake() {
+        loadItems = true;
+        uploadingItem = null;
+        steamItems = new List<SteamUGCDetails_t>();
+
+        GameObject mm = GameObject.Find("ModManager");
+        modManager = mm.GetComponent<ModManager>();
+
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
             m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
             m_DeleteItemResult = CallResult<DeleteItemResult_t>.Create(OnItemDeleted);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
 
-            loadItems = true;
-        }
-    }
-
-
-    // Start is called before the first frame update
-    void Start() {
-        uploadingItem = null;
-        steamItems = new List<SteamUGCDetails_t>();
-
-        if (SteamManager.Initialized) {
             QueryPersonalWorkshopItems();
         }
     }
