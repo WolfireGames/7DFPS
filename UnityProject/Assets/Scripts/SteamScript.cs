@@ -217,6 +217,7 @@ public class SteamScript : MonoBehaviour
 public class SteamworksUGCItem {
     public bool waiting_for_create;
 
+    private bool uploading;
     private PublishedFileId_t steamworks_id;
     private ERemoteStoragePublishedFileVisibility visibility;
     private UGCUpdateHandle_t update_handle;
@@ -234,6 +235,8 @@ public class SteamworksUGCItem {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam CreateItem error " + pResult.m_eResult.ToString());
+                uploading = false;
+                return;
             } else {
                 steamworks_id = pResult.m_nPublishedFileId;
 
@@ -253,6 +256,8 @@ public class SteamworksUGCItem {
             }
         } else {
             Debug.LogError("Error creating Steam Workshop item");
+            uploading = false;
+            return;
         }
 
         RequestUpload("Initial Upload");
@@ -276,11 +281,13 @@ public class SteamworksUGCItem {
         }
 
         waiting_for_create = false;
+        uploading = false;
     }
 
 
     public SteamworksUGCItem(Mod _mod) {
         waiting_for_create = false;
+        uploading = false;
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
         title = mod.name;
@@ -314,6 +321,7 @@ public class SteamworksUGCItem {
         } else {
             RequestUpload("Update");
         }
+        uploading = true;
     }
 
 
@@ -346,6 +354,7 @@ public class SteamworksUGCItem {
             SteamUGC.SetItemContent(update_handle, modpath);
         } else {
             Debug.LogError("Invalid path for mod, unable to upload " + modpath);
+            uploading = false;
             return;
         }
 
@@ -368,11 +377,21 @@ public class SteamworksUGCItem {
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
         
+        if (uploading) {
+            if (update_handle != UGCUpdateHandle_t.Invalid) {
+                ulong bytesProcessed = 0;
+                ulong bytesTotal = 1;
+                SteamUGC.GetItemUpdateProgress(update_handle, out bytesProcessed, out bytesTotal);
+                float progress = bytesProcessed / Math.Max(bytesTotal, 1);
+                ImGui.ProgressBar(progress, new Vector2(0.0f, 0.0f));
+            }
+        } else {
         if (ImGui.Button("Submit")) {
             RequestCreation();
         }
         if (ImGui.Button("Cancel")) {
             waiting_for_create = false;
+        }
         }
 
         ImGui.End();
