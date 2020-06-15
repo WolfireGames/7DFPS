@@ -88,6 +88,12 @@ public class SteamScript : MonoBehaviour
 
         if (SteamUGC.GetItemInstallInfo(publishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
             try {
+                foreach (Mod m in ModManager.availableMods) {
+                    if (m.path.Contains(folder)) {
+                        // Don't load twice
+                        return;
+                    }
+                }
                 modManager.LoadSteamItem(folder);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
