@@ -29,6 +29,12 @@ public class RoundStackerUtility : EditorWindow {
         int undoGroup = Undo.GetCurrentGroup();
         int startIndex = GetStartingIndex();
 
+        // Selection
+        GameObject[] rounds = new GameObject[roundCount];
+        rounds[0] = originObject;
+        Selection.activeGameObject = null;
+
+        // Stacking
         for (int i = 1; i < roundCount; i++) {
             // Clear previous round
             Transform prevRound = originObject.transform.parent.Find($"round_{i * step + startIndex}");
@@ -39,8 +45,10 @@ public class RoundStackerUtility : EditorWindow {
             // Instantiate new round
             GameObject round = Instantiate(originObject, originObject.transform.position + offset * i, originObject.transform.rotation * Quaternion.Euler(angularOffset * i), originObject.transform.parent);
             round.name = $"round_{i * step + startIndex}";
+            rounds[i] = round;
             Undo.RegisterCreatedObjectUndo(round, "Undo round creation");
         }
+        Selection.objects = rounds;
         Undo.CollapseUndoOperations(undoGroup);
     }
 
