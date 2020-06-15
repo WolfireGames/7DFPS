@@ -373,6 +373,7 @@ public class SteamworksUGCItem {
         ImGui.InputText("Description", description);
 
         // Disabled for now doesn't seem to work (not present in Overgrowth either)?
+        // Create automatically?
         //ImGui.InputText("Preview Image", previewImagePath);
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
@@ -386,12 +387,12 @@ public class SteamworksUGCItem {
                 ImGui.ProgressBar(progress, new Vector2(0.0f, 0.0f));
             }
         } else {
-        if (ImGui.Button("Submit")) {
-            RequestCreation();
-        }
-        if (ImGui.Button("Cancel")) {
-            waiting_for_create = false;
-        }
+            if (ImGui.Button("Submit")) {
+                RequestCreation();
+            }
+            if (ImGui.Button("Cancel")) {
+                waiting_for_create = false;
+            }
         }
 
         ImGui.End();
