@@ -410,7 +410,26 @@ public class SteamworksUGCItem {
             if (update_handle != UGCUpdateHandle_t.Invalid) {
                 ulong bytesProcessed = 0;
                 ulong bytesTotal = 1;
-                SteamUGC.GetItemUpdateProgress(update_handle, out bytesProcessed, out bytesTotal);
+                EItemUpdateStatus status = SteamUGC.GetItemUpdateProgress(update_handle, out bytesProcessed, out bytesTotal);
+                switch (status) {
+                    case EItemUpdateStatus.k_EItemUpdateStatusCommittingChanges:
+                        ImGui.Text("Committing Changes");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusPreparingConfig:
+                        ImGui.Text("Preparing Config");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusPreparingContent:
+                        ImGui.Text("Preparing Content");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusUploadingContent:
+                        ImGui.Text("Uploading Content");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusUploadingPreviewFile:
+                        ImGui.Text("Uploading Preview File");
+                        break;
+                    default:
+                        break;
+                }
                 float progress = bytesProcessed / Math.Max(bytesTotal, 1);
                 ImGui.ProgressBar(progress, new Vector2(0.0f, 0.0f));
             }
