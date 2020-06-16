@@ -364,13 +364,14 @@ public class SteamworksUGCItem {
 
 
     public void DrawItemWindow() {
+        ImGui.SetNextWindowSize(new Vector2(500.0f, 300.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Steam Workshop item");
 
         ImGui.Text("Title: " + title);
 
         ImGui.Text("Type: " + mod.GetTypeString());
 
-        ImGui.InputText("Description", description);
+        ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
 
         // Disabled for now doesn't seem to work (not present in Overgrowth either)?
         // Create automatically?
