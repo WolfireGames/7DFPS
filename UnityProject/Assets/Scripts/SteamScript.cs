@@ -245,7 +245,8 @@ public class SteamworksUGCItem {
     private Mod mod;
     private string title;
     private char[] description;
-    private char[] previewImagePath;
+    private char[] author;
+    private char[] version;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
@@ -312,7 +313,8 @@ public class SteamworksUGCItem {
         mod = _mod;
         title = mod.name;
         description = new char[1024]; description[0] = '\0';
-        previewImagePath = new char[512]; previewImagePath[0] = '\0';
+        author = new char[256]; author[0] = '\0';
+        version = new char[128]; version[0] = '\0';
 
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
@@ -364,10 +366,13 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
+        // TODO: create automatically?
+        /*
         string path = new string(previewImagePath);
         if (File.Exists(path)) {
             SteamUGC.SetItemPreview(update_handle, path);
         }
+        */
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
@@ -400,9 +405,9 @@ public class SteamworksUGCItem {
 
         ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
 
-        // Disabled for now doesn't seem to work (not present in Overgrowth either)?
-        // Create automatically?
-        //ImGui.InputText("Preview Image", previewImagePath);
+        ImGui.InputText("Author", author);
+
+        ImGui.InputText("Version", version);
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
         
