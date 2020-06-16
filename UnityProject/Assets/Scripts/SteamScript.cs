@@ -161,7 +161,7 @@ public class SteamScript : MonoBehaviour
 
     void DrawModWindow() {
         const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(480.0f, 300.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(550.0f, 300.0f), ImGuiCond.FirstUseEver);
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
         ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
@@ -207,14 +207,20 @@ public class SteamScript : MonoBehaviour
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
             if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
-                if (ImGui.Button("Install##" + j++)) {
+                if (ImGui.Button("Install##" + j)) {
                     SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
                 }
             } else {
-                if (ImGui.Button("Uninstall (needs restart)##" + j++)) {
+                if (ImGui.Button("Uninstall (needs restart)##" + j)) {
                     SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
                 }
+                ImGui.SameLine();
+                if (ImGui.Button("Show in Steam##" + j)) {
+                    string itemPath = "steam://url/CommunityFilePage/" + details.m_nPublishedFileId.ToString();
+                    SteamFriends.ActivateGameOverlayToWebPage(itemPath);
+                }
             }
+            j++;
         }
 
         if (ImGui.Button("Close")) {
