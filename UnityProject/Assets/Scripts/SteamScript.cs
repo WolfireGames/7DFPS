@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 using ImGuiNET;
+using SimpleJSON;
 
 public class SteamScript : MonoBehaviour
 {
@@ -297,6 +298,19 @@ public class SteamworksUGCItem {
                 string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
                 SteamFriends.ActivateGameOverlayToWebPage(itemPath);
             }
+
+            // Store metadata
+            // TODO: truncate
+            JSONObject jn = new JSONObject();
+            jn.Add("author", new JSONString(new string(author)));
+            jn.Add("version", new JSONString(new string(version)));
+            string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
+            try {
+                File.Create(metaPath).Close();
+                File.WriteAllText(metaPath, jn.ToString());
+            } catch (Exception e) {
+                Debug.LogError("Failed to write metadata for mod: " + e);
+            }
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
@@ -358,7 +372,11 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemUpdateLanguage(update_handle, "english");
 
-        //SteamUGC.SetItemMetadata(update_handle, metadata);
+        JSONObject jn = new JSONObject();
+        jn.Add("author", new JSONString(new string(author)));
+        jn.Add("version", new JSONString(new string(version)));
+
+        SteamUGC.SetItemMetadata(update_handle, jn.ToString());
 
         List<string> tags = new List<string>();
         tags.Add(mod.GetTypeString());
