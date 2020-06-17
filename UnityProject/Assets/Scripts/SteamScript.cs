@@ -253,6 +253,7 @@ public class SteamworksUGCItem {
     private Mod mod;
     private string title;
     private char[] description;
+    private char[] tags;
     private char[] author;
     private char[] version;
 
@@ -328,6 +329,7 @@ public class SteamworksUGCItem {
         mod = _mod;
         title = mod.name;
         description = new char[1024]; description[0] = '\0';
+        tags = new char[512]; tags[0] = '\0';
         author = new char[256]; author[0] = '\0';
         version = new char[128]; version[0] = '\0';
 
@@ -344,6 +346,7 @@ public class SteamworksUGCItem {
                 JSONNode jnRoot = JSON.Parse(metaText);
 
                 CopyChars(jnRoot["description"].Value, description);
+                CopyChars(jnRoot["tags"].Value, tags);
                 CopyChars(jnRoot["author"].Value, author);
                 CopyChars(jnRoot["version"].Value, version);
                 steamworks_id = new PublishedFileId_t((ulong)jnRoot["steamworks_id"].AsLong);
@@ -357,6 +360,7 @@ public class SteamworksUGCItem {
     private void UpdateMetadata() {
         JSONObject jn = new JSONObject();
         jn.Add("description", new JSONString(GetChars(description)));
+        jn.Add("tags", new JSONString(GetChars(tags)));
         jn.Add("author", new JSONString(GetChars(author)));
         jn.Add("version", new JSONString(GetChars(version)));
         jn.Add("steamworks_id", new JSONNumber(steamworks_id.m_PublishedFileId));
@@ -404,6 +408,7 @@ public class SteamworksUGCItem {
 
         List<string> tags = new List<string>();
         tags.Add(mod.GetTypeString());
+        // TODO: add custom tags
         SteamUGC.SetItemTags(update_handle, tags);
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
@@ -446,6 +451,8 @@ public class SteamworksUGCItem {
         ImGui.Text("Type: " + mod.GetTypeString());
 
         ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
+
+        ImGui.InputText("Tags (comma separated)", tags);
 
         ImGui.InputText("Author", author);
 
