@@ -260,6 +260,15 @@ public class SteamworksUGCItem {
     }
 
 
+    private void CopyChars(string source, char[] dest) {
+        int i = 0;
+        while (i < source.Length && i < dest.Length) {
+            dest[i] = source[i];
+            i++;
+        }
+    }
+
+
     private void OnCreateItemResult(CreateItemResult_t pResult, bool failed) {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
@@ -268,15 +277,6 @@ public class SteamworksUGCItem {
                 return;
             } else {
                 steamworks_id = pResult.m_nPublishedFileId;
-
-                // Store Steamworks ID in mod folder for future use
-                string idPath = Path.GetDirectoryName(mod.path) + "/steamworks_id.txt";
-                try {
-                    File.Create(idPath).Close();
-                    File.WriteAllText(idPath, steamworks_id.ToString());
-                } catch (Exception e) {
-                    Debug.LogError("Failed to write Steam Workshop file ID for mod: " + e);
-                }
 
                 if (pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
                     Debug.LogWarning("User needs to accept workshop legal agreement");
@@ -308,8 +308,11 @@ public class SteamworksUGCItem {
 
             // Store metadata
             JSONObject jn = new JSONObject();
+            jn.Add("description", new JSONString(GetChars(description)));
             jn.Add("author", new JSONString(GetChars(author)));
             jn.Add("version", new JSONString(GetChars(version)));
+            jn.Add("steamworks_id", new JSONNumber(steamworks_id.m_PublishedFileId));
+
             string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
             try {
                 File.Create(metaPath).Close();
@@ -341,16 +344,19 @@ public class SteamworksUGCItem {
             m_SubmitItemUpdateResult = CallResult<SubmitItemUpdateResult_t>.Create(OnSubmitItemUpdateResult);
         }
 
-        string idPath = Path.GetDirectoryName(mod.path) + "/steamworks_id.txt";
-        if (File.Exists(idPath)) {
+        // Load metadata
+        string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
+        if (File.Exists(metaPath)) {
             try {
-                string idText = File.ReadAllText(idPath);
-                ulong id = 0;
-                if (ulong.TryParse(idText, out id)) {
-                    steamworks_id = new PublishedFileId_t(id);
-                }
+                string metaText = File.ReadAllText(metaPath);
+                JSONNode jnRoot = JSON.Parse(metaText);
+
+                CopyChars(jnRoot["description"].Value, description);
+                CopyChars(jnRoot["author"].Value, author);
+                CopyChars(jnRoot["version"].Value, version);
+                steamworks_id = new PublishedFileId_t((ulong)jnRoot["steamworks_id"].AsLong);
             } catch (Exception e) {
-                Debug.LogError("Error reading Steam Workshop file ID for mod: " + e);
+                Debug.LogError("Error reading metadata for mod: " + e);
             }
         }
     }
