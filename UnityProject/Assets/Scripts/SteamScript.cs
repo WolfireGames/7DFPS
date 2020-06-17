@@ -181,7 +181,7 @@ public class SteamScript : MonoBehaviour
                 ImGui.Text(mod.GetTypeString());
                 ImGui.SameLine();
                 ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
-                if (ImGui.Button("Upload to Steam Workshop##" + i)) {
+                if (ImGui.Button("Show info##" + i)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
                         uploadingItem = new SteamworksUGCItem(mod);
                         uploadingItem.waiting_for_create = true;
@@ -314,19 +314,7 @@ public class SteamworksUGCItem {
             }
 
             // Store metadata
-            JSONObject jn = new JSONObject();
-            jn.Add("description", new JSONString(GetChars(description)));
-            jn.Add("author", new JSONString(GetChars(author)));
-            jn.Add("version", new JSONString(GetChars(version)));
-            jn.Add("steamworks_id", new JSONNumber(steamworks_id.m_PublishedFileId));
-
-            string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
-            try {
-                File.Create(metaPath).Close();
-                File.WriteAllText(metaPath, jn.ToString());
-            } catch (Exception e) {
-                Debug.LogError("Failed to write metadata for mod: " + e);
-            }
+            UpdateMetadata();
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
@@ -365,6 +353,23 @@ public class SteamworksUGCItem {
             } catch (Exception e) {
                 Debug.LogError("Error reading metadata for mod: " + e);
             }
+        }
+    }
+
+
+    private void UpdateMetadata() {
+        JSONObject jn = new JSONObject();
+        jn.Add("description", new JSONString(GetChars(description)));
+        jn.Add("author", new JSONString(GetChars(author)));
+        jn.Add("version", new JSONString(GetChars(version)));
+        jn.Add("steamworks_id", new JSONNumber(steamworks_id.m_PublishedFileId));
+
+        string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
+        try {
+            File.Create(metaPath).Close();
+            File.WriteAllText(metaPath, jn.ToString());
+        } catch (Exception e) {
+            Debug.LogError("Failed to write metadata for mod: " + e);
         }
     }
 
@@ -434,7 +439,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonActiveColor);
 
         ImGui.SetNextWindowSize(new Vector2(500.0f, 300.0f), ImGuiCond.FirstUseEver);
-        ImGui.Begin("Steam Workshop item");
+        ImGui.Begin("Local mod info");
 
         ImGui.Text("Title: " + title);
 
@@ -477,10 +482,13 @@ public class SteamworksUGCItem {
             }
         } else {
             ImGui.PushStyleColor(ImGuiCol.Text, SteamScript.buttonTextColor);
-            if (ImGui.Button("Submit")) {
+            if (ImGui.Button("Upload to Workshop")) {
                 RequestCreation();
             }
-            if (ImGui.Button("Cancel")) {
+            if (ImGui.Button("Update metadata")) {
+                UpdateMetadata();
+            }
+            if (ImGui.Button("Close")) {
                 waiting_for_create = false;
             }
             ImGui.PopStyleColor(1);
