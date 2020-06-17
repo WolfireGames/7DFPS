@@ -438,7 +438,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, SteamScript.headerColor);
         ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonActiveColor);
 
-        ImGui.SetNextWindowSize(new Vector2(500.0f, 300.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
 
         ImGui.Text("Title: " + title);
