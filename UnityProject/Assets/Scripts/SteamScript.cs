@@ -10,10 +10,11 @@ public class SteamScript : MonoBehaviour
 {
     public static AppId_t RECEIVER1_APP_ID = new AppId_t(234190);
 
-    public static Vector4 backgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-    public static Vector4 buttonColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f);
-    public static Vector4 buttonHoveredColor = new Vector4(0.6f, 0.6f, 0.6f, 1.0f);
-    public static Vector4 buttonActiveColor = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
+    public static Vector4 backgroundColor = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
+    public static Vector4 buttonColor = new Vector4(0.95f, 0.95f, 0.95f, 1.0f);
+    public static Vector4 buttonHoveredColor = new Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+    public static Vector4 buttonActiveColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f);
+    public static Vector4 buttonTextColor = new Vector4(0.2f, 0.2f, 0.2f, 1.0f);
     public static Vector4 headerColor = new Vector4(0.1f, 0.1f, 0.1f, 1.0f);
 
     private bool loadItems;
@@ -179,6 +180,7 @@ public class SteamScript : MonoBehaviour
                 ImGui.SameLine(hSpacing);
                 ImGui.Text(mod.GetTypeString());
                 ImGui.SameLine();
+                ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
                 if (ImGui.Button("Upload to Steam Workshop##" + i)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
                         uploadingItem = new SteamworksUGCItem(mod);
@@ -195,6 +197,7 @@ public class SteamScript : MonoBehaviour
                         modManager.LoadMod(mod);
                     }
                 }
+                ImGui.PopStyleColor(1);
                 i++;
             }
         }
@@ -207,6 +210,7 @@ public class SteamScript : MonoBehaviour
             ImGui.Text(details.m_rgchTags);
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
+            ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
             if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
                 if (ImGui.Button("Install##" + j)) {
                     SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
@@ -221,12 +225,15 @@ public class SteamScript : MonoBehaviour
                     SteamFriends.ActivateGameOverlayToWebPage(itemPath);
                 }
             }
+            ImGui.PopStyleColor(1);
             j++;
         }
 
+        ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
         if (ImGui.Button("Close")) {
             optionsmenuscript.show_mod_ui = false;
         }
+        ImGui.PopStyleColor(1);
 
         ImGui.End();
 
@@ -424,7 +431,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, SteamScript.buttonHoveredColor);
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, SteamScript.headerColor);
-        ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonActiveColor);
 
         ImGui.SetNextWindowSize(new Vector2(500.0f, 300.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Steam Workshop item");
@@ -469,12 +476,14 @@ public class SteamworksUGCItem {
                 ImGui.ProgressBar(progress, new Vector2(0.0f, 0.0f));
             }
         } else {
+            ImGui.PushStyleColor(ImGuiCol.Text, SteamScript.buttonTextColor);
             if (ImGui.Button("Submit")) {
                 RequestCreation();
             }
             if (ImGui.Button("Cancel")) {
                 waiting_for_create = false;
             }
+            ImGui.PopStyleColor(1);
         }
 
         ImGui.End();
