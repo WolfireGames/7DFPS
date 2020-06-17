@@ -312,9 +312,6 @@ public class SteamworksUGCItem {
                 string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
                 SteamFriends.ActivateGameOverlayToWebPage(itemPath);
             }
-
-            // Store metadata
-            UpdateMetadata();
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
@@ -387,7 +384,10 @@ public class SteamworksUGCItem {
 
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
-                
+
+        // Store metadata
+        UpdateMetadata();
+
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
         SteamUGC.SetItemTitle(update_handle, title);
