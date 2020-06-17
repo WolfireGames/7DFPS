@@ -253,6 +253,13 @@ public class SteamworksUGCItem {
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
 
 
+    private string GetChars(char[] text) {
+        string t = new string(text);
+        int pos = t.IndexOf('\0');
+        return t.Substring(0, pos);
+    }
+
+
     private void OnCreateItemResult(CreateItemResult_t pResult, bool failed) {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
@@ -300,10 +307,9 @@ public class SteamworksUGCItem {
             }
 
             // Store metadata
-            // TODO: truncate
             JSONObject jn = new JSONObject();
-            jn.Add("author", new JSONString(new string(author)));
-            jn.Add("version", new JSONString(new string(version)));
+            jn.Add("author", new JSONString(GetChars(author)));
+            jn.Add("version", new JSONString(GetChars(version)));
             string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
             try {
                 File.Create(metaPath).Close();
@@ -368,13 +374,13 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemTitle(update_handle, title);
 
-        SteamUGC.SetItemDescription(update_handle, new string(description));
+        SteamUGC.SetItemDescription(update_handle, GetChars(description));
 
         SteamUGC.SetItemUpdateLanguage(update_handle, "english");
 
         JSONObject jn = new JSONObject();
-        jn.Add("author", new JSONString(new string(author)));
-        jn.Add("version", new JSONString(new string(version)));
+        jn.Add("author", new JSONString(GetChars(author)));
+        jn.Add("version", new JSONString(GetChars(version)));
 
         SteamUGC.SetItemMetadata(update_handle, jn.ToString());
 
