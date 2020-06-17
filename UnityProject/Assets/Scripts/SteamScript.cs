@@ -4,10 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 using ImGuiNET;
+using SimpleJSON;
 
 public class SteamScript : MonoBehaviour
 {
     public static AppId_t RECEIVER1_APP_ID = new AppId_t(234190);
+
+    public static Vector4 backgroundColor = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+    public static Vector4 buttonColor = new Vector4(0.7f, 0.7f, 0.7f, 1.0f);
+    public static Vector4 buttonHoveredColor = new Vector4(0.6f, 0.6f, 0.6f, 1.0f);
+    public static Vector4 buttonActiveColor = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
+    public static Vector4 headerColor = new Vector4(0.1f, 0.1f, 0.1f, 1.0f);
 
     private bool loadItems;
     private SteamworksUGCItem uploadingItem;
@@ -155,7 +162,13 @@ public class SteamScript : MonoBehaviour
 
     void DrawModWindow() {
         const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(480.0f, 300.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(550.0f, 300.0f), ImGuiCond.FirstUseEver);
+
+        ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
+        ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, buttonHoveredColor);
+        ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.TitleBgActive, headerColor);
 
         ImGui.Begin("Mod window");
         ImGui.Text("Local installed mods");
@@ -195,14 +208,20 @@ public class SteamScript : MonoBehaviour
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
             if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
-                if (ImGui.Button("Install##" + j++)) {
+                if (ImGui.Button("Install##" + j)) {
                     SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
                 }
             } else {
-                if (ImGui.Button("Uninstall (needs restart)##" + j++)) {
+                if (ImGui.Button("Uninstall (needs restart)##" + j)) {
                     SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
                 }
+                ImGui.SameLine();
+                if (ImGui.Button("Show in Steam##" + j)) {
+                    string itemPath = "steam://url/CommunityFilePage/" + details.m_nPublishedFileId.ToString();
+                    SteamFriends.ActivateGameOverlayToWebPage(itemPath);
+                }
             }
+            j++;
         }
 
         if (ImGui.Button("Close")) {
@@ -210,6 +229,8 @@ public class SteamScript : MonoBehaviour
         }
 
         ImGui.End();
+
+        ImGui.PopStyleColor(5);
     }
 }
 
@@ -217,6 +238,7 @@ public class SteamScript : MonoBehaviour
 public class SteamworksUGCItem {
     public bool waiting_for_create;
 
+    private bool uploading;
     private PublishedFileId_t steamworks_id;
     private ERemoteStoragePublishedFileVisibility visibility;
     private UGCUpdateHandle_t update_handle;
@@ -224,7 +246,8 @@ public class SteamworksUGCItem {
     private Mod mod;
     private string title;
     private char[] description;
-    private char[] previewImagePath;
+    private char[] author;
+    private char[] version;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
@@ -234,6 +257,8 @@ public class SteamworksUGCItem {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam CreateItem error " + pResult.m_eResult.ToString());
+                uploading = false;
+                return;
             } else {
                 steamworks_id = pResult.m_nPublishedFileId;
 
@@ -253,6 +278,8 @@ public class SteamworksUGCItem {
             }
         } else {
             Debug.LogError("Error creating Steam Workshop item");
+            uploading = false;
+            return;
         }
 
         RequestUpload("Initial Upload");
@@ -271,21 +298,37 @@ public class SteamworksUGCItem {
                 string itemPath = "steam://url/CommunityFilePage/" + steamworks_id.ToString();
                 SteamFriends.ActivateGameOverlayToWebPage(itemPath);
             }
+
+            // Store metadata
+            // TODO: truncate
+            JSONObject jn = new JSONObject();
+            jn.Add("author", new JSONString(new string(author)));
+            jn.Add("version", new JSONString(new string(version)));
+            string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
+            try {
+                File.Create(metaPath).Close();
+                File.WriteAllText(metaPath, jn.ToString());
+            } catch (Exception e) {
+                Debug.LogError("Failed to write metadata for mod: " + e);
+            }
         } else {
             Debug.LogError("Error on Steam Workshop item update");
         }
 
         waiting_for_create = false;
+        uploading = false;
     }
 
 
     public SteamworksUGCItem(Mod _mod) {
         waiting_for_create = false;
+        uploading = false;
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
         title = mod.name;
         description = new char[1024]; description[0] = '\0';
-        previewImagePath = new char[512]; previewImagePath[0] = '\0';
+        author = new char[256]; author[0] = '\0';
+        version = new char[128]; version[0] = '\0';
 
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
@@ -314,6 +357,7 @@ public class SteamworksUGCItem {
         } else {
             RequestUpload("Update");
         }
+        uploading = true;
     }
 
 
@@ -328,7 +372,11 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemUpdateLanguage(update_handle, "english");
 
-        //SteamUGC.SetItemMetadata(update_handle, metadata);
+        JSONObject jn = new JSONObject();
+        jn.Add("author", new JSONString(new string(author)));
+        jn.Add("version", new JSONString(new string(version)));
+
+        SteamUGC.SetItemMetadata(update_handle, jn.ToString());
 
         List<string> tags = new List<string>();
         tags.Add(mod.GetTypeString());
@@ -336,16 +384,20 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
+        // TODO: create automatically?
+        /*
         string path = new string(previewImagePath);
         if (File.Exists(path)) {
             SteamUGC.SetItemPreview(update_handle, path);
         }
+        */
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
             SteamUGC.SetItemContent(update_handle, modpath);
         } else {
             Debug.LogError("Invalid path for mod, unable to upload " + modpath);
+            uploading = false;
             return;
         }
 
@@ -355,26 +407,66 @@ public class SteamworksUGCItem {
 
 
     public void DrawItemWindow() {
+        ImGui.PushStyleColor(ImGuiCol.WindowBg, SteamScript.backgroundColor);
+        ImGui.PushStyleColor(ImGuiCol.Button, SteamScript.buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, SteamScript.buttonHoveredColor);
+        ImGui.PushStyleColor(ImGuiCol.ButtonActive, SteamScript.buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.TitleBgActive, SteamScript.headerColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonColor);
+
+        ImGui.SetNextWindowSize(new Vector2(500.0f, 300.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Steam Workshop item");
 
         ImGui.Text("Title: " + title);
 
         ImGui.Text("Type: " + mod.GetTypeString());
 
-        ImGui.InputText("Description", description);
+        ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
 
-        // Disabled for now doesn't seem to work (not present in Overgrowth either)?
-        //ImGui.InputText("Preview Image", previewImagePath);
+        ImGui.InputText("Author", author);
+
+        ImGui.InputText("Version", version);
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
         
-        if (ImGui.Button("Submit")) {
-            RequestCreation();
-        }
-        if (ImGui.Button("Cancel")) {
-            waiting_for_create = false;
+        if (uploading) {
+            if (update_handle != UGCUpdateHandle_t.Invalid) {
+                ulong bytesProcessed = 0;
+                ulong bytesTotal = 1;
+                EItemUpdateStatus status = SteamUGC.GetItemUpdateProgress(update_handle, out bytesProcessed, out bytesTotal);
+                switch (status) {
+                    case EItemUpdateStatus.k_EItemUpdateStatusCommittingChanges:
+                        ImGui.Text("Committing Changes");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusPreparingConfig:
+                        ImGui.Text("Preparing Config");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusPreparingContent:
+                        ImGui.Text("Preparing Content");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusUploadingContent:
+                        ImGui.Text("Uploading Content");
+                        break;
+                    case EItemUpdateStatus.k_EItemUpdateStatusUploadingPreviewFile:
+                        ImGui.Text("Uploading Preview File");
+                        break;
+                    default:
+                        break;
+                }
+                float progress = bytesProcessed / Math.Max(bytesTotal, 1);
+                ImGui.ProgressBar(progress, new Vector2(0.0f, 0.0f));
+            }
+        } else {
+            if (ImGui.Button("Submit")) {
+                RequestCreation();
+            }
+            if (ImGui.Button("Cancel")) {
+                waiting_for_create = false;
+            }
         }
 
         ImGui.End();
+
+        ImGui.PopStyleColor(6);
     }
 }
