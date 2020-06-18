@@ -406,10 +406,20 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemMetadata(update_handle, jn.ToString());
 
-        List<string> tags = new List<string>();
-        tags.Add(mod.GetTypeString());
-        // TODO: add custom tags
-        SteamUGC.SetItemTags(update_handle, tags);
+        List<string> taglist = new List<string>();
+        taglist.Add(mod.GetTypeString());
+        // Add custom tags
+        string tagString = GetChars(tags);
+        int start = 0;
+        int end = tagString.IndexOf(',');
+        while (end != -1) {
+            taglist.Add(tagString.Substring(start, end - start));
+            start = end + 1;
+            end = tagString.IndexOf(',', start);
+        }
+        taglist.Add(tagString.Substring(start, tagString.Length - start));
+
+        SteamUGC.SetItemTags(update_handle, taglist);
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
