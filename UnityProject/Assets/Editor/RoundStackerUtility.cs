@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class RoundStackerUtility : EditorWindow {
     private GameObject originObject;
+    private Space space;
+    private float extraOffset;
     private Vector3 offset;
     private Vector3 angularOffset;
+    private float extraAngularOffset;
     private int roundCount;
     private int step = 1;
 
@@ -12,16 +16,45 @@ public class RoundStackerUtility : EditorWindow {
         // Settings
         originObject = (GameObject) EditorGUILayout.ObjectField(new GUIContent("Origin round", "The round to start generating from, this round will be duplicated according to the offsets set below."), originObject, typeof(GameObject), true);
         roundCount = EditorGUILayout.IntField(new GUIContent("Round Count", "Amount of rounds generated"), roundCount);
-        offset = EditorGUILayout.Vector3Field(new GUIContent("Round Offset", "Translation per round"), offset);
-        angularOffset = EditorGUILayout.Vector3Field(new GUIContent("Round Angular Offset", "Rotation per round in degrees"), angularOffset);
         step = EditorGUILayout.IntSlider(new GUIContent("Round Step", "How much round index increments per round. (Useful for double stacking)"), step, 1, 5);
+        space = (Space)EditorGUILayout.EnumPopup(new GUIContent("Offset Space", "World: applied offset is World space\nSelf: applied offset is relative to round's rotation. (useful for curved mags)"), space);
+        EditorGUILayout.BeginVertical("box");
+        offset = EditorGUILayout.Vector3Field(new GUIContent("Round Offset", "Translation per round"), offset);
+        extraOffset = EditorGUILayout.FloatField(new GUIContent("Extra Offset", "Decreases/Increases round density over the stack length"), extraOffset);
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.BeginVertical("box");
+        angularOffset = EditorGUILayout.Vector3Field(new GUIContent("Round Angular Offset", "Rotation per round in degrees"), angularOffset);
+        extraAngularOffset = EditorGUILayout.FloatField(new GUIContent("Extra Angular Offset", "Decreases/Increases rotation amount over the stack length"), extraAngularOffset);
+        EditorGUILayout.EndVertical();
 
         // Buttons
         EditorGUI.BeginDisabledGroup(!originObject || roundCount < 1); // Don't allow stacking if no reference object is provided
+        EditorGUILayout.BeginHorizontal();
         if(GUILayout.Button("Stack Bullets")) {
             StackRounds();
         }
+        if(GUILayout.Button("Clear Bullets")) {
+            ClearRounds();
+        }
+        EditorGUILayout.EndHorizontal();
         EditorGUI.EndDisabledGroup();
+    }
+
+    private void ClearRounds() {
+        Undo.SetCurrentGroupName("Undo bullet clearing");
+        int undoGroup = Undo.GetCurrentGroup();
+
+        // Find all rounds other than originObject
+        List<Transform> cuttingBoard = new List<Transform>();
+        foreach (Transform child in originObject.transform.parent)
+            if(child && child.name.StartsWith($"round_") && child != originObject.transform)
+                cuttingBoard.Add(child);
+
+        // Delete every gathered round
+        for (int i = cuttingBoard.Count - 1; i >= 0 ; i--)
+            Undo.DestroyObjectImmediate(cuttingBoard[i].gameObject);
+        
+        Undo.CollapseUndoOperations(undoGroup);
     }
 
     private void StackRounds() {
@@ -43,7 +76,10 @@ public class RoundStackerUtility : EditorWindow {
             }
 
             // Instantiate new round
-            GameObject round = Instantiate(originObject, originObject.transform.position + offset * i, originObject.transform.rotation * Quaternion.Euler(angularOffset * i), originObject.transform.parent);
+            GameObject round = Instantiate(originObject, rounds[i-1].transform.position, rounds[i-1].transform.rotation, originObject.transform.parent);
+            round.transform.Translate(offset + offset * extraOffset * i, space);
+            round.transform.Rotate(angularOffset + angularOffset * extraAngularOffset * i, space);
+
             round.name = $"round_{i * step + startIndex}";
             rounds[i] = round;
             Undo.RegisterCreatedObjectUndo(round, "Undo round creation");
