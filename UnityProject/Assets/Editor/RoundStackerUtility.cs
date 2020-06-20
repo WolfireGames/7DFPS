@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class RoundStackerUtility : EditorWindow {
     private GameObject originObject;
@@ -28,10 +29,32 @@ public class RoundStackerUtility : EditorWindow {
 
         // Buttons
         EditorGUI.BeginDisabledGroup(!originObject || roundCount < 1); // Don't allow stacking if no reference object is provided
+        EditorGUILayout.BeginHorizontal();
         if(GUILayout.Button("Stack Bullets")) {
             StackRounds();
         }
+        if(GUILayout.Button("Clear Bullets")) {
+            ClearRounds();
+        }
+        EditorGUILayout.EndHorizontal();
         EditorGUI.EndDisabledGroup();
+    }
+
+    private void ClearRounds() {
+        Undo.SetCurrentGroupName("Undo bullet clearing");
+        int undoGroup = Undo.GetCurrentGroup();
+
+        // Find all rounds other than originObject
+        List<Transform> cuttingBoard = new List<Transform>();
+        foreach (Transform child in originObject.transform.parent)
+            if(child && child.name.StartsWith($"round_") && child != originObject.transform)
+                cuttingBoard.Add(child);
+
+        // Delete every gathered round
+        for (int i = cuttingBoard.Count - 1; i >= 0 ; i--)
+            Undo.DestroyObjectImmediate(cuttingBoard[i].gameObject);
+        
+        Undo.CollapseUndoOperations(undoGroup);
     }
 
     private void StackRounds() {
