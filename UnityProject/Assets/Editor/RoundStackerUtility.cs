@@ -3,6 +3,7 @@ using UnityEditor;
 
 public class RoundStackerUtility : EditorWindow {
     private GameObject originObject;
+    private Space space;
     private Vector3 offset;
     private Vector3 angularOffset;
     private int roundCount;
@@ -12,6 +13,7 @@ public class RoundStackerUtility : EditorWindow {
         // Settings
         originObject = (GameObject) EditorGUILayout.ObjectField(new GUIContent("Origin round", "The round to start generating from, this round will be duplicated according to the offsets set below."), originObject, typeof(GameObject), true);
         roundCount = EditorGUILayout.IntField(new GUIContent("Round Count", "Amount of rounds generated"), roundCount);
+        space = (Space)EditorGUILayout.EnumPopup(new GUIContent("Offset Space", "World: applied offset is World space\nSelf: applied offset is relative to round's rotation. (useful for curved mags)"), space);
         offset = EditorGUILayout.Vector3Field(new GUIContent("Round Offset", "Translation per round"), offset);
         angularOffset = EditorGUILayout.Vector3Field(new GUIContent("Round Angular Offset", "Rotation per round in degrees"), angularOffset);
         step = EditorGUILayout.IntSlider(new GUIContent("Round Step", "How much round index increments per round. (Useful for double stacking)"), step, 1, 5);
@@ -43,7 +45,10 @@ public class RoundStackerUtility : EditorWindow {
             }
 
             // Instantiate new round
-            GameObject round = Instantiate(originObject, originObject.transform.position + offset * i, originObject.transform.rotation * Quaternion.Euler(angularOffset * i), originObject.transform.parent);
+            GameObject round = Instantiate(originObject, rounds[i-1].transform.position, rounds[i-1].transform.rotation, originObject.transform.parent);
+            round.transform.Translate(offset, space);
+            round.transform.Rotate(angularOffset, space);
+
             round.name = $"round_{i * step + startIndex}";
             rounds[i] = round;
             Undo.RegisterCreatedObjectUndo(round, "Undo round creation");
