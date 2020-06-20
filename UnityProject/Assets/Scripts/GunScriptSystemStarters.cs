@@ -21,14 +21,22 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
+    [Priority(PriorityAttribute.VERY_EARLY)]
+    public class StanceStartSystem : GunSystemBase {
+        AlternativeStanceComponent asc = null;
+
+        public override void Initialize() {
+            asc.is_alternative = Random.Bool();
+        }
+    }
+
     [InclusiveAspects(GunAspect.YOKE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class YokeStartSystem : GunSystemBase {
-        YokeComponent yc;
+        YokeComponent yc = null;
 
         public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-
             // Determine if the cylinder should be open or not
             if(Random.Bool()) {
                 yc.yoke_stage = YokeStage.OPEN;
@@ -43,11 +51,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class CylinderStartSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-
             // Initialize Cylinder
             rcc.chambers = new Transform[rcc.cylinder_capacity];
             rcc.cylinders = new CylinderState[rcc.cylinder_capacity];
@@ -75,13 +81,10 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class BoltSlideStartSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        SlideComponent sc;
+        LockableBoltComponent bc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             if(Random.Bool()) {
                 sc.slide_amount = 1f;
                 sc.old_slide_amount = 1f;
@@ -104,13 +107,10 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ChamberWithSliderStartSystem : GunSystemBase {
-        ChamberComponent cc;
-        SlideComponent sc;
+        ChamberComponent cc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            cc = gs.GetComponent<ChamberComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             //if(Random.Bool() && !gs.IsSlidePulledBack() && !gs.IsSlideLocked()) { // IsSlidePulledBack and IsSlideLocked are part of uninitialized GunSystems and can't be used here
             if(Random.Bool() && sc.slide_stage == SlideStage.NOTHING && !sc.slide_lock) {
                 cc.active_round = GameObject.Instantiate(gs.full_casing, cc.point_chambered_round.position, cc.point_chambered_round.rotation, gs.transform);
@@ -126,11 +126,9 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING, GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ChamberStartSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
-            cc = gs.GetComponent<ChamberComponent>();
-
             if(Random.Bool()) {
                 cc.active_round = GameObject.Instantiate(gs.full_casing, cc.point_chambered_round.position, cc.point_chambered_round.rotation, gs.transform);
                 cc.active_round.transform.localScale = Vector3.one;
@@ -145,11 +143,9 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.LOCKABLE_BOLT)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class SlideLockStartSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-
             if(Random.Bool()) {
                 sc.slide_amount = sc.slide_lock_position;
                 sc.old_slide_amount = sc.slide_lock_position;
@@ -164,11 +160,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.INTERNAL_MAGAZINE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class HammerIntMagStartSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
-
             hc.prev_hammer_cocked = 1f;
             hc.hammer_cocked = 1f;
         }
@@ -178,11 +172,9 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.INTERNAL_MAGAZINE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class HammerStartSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
         public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
-
             if(Random.Bool()) {
                 hc.prev_hammer_cocked = 1f;
                 hc.hammer_cocked = 1f;
@@ -193,13 +185,10 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY + 1)]
     public class ThumbSafetySlideStartSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
-        SlideComponent sc;
+        ThumbSafetyComponent tsc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            tsc = gs.GetComponent<ThumbSafetyComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             if(!tsc.block_slide || sc.slide_amount == 0f) {
                 if(Random.Bool()) {
                     tsc.is_safe = true;
@@ -213,11 +202,9 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.SLIDE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class ThumbSafetyStartSystem : GunSystemBase {
-        ThumbSafetyComponent tsc;
+        ThumbSafetyComponent tsc = null;
 
         public override void Initialize() {
-            tsc = gs.GetComponent<ThumbSafetyComponent>();
-
             if(Random.Bool()) {
                 tsc.is_safe = true;
                 tsc.safety_off = 0f;
@@ -228,10 +215,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.FIRE_MODE)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class FireModeStartSystem : GunSystemBase {
-        FireModeComponent fmc;
+        FireModeComponent fmc = null;
 
         public override void Initialize() {
-            fmc = gs.GetComponent<FireModeComponent>();
             fmc.current_fire_mode_index = Random.Int(0, fmc.fire_modes.Length);
         }
     }

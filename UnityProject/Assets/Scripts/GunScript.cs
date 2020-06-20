@@ -73,9 +73,6 @@ public abstract class GunSystemBase {
     public virtual void Initialize() {}
     public virtual void Update() { gs.gun_systems.UnloadSystem(this); }
 
-    public virtual Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() { return null; }
-    public virtual Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() { return null; }
-
     protected void RemoveChildrenShadows(GameObject parent) {
         foreach(var renderer in parent.GetComponentsInChildren<Renderer>()) {
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
