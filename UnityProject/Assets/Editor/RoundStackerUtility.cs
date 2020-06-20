@@ -15,12 +15,16 @@ public class RoundStackerUtility : EditorWindow {
         // Settings
         originObject = (GameObject) EditorGUILayout.ObjectField(new GUIContent("Origin round", "The round to start generating from, this round will be duplicated according to the offsets set below."), originObject, typeof(GameObject), true);
         roundCount = EditorGUILayout.IntField(new GUIContent("Round Count", "Amount of rounds generated"), roundCount);
+        step = EditorGUILayout.IntSlider(new GUIContent("Round Step", "How much round index increments per round. (Useful for double stacking)"), step, 1, 5);
         space = (Space)EditorGUILayout.EnumPopup(new GUIContent("Offset Space", "World: applied offset is World space\nSelf: applied offset is relative to round's rotation. (useful for curved mags)"), space);
+        EditorGUILayout.BeginVertical("box");
         offset = EditorGUILayout.Vector3Field(new GUIContent("Round Offset", "Translation per round"), offset);
         extraOffset = EditorGUILayout.FloatField(new GUIContent("Extra Offset", "Decreases/Increases round density over the stack length"), extraOffset);
+        EditorGUILayout.EndVertical();
+        EditorGUILayout.BeginVertical("box");
         angularOffset = EditorGUILayout.Vector3Field(new GUIContent("Round Angular Offset", "Rotation per round in degrees"), angularOffset);
         extraAngularOffset = EditorGUILayout.FloatField(new GUIContent("Extra Angular Offset", "Decreases/Increases rotation amount over the stack length"), extraAngularOffset);
-        step = EditorGUILayout.IntSlider(new GUIContent("Round Step", "How much round index increments per round. (Useful for double stacking)"), step, 1, 5);
+        EditorGUILayout.EndVertical();
 
         // Buttons
         EditorGUI.BeginDisabledGroup(!originObject || roundCount < 1); // Don't allow stacking if no reference object is provided
