@@ -2,9 +2,7 @@ using UnityEngine;
 
 [GunData(GunAspect.FIRING)]
 public class FiringComponent : GunComponent {
-    public AudioClip[] sound_gunshot_bigroom = new AudioClip[0];
     public AudioClip[] sound_gunshot_smallroom = new AudioClip[0];
-    public AudioClip[] sound_gunshot_open = new AudioClip[0];
 
     [IsNonNull, HasTransformPath("point_muzzleflash")] public Transform point_muzzleflash;
     [IsNonNull, HasTransformPath("point_muzzle")] public Transform point_muzzle;
