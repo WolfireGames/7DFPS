@@ -71,7 +71,7 @@ public class ModExport : MonoBehaviour {
 
         // Build Folder / Bundle
         Directory.CreateDirectory(dest);
-        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Linux, BuildTarget.StandaloneLinuxUniversal}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}, {OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}}) {
+        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Linux, BuildTarget.StandaloneLinux64}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}, {OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}}) {
             build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
             BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
         }
