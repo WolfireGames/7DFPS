@@ -51,7 +51,6 @@ public class GunScriptEditor : Editor {
         foreach(GunComponent gun_component in gun_script.gameObject.GetComponents<GunComponent>()) {
             gun_component.hideFlags = HideFlags.HideInInspector;
         }
-        EditorUtility.SetDirty(gun_script);
     }
 
     private void OnEnable() {
@@ -72,7 +71,7 @@ public class GunScriptEditor : Editor {
         int selected_preset = EditorGUILayout.Popup(0, gun_preset_labels);
         if(selected_preset != 0) {
             gun_script.aspect = gun_presets.Values.ElementAt(selected_preset);
-            Update();
+            EditorUtility.SetDirty(gun_script);
         }
 
         if(!Application.isPlaying || force_show_aspecs) {
@@ -292,7 +291,7 @@ public class GunScriptEditor : Editor {
                 // Draw Button
                 if(GUILayout.Button(current_aspect.GetGUIContent(), style, GUILayout.MinWidth(20))) {
                     gun_script.aspect = gun_script.aspect ^ current_aspect;
-                    Update();
+                    EditorUtility.SetDirty(gun_script);
                 }
 
                 // Restore color
