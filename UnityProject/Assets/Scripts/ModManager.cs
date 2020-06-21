@@ -171,7 +171,7 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    private List<Mod> GetModList(ModType modType) {
+    private static List<Mod> GetModList(ModType modType) {
         switch (modType) {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
@@ -200,6 +200,20 @@ public class ModManager : MonoBehaviour {
             list.Add(mod);
         } else {
             mod.Unload();
+            list.Remove(mod);
+        }
+    }
+
+    /// <summary> Add / Remove mod from the ModManager.loadedGunMods, ModManager.loadedLevelMods or ModManager.loadedLevelMods list. <summary>
+    public static void UpdateModInLoadedModlist(Mod mod) {
+        List<Mod> list = GetModList(mod.modType);
+
+        if(list.Contains(mod) == mod.loaded) // Is the mod already registered as loaded/unloaded?
+            return;
+
+        if(mod.loaded) {
+            list.Add(mod);
+        } else {
             list.Remove(mod);
         }
     }
@@ -344,6 +358,7 @@ public class Mod {
         loaded = true;
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
+        ModManager.UpdateModInLoadedModlist(this);
     }
 
     public void Unload() {
@@ -352,6 +367,7 @@ public class Mod {
 
         loaded = false;
         assetBundle.Unload(true);
+        ModManager.UpdateModInLoadedModlist(this);
     }
 
     public string GetTypeString() {
