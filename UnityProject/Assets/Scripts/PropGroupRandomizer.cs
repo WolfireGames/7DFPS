@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class PropGroupRandomizer : MonoBehaviour {
     public GameObject[] groups;
 
@@ -34,3 +38,15 @@ public class PropGroupRandomizer : MonoBehaviour {
     }
 }
 
+#if UNITY_EDITOR
+[CustomEditor(typeof(PropGroupRandomizer))]
+public class PropGroupRandomizerEditor : Editor {
+    public override void OnInspectorGUI() {
+        DrawDefaultInspector();
+        if(GUILayout.Button("Select children as prop groups"))
+            ((PropGroupRandomizer)target).Reset();
+
+        EditorGUILayout.HelpBox("Disables every GameObject in the group, and enables one at random!", MessageType.Info);
+    }
+}
+#endif
