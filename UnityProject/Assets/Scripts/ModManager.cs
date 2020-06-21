@@ -48,7 +48,7 @@ public class ModManager : MonoBehaviour {
         
         // Load everything but guns
         foreach (var mod in availableMods.Where((mod) => mod.modType != ModType.Gun))
-            LoadMod(mod);
+            mod.Load();
 
         InsertMods();
     }
@@ -59,7 +59,7 @@ public class ModManager : MonoBehaviour {
         
         // Load everything but guns
         if (mod.modType != ModType.Gun) {
-            LoadMod(mod);
+            mod.Load();
         }
 
         // Insert mods into lists
@@ -158,11 +158,11 @@ public class ModManager : MonoBehaviour {
     }
 
     public void LoadMod(Mod mod) {
-        SetModLoaded(mod, true);
+        mod.Load();
     }
 
     public void UnloadMod(Mod mod) {
-        SetModLoaded(mod, false);
+        mod.Unload();
     }
 
     public void UnloadAll() {
@@ -187,21 +187,6 @@ public class ModManager : MonoBehaviour {
             throw new System.InvalidOperationException($"Unknown Mod Type \"{modType.ToString()}\"");
 
         return mainAssets[modType];
-    }
-
-    private void SetModLoaded(Mod mod, bool loadMod) {
-        List<Mod> list = GetModList(mod.modType);
-
-        if(loadMod == mod.loaded) // Is the mod already loaded/unloaded?
-            return;
-
-        if(loadMod) {
-            mod.Load();
-            list.Add(mod);
-        } else {
-            mod.Unload();
-            list.Remove(mod);
-        }
     }
 
     /// <summary> Add / Remove mod from the ModManager.loadedGunMods, ModManager.loadedLevelMods or ModManager.loadedLevelMods list. <summary>
