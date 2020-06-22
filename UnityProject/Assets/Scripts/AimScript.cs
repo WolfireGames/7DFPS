@@ -517,6 +517,11 @@ public class AimScript:MonoBehaviour{
     	audiosource_audio_content.loop = false;
     	
     	List<AudioClip> temp_total_tapes = new List<AudioClip>(holder.sound_tape_content);
+
+        if(PlayerPrefs.GetInt("limit_tape_count",1) == 0) {
+            tape_count = holder.sound_tape_content.Count;
+        }
+
     	while(tapes_remaining.Count < tape_count) {
     		if(temp_total_tapes.Count <= 0) {
     			temp_total_tapes.AddRange(holder.sound_tape_content); // We have run out of tapes, but we need more => Allow for duplicates
