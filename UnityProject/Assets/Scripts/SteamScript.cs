@@ -207,7 +207,8 @@ public class SteamScript : MonoBehaviour
         foreach (SteamUGCDetails_t details in steamItems) {
             ImGui.Text(details.m_rgchTitle);
             ImGui.SameLine(hSpacing);
-            ImGui.Text(details.m_rgchTags);
+            List<string> tagList = SteamworksUGCItem.GetTagList(details.m_rgchTags);
+            ImGui.Text(tagList[tagList.Count - 1]); // Type tag inserted last
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
             ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
@@ -277,7 +278,7 @@ public class SteamworksUGCItem {
     }
 
 
-    public List<string> GetTagList(string tagString) {
+    public static List<string> GetTagList(string tagString) {
         List<string> taglist = new List<string>();
         int start = 0;
         int end = tagString.IndexOf(',');
@@ -423,7 +424,7 @@ public class SteamworksUGCItem {
         // Add custom tags
         string tagString = GetChars(tags);
         List<string> taglist = GetTagList(tagString);
-        taglist.Add(mod.GetTypeString());
+        taglist.Add(mod.GetTypeString());   // Add mod type tag
 
         SteamUGC.SetItemTags(update_handle, taglist);
 
