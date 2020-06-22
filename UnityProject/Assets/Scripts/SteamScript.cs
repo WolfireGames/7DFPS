@@ -170,6 +170,7 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, buttonHoveredColor);
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, headerColor);
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, buttonColor);
 
         ImGui.Begin("Mod window");
         ImGui.Text("Local installed mods");
@@ -186,6 +187,9 @@ public class SteamScript : MonoBehaviour
                         uploadingItem = new SteamworksUGCItem(mod);
                         uploadingItem.waiting_for_create = true;
                     }
+                }
+                if (ImGui.IsItemHovered()) {
+                    ImGui.SetTooltip("Show mod info and Workshop upload window");
                 }
                 ImGui.SameLine();
                 if (mod.loaded) {
@@ -225,6 +229,9 @@ public class SteamScript : MonoBehaviour
                     string itemPath = "steam://url/CommunityFilePage/" + details.m_nPublishedFileId.ToString();
                     SteamFriends.ActivateGameOverlayToWebPage(itemPath);
                 }
+                if (ImGui.IsItemHovered()) {
+                    ImGui.SetTooltip("Open Steam overlay to Workshop page");
+                }
             }
             ImGui.PopStyleColor(1);
             j++;
@@ -238,7 +245,7 @@ public class SteamScript : MonoBehaviour
 
         ImGui.End();
 
-        ImGui.PopStyleColor(5);
+        ImGui.PopStyleColor(6);
     }
 }
 
@@ -459,6 +466,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, SteamScript.headerColor);
         ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, SteamScript.buttonColor);
 
         ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
@@ -470,6 +478,11 @@ public class SteamworksUGCItem {
         ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
 
         ImGui.InputText("Tags (comma separated)", tags);
+        if (ImGui.IsItemHovered()) {
+            ImGui.PushStyleColor(ImGuiCol.Text, SteamScript.buttonTextColor);
+            ImGui.SetTooltip("Tags for Steam Workshop items. Mod type is always added.");
+            ImGui.PopStyleColor(1);
+        }
 
         ImGui.InputText("Author", author);
 
@@ -512,6 +525,9 @@ public class SteamworksUGCItem {
             if (ImGui.Button("Update metadata")) {
                 UpdateMetadata();
             }
+            if (ImGui.IsItemHovered()) {
+                ImGui.SetTooltip("Update local mod metadata without uploading to Steam Workshop");
+            }
             if (ImGui.Button("Close")) {
                 waiting_for_create = false;
             }
@@ -520,6 +536,6 @@ public class SteamworksUGCItem {
 
         ImGui.End();
 
-        ImGui.PopStyleColor(6);
+        ImGui.PopStyleColor(7);
     }
 }
