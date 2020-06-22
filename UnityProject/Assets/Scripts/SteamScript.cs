@@ -277,6 +277,20 @@ public class SteamworksUGCItem {
     }
 
 
+    public List<string> GetTagList(string tagString) {
+        List<string> taglist = new List<string>();
+        int start = 0;
+        int end = tagString.IndexOf(',');
+        while (end != -1) {
+            taglist.Add(tagString.Substring(start, end - start));
+            start = end + 1;
+            end = tagString.IndexOf(',', start);
+        }
+        taglist.Add(tagString.Substring(start, tagString.Length - start));
+        return taglist;
+    }
+
+
     private void OnCreateItemResult(CreateItemResult_t pResult, bool failed) {
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
@@ -406,18 +420,10 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemMetadata(update_handle, jn.ToString());
 
-        List<string> taglist = new List<string>();
-        taglist.Add(mod.GetTypeString());
         // Add custom tags
         string tagString = GetChars(tags);
-        int start = 0;
-        int end = tagString.IndexOf(',');
-        while (end != -1) {
-            taglist.Add(tagString.Substring(start, end - start));
-            start = end + 1;
-            end = tagString.IndexOf(',', start);
-        }
-        taglist.Add(tagString.Substring(start, tagString.Length - start));
+        List<string> taglist = GetTagList(tagString);
+        taglist.Add(mod.GetTypeString());
 
         SteamUGC.SetItemTags(update_handle, taglist);
 
