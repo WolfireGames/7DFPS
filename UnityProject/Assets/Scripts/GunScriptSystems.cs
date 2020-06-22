@@ -9,9 +9,10 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]
     [ExclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class ManualLoadingMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        ManualLoadingComponent mlc;
+        MagazineComponent mc = null;
+        ManualLoadingComponent mlc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         private bool InputAddRound() {
             if(!mlc.can_insert) {
                 return false;
@@ -33,32 +34,16 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         private bool IsAddingRounds() {
             return mlc.can_insert;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRound},
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
-            };
-        }
-
-        public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
     }
 
     [InclusiveAspects(GunAspect.MANUAL_LOADING)]
     [ExclusiveAspects(GunAspect.MAGAZINE, GunAspect.REVOLVER_CYLINDER)]
     public class ManualLoadingSystem : GunSystemBase {
-        ManualLoadingComponent mlc;
+        ManualLoadingComponent mlc = null;
 
         public bool AddRound() {
             if(!mlc.can_insert)
@@ -66,6 +51,7 @@ namespace GunSystemsV1 {
             return gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER);
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         public bool InputAddRound() {
             if(AddRound()) {
                 gs.PlaySound(mlc.sound_round_insertion);
@@ -74,31 +60,17 @@ namespace GunSystemsV1 {
             return false;
         }
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRound},
-            };
-        }
-
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         private bool IsAddingRounds() {
             return mlc.can_insert;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
-            };
-        }
-
-        public override void Initialize() {
-            mlc = gs.GetComponent<ManualLoadingComponent>();
         }
     }
 
     [InclusiveAspects(GunAspect.CHAMBER)]
     public class ChamberSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
+        [GunSystemRequest(GunSystemRequests.PUT_ROUND_IN_CHAMBER)]
         public bool PutRoundInChamber() {
             if (cc.active_round_state == RoundState.EMPTY) {
                 cc.active_round = (GameObject)GameObject.Instantiate(gs.full_casing, cc.point_load_round.position, cc.point_load_round.rotation);
@@ -112,22 +84,13 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.PUT_ROUND_IN_CHAMBER, PutRoundInChamber}
-            };
-        }
-
-        public override void Initialize() {
-            cc = gs.GetComponent<ChamberComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
     public class MagazineChamberingSystem : GunSystemBase {
-        MagazineComponent mc;
+        MagazineComponent mc = null;
 
+        [GunSystemRequest(GunSystemRequests.CHAMBER_ROUND_FROM_MAG)]
         public bool ChamberRoundFromMag() {
             if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
                 if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
@@ -137,45 +100,26 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.CHAMBER_ROUND_FROM_MAG, ChamberRoundFromMag},
-            };
-        }
-
-        public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.GRIP_SAFETY)]
     public class GripSafetySystem : GunSystemBase {
-        GripSafetyComponent gsc;
+        GripSafetyComponent gsc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_START_AIM)]
         public bool RequestInputStartAim() {
             gsc.is_safe = false;
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_STOP_AIM)]
         public bool RequestInputStopAim() {
             gsc.is_safe = true;
             return true;
         }
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_START_AIM, RequestInputStartAim},
-                {GunSystemRequests.INPUT_STOP_AIM, RequestInputStopAim},
-            };
-        }
-
         public bool IsSafe() {
             return gsc.is_safe;
-        }
-
-        public override void Initialize() {
-            gsc = gs.GetComponent<GripSafetyComponent>();
         }
 
         public override void Update() {
@@ -189,13 +133,15 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.THUMB_SAFETY, GunAspect.SLIDE)]
     public class ThumbSafetySystem : GunSystemBase {
-        SlideComponent sc; // TODO Thumb safety requires Pistol Slide, move that out somehow
-        ThumbSafetyComponent tsc;
+        SlideComponent sc = null; // TODO Thumb safety requires Pistol Slide, move that out somehow
+        ThumbSafetyComponent tsc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SAFETY_ON)]
         bool IsSafetyOn() {
             return tsc.is_safe;
         }
 
+        [GunSystemRequest(GunSystemRequests.TOGGLE_SAFETY)]
         bool RequestToggleSafety() {
             if (tsc.is_safe) {
                 tsc.is_safe = false;
@@ -205,23 +151,6 @@ namespace GunSystemsV1 {
                 gs.PlaySound(tsc.sound_safety);
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.TOGGLE_SAFETY, RequestToggleSafety}
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SAFETY_ON,IsSafetyOn}
-            };
-        }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            tsc = gs.GetComponent<ThumbSafetyComponent>();
         }
 
         public override void Update() {
@@ -235,45 +164,41 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.INTERNAL_MAGAZINE)]
     public class InternalMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        InternalMagazineComponent imc;
+        MagazineComponent mc = null;
+        InternalMagazineComponent imc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_IN_GUN)]
         bool IsMagazineInGun() {
             return true;
         }
 
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_MAGAZINE_IN_GUN, IsMagazineInGun},
-            };
-        }
-
         public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            imc = gs.GetComponent<InternalMagazineComponent>();
-
             mc.mag_script = imc.magazine_script;
         }
     }
 
     [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.RECOIL)]
     public class ExternalMagazineSystem : GunSystemBase {
-        MagazineComponent mc;
-        ExternalMagazineComponent emc;
-        RecoilComponent rc;
+        MagazineComponent mc = null;
+        ExternalMagazineComponent emc = null;
+        RecoilComponent rc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE)]
         bool IsReadyToRemoveMagazine() {
             return mc.ready_to_remove_mag;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_EJECTING)]
         bool IsMagazineEjecting() {
             return mc.mag_stage == MagStage.REMOVING;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_MAGAZINE_IN_GUN)]
         bool IsMagazineInGun() {
             return mc.mag_script != null;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_EJECT_MAGAZINE)]
         public bool InputEjectMagazine() {
             gs.PlaySound(emc.sound_mag_eject_button);
             if (emc.can_eject && mc.mag_stage != MagStage.OUT) {
@@ -284,6 +209,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_INSERT_MAGAZINE)]
         public bool InputInsertMagazine() {
             if(!mc.mag_script) {
                 return false; // No mag to push in
@@ -295,26 +221,7 @@ namespace GunSystemsV1 {
             return true;
         }
 
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_MAGAZINE_IN_GUN, IsMagazineInGun},
-                {GunSystemQueries.IS_MAGAZINE_EJECTING, IsMagazineEjecting},
-                {GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE, IsReadyToRemoveMagazine}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_EJECT_MAGAZINE, InputEjectMagazine},
-                {GunSystemRequests.INPUT_INSERT_MAGAZINE, InputInsertMagazine},
-            };
-        }
-
         public override void Initialize() {
-            mc = gs.GetComponent<MagazineComponent>();
-            emc = gs.GetComponent<ExternalMagazineComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-
             mc.mag_script = GameObject.Instantiate(emc.magazine_obj, gs.transform).GetComponent<mag_script>();
             RemoveChildrenShadows(mc.mag_script.gameObject);
         }
@@ -360,33 +267,19 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_PUSHING)]
     [ExclusiveAspects(GunAspect.SLIDE_SPRING)]
     public class SlidePushingSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
         private bool pushing = false;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PUSH_SLIDE_FORWARD)]
         bool PushSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
             pushing = true;
             return true;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)]
         bool IsWaitingForSlidePush() {
             return !slide_c.block_slide_pull && slide_c.slide_amount > 0f;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PUSH_SLIDE_FORWARD, PushSlide},
-            };
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH, IsWaitingForSlidePush},
-            };
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
         }
 
         public override void Update() {
@@ -403,21 +296,12 @@ namespace GunSystemsV1 {
     [ExclusiveAspects(GunAspect.SLIDE_PUSHING)]
     [Priority(PriorityAttribute.EARLY)]
     public class SlideSpringSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_SLIDE)]
         bool InputReleaseSlide() {
             slide_c.slide_stage = SlideStage.NOTHING;
             return true;
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_RELEASE_SLIDE, InputReleaseSlide},
-            };
         }
 
         public override void Update() {
@@ -430,13 +314,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideEjectingSystem : GunSystemBase {
-        SlideComponent slide_c;
-        ChamberComponent cc;
+        SlideComponent slide_c = null;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
             if(!slide_c.eject_round)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -458,15 +339,11 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.SLIDE_LOCK)]
     public class EmptyInternalMagSlideLockSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
-        MagazineComponent mc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
+        MagazineComponent mc = null;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            mc = gs.GetComponent<MagazineComponent>();
-
             sc.should_slide_lock_predicates.Add(ShouldSlideLock);
         }
 
@@ -477,13 +354,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberingSystem : GunSystemBase {
-        SlideComponent slide_c;
-        ChamberComponent chamber_c;
+        SlideComponent slide_c = null;
+        ChamberComponent chamber_c = null;
 
         public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-            chamber_c = gs.GetComponent<ChamberComponent>();
-
             if(!slide_c.chamber_round)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -517,65 +391,44 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_RELEASE_BUTTON)]
     public class SlideLockSwichSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
         bool pressure_on_switch = false;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK)]
         bool InputReleaseSlideLock() {
             return gs.Request(GunSystemRequests.RELEASE_SLIDE_LOCK);
         }
 
+        [GunSystemRequest(GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK)]
         bool ApplyPressureToSlideLock() {
             pressure_on_switch = true;
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK)]
         bool ReleasePressureToSlideLock() {
             pressure_on_switch = false;
             return true;
         }
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-
             sc.should_slide_lock_predicates.Add(() => pressure_on_switch);
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.APPLY_PRESSURE_ON_SLIDE_LOCK, ApplyPressureToSlideLock},
-                {GunSystemRequests.RELEASE_PRESSURE_ON_SLIDE_LOCK, ReleasePressureToSlideLock},
-                {GunSystemRequests.INPUT_RELEASE_SLIDE_LOCK, InputReleaseSlideLock},
-            };
         }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK)]
     public class SlideLockSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SLIDE_LOCKED)]
         bool IsSlideLocked() {
             return sc.slide_lock;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_SLIDE_LOCK)]
         bool ReleaseSlideLock() {
             sc.slide_lock = false;
             return true;
-        }
-
-        public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SLIDE_LOCKED, IsSlideLocked},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.RELEASE_SLIDE_LOCK, ReleaseSlideLock},
-            };
         }
 
         public override void Update() {
@@ -600,12 +453,14 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE)]
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class PressCheckSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_PRESS_CHECK)]
         bool IsPressCheck() {
             return slide_c.slide_stage == SlideStage.HOLD && slide_c.slide_amount == slide_c.press_check_position;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK)]
         bool InputPressCheck() {
             if (slide_c.slide_stage == SlideStage.NOTHING && !slide_c.block_slide_pull) {
                 slide_c.slide_stage = SlideStage.PULLBACK;
@@ -618,33 +473,14 @@ namespace GunSystemsV1 {
             }
             return true;
         }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_PRESS_CHECK, IsPressCheck}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK, InputPressCheck},
-            };
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.FIRING)]
     public class SlideKickSystem : GunSystemBase {
-        SlideComponent emc;
-        FiringComponent fc;
+        SlideComponent emc = null;
+        FiringComponent fc = null;
 
         public override void Initialize() {
-            emc = gs.GetComponent<SlideComponent>();
-            fc = gs.GetComponent<FiringComponent>();
-
             if(!emc.kick_slide_back)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -664,25 +500,24 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberClosingSystem : GunSystemBase {
-        SlideComponent sc;
-        ChamberComponent cc;
+        SlideComponent sc = null;
+        ChamberComponent cc = null;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-
             cc.is_closed_predicates.Add(() => sc.slide_amount == 0);
         }
     }
 
     [InclusiveAspects(GunAspect.SLIDE)]
     public class SlideSystem : GunSystemBase {
-        SlideComponent slide_c;
+        SlideComponent slide_c = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_SLIDE_PULLED_BACK)]
         bool IsSlidePulledBack() {
             return slide_c.slide_stage != SlideStage.NOTHING;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PULL_SLIDE_BACK)]
         bool RequestInputPullSlideBack() {
             if (slide_c.block_slide_pull == false) {
                 slide_c.slide_stage = SlideStage.PULLBACK;
@@ -695,26 +530,10 @@ namespace GunSystemsV1 {
             return true;
         }
 
+        [GunSystemRequest(GunSystemRequests.PULL_SLIDE_BACK)]
         bool RequestPullSlideBack() {
             slide_c.slide_amount = 1.0f;
             return true;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_SLIDE_PULLED_BACK,IsSlidePulledBack},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.PULL_SLIDE_BACK, RequestPullSlideBack},
-                {GunSystemRequests.INPUT_PULL_SLIDE_BACK, RequestInputPullSlideBack},
-            };
-        }
-
-        public override void Initialize() {
-            slide_c = gs.GetComponent<SlideComponent>();
         }
 
         public override void Update() {
@@ -742,45 +561,26 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.ALTERNATIVE_STANCE)]
     public class AlternativeStanceSystem : GunSystemBase {
-        AlternativeStanceComponent asc;
+        AlternativeStanceComponent asc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_TOGGLE_STANCE)]
         private bool InputToggleStance() {
             asc.is_alternative = !asc.is_alternative;
             return true;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_IN_ALTERNATIVE_STANCE)]
         private bool IsInAlternativeStance() {
             return asc.is_alternative;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_IN_ALTERNATIVE_STANCE, IsInAlternativeStance},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_TOGGLE_STANCE, InputToggleStance},
-            };
-        }
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AlternativeStanceComponent>();
         }
     }
 
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.FIRING)]
     public class FireModeSystem : GunSystemBase {
-        TriggerComponent tc;
-        FiringComponent fc;
+        TriggerComponent tc = null;
+        //FiringComponent fc = null; TODO This is never used, can GunAspect.FIRING be removed without consequences?
 
         int current_trigger_cycle = 0;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            fc = gs.GetComponent<FiringComponent>();
-        }
 
         public override void Update() {
             if(current_trigger_cycle != tc.trigger_cycle) {
@@ -800,9 +600,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.FIRE_MODE, GunAspect.TRIGGER)]
     public class FireModeToggleSystem : GunSystemBase {
-        FireModeComponent fmc;
-        TriggerComponent tc;
+        FireModeComponent fmc = null;
+        TriggerComponent tc = null;
 
+        [GunSystemRequest(GunSystemRequests.TOGGLE_FIRE_MODE)]
         bool RequestToggleFireMode() {
             gs.PlaySound(fmc.sound_firemode_toggle);
 
@@ -810,17 +611,6 @@ namespace GunSystemsV1 {
             if(fmc.target_fire_mode_index >= fmc.fire_modes.Length)
                 fmc.target_fire_mode_index = 0;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.TOGGLE_FIRE_MODE, RequestToggleFireMode}
-            };
-        }
-
-        public override void Initialize() {
-            fmc = gs.GetComponent<FireModeComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
         }
 
         public override void Update() {
@@ -846,15 +636,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.HAMMER, GunAspect.CHAMBER)]
     [ExclusiveAspects(GunAspect.OPEN_BOLT_FIRING)]
     public class AutomaticFireSystem : GunSystemBase {
-        TriggerComponent tc;
-        ChamberComponent cc;
-        HammerComponent hc;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
+        TriggerComponent tc = null;
+        ChamberComponent cc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
@@ -873,15 +657,9 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.SLIDE, GunAspect.CHAMBER, GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.LATE)]
     public class OpenBoltFireSystem : GunSystemBase {
-        TriggerComponent tc;
-        ChamberComponent cc;
-        SlideComponent sc;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            cc = gs.GetComponent<ChamberComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-        }
+        TriggerComponent tc = null;
+        ChamberComponent cc = null;
+        SlideComponent sc = null;
 
         public override void Update() {
             // Slide release
@@ -903,31 +681,19 @@ namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.OPEN_BOLT_FIRING)]
     [Priority(PriorityAttribute.VERY_EARLY)]
     public class OpenBoltSlideLockSystem : GunSystemBase {
-        SlideComponent sc;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            sc = gs.GetComponent<SlideComponent>();
-
             sc.should_slide_lock_predicates.Add(() => true);
         }
     }
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.MANUAL_LOADING)]
     public class CylinderLoadingSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        ManualLoadingComponent mlc;
+        RevolverCylinderComponent rcc = null;
+        ManualLoadingComponent mlc = null;
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_ADD_ROUND, InputAddRoundToCylinder},
-            };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            mlc = gs.GetComponent<ManualLoadingComponent>();
-        }
-
+        [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         bool InputAddRoundToCylinder() {
             if (rcc.is_closed == mlc.load_when_closed) {
                 int best_chamber = -1;
@@ -969,12 +735,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.YOKE)]
     public class YokeSystem : GunSystemBase {
-        YokeComponent yc;
+        YokeComponent yc = null;
 
-        public override void Initialize() {
-            yc = gs.GetComponent<YokeComponent>();
-        }
-
+        [GunSystemRequest(GunSystemRequests.INPUT_CLOSE_CYLINDER)]
         bool InputCloseCylinder() {
             if (yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING) { // TODO add erc.extractor_rod_stage == ExtractorRodStage.CLOSED
                 yc.yoke_stage = YokeStage.CLOSING;
@@ -983,6 +746,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.INPUT_SWING_OUT_CYLINDER)]
         bool InputSwingOutCylinder() {
             if (yc.yoke_stage == YokeStage.CLOSED || yc.yoke_stage == YokeStage.CLOSING) {
                 yc.yoke_stage = YokeStage.OPENING;
@@ -991,30 +755,18 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_CYLINDER_OPEN)]
         bool IsCylinderOpen() {
             return yc.yoke_stage == YokeStage.OPEN || yc.yoke_stage == YokeStage.OPENING;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_ADDING_ROUNDS)]
         public bool IsAddingRounds() {
             if (yc.yoke_stage == YokeStage.OPEN) {
                 return true;
             } else {
                 return false;
             }
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_ADDING_ROUNDS, IsAddingRounds},
-                {GunSystemQueries.IS_CYLINDER_OPEN, IsCylinderOpen},
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_SWING_OUT_CYLINDER, InputSwingOutCylinder},
-                {GunSystemRequests.INPUT_CLOSE_CYLINDER, InputCloseCylinder},
-            };
         }
 
         public override void Update() {
@@ -1041,13 +793,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class CylinderHammerCycleSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        HammerComponent hc;
+        RevolverCylinderComponent rcc = null;
+        HammerComponent hc = null;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-
             if(!rcc.hammer_cycling)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -1071,15 +820,12 @@ namespace GunSystemsV1 {
     /// <summary> A system to cycle cylinders, it does half the motion when the slide pulls back, and does the other half on the way back </summary>
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.SLIDE)]
     public class CylinderSlideCycleSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        SlideComponent sc;
+        RevolverCylinderComponent rcc = null;
+        SlideComponent sc = null;
 
         private bool reverse_direction = false;
 
         public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             if(!rcc.slide_cycling)
                 gs.gun_systems.UnloadSystem(this);
         }
@@ -1110,13 +856,8 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class RevolverCylinderSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        HammerComponent hc;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
+        RevolverCylinderComponent rcc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (rcc.is_closed && hc.hammer_cocked == 1.0f) {
@@ -1150,15 +891,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.TRIGGER, GunAspect.HAMMER)]
     public class RevolverFireSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        TriggerComponent tc;
-        HammerComponent hc;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
+        RevolverCylinderComponent rcc = null;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
         public override void Update() {
             if (!tc.is_connected && hc.thumb_on_hammer == Thumb.OFF_HAMMER && hc.hammer_cocked == 1.0f) {
@@ -1189,7 +924,8 @@ namespace GunSystemsV1 {
         /// It only disconnects again, if the user stops applying pressure to the trigger and pulls it again.
         /// TriggerComponent.IsConnected is only FALSE, when the firemode systems and trigger systems determine that the gun should be able to fire!
 
-        TriggerComponent tc;
+        TriggerComponent tc = null;
+        [GunSystemRequest(GunSystemRequests.APPLY_TRIGGER_PRESSURE)]
         public bool ApplyTriggerPressure() {
             if(tc.trigger_pressable) {
                 tc.pressure_on_trigger = true;
@@ -1198,20 +934,10 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.RELEASE_TRIGGER_PRESSURE)]
         public bool ReleaseTriggerPressure() {
             tc.pressure_on_trigger = false;
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.APPLY_TRIGGER_PRESSURE, ApplyTriggerPressure},
-                {GunSystemRequests.RELEASE_TRIGGER_PRESSURE, ReleaseTriggerPressure}
-            };
-        }
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
         }
 
         public override void Update() {
@@ -1234,15 +960,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.YOKE, GunAspect.YOKE_AUTO_EJECTOR)]
     public class YokeAutoEjectSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        YokeComponent yc;
+        RevolverCylinderComponent rcc = null;
+        YokeComponent yc = null;
 
         private bool triggered = true;
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            yc = gs.GetComponent<YokeComponent>();
-        }
 
         public override void Update() {
             if(triggered && yc.yoke_stage == YokeStage.CLOSED) {
@@ -1260,9 +981,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.EXTRACTOR_ROD, GunAspect.REVOLVER_CYLINDER)]
     public class RevolverExtractorRodSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
-        ExtractorRodComponent erc;
+        RevolverCylinderComponent rcc = null;
+        ExtractorRodComponent erc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_USE_EXTRACTOR_ROD)]
         public bool RequestInputUseExtractorRod() {
             if (erc.can_extract) {
                 erc.extractor_rod_stage = ExtractorRodStage.OPENING;
@@ -1275,28 +997,12 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemQuery(GunSystemQueries.IS_EJECTING_ROUNDS)]
         public bool IsEjectingRounds() {
             if (erc.extractor_rod_stage != ExtractorRodStage.CLOSED) {
                 return true;
             }
             return false;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_EJECTING_ROUNDS, IsEjectingRounds}
-            };
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_USE_EXTRACTOR_ROD,RequestInputUseExtractorRod}
-            };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-            erc = gs.GetComponent<ExtractorRodComponent>();
         }
 
         public override void Update() {
@@ -1386,9 +1092,10 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.THUMB_COCKING)]
     public class HammerDecockSystem : GunSystemBase {
-        TriggerComponent tc;
-        HammerComponent hc;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_RELEASE_HAMMER)]
         bool RequestInputReleaseHammer() {
             if (tc.pressure_on_trigger || hc.hammer_cocked != 1.0f) {
                 hc.thumb_on_hammer = Thumb.SLOW_LOWERING;
@@ -1397,17 +1104,6 @@ namespace GunSystemsV1 {
                 hc.thumb_on_hammer = Thumb.OFF_HAMMER;
             }
             return true;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_RELEASE_HAMMER,RequestInputReleaseHammer}
-            };
-        }
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
@@ -1424,21 +1120,11 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER)]
     public class HammerSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
+        [GunSystemQuery(GunSystemQueries.IS_HAMMER_COCKED)]
         bool IsHammerCocked() {
             return hc.hammer_cocked == 1.0f;
-        }
-
-        public override Dictionary<GunSystemQueries, GunSystemQuery> GetPossibleQuestions() {
-            return new Dictionary<GunSystemQueries, GunSystemQuery>() {
-                {GunSystemQueries.IS_HAMMER_COCKED, IsHammerCocked},
-            };
-        }
-
-
-        public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
         }
 
         public override void Update() {
@@ -1462,15 +1148,10 @@ namespace GunSystemsV1 {
     */
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.TRIGGER, GunAspect.TRIGGER_COCKING)]
     public class TriggerCockingSystem : GunSystemBase {
-        TriggerComponent tc;
-        HammerComponent hc;
+        TriggerComponent tc = null;
+        HammerComponent hc = null;
 
         int current_trigger_cycle = 0;
-
-        public override void Initialize() {
-            tc = gs.GetComponent<TriggerComponent>();
-            hc = gs.GetComponent<HammerComponent>();
-        }
 
         public override void Update() {
             if(!hc.is_blocked && CanPull() && !tc.is_connected) {
@@ -1492,8 +1173,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.THUMB_COCKING)]
     public class ThumbCockingSystem : GunSystemBase {
-        HammerComponent hc;
+        HammerComponent hc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_PRESSURE_ON_HAMMER)]
         bool RequestInputPressureOnHammer() {
             if(hc.is_blocked)
                 return false;
@@ -1501,22 +1183,12 @@ namespace GunSystemsV1 {
             hc.thumb_on_hammer = Thumb.ON_HAMMER;
             return true;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_PRESSURE_ON_HAMMER,RequestInputPressureOnHammer}
-            };
-        }
-
-        public override void Initialize() {
-            hc = gs.GetComponent<HammerComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.HAMMER, GunAspect.SLIDE, GunAspect.SLIDE_COCKING)]
     public class SlideCockingSystem : GunSystemBase {
-        SlideComponent sc;
-        HammerComponent hc;
+        SlideComponent sc = null;
+        HammerComponent hc = null;
 
         public override void Initialize() {
             sc = gs.GetComponent<SlideComponent>();
@@ -1532,21 +1204,19 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.LOCKABLE_BOLT)]
     public class SlideBoltBlockSystem : GunSystemBase {
-        LockableBoltComponent bc;
-        SlideComponent sc;
+        LockableBoltComponent bc = null;
+        SlideComponent sc = null;
 
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-            sc = gs.GetComponent<SlideComponent>();
-
             bc.block_toggle_predicates.Add(() => sc.slide_amount > 0f || sc.slide_stage == SlideStage.PULLBACK);
         }
     }
 
     [InclusiveAspects(GunAspect.LOCKABLE_BOLT)]
     public class LockableBoltSystem : GunSystemBase {
-        LockableBoltComponent bc;
+        LockableBoltComponent bc = null;
 
+        [GunSystemRequest(GunSystemRequests.INPUT_TOGGLE_BOLT_LOCK)]
         private bool ToggleBolt() {
             if(bc.block_toggle) 
                 return false;
@@ -1564,15 +1234,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.INPUT_TOGGLE_BOLT_LOCK, ToggleBolt},
-            };
-        }
-
         public override void Initialize() {
-            bc = gs.GetComponent<LockableBoltComponent>();
-
             bc.bolt_unlocked_rot = bc.point_bolt_unlocked.localRotation;
             bc.bolt_locked_rot = bc.bolt.localRotation;
         }
@@ -1605,8 +1267,9 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
     public class RoundSpendingCylinderSystem : GunSystemBase {
-        RevolverCylinderComponent rcc;
+        RevolverCylinderComponent rcc = null;
 
+        [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
@@ -1626,6 +1289,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.DESTROY_ROUND)]
         public bool DestroyRound() {
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
@@ -1641,23 +1305,13 @@ namespace GunSystemsV1 {
             }
             return false;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.SPEND_ROUND, SpendRound},
-                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
-            };
-        }
-
-        public override void Initialize() {
-            rcc = gs.GetComponent<RevolverCylinderComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.CHAMBER)]
     public class RoundSpendingChamberSystem : GunSystemBase {
-        ChamberComponent cc;
+        ChamberComponent cc = null;
 
+        [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
             if(cc.active_round != null) {
                 cc.active_round_state = RoundState.FIRED;
@@ -1672,6 +1326,7 @@ namespace GunSystemsV1 {
             return false;
         }
 
+        [GunSystemRequest(GunSystemRequests.DESTROY_ROUND)]
         public bool DestroyRound() {
             if(cc.active_round != null) {
                 cc.active_round_state = RoundState.EMPTY;
@@ -1680,13 +1335,6 @@ namespace GunSystemsV1 {
                 return true;
             }
             return false;
-        }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.SPEND_ROUND, SpendRound},
-                {GunSystemRequests.DESTROY_ROUND, DestroyRound},
-            };
         }
 
         public override void Initialize() {
@@ -1699,8 +1347,9 @@ namespace GunSystemsV1 {
     */
     [InclusiveAspects(GunAspect.FIRING)]
     public class FiringSystem : GunSystemBase {
-        FiringComponent fc;
+        FiringComponent fc = null;
 
+        [GunSystemRequest(GunSystemRequests.DISCHARGE)]
         public bool Discharge() {
             GameObject bullet = null;
             gs.PlaySound(fc.sound_gunshot_smallroom, 1.0f);
@@ -1732,27 +1381,12 @@ namespace GunSystemsV1 {
             fc.fire_count++;
             return true;
         }
-
-        public override Dictionary<GunSystemRequests, GunSystemRequest> GetPossibleRequests() {
-            return new Dictionary<GunSystemRequests, GunSystemRequest>() {
-                {GunSystemRequests.DISCHARGE, Discharge},
-            };
-        }
-
-        public override void Initialize() {
-            fc = gs.GetComponent<FiringComponent>();
-        }
     }
 
     [InclusiveAspects(GunAspect.RECOIL, GunAspect.FIRING)]
     public class FiringRecoilSystem : GunSystemBase {
-        FiringComponent fc;
-        RecoilComponent rc;
-
-        public override void Initialize() {
-            fc = gs.GetComponent<FiringComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-        }
+        FiringComponent fc = null;
+        RecoilComponent rc = null;
 
         public override void Update() {
             if(rc.old_fire_count != fc.fire_count) {
@@ -1768,17 +1402,26 @@ namespace GunSystemsV1 {
 
     [InclusiveAspects(GunAspect.RECOIL, GunAspect.AIM_SWAY)]
     public class AimSwaySystem : GunSystemBase {
-        AimSwayComponent asc;
-        RecoilComponent rc;
-
-        public override void Initialize() {
-            asc = gs.GetComponent<AimSwayComponent>();
-            rc = gs.GetComponent<RecoilComponent>();
-        }
+        AimSwayComponent asc = null;
+        RecoilComponent rc = null;
 
         public override void Update() {
             rc.recoil_transfer_x -= asc.horizontal_strength * Mathf.Sin(4 * Time.time * asc.speed + (float)Math.PI / 4f) * Time.deltaTime;
             rc.recoil_transfer_y -= asc.vertical_strength * Mathf.Sin(3 * Time.time * asc.speed) * Time.deltaTime;
+        }
+    }
+
+    public class GunSystemRequestAttribute : Attribute {
+        public GunSystemRequests request;
+        public GunSystemRequestAttribute(GunSystemRequests request) {
+            this.request = request;
+        }
+    }
+
+    public class GunSystemQueryAttribute : Attribute {
+        public GunSystemQueries query;
+        public GunSystemQueryAttribute(GunSystemQueries query) {
+            this.query = query;
         }
     }
 
@@ -1800,8 +1443,8 @@ namespace GunSystemsV1 {
                         GunSystemBase gsb = (GunSystemBase)Activator.CreateInstance(type);
                         gsb.gs = gs;
 
-                        Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests = gsb.GetPossibleRequests();
-                        Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries = gsb.GetPossibleQuestions();
+                        Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests = GetSystemRequests(gsb, type);
+                        Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries = GetSystemQueries(gsb, type);
 
                         if (requests != null) {
                             foreach (KeyValuePair<GunSystemRequests, GunSystemBase.GunSystemRequest> request in requests) {
@@ -1825,6 +1468,14 @@ namespace GunSystemsV1 {
                             }
                             this.queries.Merge(queries);
                         }
+                        
+                        // Fill component data on GunSystems
+                        foreach(FieldInfo field in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
+                            if(typeof(GunComponent).IsAssignableFrom(field.FieldType)) {
+                                field.SetValue(gsb, gs.GetComponent(field.FieldType));
+                            }
+                        }
+
                         loaded_systems.Add(gsb, GetPriority(type));
                     }
                 }
@@ -1832,6 +1483,34 @@ namespace GunSystemsV1 {
 
             // Add systems in order of their priority attribute
             systems = (from item in loaded_systems orderby item.Value select item.Key).ToArray();
+        }
+        
+        /// <summary> Returns a dictionary with each request a system has specified </summary>
+        public Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> GetSystemRequests(GunSystemBase system, Type type) {
+            var requests = new Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest>();
+            
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
+                GunSystemRequestAttribute att = method.GetCustomAttribute<GunSystemRequestAttribute>();
+                if(att != null) {
+                    requests.Add(att.request, (GunSystemBase.GunSystemRequest) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemRequest), system, method));
+                }
+            }
+
+            return requests;
+        }
+
+        /// <summary> Returns a dictionary with each query a system has specified </summary>
+        public Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> GetSystemQueries(GunSystemBase system, Type type) {
+            var queries = new Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery>();
+            
+            foreach(MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)) {
+                GunSystemQueryAttribute att = method.GetCustomAttribute<GunSystemQueryAttribute>();
+                if(att != null) {
+                    queries.Add(att.query, (GunSystemBase.GunSystemQuery) Delegate.CreateDelegate(typeof(GunSystemBase.GunSystemQuery), system, method));
+                }
+            }
+
+            return queries;
         }
 
         public int GetPriority(Type system) {
