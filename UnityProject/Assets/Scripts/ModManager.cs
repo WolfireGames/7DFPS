@@ -157,16 +157,6 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    [System.Obsolete("Use mod.Load() instead! Modloading no longer requires an instance reference to ModManager!")]
-    public void LoadMod(Mod mod) {
-        mod.Load();
-    }
-
-    [System.Obsolete("Use mod.Unload() instead! Modloading no longer requires an instance reference to ModManager!")]
-    public void UnloadMod(Mod mod) {
-        mod.Unload();
-    }
-
     public void UnloadAll() {
         foreach (var mod in availableMods) {
             mod.Unload();
