@@ -190,11 +190,11 @@ public class SteamScript : MonoBehaviour
                 ImGui.SameLine();
                 if (mod.loaded) {
                     if (ImGui.Button("Unload##" + i)) {
-                        modManager.UnloadMod(mod);
+                        mod.Unload();
                     }
                 } else {
                     if (ImGui.Button("Load##" + i)) {
-                        modManager.LoadMod(mod);
+                        mod.Load();
                     }
                 }
                 ImGui.PopStyleColor(1);
