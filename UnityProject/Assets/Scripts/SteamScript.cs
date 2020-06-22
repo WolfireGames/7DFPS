@@ -28,6 +28,20 @@ public class SteamScript : MonoBehaviour
     private CallResult<SteamUGCQueryCompleted_t> m_callSteamUGCQueryCompleted;
 
 
+    public static List<string> GetTagList(string tagString) {
+        List<string> taglist = new List<string>();
+        int start = 0;
+        int end = tagString.IndexOf(',');
+        while (end != -1) {
+            taglist.Add(tagString.Substring(start, end - start));
+            start = end + 1;
+            end = tagString.IndexOf(',', start);
+        }
+        taglist.Add(tagString.Substring(start, tagString.Length - start));
+        return taglist;
+    }
+
+
     private void OnItemInstalled(ItemInstalled_t pCallback) {
         if (pCallback.m_unAppID != RECEIVER1_APP_ID) {
             // Not our game
@@ -211,7 +225,7 @@ public class SteamScript : MonoBehaviour
         foreach (SteamUGCDetails_t details in steamItems) {
             ImGui.Text(details.m_rgchTitle);
             ImGui.SameLine(hSpacing);
-            List<string> tagList = SteamworksUGCItem.GetTagList(details.m_rgchTags);
+            List<string> tagList = GetTagList(details.m_rgchTags);
             ImGui.Text(tagList[tagList.Count - 1]); // Type tag inserted last
             ImGui.SameLine();
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
@@ -282,20 +296,6 @@ public class SteamworksUGCItem {
             dest[i] = source[i];
             i++;
         }
-    }
-
-
-    public static List<string> GetTagList(string tagString) {
-        List<string> taglist = new List<string>();
-        int start = 0;
-        int end = tagString.IndexOf(',');
-        while (end != -1) {
-            taglist.Add(tagString.Substring(start, end - start));
-            start = end + 1;
-            end = tagString.IndexOf(',', start);
-        }
-        taglist.Add(tagString.Substring(start, tagString.Length - start));
-        return taglist;
     }
 
 
@@ -430,7 +430,7 @@ public class SteamworksUGCItem {
 
         // Add custom tags
         string tagString = GetChars(tags);
-        List<string> taglist = GetTagList(tagString);
+        List<string> taglist = SteamScript.GetTagList(tagString);
         taglist.Add(mod.GetTypeString());   // Add mod type tag
 
         SteamUGC.SetItemTags(update_handle, taglist);
