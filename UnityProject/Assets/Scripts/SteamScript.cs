@@ -199,7 +199,7 @@ public class SteamScript : MonoBehaviour
                 ImGui.Text(mod.name);
                 ImGui.SameLine(hSpacing);
                 ImGui.Text(mod.GetTypeString());
-                ImGui.SameLine();
+                ImGui.SameLine(1.2f * hSpacing);
                 ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
                 if (ImGui.Button("Show info##" + i)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
@@ -232,7 +232,7 @@ public class SteamScript : MonoBehaviour
             ImGui.SameLine(hSpacing);
             List<string> tagList = GetTagList(details.m_rgchTags);
             ImGui.Text(tagList[tagList.Count - 1]); // Type tag inserted last
-            ImGui.SameLine();
+            ImGui.SameLine(1.2f * hSpacing);
             uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
             ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
             if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
