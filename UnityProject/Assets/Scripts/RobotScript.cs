@@ -129,7 +129,12 @@ public class RobotScript:MonoBehaviour{
     			barrel_alive = false;
     		}
     		PlaySoundFromGroup(sound_damage_battery,1.0f);
-    		rotation_x.target_state = 40.0f;
+            if (transform.up.y < 0) {
+                rotation_x.target_state = -40.0f;
+            }
+            else {
+                rotation_x.target_state = 40.0f;
+            }
     		damage_done = true;
     	} else if((obj.name == "pivot motor" || obj.name == "motor") && motor_alive){
     		motor_alive = false;
