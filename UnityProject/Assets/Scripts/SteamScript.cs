@@ -274,6 +274,7 @@ public class SteamworksUGCItem {
 
     private Mod mod;
     private string title;
+    private char[] name;
     private char[] description;
     private char[] tags;
     private char[] author;
@@ -292,10 +293,11 @@ public class SteamworksUGCItem {
 
     private void CopyChars(string source, char[] dest) {
         int i = 0;
-        while (i < source.Length && i < dest.Length) {
+        while (i < source.Length && i < dest.Length - 1) {
             dest[i] = source[i];
             i++;
         }
+        dest[i] = '\0';
     }
 
 
@@ -350,6 +352,8 @@ public class SteamworksUGCItem {
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
         title = mod.name;
+        name = new char[1024];
+        CopyChars(title, name);
         description = new char[1024]; description[0] = '\0';
         tags = new char[512]; tags[0] = '\0';
         author = new char[256]; author[0] = '\0';
@@ -367,11 +371,13 @@ public class SteamworksUGCItem {
                 string metaText = File.ReadAllText(metaPath);
                 JSONNode jnRoot = JSON.Parse(metaText);
 
+                CopyChars(jnRoot["name"].Value, name);
                 CopyChars(jnRoot["description"].Value, description);
                 CopyChars(jnRoot["tags"].Value, tags);
                 CopyChars(jnRoot["author"].Value, author);
                 CopyChars(jnRoot["version"].Value, version);
                 steamworks_id = new PublishedFileId_t((ulong)jnRoot["steamworks_id"].AsLong);
+                mod.name = GetChars(name);
             } catch (Exception e) {
                 Debug.LogError("Error reading metadata for mod: " + e);
             }
@@ -381,6 +387,7 @@ public class SteamworksUGCItem {
 
     private void UpdateMetadata() {
         JSONObject jn = new JSONObject();
+        jn.Add("name", new JSONString(GetChars(name)));
         jn.Add("description", new JSONString(GetChars(description)));
         jn.Add("tags", new JSONString(GetChars(tags)));
         jn.Add("author", new JSONString(GetChars(author)));
@@ -394,6 +401,8 @@ public class SteamworksUGCItem {
         } catch (Exception e) {
             Debug.LogError("Failed to write metadata for mod: " + e);
         }
+
+        mod.name = GetChars(name);
     }
 
 
@@ -416,7 +425,7 @@ public class SteamworksUGCItem {
 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
-        SteamUGC.SetItemTitle(update_handle, title);
+        SteamUGC.SetItemTitle(update_handle, GetChars(name));
 
         SteamUGC.SetItemDescription(update_handle, GetChars(description));
 
@@ -471,9 +480,9 @@ public class SteamworksUGCItem {
         ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
 
-        ImGui.Text("Title: " + title);
-
         ImGui.Text("Type: " + mod.GetTypeString());
+
+        ImGui.InputText("Title", name);
 
         ImGui.InputTextMultiline("Description", description, new Vector2(400.0f, 120.0f));
 
