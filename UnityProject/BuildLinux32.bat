@@ -1,7 +1,7 @@
 del /f /Q /S Receiver_linux32.zip
 del /f /Q /S "Build\linux32"
 
-"%UNITY_2019_4_0%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildLinux32 -logFile unitylog.txt
+"%UNITY_2019_4_1%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildLinux32 -logFile unitylog.txt
 
 if errorlevel 1 (
     echo Failure To Run
