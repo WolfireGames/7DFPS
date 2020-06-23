@@ -323,6 +323,8 @@ public class Mod {
 
     [NonSerialized] public GameObject mainAsset;
 
+    [NonSerialized] public SteamworksUGCItem steamworksItem;
+
     public Mod(string path) {
         this.path = path;
     }

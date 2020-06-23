@@ -135,6 +135,11 @@ public class SteamScript : MonoBehaviour
         GameObject mm = GameObject.Find("ModManager");
         modManager = mm.GetComponent<ModManager>();
 
+        // Preload metadata
+        foreach (Mod mod in ModManager.availableMods) {
+            mod.steamworksItem = new SteamworksUGCItem(mod);
+        }
+
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
             m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
@@ -198,7 +203,7 @@ public class SteamScript : MonoBehaviour
                 ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
                 if (ImGui.Button("Show info##" + i)) {
                     if (uploadingItem == null || !uploadingItem.waiting_for_create) {
-                        uploadingItem = new SteamworksUGCItem(mod);
+                        uploadingItem = mod.steamworksItem;
                         uploadingItem.waiting_for_create = true;
                     }
                 }
