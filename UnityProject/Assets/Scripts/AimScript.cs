@@ -1873,6 +1873,8 @@ public class AimScript:MonoBehaviour{
     				DrawHelpLine("God Mode enabled", true);
     			if(Cheats.slomo_mode)
     				DrawHelpLine("Slomo Mode enabled", Time.timeScale == 0.1f);
+    			if(Cheats.infinite_ammo)
+    				DrawHelpLine("Infinite Ammo enabled");
     		}
 
     		if(slomoWarningDuration > 0) {

@@ -8,6 +8,7 @@ public class Cheats : MonoBehaviour {
     public static bool hasCheated = false;
     public static bool god_mode = false;
     public static bool slomo_mode = false;
+    public static bool infinite_ammo = false;
     float cheat_delay = 0.0f;
 
     public AudioClip[] sound_cheat_toggle;
@@ -16,6 +17,7 @@ public class Cheats : MonoBehaviour {
     private static Dictionary<string, Action> cheats = new Dictionary<string, Action> {
         {"iddqd", () => { god_mode =! god_mode; } },
         {"slomo", () => { slomo_mode =! slomo_mode; ToggleSlomo(); } },
+        {"idinf", () => { infinite_ammo =! infinite_ammo; } },
         {"idkfa", () => { GiveBullets(); } }
     };
 
@@ -23,6 +25,7 @@ public class Cheats : MonoBehaviour {
         Cheats.hasCheated = false;
         Cheats.god_mode = false;
         Cheats.slomo_mode = false;
+        Cheats.infinite_ammo = false;
     }
 
     // Cheat functionality

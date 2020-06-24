@@ -94,6 +94,9 @@ namespace GunSystemsV1 {
         public bool ChamberRoundFromMag() {
             if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
                 if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
+                    if(Cheats.infinite_ammo)
+                        return true;
+                    
                     mc.mag_script.RemoveRound();
                     return true;
                 }
@@ -1271,6 +1274,9 @@ namespace GunSystemsV1 {
 
         [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
+            if(Cheats.infinite_ammo)
+                return true;
+
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
                 which_chamber += rcc.cylinder_capacity;
