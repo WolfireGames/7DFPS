@@ -48,7 +48,7 @@ public class ModManager : MonoBehaviour {
         
         // Load everything but guns
         foreach (var mod in availableMods.Where((mod) => mod.modType != ModType.Gun))
-            LoadMod(mod);
+            mod.Load();
 
         InsertMods();
     }
@@ -59,7 +59,7 @@ public class ModManager : MonoBehaviour {
         
         // Load everything but guns
         if (mod.modType != ModType.Gun) {
-            LoadMod(mod);
+            mod.Load();
         }
 
         // Insert mods into lists
@@ -157,21 +157,13 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    public void LoadMod(Mod mod) {
-        SetModLoaded(mod, true);
-    }
-
-    public void UnloadMod(Mod mod) {
-        SetModLoaded(mod, false);
-    }
-
     public void UnloadAll() {
         foreach (var mod in availableMods) {
             mod.Unload();
         }
     }
 
-    private List<Mod> GetModList(ModType modType) {
+    private static List<Mod> GetModList(ModType modType) {
         switch (modType) {
             case ModType.Gun: return loadedGunMods;
             case ModType.LevelTile: return loadedLevelMods;
@@ -189,17 +181,16 @@ public class ModManager : MonoBehaviour {
         return mainAssets[modType];
     }
 
-    private void SetModLoaded(Mod mod, bool loadMod) {
+    /// <summary> Add / Remove mod from the ModManager.loadedGunMods, ModManager.loadedLevelMods or ModManager.loadedLevelMods list. <summary>
+    public static void UpdateModInLoadedModlist(Mod mod) {
         List<Mod> list = GetModList(mod.modType);
 
-        if(loadMod == mod.loaded) // Is the mod already loaded/unloaded?
+        if(list.Contains(mod) == mod.loaded) // Is the mod already registered as loaded/unloaded?
             return;
 
-        if(loadMod) {
-            mod.Load();
+        if(mod.loaded) {
             list.Add(mod);
         } else {
-            mod.Unload();
             list.Remove(mod);
         }
     }
@@ -332,6 +323,8 @@ public class Mod {
 
     [NonSerialized] public GameObject mainAsset;
 
+    [NonSerialized] public SteamworksUGCItem steamworksItem;
+
     public Mod(string path) {
         this.path = path;
     }
@@ -344,6 +337,7 @@ public class Mod {
         loaded = true;
         assetBundle = AssetBundle.LoadFromFile(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
+        ModManager.UpdateModInLoadedModlist(this);
     }
 
     public void Unload() {
@@ -352,6 +346,7 @@ public class Mod {
 
         loaded = false;
         assetBundle.Unload(true);
+        ModManager.UpdateModInLoadedModlist(this);
     }
 
     public string GetTypeString() {

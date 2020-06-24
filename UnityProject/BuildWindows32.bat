@@ -3,7 +3,7 @@ del /f /Q /S "Build\win32"
 
 git rev-parse --verify HEAD > ref.txt
 
-"%UNITY_2019_4_0%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildWindows32 -logFile unitylog.txt
+"%UNITY_2019_4_1%" -quit -batchmode -projectPath "%~dp0" -executeMethod ReceiverBuildScript.BuildWindows32 -logFile unitylog.txt
 
 if errorlevel 1 (
     echo Failure To Run
