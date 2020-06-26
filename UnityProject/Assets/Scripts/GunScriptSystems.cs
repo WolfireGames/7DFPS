@@ -696,21 +696,8 @@ namespace GunSystemsV1 {
         [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         bool InputAddRoundToCylinder() {
             if (rcc.is_closed == mlc.load_when_closed) {
-                int best_chamber = -1;
-                int next_shot = rcc.active_cylinder;
-                if (!gs.IsHammerCocked()) {
-                    next_shot = (next_shot + 1) % rcc.cylinder_capacity;
-                }
-                for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                    int check = (next_shot + i) % rcc.cylinder_capacity;
-                    if (check < 0) {
-                        check += rcc.cylinder_capacity;
-                    }
-                    if (rcc.cylinders[check].game_object == null) {
-                        best_chamber = check;
-                        break;
-                    }
-                }
+                
+                int best_chamber = GetBestChamber(); // TODO
                 if (best_chamber == -1) {
                     return false;
                 }
@@ -721,6 +708,34 @@ namespace GunSystemsV1 {
 
             }
             return false;
+        }
+
+        private int GetBestChamber() {
+            int best_chamber = -1;
+            int next_shot = rcc.active_cylinder;
+            if (!gs.IsHammerCocked()) {
+                next_shot = (next_shot + 1) % rcc.cylinder_capacity;
+            }
+            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
+                int check = (next_shot + i) % rcc.cylinder_capacity;
+                if (check < 0) {
+                    check += rcc.cylinder_capacity;
+                }
+                if (!rcc.cylinders[check].game_object && IsChamberAccessible(check)) {
+                    best_chamber = check;
+                    break;
+                }
+            }
+
+            return best_chamber;
+        }
+
+        private bool IsChamberAccessible(int chamber) {
+            int which_chamber = (chamber - rcc.active_cylinder) % rcc.cylinder_capacity;
+            if (which_chamber < 0) {
+                which_chamber += rcc.cylinder_capacity;
+            }
+            return !mlc.inaccessabile_chamber_offsets.Contains(which_chamber);
         }
 
         public void PutRoundInChamber(int index) {
