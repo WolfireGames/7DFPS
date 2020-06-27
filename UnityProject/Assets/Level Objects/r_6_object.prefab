@@ -39,8 +39,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100036}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -146,6 +147,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -157,6 +159,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -179,9 +182,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100040
 GameObject:
@@ -238,6 +241,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -249,6 +253,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -271,9 +276,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100042
 GameObject:
@@ -336,9 +341,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400036
 MonoBehaviour:
@@ -395,8 +400,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100044}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -502,6 +508,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -513,6 +520,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -535,9 +543,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100048
 GameObject:
@@ -594,6 +602,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -605,6 +614,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -627,9 +637,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100050
 GameObject:
@@ -692,9 +702,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400038
 MonoBehaviour:
@@ -751,8 +761,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100052}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -858,6 +869,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -869,6 +881,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -891,9 +904,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100056
 GameObject:
@@ -950,6 +963,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -961,6 +975,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -983,9 +998,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100058
 GameObject:
@@ -1048,9 +1063,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400040
 MonoBehaviour:
@@ -1107,8 +1122,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100060}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -1214,6 +1230,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1225,6 +1242,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1247,9 +1265,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100064
 GameObject:
@@ -1306,6 +1324,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1317,6 +1336,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1339,9 +1359,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100066
 GameObject:
@@ -1404,9 +1424,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400042
 MonoBehaviour:
@@ -1463,8 +1483,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100068}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -1570,6 +1591,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1581,6 +1603,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1603,9 +1626,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100072
 GameObject:
@@ -1662,6 +1685,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1673,6 +1697,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1695,9 +1720,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100074
 GameObject:
@@ -1760,9 +1785,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400044
 MonoBehaviour:
@@ -1819,8 +1844,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100076}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 0
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -1926,6 +1952,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1937,6 +1964,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1959,9 +1987,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100080
 GameObject:
@@ -2018,6 +2046,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2029,6 +2058,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2051,9 +2081,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f7f659c26df9a354bbb778607b73cdb2, type: 3}
 --- !u!1 &100082
 GameObject:
@@ -2116,9 +2146,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400046
 MonoBehaviour:
@@ -2175,8 +2205,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100084}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.84
   m_Range: 10
@@ -2282,6 +2313,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2293,6 +2325,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2315,9 +2348,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100088
 GameObject:
@@ -2374,6 +2407,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2385,6 +2419,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2407,9 +2442,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100090
 GameObject:
@@ -2472,9 +2507,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400048
 MonoBehaviour:
@@ -2531,8 +2566,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100092}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.84
   m_Range: 10
@@ -2638,6 +2674,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2649,6 +2686,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2671,9 +2709,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100096
 GameObject:
@@ -2730,6 +2768,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2741,6 +2780,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -2763,9 +2803,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100098
 GameObject:
@@ -2828,9 +2868,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400050
 MonoBehaviour:
@@ -2887,8 +2927,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100100}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.84
   m_Range: 10
@@ -2994,6 +3035,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3005,6 +3047,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3027,9 +3070,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100104
 GameObject:
@@ -3086,6 +3129,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3097,6 +3141,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3119,9 +3164,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 98481db05ce4c0b438e8fdfc0b9ba152, type: 3}
 --- !u!1 &100106
 GameObject:
@@ -3184,9 +3229,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400052
 MonoBehaviour:
@@ -3243,8 +3288,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100108}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 4.82
   m_Range: 5
@@ -3350,6 +3396,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3361,6 +3408,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3383,9 +3431,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100112
 GameObject:
@@ -3442,6 +3490,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3453,6 +3502,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3475,9 +3525,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100114
 GameObject:
@@ -3540,9 +3590,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400054
 MonoBehaviour:
@@ -3599,8 +3649,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100116}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -3706,6 +3757,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3717,6 +3769,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3739,9 +3792,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100120
 GameObject:
@@ -3798,6 +3851,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3809,6 +3863,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -3831,9 +3886,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100122
 GameObject:
@@ -3896,9 +3951,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400056
 MonoBehaviour:
@@ -3955,8 +4010,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100124}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -4062,6 +4118,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4073,6 +4130,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4095,9 +4153,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100128
 GameObject:
@@ -4154,6 +4212,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4165,6 +4224,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4187,9 +4247,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 5f9f2dc5996797f46a37cdc9a7f9d39d, type: 3}
 --- !u!1 &100130
 GameObject:
@@ -4252,9 +4312,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400058
 MonoBehaviour:
@@ -4311,8 +4371,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100132}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -4418,6 +4479,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4429,6 +4491,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4451,9 +4514,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100136
 GameObject:
@@ -4510,6 +4573,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4521,6 +4585,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4543,9 +4608,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100138
 GameObject:
@@ -4602,6 +4667,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4613,6 +4679,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4635,9 +4702,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100140
 GameObject:
@@ -4745,8 +4812,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100142}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
@@ -4852,6 +4920,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4863,6 +4932,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4885,9 +4955,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100146
 GameObject:
@@ -4944,6 +5014,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4955,6 +5026,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -4977,9 +5049,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100148
 GameObject:
@@ -5036,6 +5108,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5047,6 +5120,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5069,9 +5143,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: f3b1a7afd411998489ead30cfd414d7b, type: 3}
 --- !u!1 &100150
 GameObject:
@@ -5179,8 +5253,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100152}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2.26
   m_Range: 10
@@ -5286,6 +5361,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5297,6 +5373,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5319,9 +5396,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100156
 GameObject:
@@ -5378,6 +5455,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5389,6 +5467,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5411,9 +5490,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100158
 GameObject:
@@ -5520,8 +5599,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100160}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 3.94
   m_Range: 3
@@ -5627,6 +5707,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5638,6 +5719,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5660,9 +5742,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100164
 GameObject:
@@ -5719,6 +5801,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5730,6 +5813,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -5752,9 +5836,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100166
 GameObject:
@@ -5861,8 +5945,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100168}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 3.94
   m_Range: 3
@@ -5968,6 +6053,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -5979,6 +6065,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6001,9 +6088,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100172
 GameObject:
@@ -6060,6 +6147,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6071,6 +6159,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6093,9 +6182,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100174
 GameObject:
@@ -6202,8 +6291,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100176}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 3.94
   m_Range: 3
@@ -6309,6 +6399,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6320,6 +6411,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6342,9 +6434,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100180
 GameObject:
@@ -6401,6 +6493,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6412,6 +6505,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6434,9 +6528,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100182
 GameObject:
@@ -6543,8 +6637,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100184}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 3.94
   m_Range: 3
@@ -6650,6 +6745,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6661,6 +6757,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6683,9 +6780,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100188
 GameObject:
@@ -6742,6 +6839,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -6753,6 +6851,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -6775,9 +6874,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100190
 GameObject:
@@ -6884,8 +6983,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100192}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2.26
   m_Range: 10
@@ -6991,6 +7091,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7002,6 +7103,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7024,9 +7126,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100196
 GameObject:
@@ -7083,6 +7185,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7094,6 +7197,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7116,9 +7220,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100198
 GameObject:
@@ -7225,8 +7329,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100200}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 2
+  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 3.94
   m_Range: 3
@@ -7332,6 +7437,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7343,6 +7449,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7365,9 +7472,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100204
 GameObject:
@@ -7424,6 +7531,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7435,6 +7543,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7457,9 +7566,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 391fb549b9461534fa42734c7531585e, type: 3}
 --- !u!1 &100206
 GameObject:
@@ -7733,6 +7842,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7744,6 +7854,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7766,9 +7877,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: d19c910438e00f546ada635d3f549680, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300016, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101182
 GameObject:
@@ -7825,6 +7936,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7836,6 +7948,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7858,9 +7971,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300014, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101184
 GameObject:
@@ -7917,6 +8030,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -7928,6 +8042,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -7950,9 +8065,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300012, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101186
 GameObject:
@@ -8009,6 +8124,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8020,6 +8136,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8042,9 +8159,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300010, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101188
 GameObject:
@@ -8101,6 +8218,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8112,6 +8230,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8134,10 +8253,10 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: 4300008, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -725012648089265939, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101190
 GameObject:
   m_ObjectHideFlags: 0
@@ -8193,6 +8312,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8204,6 +8324,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8226,9 +8347,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300006, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101192
 GameObject:
@@ -8285,6 +8406,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8296,6 +8418,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8318,9 +8441,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: b9dcd296267b6b347ae2f9094a45178e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300004, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101194
 GameObject:
@@ -8377,6 +8500,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8388,6 +8512,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8410,9 +8535,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300002, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101196
 GameObject:
@@ -8469,6 +8594,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8480,6 +8606,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8502,9 +8629,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101198
 GameObject:
@@ -8579,9 +8706,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &11400214
 MonoBehaviour:
@@ -8698,6 +8825,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8709,6 +8837,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8731,9 +8860,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300020, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1 &101204
 GameObject:
@@ -8790,6 +8919,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -8801,6 +8931,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -8823,9 +8954,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 0
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 4300018, guid: 0722fb132b7b691429429d642a4e0d5a, type: 3}
 --- !u!1001 &225436532517392679
 PrefabInstance:
@@ -8834,6 +8965,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.7903557
@@ -8877,10 +9012,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -9023,6 +9154,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.205616
@@ -9066,10 +9201,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -9149,6 +9280,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.601418
@@ -9192,10 +9327,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -9590,6 +9721,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.3366127
@@ -9641,10 +9776,6 @@ PrefabInstance:
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalScale.z
       value: 1.0000005
-      objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
@@ -9724,6 +9855,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.1598358
@@ -9776,10 +9911,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000005
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
 --- !u!4 &2794716018585019986 stripped
@@ -9795,6 +9926,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.766716
@@ -9839,10 +9974,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
 --- !u!4 &3289145965321048445 stripped
@@ -9858,6 +9989,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.854832
@@ -9909,10 +10044,6 @@ PrefabInstance:
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalScale.z
       value: 1.000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
@@ -10244,6 +10375,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.8254852
@@ -10296,10 +10431,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000005
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
 --- !u!4 &4273416474355148844 stripped
@@ -10315,6 +10446,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.259563
@@ -10358,10 +10493,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -10441,6 +10572,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.2375145
@@ -10484,10 +10619,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -10630,6 +10761,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -11.450199
@@ -10673,10 +10808,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -10756,6 +10887,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.7195625
@@ -10808,10 +10943,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000005
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
 --- !u!4 &5197308793178655812 stripped
@@ -10827,6 +10958,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.8282967
@@ -10870,10 +11005,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -10953,6 +11084,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.1420975
@@ -10996,10 +11131,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -11079,6 +11210,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.9431343
@@ -11131,10 +11266,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.0000002
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
 --- !u!4 &5680528955896389663 stripped
@@ -11150,6 +11281,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.4156265
@@ -11193,10 +11328,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -11339,6 +11470,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.263092
@@ -11382,10 +11517,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -11465,6 +11596,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.1570435
@@ -11508,10 +11643,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -11717,6 +11848,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.3121796
@@ -11761,10 +11896,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
 --- !u!4 &8061321721683340928 stripped
@@ -11780,6 +11911,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401176}
     m_Modifications:
+    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
+      propertyPath: m_Name
+      value: player_start
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.238926
@@ -11824,10 +11959,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
-      propertyPath: m_Name
-      value: player_start
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be698dfa73a76424bbdc3eb26fff323a, type: 3}
 --- !u!4 &8146347846011221656 stripped
@@ -11843,6 +11974,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -15.148853
@@ -11886,10 +12021,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -11969,6 +12100,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.91436
@@ -12012,10 +12147,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -12221,6 +12352,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.441181
@@ -12264,10 +12399,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
@@ -12410,6 +12541,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.78088
@@ -12454,10 +12589,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
 --- !u!4 &8951647496741598254 stripped
@@ -12473,6 +12604,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 401200}
     m_Modifications:
+    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
+      propertyPath: m_Name
+      value: item_pile
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.046425
@@ -12516,10 +12651,6 @@ PrefabInstance:
     - target: {fileID: 400000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
-      propertyPath: m_Name
-      value: item_pile
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f25c0515fea164144ba4cd0254cc42ee, type: 3}
