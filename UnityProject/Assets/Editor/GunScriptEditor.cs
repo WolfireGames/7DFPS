@@ -34,7 +34,7 @@ public class GunScriptEditor : Editor {
     private static readonly Color ASPECT_SELECTED = Color.HSVToRGB(.4f, .3f, .9f);
 
     private static readonly Dictionary<string, GunAspect> gun_presets = new Dictionary<string, GunAspect> {
-        {"Select Preset", GunAspect.ALL},
+        {"Select Preset", null},
         {"M1911 Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.HAMMER_VISUAL, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING, GunAspect.THUMB_SAFETY, GunAspect.GRIP_SAFETY, GunAspect.SLIDE_RELEASE_BUTTON, GunAspect.THUMB_SAFETY_VISUAL, GunAspect.GRIP_SAFETY_VISUAL)},
         {"Glock Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.FIRE_MODE, GunAspect.TRIGGER_COCKING, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING, GunAspect.SLIDE_RELEASE_BUTTON, GunAspect.FIRE_MODE_VISUAL)},
         {"Revolver Preset", new GunAspect(GunAspect.MANUAL_LOADING, GunAspect.REVOLVER_CYLINDER, GunAspect.EXTRACTOR_ROD, GunAspect.EXTRACTOR_ROD_VISUAL, GunAspect.CYLINDER_VISUAL, GunAspect.YOKE, GunAspect.YOKE_VISUAL, GunAspect.HAMMER, GunAspect.HAMMER_VISUAL, GunAspect.THUMB_COCKING, GunAspect.TRIGGER_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING)},
