@@ -44,6 +44,10 @@ public class VRInputController : MonoBehaviour
         instance = this;
     }
 
+    public string GetBindingString(ISteamVR_Action_In action) {
+        return action.GetRenderModelComponentName(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left?SteamVR_Input_Sources.LeftHand:SteamVR_Input_Sources.RightHand);
+    }
+
     IEnumerator Start() {
         MaxRenderScale = SteamVR_Camera.sceneResolutionScale;
         MinRenderScale = SteamVR_Camera.sceneResolutionScale * 0.1f;
