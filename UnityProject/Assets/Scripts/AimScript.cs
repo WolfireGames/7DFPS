@@ -286,7 +286,7 @@ public class AimScript:MonoBehaviour{
     
     // Bullets
     List<GameObject> items_being_picked_up = new List<GameObject>();
-    List<GameObject> loose_bullets;
+    public List<GameObject> loose_bullets;
     List<Spring> loose_bullet_spring;
     Spring show_bullet_spring = new Spring(0.0f,0.0f,kAimSpringStrength, kAimSpringDamping);
     float picked_up_bullet_delay = 0.0f;
@@ -314,13 +314,6 @@ public class AimScript:MonoBehaviour{
     int tape_count = 11;
     
     // Cheats
-    bool hasCheated = false;
-    bool god_mode = false;
-    bool slomo_mode = false;
-    int iddqd_progress = 0;
-    int idkfa_progress = 0;
-    int slomo_progress = 0;
-    float cheat_delay = 0.0f;
     float level_reset_hold = 0.0f;
     float slomoWarningDuration = 0f;
     
@@ -358,7 +351,7 @@ public class AimScript:MonoBehaviour{
     	y_recoil_spring.vel += (float)UnityEngine.Random.Range(-400,400);
     	rotation_x += (float)UnityEngine.Random.Range(-4,4);
     	rotation_y += (float)UnityEngine.Random.Range(-4,4);
-    	if(!god_mode && !won){
+    	if(!Cheats.god_mode && !won){
     		dying = true;
     		if(UnityEngine.Random.Range(0.0f,1.0f) < 0.3f){
     			SetDead(true);
@@ -370,7 +363,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void FallDeath(Vector3 vel) {
-    	if(!god_mode && !won){
+    	if(!Cheats.god_mode && !won){
     		SetDead(true);
     		head_fall_vel = vel.y;
     		dead_fade = Mathf.Max(dead_fade, 0.5f);
@@ -385,7 +378,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void Shock() {
-    	if(!god_mode && !won){
+    	if(!Cheats.god_mode && !won){
     		if(!dead){
     			PlaySoundFromGroup(sound_electrocute, 1.0f);
     		}
@@ -1068,12 +1061,8 @@ public class AimScript:MonoBehaviour{
     		aim_toggle = !aim_toggle;
     	}
     	if(character_input.GetButtonDown("Slow Motion Toggle")){
-    		if(slomo_mode) {
-    			if(Time.timeScale == 1.0f) {
-    				Time.timeScale = 0.1f;
-    			} else {
-    				Time.timeScale = 1.0f;
-    			}
+    		if(Cheats.slomo_mode) {
+    			Cheats.ToggleSlomo();
     		} else {
     			slomoWarningDuration = 1f;
     		}
@@ -1134,70 +1123,6 @@ public class AimScript:MonoBehaviour{
     		gun_instance.transform.rotation,
     		pose.rotation,
     		amount);
-    }
-    
-    public void UpdateCheats() {
-    	if(iddqd_progress == 0 && Input.GetKeyDown("i")){
-    		++iddqd_progress; cheat_delay = 1.0f;
-    	} else if(iddqd_progress == 1 && Input.GetKeyDown("d")){
-    		++iddqd_progress; cheat_delay = 1.0f;
-    	} else if(iddqd_progress == 2 && Input.GetKeyDown("d")){
-    		++iddqd_progress; cheat_delay = 1.0f;
-    	} else if(iddqd_progress == 3 && Input.GetKeyDown("q")){
-    		++iddqd_progress; cheat_delay = 1.0f;
-    	} else if(iddqd_progress == 4 && Input.GetKeyDown("d")){
-    		iddqd_progress = 0;
-    		god_mode = !god_mode;
-    		hasCheated = true;
-    		PlaySoundFromGroup(holder.sound_scream, 1.0f);
-    	}
-    	if(idkfa_progress == 0 && Input.GetKeyDown("i")){
-    		++idkfa_progress; cheat_delay = 1.0f;
-    	} else if(idkfa_progress == 1 && Input.GetKeyDown("d")){
-    		++idkfa_progress; cheat_delay = 1.0f;
-    	} else if(idkfa_progress == 2 && Input.GetKeyDown("k")){
-    		++idkfa_progress; cheat_delay = 1.0f;
-    	} else if(idkfa_progress == 3 && Input.GetKeyDown("f")){
-    		++idkfa_progress; cheat_delay = 1.0f;
-    	} else if(idkfa_progress == 4 && Input.GetKeyDown("a")){
-    		idkfa_progress = 0;
-    		hasCheated = true;
-    		if(loose_bullets.Count < 30){
-    			PlaySoundFromGroup(sound_bullet_grab, 0.2f);
-    		}
-    		while(loose_bullets.Count < 30){
-    			AddLooseBullet(true);
-    		}
-    		PlaySoundFromGroup(holder.sound_scream, 1.0f);
-    	}
-    	if(slomo_progress == 0 && Input.GetKeyDown("s")){
-    		++slomo_progress; cheat_delay = 1.0f;
-    	} else if(slomo_progress == 1 && Input.GetKeyDown("l")){
-    		++slomo_progress; cheat_delay = 1.0f;
-    	} else if(slomo_progress == 2 && Input.GetKeyDown("o")){
-    		++slomo_progress; cheat_delay = 1.0f;
-    	} else if(slomo_progress == 3 && Input.GetKeyDown("m")){
-    		++slomo_progress; cheat_delay = 1.0f;
-    	} else if(slomo_progress == 4 && Input.GetKeyDown("o")){
-    		slomo_progress = 0;
-    		slomo_mode = true;
-    		hasCheated = true;
-    		if(Time.timeScale == 1.0f){
-    			Time.timeScale = 0.1f;
-    		} else {
-    			Time.timeScale = 1.0f;
-    		}
-    		PlaySoundFromGroup(holder.sound_scream, 1.0f);
-    	}
-    	if(cheat_delay > 0.0f){
-    		cheat_delay -= Time.deltaTime;
-    		if(cheat_delay <= 0.0f){
-    			cheat_delay = 0.0f;
-    			iddqd_progress = 0;
-    			idkfa_progress = 0;
-    			slomo_progress = 0;
-    		}
-    	}
     }
     
     public void UpdateTape() {
@@ -1666,7 +1591,6 @@ public class AimScript:MonoBehaviour{
     public void Update() {
     	if(main_client_control){
     		UpdateTape();
-    		UpdateCheats();
     	}
     	UpdateFallOffMapDeath();
     	UpdateHealth();
@@ -1941,14 +1865,16 @@ public class AimScript:MonoBehaviour{
     			}
     		}
 
-    		if(hasCheated) {
+    		if(Cheats.hasCheated) {
     			DrawHelpLine("");
     			DrawHelpLine("Cheats used", true);
 
-    			if(god_mode)
+    			if(Cheats.god_mode)
     				DrawHelpLine("God Mode enabled", true);
-    			if(slomo_mode)
+    			if(Cheats.slomo_mode)
     				DrawHelpLine("Slomo Mode enabled", Time.timeScale == 0.1f);
+    			if(Cheats.infinite_ammo)
+    				DrawHelpLine("Infinite Ammo enabled");
     		}
 
     		if(slomoWarningDuration > 0) {

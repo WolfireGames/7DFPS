@@ -52,6 +52,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runningColor: {r: 1, g: 1, b: 1, a: 1}
   lockedColor: {r: 0.16, g: 0.5, b: 0.62, a: 1}
+--- !u!114 &-395112608365098153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b2d7290efb301848a2f30f193caa452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sound_cheat_toggle:
+  - {fileID: 8300000, guid: 2b950a5b6a199164daac27dc1c846852, type: 3}
+  - {fileID: 8300000, guid: 22b4da19b6846994d93bb41b7ddbfc3b, type: 3}
+  - {fileID: 8300000, guid: 84cf497550d330d438e1ca14901e5039, type: 3}
+  - {fileID: 8300000, guid: 115042ef85719964ebfe65e14486d857, type: 3}
 --- !u!1 &100004
 GameObject:
   m_ObjectHideFlags: 0
