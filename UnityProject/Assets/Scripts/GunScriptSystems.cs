@@ -132,17 +132,6 @@ namespace GunSystemsV1 {
             return gs.Request(GunSystemRequests.INPUT_INSERT_MAGAZINE);
         }
 
-        [GunSystemRequest(GunSystemRequests.CHAMBER_ROUND_FROM_MAG)]
-        public bool ChamberRoundFromMag() {
-            if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
-                if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
-                    mc.mag_script.RemoveRound();
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public override void Initialize() {
             gs.gun_systems.disconnectMagazine = DisconnectMag;
             gs.gun_systems.connectMagazine = ConnectMag;
