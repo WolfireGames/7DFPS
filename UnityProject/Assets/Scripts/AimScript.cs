@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using GunSystemInterfaces;
 
 [System.Serializable]
 public class CharacterInput {

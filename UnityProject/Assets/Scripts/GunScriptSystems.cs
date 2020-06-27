@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ExtentionUtil;
 using System.Linq;
+using GunSystemInterfaces;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]

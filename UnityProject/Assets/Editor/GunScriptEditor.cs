@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ExtentionUtil;
+using GunSystemInterfaces;
 
 [CustomEditor(typeof(GunScript))]
 public class GunScriptEditor : Editor {
