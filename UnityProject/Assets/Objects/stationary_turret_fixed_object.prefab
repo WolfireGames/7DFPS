@@ -313,7 +313,7 @@ Light:
     m_UseCullingMatrixOverride: 0
   m_Cookie: {fileID: 2800000, guid: 69680b688d11eb9d30009b3b4241aa39, type: 3}
   m_DrawHalo: 0
-  m_Flare: {fileID: 12100000, guid: 4e5f22940e45e49458c704d93e38a741, type: 2}
+  m_Flare: {fileID: 0}
   m_RenderMode: 0
   m_CullingMask:
     serializedVersion: 2
@@ -452,6 +452,7 @@ Transform:
   m_LocalScale: {x: 1.1191219, y: 5.253887, z: 0.5722951}
   m_Children:
   - {fileID: 400006}
+  - {fileID: 1354370141437057783}
   m_Father: {fileID: 400002}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
@@ -832,11 +833,16 @@ MonoBehaviour:
   gun_pivot: {fileID: 400002}
   point_muzzle_flash: {fileID: 400000}
   gun_camera: {fileID: 400010}
+  drone_camera: {fileID: 0}
+  motor: {fileID: 0}
   electric_spark_obj: {fileID: 100002, guid: 25b4c9337037a8344976cf5a8529c6a0, type: 3}
   muzzle_flash: {fileID: 100008, guid: 1026f63056726a447952427344841144, type: 3}
   bullet_obj: {fileID: 100000, guid: 45aa8aee963396647970bee4b0342c1b, type: 3}
   robot_type: 1
   target_pos: {x: 0, y: 0, z: 0}
+  LimitedRotation: 0
+  RotationRange: 0
+  EndWaitTime: 2
   camera_pivot_state: 3
   camera_pivot_delay: 0
   camera_pivot_angle: 0
@@ -1363,3 +1369,50 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 14
   m_Mesh: {fileID: 4300014, guid: 271f0a363b68ad3439bd4b22016d8dee, type: 3}
+--- !u!1 &6639726521786822236
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1354370141437057783}
+  - component: {fileID: 3634883789444554384}
+  m_Layer: 0
+  m_Name: lens flare
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1354370141437057783
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6639726521786822236}
+  m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: 0.0010159017, y: -0.012561309, z: 0.030845627}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400010}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!123 &3634883789444554384
+LensFlare:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6639726521786822236}
+  m_Enabled: 1
+  m_Flare: {fileID: 12100000, guid: 4e5f22940e45e49458c704d93e38a741, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Brightness: 1
+  m_FadeSpeed: 3
+  m_IgnoreLayers:
+    serializedVersion: 2
+    m_Bits: 1030
+  m_Directional: 0
