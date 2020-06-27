@@ -63,6 +63,7 @@ public enum GunSystemRequests {
     DISCHARGE,
     SPEND_ROUND,
     DESTROY_ROUND,
+    RESET_RECOIL,
 };
 
 /// <summary> Base class for every Gun System </summary>
@@ -416,5 +417,9 @@ public class GunScript : MonoBehaviour {
 
     public bool IsReadyToRemoveMagazine() {
         return Query(GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE);
+    }
+
+    public bool ResetRecoil() {
+        return Request(GunSystemRequests.RESET_RECOIL);
     }
 }

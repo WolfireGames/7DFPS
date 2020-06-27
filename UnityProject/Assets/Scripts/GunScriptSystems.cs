@@ -1447,6 +1447,16 @@ namespace GunSystemsV1 {
     public class RecoilSystem : GunSystemBase {
         RecoilComponent rc = null;
 
+        [GunSystemRequest(GunSystemRequests.RESET_RECOIL)]
+        public bool ResetRecoil() {
+            rc.recoil_transfer_x = 0;
+            rc.recoil_transfer_y = 0;
+            rc.rotation_transfer_x = 0;
+            rc.rotation_transfer_y = 0;
+            rc.add_head_recoil = false;
+            return true;
+        }
+
         public Vector2 GetRecoilTransfer() {
             return new Vector2(rc.recoil_transfer_x, rc.recoil_transfer_y);
         }
