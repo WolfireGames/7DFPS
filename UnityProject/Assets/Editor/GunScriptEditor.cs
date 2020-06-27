@@ -23,6 +23,7 @@ public class GunScriptEditor : Editor {
     public static bool autodelete_components = false;
 
     private Dictionary<string, GunAspect> aspect_groups = GatherGunAspectGroups();
+    private GunAspect possible_aspects = GunAspect.ALL;
     private List<Type> possible_components;
     private List<Type> possible_systems;
 
@@ -58,9 +59,31 @@ public class GunScriptEditor : Editor {
         gun_script = (GunScript)target;
         systems = gun_script.GetGunSystems();
 
-        possible_components = typeof(GunComponent).GetAllDerivedTypes();
+        possible_aspects = GetAllAspectsUsedInSystem(systems);
+        possible_components = typeof(GunComponent).GetAllDerivedTypes(systems.GetType());
         possible_systems = typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType());
         Update();
+    }
+
+    /// <summary> Gets every GunAspect that is referenced by a system version </summary>
+    public GunAspect GetAllAspectsUsedInSystem(GunSystemsContainer systems) {
+        GunAspect usedAspects = new GunAspect();
+        foreach(Type system in typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType())) {
+            GunAspect inclusive = system.GetCustomAttribute<InclusiveAspectsAttribute>(false)?.inclusive_aspects;
+            GunAspect exclusive = system.GetCustomAttribute<ExclusiveAspectsAttribute>(false)?.exclusive_aspects;
+
+            if(inclusive == null && exclusive == null)
+                continue;
+            
+            if(inclusive == null) {
+                usedAspects = usedAspects | exclusive;
+            } else if(exclusive == null) {
+                usedAspects = usedAspects | inclusive;
+            } else {
+                usedAspects = usedAspects | exclusive | inclusive;
+            }
+        }
+        return usedAspects;
     }
 
     public override void OnInspectorGUI() {
@@ -221,7 +244,7 @@ public class GunScriptEditor : Editor {
     public void DrawAspects() {
         // Draw Header
         EditorGUI.BeginChangeCheck();
-        foreach (GunAspect aspect in GunAspect.ALL) {
+        foreach (GunAspect aspect in possible_aspects) {
             if(aspect.IsEmpty() || !loaded_aspects.HasFlag(aspect))
                 continue;
 
@@ -274,7 +297,7 @@ public class GunScriptEditor : Editor {
         foreach(var group in aspect_groups) {
             GUILayout.BeginHorizontal();
 
-            GunAspect group_aspect = GunAspect.ALL.Where((value) => { return group.Value.HasFlag(value);}).ToArray();
+            GunAspect group_aspect = GunAspect.ALL.Where((value) => { return possible_aspects.HasFlag(value) && group.Value.HasFlag(value);}).ToArray();
             for (int i = 0; i < group_aspect.value.Length; i++) {
                 GunAspect current_aspect = group_aspect.value[i];
                 if(i % 2 == 0) {
