@@ -13,4 +13,5 @@ namespace GunSystemsV1 {
 
         [Tooltip("Which chambers can not be accessed for loading? This is useful for revolvers with only one open space to refill rounds.")]
         public int[] inaccessabile_chamber_offsets = new int[0];
+    }
 }
