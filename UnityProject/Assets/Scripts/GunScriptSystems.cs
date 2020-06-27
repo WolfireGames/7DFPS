@@ -102,6 +102,52 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.MAGAZINE)]
+    public class MagazineSystem : GunSystemBase {
+        MagazineComponent mc = null;
+
+        public GameObject DisconnectMag () {
+            if(!mc.mag_script) {
+                return null;
+            }
+
+            // Grag mag reference
+            GameObject mag = mc.mag_script.gameObject;
+
+            // Disconnect mag from systems
+            mc.mag_script = null;
+            mc.ready_to_remove_mag = false;
+            mag.transform.parent = null;
+
+            return mag;
+        }
+
+        public bool ConnectMag(GameObject mag) {
+            // Set this mag as mag to insert
+            mc.mag_script = mag.GetComponent<mag_script>();
+            mag.transform.parent = gs.transform;
+
+            // Tell the systems to push the mag in
+            return gs.Request(GunSystemRequests.INPUT_INSERT_MAGAZINE);
+        }
+
+        [GunSystemRequest(GunSystemRequests.CHAMBER_ROUND_FROM_MAG)]
+        public bool ChamberRoundFromMag() {
+            if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
+                if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
+                    mc.mag_script.RemoveRound();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.disconnectMagazine = DisconnectMag;
+            gs.gun_systems.connectMagazine = ConnectMag;
+        }
+    }
+
     [InclusiveAspects(GunAspect.GRIP_SAFETY)]
     public class GripSafetySystem : GunSystemBase {
         GripSafetyComponent gsc = null;
@@ -791,6 +837,20 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    public class CylinderSpinSystem : GunSystemBase {
+        RevolverCylinderComponent rcc = null;
+
+        public void SpinCylinder(int amount) {
+            rcc.target_cylinder_offset += amount * (Mathf.Max(1, Mathf.Abs(rcc.target_cylinder_offset)));
+            rcc.target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, rcc.target_cylinder_offset));
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.spinCylinder = SpinCylinder;
+        }
+    }
+
     [InclusiveAspects(GunAspect.REVOLVER_CYLINDER, GunAspect.HAMMER)]
     public class CylinderHammerCycleSystem : GunSystemBase {
         RevolverCylinderComponent rcc = null;
@@ -1380,6 +1440,29 @@ namespace GunSystemsV1 {
 
             fc.fire_count++;
             return true;
+        }
+    }
+
+    [InclusiveAspects(GunAspect.RECOIL)]
+    public class RecoilSystem : GunSystemBase {
+        RecoilComponent rc = null;
+
+        public Vector2 GetRecoilTransfer() {
+            return new Vector2(rc.recoil_transfer_x, rc.recoil_transfer_y);
+        }
+
+        public Vector2 GetRecoilRotation() {
+            return new Vector2(rc.rotation_transfer_x, rc.rotation_transfer_y);
+        }
+
+        public bool AddHeadRecoil() {
+            return rc.add_head_recoil;
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.getRecoilTransfer = GetRecoilTransfer;
+            gs.gun_systems.getRecoilRotation = GetRecoilRotation;
+            gs.gun_systems.addHeadRecoil = AddHeadRecoil;
         }
     }
 

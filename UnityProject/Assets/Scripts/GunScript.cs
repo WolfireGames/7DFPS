@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using GunSystemInterfaces;
 
 public enum GunSystemQueries {
     SHOULD_PULL_SLIDE,
@@ -85,6 +86,13 @@ public abstract class GunSystemsContainer {
     public Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests;
     public Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries;
 
+    public ConnectMagazine connectMagazine;
+    public DisconnectMagazine disconnectMagazine;
+    public SpinCylinder spinCylinder;
+    public GetRecoilTransfer getRecoilTransfer;
+    public GetRecoilRotation getRecoilRotation;
+    public AddHeadRecoil addHeadRecoil;
+
     public abstract void LoadSystems(GunScript gs, GunAspect aspects);
     public abstract bool ShouldLoadSystem(Type system, GunAspect aspects, bool ignore_exclusives = false, bool ignore_inclusives = false);
     public abstract void UnloadSystem(GunSystemBase system);
@@ -143,49 +151,37 @@ public class GunScript : MonoBehaviour {
 
     /// <summary> Disconnect the magazine from the GunSystems and returns the disconnected GameObject </summary>
     public GameObject GrabMag() {
-        MagazineComponent mc = GetComponent<MagazineComponent>();
-        if(!mc || !mc.mag_script) {
-            return null;
-        }
-
-        // Grag mag reference
-        GameObject mag = mc.mag_script.gameObject;
-
-        // Disconnect mag from systems
-        mc.mag_script = null;
-        mc.ready_to_remove_mag = false;
-        mag.transform.parent = null;
-
-        return mag;
+        if(gun_systems.disconnectMagazine != null)
+            return gun_systems.disconnectMagazine();
+        return null;
     }
 
     /// <summary> Connect a magazine to the GunSystems and notifies the Systems to handle it from now on </summary>
     public bool InsertMag(GameObject mag) {
-        MagazineComponent mc = GetComponent<MagazineComponent>();
-        if (!mc) {
-            return false;
-        }
-
-        // Set this mag as mag to insert
-        mc.mag_script = mag.GetComponent<mag_script>();
-        mag.transform.parent = transform;
-
-        // Tell the systems to push the mag in
-        return Request(GunSystemRequests.INPUT_INSERT_MAGAZINE);
+        if(gun_systems.connectMagazine != null)
+            return gun_systems.connectMagazine(mag);
+        return false;
     }
 
     public void RotateCylinder(int how_many) {
-        RevolverCylinderComponent rcc = GetComponent<RevolverCylinderComponent>();
-        if(!rcc) {
-            return;
-        }
-        
-        rcc.target_cylinder_offset += how_many * (Mathf.Max(1, Mathf.Abs(rcc.target_cylinder_offset)));
-        rcc.target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, rcc.target_cylinder_offset));
+        if(gun_systems.spinCylinder != null)
+            gun_systems.spinCylinder(how_many);
     }
 
-    public RecoilComponent GetRecoilData() {
-        return GetComponent<RecoilComponent>();
+    public Vector2 GetRecoilTransfer() {
+        if(gun_systems.getRecoilTransfer != null)
+            return gun_systems.getRecoilTransfer();
+        return Vector2.zero;
+    }
+    public Vector2 GetRecoilRotation() {
+        if(gun_systems.getRecoilRotation != null)
+            return gun_systems.getRecoilRotation();
+        return Vector2.zero;
+    }
+    public bool AddHeadRecoil() {
+        if(gun_systems.addHeadRecoil != null)
+            return gun_systems.addHeadRecoil();
+        return false;
     }
 
     /// <summary> Return a gun system instance of the selected gun systems version </summary>
