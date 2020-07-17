@@ -1,8 +1,4 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ExtentionUtil;
+﻿using GunSystemInterfaces;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.TRIGGER, GunAspect.THUMB_SAFETY)]
