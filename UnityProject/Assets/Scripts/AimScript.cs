@@ -1977,10 +1977,10 @@ public class AimScript:MonoBehaviour{
                 }
 
                 //DrawHelpLine("Look: [ move mouse ]");
-                DrawHelpLine("Move: [ "+VRInputController.instance.GetBindingString(VRInputController.instance.Locomotion)+" ]", true);
-                DrawHelpLine("Run: tap direction twice [ " + VRInputController.instance.GetBindingString(VRInputController.instance.Locomotion) + " ]", !IsAiming());
-                DrawHelpLine("Jump: [ "+VRInputController.instance.GetBindingString(VRInputController.instance.JumpButton)+" ]", true);
-                DrawHelpLine("Pick up nearby: hold [ " + VRInputController.instance.GetBindingString(VRInputController.instance.CollectButton) + " ]", ShouldPickUpNearby());
+                DrawHelpLine("Move: [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.Locomotion, true)+ "</color> ]", true);
+                DrawHelpLine("Run: tap direction twice [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.Locomotion, true) + "</color> ]", !IsAiming());
+                DrawHelpLine("Jump: [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.JumpButton, true)+ "</color> ]", true);
+                DrawHelpLine("Pick up nearby: hold [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.CollectButton) + "</color> ]", ShouldPickUpNearby());
                 /*if (held_flashlight != null) {
                     int empty_slot = GetEmptySlot();
                     if (empty_slot != -1) {
@@ -2003,7 +2003,7 @@ public class AimScript:MonoBehaviour{
                     }
                 }*/
                 if (gun_instance != null) {
-                    DrawHelpLine("Fire weapon: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.ActionButton) + " ]");
+                    DrawHelpLine("Fire weapon: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.ActionButton) + "</color> ]");
                     //bool should_aim = (aim_spring.state < 0.5f);
                     //DrawHelpLine("Aim weapon: hold [ right mouse button ]", should_aim);
                     //DrawHelpLine("Aim weapon: tap [ q ]", should_aim);
@@ -2021,37 +2021,37 @@ public class AimScript:MonoBehaviour{
                             DrawHelpLine("Pull back slide", gun_script.ShouldPullSlide());
                         }
                         if (gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-                            DrawHelpLine("Release slide lock: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", gun_script.ShouldReleaseSlideLock());
+                            DrawHelpLine("Release slide lock: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + "</color> ]", gun_script.ShouldReleaseSlideLock());
                         }
                     }
                     if (gun_script.HasSafety()) {
-                        DrawHelpLine("Toggle safety: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract2Btn) + " ]", gun_script.IsSafetyOn());
+                        DrawHelpLine("Toggle safety: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract2Btn) + "</color> ]", gun_script.IsSafetyOn());
                     }
                     if (gun_script.HasAutoMod()) {
-                        DrawHelpLine("Toggle full-automatic: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract3Btn) + " ]", gun_script.ShouldToggleAutoMod());
+                        DrawHelpLine("Toggle full-automatic: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract3Btn) + "</color> ]", gun_script.ShouldToggleAutoMod());
                     }
                     if (gun_script.HasHammer()) {
-                        DrawHelpLine("Pull back hammer: hold [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract3Btn) + " ]", gun_script.ShouldPullBackHammer());
+                        DrawHelpLine("Pull back hammer: hold [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract3Btn) + "</color> ]", gun_script.ShouldPullBackHammer());
                     }
                     if (gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)) {
-                        DrawHelpLine("Toggle Bolt: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", gun_script.ShouldToggleBolt());
+                        DrawHelpLine("Toggle Bolt: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + "</color> ]", gun_script.ShouldToggleBolt());
                     }
                     //if (gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)) {
                         //DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance());
                     //}
                     if (gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)) {
                         if (!gun_script.IsCylinderOpen()) {
-                            DrawHelpLine("Open cylinder: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count != 0));
+                            DrawHelpLine("Open cylinder: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + "</color> ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count != 0));
                         }
                         else {
                             DrawHelpLine("Close cylinder", (gun_script.ShouldCloseCylinder() || loose_bullets.Count == 0));
-                            DrawHelpLine("Extract casings: hold [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract2Btn) + " ]", gun_script.ShouldExtractCasings());
-                            DrawHelpLine("Insert bullet: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count != 0));
+                            DrawHelpLine("Extract casings: hold [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract2Btn) + "</color> ]", gun_script.ShouldExtractCasings());
+                            DrawHelpLine("Insert bullet: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn, true) + "</color> ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count != 0));
                         }
                         DrawHelpLine("Spin cylinder");
                     }
                     else if (gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
-                        DrawHelpLine("Insert bullet: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count != 0));
+                        DrawHelpLine("Insert bullet: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + "</color> ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count != 0));
                     }
                     if (gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
                         if (mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()) {
@@ -2059,30 +2059,30 @@ public class AimScript:MonoBehaviour{
                             DrawHelpLine("Insert magazine", should_insert_mag);
                         }
                         else if (mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()) {
-                            DrawHelpLine("Eject magazine: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteractLongBtn) + " ]", gun_script.ShouldEjectMag());
+                            DrawHelpLine("Eject magazine: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteractLongBtn) + "</color> ]", gun_script.ShouldEjectMag());
                         }
                         else if (mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()) {
                             int max_rounds_slot = GetMostLoadedMag();
                             if (max_rounds_slot != -1) {
-                                DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true);
+                                DrawHelpLine($"Equip magazine: tap [ <color=orange>{max_rounds_slot} ]", true);
                             }
                         }
                     }
                 }
                 else {
                     if (CanLoadBulletsInMag()) {
-                        DrawHelpLine("Insert bullet in magazine: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + " ]", true);
+                        DrawHelpLine("Insert bullet in magazine: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.GunInteract1Btn) + "</color> ]", true);
                     }
                     if (CanRemoveBulletFromMag()) {
-                        DrawHelpLine("Remove bullet from magazine: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.ActionButton) + " ]");
+                        DrawHelpLine("Remove bullet from magazine: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.ActionButton) + "</color> ]");
                     }
                 }
                 if (mag_stage == HandMagStage.HOLD) {
                     int empty_slot = GetEmptySlot();
                     if (empty_slot != -1) {
-                        DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory());
+                        DrawHelpLine($"Put magazine in inventory: tap [ <color=orange>{empty_slot} ]", ShouldPutMagInInventory());
                     }
-                    DrawHelpLine("Drop magazine: tap [ " + VRInputController.instance.GetBindingString(VRInputController.instance.CollectButton) + " ]");
+                    DrawHelpLine("Drop magazine: tap [ <color=orange>" + VRInputController.instance.GetBindingString(VRInputController.instance.CollectButton) + "</color> ]");
                 }
 
                 DrawHelpLine("");

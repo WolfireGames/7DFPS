@@ -44,8 +44,13 @@ public class VRInputController : MonoBehaviour
         instance = this;
     }
 
-    public string GetBindingString(ISteamVR_Action_In action) {
-        return action.GetRenderModelComponentName(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left?SteamVR_Input_Sources.LeftHand:SteamVR_Input_Sources.RightHand);
+    public string GetBindingString(ISteamVR_Action_In action, bool offhand = false) {
+        if (!offhand) {
+            return action.GetLocalizedOrigin(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left ? SteamVR_Input_Sources.LeftHand : SteamVR_Input_Sources.RightHand);
+        }
+        else {
+            return action.GetLocalizedOrigin(VRInputBridge.instance.aimScript_ref.primaryHand == HandSide.Left ? SteamVR_Input_Sources.RightHand : SteamVR_Input_Sources.LeftHand);
+        }
     }
 
     IEnumerator Start() {
