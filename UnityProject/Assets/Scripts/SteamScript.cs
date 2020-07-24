@@ -190,6 +190,9 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, headerColor);
         ImGui.PushStyleColor(ImGuiCol.PopupBg, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGrip, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, buttonActiveColor);
 
         ImGui.Begin("Mod window");
         ImGui.Text("Local installed mods");
@@ -264,7 +267,7 @@ public class SteamScript : MonoBehaviour
 
         ImGui.End();
 
-        ImGui.PopStyleColor(6);
+        ImGui.PopStyleColor(9);
     }
 }
 
@@ -481,6 +484,9 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.TitleBgActive, SteamScript.headerColor);
         ImGui.PushStyleColor(ImGuiCol.FrameBg, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.PopupBg, SteamScript.buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGrip, SteamScript.buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, SteamScript.buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, SteamScript.buttonActiveColor);
 
         ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
@@ -550,6 +556,6 @@ public class SteamworksUGCItem {
 
         ImGui.End();
 
-        ImGui.PopStyleColor(7);
+        ImGui.PopStyleColor(10);
     }
 }
