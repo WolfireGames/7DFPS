@@ -334,6 +334,9 @@ public class SteamworksUGCItem {
 
 
     private void OnSubmitItemUpdateResult(SubmitItemUpdateResult_t pResult, bool failed) {
+        if(pResult.m_bUserNeedsToAcceptWorkshopLegalAgreement) {
+            Debug.LogError("Player needs to agree to the user agreement.");
+        }
         if (failed == false) {
             if (pResult.m_eResult != EResult.k_EResultOK) {
                 Debug.LogError("Steam SubmitItemUpdate error " + pResult.m_eResult.ToString());
