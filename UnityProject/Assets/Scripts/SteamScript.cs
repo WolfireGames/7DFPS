@@ -457,34 +457,38 @@ public class SteamworksUGCItem {
 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
-        SteamUGC.SetItemTitle(update_handle, GetChars(name));
+        if(SteamUGC.SetItemTitle(update_handle, GetChars(name)) == false) {
+            Debug.LogError("SetItemTitle failed");
+        }
 
-        SteamUGC.SetItemDescription(update_handle, GetChars(description));
+        if(SteamUGC.SetItemDescription(update_handle, GetChars(description)) == false) {
+            Debug.LogError("SetItemDescription failed");
+        }
 
-        SteamUGC.SetItemUpdateLanguage(update_handle, "english");
+        if(SteamUGC.SetItemUpdateLanguage(update_handle, "english") == false) {
+            Debug.LogError("SetItemUpdateLanguage failed");
+        }
 
         JSONObject jn = new JSONObject();
         jn.Add("author", new JSONString(GetChars(author)));
         jn.Add("version", new JSONString(GetChars(version)));
 
-        SteamUGC.SetItemMetadata(update_handle, jn.ToString());
+        if(SteamUGC.SetItemMetadata(update_handle, jn.ToString()) == false) {
+            Debug.LogError("SetItemMetadata failed");
+        }
 
         // Add custom tags
         string tagString = GetChars(tags);
         List<string> taglist = SteamScript.GetTagList(tagString);
         taglist.Add(mod.GetTypeString());   // Add mod type tag
 
-        SteamUGC.SetItemTags(update_handle, taglist);
-
-        SteamUGC.SetItemVisibility(update_handle, visibility);
-
-        // TODO: create automatically?
-        /*
-        string path = new string(previewImagePath);
-        if (File.Exists(path)) {
-            SteamUGC.SetItemPreview(update_handle, path);
+        if(SteamUGC.SetItemTags(update_handle, taglist) == false) {
+            Debug.LogError("SetItemTags failed");
         }
-        */
+
+        if(SteamUGC.SetItemVisibility(update_handle, visibility) == false) {
+            Debug.LogError("SetItemVisibility failed");
+        }
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
