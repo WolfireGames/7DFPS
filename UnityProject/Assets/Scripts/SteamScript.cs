@@ -426,7 +426,28 @@ public class SteamworksUGCItem {
         }
         uploading = true;
     }
+    
+    private void RequestPreviewUpload(string update_message) {
+        Debug.Log("Doing Steam Workshop preview update");
 
+        // Store metadata
+        UpdateMetadata();
+
+        update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
+
+        // TODO: create automatically?
+        string previewImagePath = Application.streamingAssetsPath + "/thumb.png";
+        if (File.Exists(previewImagePath)) {
+            if(SteamUGC.SetItemPreview(update_handle, previewImagePath) == false) {
+                Debug.LogError("SetItemPreview failed");
+            }
+        } else {
+            Debug.LogError("Preview image path \"" + previewImagePath + "\" is invalid.");
+        }
+
+        SteamAPICall_t hSteamAPICall = SteamUGC.SubmitItemUpdate(update_handle, update_message);
+        m_SubmitItemUpdateResult.Set(hSteamAPICall);
+    }
 
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
@@ -544,6 +565,9 @@ public class SteamworksUGCItem {
             ImGui.PushStyleColor(ImGuiCol.Text, SteamScript.buttonTextColor);
             if (ImGui.Button("Upload to Workshop")) {
                 RequestCreation();
+            }
+            if (ImGui.Button("Upload Preview Image")) {
+                RequestPreviewUpload("Update preview");
             }
             if (ImGui.Button("Update metadata")) {
                 UpdateMetadata();
