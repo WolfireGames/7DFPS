@@ -150,6 +150,7 @@ MonoBehaviour:
   vrCameraObject: {fileID: 0}
   vrHandObject: {fileID: 0}
   vrCollider: {fileID: 0}
+  objectMaterial: {fileID: 2100000, guid: 6553e24c04e552f45b6aa2802b0520c3, type: 2}
   override_new_frame: 0
 --- !u!20 &4934175824470774688
 Camera:

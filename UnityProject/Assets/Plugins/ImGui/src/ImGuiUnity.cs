@@ -82,7 +82,7 @@ public class ImGuiUnity : MonoBehaviour {
     CommandBuffer commandBuffer;
 
     RenderTexture renderTexture;
-    Material      objectMaterial;
+    public Material objectMaterial;
 
     Texture2D fontTexture;
     IntPtr fontTexturePtr;
@@ -232,9 +232,6 @@ public class ImGuiUnity : MonoBehaviour {
             renderTexture = new RenderTexture(vrGuiResolution.x, vrGuiResolution.y, 0);
             guiCamera.targetTexture = renderTexture;
 
-            Shader shader = Shader.Find("Unlit/Transparent Cutout");
-            Debug.Assert(shader != null);
-            objectMaterial = new Material(shader);
             objectMaterial.mainTexture = renderTexture;
             MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
             meshRenderer.material = objectMaterial;
