@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 public class ModExport : MonoBehaviour {
     [MenuItem("Wolfire/Export Mod")]
@@ -68,10 +70,10 @@ public class ModExport : MonoBehaviour {
         // Prepare Bundle
         AssetBundleBuild[] build_map = new AssetBundleBuild[1];
         build_map[0].assetNames = files;
-
+        
         // Build Folder / Bundle
         Directory.CreateDirectory(dest);
-        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Linux, BuildTarget.StandaloneLinuxUniversal}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}, {OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}}) {
+        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Linux, BuildTarget.StandaloneLinux64}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}, {OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}}) {
             build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
             BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
         }
@@ -90,6 +92,26 @@ public class ModExport : MonoBehaviour {
             Debug.LogWarning("Unauthorized to delete obsolete files in the exported mod. These files are not needed and don't need to be removed manually.");
         } catch (System.ArgumentException e) {
             Debug.LogError(e);
+        }
+
+        // Make Thumbnail
+        GameObject thumbnailMakerPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThumbnailMaker.prefab");
+        if(thumbnailMakerPrefab) {
+            Mod mod = ModManager.ImportMod(dest);
+
+            string lastScene = EditorSceneManager.GetActiveScene().path;
+            int lastBuildIndex = EditorSceneManager.GetActiveScene().buildIndex;
+            
+            // Create scene
+            Scene thumbnailScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            ThumbnailMaker thumbnailMaker = Instantiate(thumbnailMakerPrefab).GetComponent<ThumbnailMaker>();
+            
+            File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.jpg"), thumbnailMaker.CreateThumbnail(mod).EncodeToJPG(90));
+            // Cleanup
+            if(lastBuildIndex >= 0) {
+                EditorSceneManager.OpenScene(lastScene, OpenSceneMode.Single);
+            } else {
+                EditorSceneManager.OpenScene(EditorSceneManager.GetSceneByBuildIndex(0).path);
         }
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(source)}\" with {files.Length} files");

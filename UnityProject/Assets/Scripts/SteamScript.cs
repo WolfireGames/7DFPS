@@ -423,13 +423,11 @@ public class SteamworksUGCItem {
 
         SteamUGC.SetItemVisibility(update_handle, visibility);
 
-        // TODO: create automatically?
-        /*
-        string path = new string(previewImagePath);
-        if (File.Exists(path)) {
-            SteamUGC.SetItemPreview(update_handle, path);
+        // TODO: create automatically? YES!
+        string thumbnailPath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
+        if (File.Exists(thumbnailPath)) {
+            SteamUGC.SetItemPreview(update_handle, thumbnailPath);
         }
-        */
 
         string modpath = Path.GetDirectoryName(mod.path);
         if (Directory.Exists(modpath)) {
@@ -467,6 +465,8 @@ public class SteamworksUGCItem {
         ImGui.InputText("Author", author);
 
         ImGui.InputText("Version", version);
+
+        ImGui.Image(mod.thumbnail, Vector2.one * 100);
 
         ImGui.Dummy(new Vector2(0.0f, 10.0f));
         
