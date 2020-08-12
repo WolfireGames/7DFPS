@@ -155,9 +155,10 @@ public class SteamScript : MonoBehaviour
     void Update() {
         if (optionsmenuscript.show_mod_ui) {
             DrawModWindow();
-        }
-        if (uploadingItem != null && uploadingItem.waiting_for_create) {
-            uploadingItem.DrawItemWindow();
+
+            if (uploadingItem != null && uploadingItem.waiting_for_create) {
+                uploadingItem.DrawItemWindow();
+            }
         }
     }
 
