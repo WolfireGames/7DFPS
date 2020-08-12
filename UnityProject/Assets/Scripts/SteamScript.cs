@@ -492,6 +492,7 @@ public class SteamworksUGCItem {
         string thumbnailPath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
         if (File.Exists(thumbnailPath)) {
             SteamUGC.SetItemPreview(update_handle, thumbnailPath);
+        }
 
         if(SteamUGC.SetItemVisibility(update_handle, visibility) == false) {
             Debug.LogError("SetItemVisibility failed");
