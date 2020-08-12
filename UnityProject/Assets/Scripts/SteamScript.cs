@@ -205,10 +205,11 @@ public class SteamScript : MonoBehaviour
                 ImGui.SameLine(1.2f * hSpacing);
                 ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
                 if (ImGui.Button("Show info##" + i)) {
-                    if (uploadingItem == null || !uploadingItem.waiting_for_create) {
-                        uploadingItem = mod.steamworksItem;
-                        uploadingItem.waiting_for_create = true;
+                    if (uploadingItem != null) {
+                        uploadingItem.waiting_for_create = false;
                     }
+                    uploadingItem = mod.steamworksItem;
+                    uploadingItem.waiting_for_create = true;
                 }
                 if (ImGui.IsItemHovered()) {
                     ImGui.SetTooltip("Show mod info and Workshop upload window");
