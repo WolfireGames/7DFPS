@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
     public static List<Mod> loadedTapeMods = new List<Mod>();
 
-    public static List<Mod> availableMods;
+    public static List<Mod> availableMods = new List<Mod>();
 
     private static int numSteamMods = 0;
 
@@ -23,7 +24,19 @@ public class ModManager : MonoBehaviour {
         {ModType.Tapes, "tape_holder.prefab"},
     };
 
+    private static ModManager _instance;
+    public static ModManager instance {
+        get {
+            if(!_instance) // static "_instance" is cleared during hotswaps, reassign value
+                _instance = UnityEngine.Object.FindObjectOfType<ModManager>();
+            return _instance;
+        }
+    }
+
     public void Awake() {
+        // Setup static reference
+        ModManager._instance = this;
+
         //Make sure these folders are generated if they don't exist
         if(!Directory.Exists(GetModsfolderPath())) {
             Directory.CreateDirectory(GetModsfolderPath());
@@ -233,7 +246,7 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    private static Mod ImportMod(string path) {
+    public static Mod ImportMod(string path) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -261,7 +274,7 @@ public class ModManager : MonoBehaviour {
         // Register mod and clean up
         availableMods.Add(mod);
         modBundle.Unload(true);
-        Debug.Log($" + {bundleName} ({mod.modType})");
+        //Debug.Log($" + {bundleName} ({mod.modType})");
 
         return mod;
     }
@@ -315,6 +328,22 @@ public enum ModType {
 public class Mod {
     public ModType modType;
     public string name = "None";
+    
+    private WWW thumbnailProcess;
+    private Texture2D _thumbnail;
+    public Texture2D thumbnail {
+        get {
+            if(_thumbnail)
+                return _thumbnail;
+
+            if(thumbnailProcess == null) 
+                thumbnailProcess = new WWW($"file:///{ Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg") }");
+            else if(thumbnailProcess.isDone)
+                return _thumbnail = thumbnailProcess.texture;
+                
+            return new Texture2D(450, 450);
+        }
+    }
 
     [NonSerialized] public bool loaded = false;
     
