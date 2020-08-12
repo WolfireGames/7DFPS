@@ -112,6 +112,7 @@ public class ModExport : MonoBehaviour {
                 EditorSceneManager.OpenScene(lastScene, OpenSceneMode.Single);
             } else {
                 EditorSceneManager.OpenScene(EditorSceneManager.GetSceneByBuildIndex(0).path);
+            }
         }
 
         Debug.Log($"Export Completed. Name: \"{Path.GetFileName(source)}\" with {files.Length} files");

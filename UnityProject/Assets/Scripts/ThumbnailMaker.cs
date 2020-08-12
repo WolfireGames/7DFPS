@@ -177,9 +177,9 @@ public class ThumbnailMaker : MonoBehaviour {
         RenderTexture.ReleaseTemporary(renderTexture);
         cam.targetTexture = null;
 
-        //GameObject.DestroyImmediate(this.gameObject); // TODO Selfdestruct
+        GameObject.DestroyImmediate(this.gameObject);
+        mod.Unload();
 
-        //mod.Unload();
         return texture;
     }
 
