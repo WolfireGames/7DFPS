@@ -43,4 +43,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060e88a12644cd4281cad699d4abbca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile_prefabs: []
+  tile_prefabs:
+  - {fileID: 3807015255862482646, guid: 8c41df7e255fbfa4184b8890b403a598, type: 3}

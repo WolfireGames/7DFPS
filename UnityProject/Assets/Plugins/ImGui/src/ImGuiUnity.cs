@@ -4,11 +4,15 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.Rendering;
 using ImGuiNET;
+#if STEAMVR_ENABLED
+using Valve.VR;
+#endif  // STEAMVR_ENABLED
 
 public class ImGuiUnity : MonoBehaviour {
     public Material material;
 
     public bool drawDebugWindow = false;
+    public bool vrMouseDebug = false;
 
     public string[] customFonts;
     public float customFontPixelSize;
@@ -19,6 +23,7 @@ public class ImGuiUnity : MonoBehaviour {
     public string iconRangeMin;
     public string iconRangeMax;
     public bool useFreetype;                        // Use the Freetype rasterizer, only valid at startup
+
     ImRasterizerFlags freetype_flags = ImRasterizerFlags.NoHinting;
     int freetype_hinting = 0;
     bool freetype_bold = false;
@@ -26,6 +31,7 @@ public class ImGuiUnity : MonoBehaviour {
     bool queue_font_rebuild = false;
 
     public float uiScale;                           // For scaling the entire UI eg. on Android
+    public Vector2Int vrGuiResolution = new Vector2Int(1280, 720);
 
     public bool enableCustomCursors;
     public Texture2D customCursorArrow;
@@ -40,7 +46,13 @@ public class ImGuiUnity : MonoBehaviour {
     public bool enableMouse = true;
     public bool enableKeyboard = true;
     public bool enableTextInput = true;
+    public bool enableVRInput = false;
     public bool enableGameController = true;
+
+#if STEAMVR_ENABLED
+    public SteamVR_Action_Single VR_Trigger;
+    public float VR_Trigger_Value = 0.25f;
+#endif  // STEAMVR_ENABLED
 
     public string activateAxis = "Fire1";
     public string cancelAxis = "Fire2";
@@ -50,7 +62,15 @@ public class ImGuiUnity : MonoBehaviour {
     public bool MouseGrabbed { get; private set; }
     public bool KeyboardGrabbed { get; private set; }
 
-    Camera mainCamera;
+    System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+    public double last_start, last_end;
+
+    public Camera guiCamera;
+    public GameObject vrCameraObject;
+    public GameObject vrHandObject;
+
+    Camera vrCamera;
+    public Collider vrCollider;
 
     IntPtr context;
 
@@ -60,31 +80,60 @@ public class ImGuiUnity : MonoBehaviour {
 
     List<ImGuiMesh> meshes;
     CommandBuffer commandBuffer;
-    
+
+    RenderTexture renderTexture;
+    public Material objectMaterial;
+
     Texture2D fontTexture;
+    IntPtr fontTexturePtr;
     public ImFontPtr[] imFonts { get; private set; }
 
     KeyCode[] keyCodes;
 
-    void DrawDebugWindow() {
+    Texture2D currentCursorTex = null;
+
+    public static ImGuiUnity instance;
+    public bool override_new_frame = false;
+
+    class IntPtrComparer : IEqualityComparer<IntPtr>
+    {
+        bool IEqualityComparer<IntPtr>.Equals(IntPtr x, IntPtr y)
+        {
+            return x == y;
+        }
+
+        int IEqualityComparer<IntPtr>.GetHashCode(IntPtr obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
+
+    void DrawDebugWindow()
+    {
         ImGui.Begin("ImGuiCommandBufferRenderer Debug");
-        if(meshes != null){
+        if (meshes != null)
+        {
             ImGui.Text(string.Format("meshes.Count: {0}", meshes.Count));
         }
-        if(textures != null){
+        if (textures != null)
+        {
             ImGui.Text(string.Format("textures.Count: {0}", textures.Count));
         }
-        if(ImGui.Checkbox("Use Freetype", ref useFreetype)){
+        if (ImGui.Checkbox("Use Freetype", ref useFreetype))
+        {
             queue_font_rebuild = true;
         }
-        if(useFreetype) {
+        if (useFreetype)
+        {
             bool changed = false;
-            changed |= ImGui.Combo("Hinting", ref freetype_hinting, new string[] {"Default", "No Hinting", "No Auto", "Force Auto", "Light", "Mono"});
+            changed |= ImGui.Combo("Hinting", ref freetype_hinting, new string[] { "Default", "No Hinting", "No Auto", "Force Auto", "Light", "Mono" });
             changed |= ImGui.Checkbox("Bold", ref freetype_bold);
             changed |= ImGui.Checkbox("Oblique", ref freetype_oblique);
-            if(changed){
+            if (changed)
+            {
                 freetype_flags = 0;
-                switch(freetype_hinting) {
+                switch (freetype_hinting)
+                {
                     case 0: freetype_flags = ImRasterizerFlags.None; break;
                     case 1: freetype_flags = ImRasterizerFlags.NoHinting; break;
                     case 2: freetype_flags = ImRasterizerFlags.NoAutoHint; break;
@@ -92,10 +141,12 @@ public class ImGuiUnity : MonoBehaviour {
                     case 4: freetype_flags = ImRasterizerFlags.LightHinting; break;
                     case 5: freetype_flags = ImRasterizerFlags.MonoHinting; break;
                 }
-                if(freetype_bold){
+                if (freetype_bold)
+                {
                     freetype_flags |= ImRasterizerFlags.Bold;
                 }
-                if (freetype_oblique) {
+                if (freetype_oblique)
+                {
                     freetype_flags |= ImRasterizerFlags.Oblique;
                 }
                 queue_font_rebuild = true;
@@ -104,12 +155,15 @@ public class ImGuiUnity : MonoBehaviour {
         ImGui.End();
     }
 
-    void RebuildFonts() {
+    void RebuildFonts()
+    {
         ImGuiIOPtr io = ImGui.GetIO();
+
         // Default font
         ImFontAtlasPtr fonts = io.Fonts;
         fonts.Clear();
-        using (ImFontConfig config = new ImFontConfig()) {
+        using (ImFontConfig config = new ImFontConfig())
+        {
             config.SizePixels = 13.0f * uiScale;    // ImGui default font size is 13 pixels
             config.OversampleH = 1;
             fonts.AddFontDefault(config);
@@ -117,10 +171,13 @@ public class ImGuiUnity : MonoBehaviour {
 
 #if !UNITY_ANDROID
         // Icon font
-        if (iconFont.Length > 0) {
-            using (ImFontConfig config = new ImFontConfig()) {
+        if (iconFont.Length > 0)
+        {
+            using (ImFontConfig config = new ImFontConfig())
+            {
                 config.MergeMode = true;
-                if (iconFontMinAdvanceX > 0) {
+                if (iconFontMinAdvanceX > 0)
+                {
                     config.GlyphMinAdvanceX = iconFontMinAdvanceX;
                     config.GlyphMaxAdvanceX = iconFontMinAdvanceX;
                 }
@@ -128,7 +185,8 @@ public class ImGuiUnity : MonoBehaviour {
                 config.OversampleH = 1;
                 ushort rangeMin = ushort.Parse(iconRangeMin, NumberStyles.HexNumber);
                 ushort rangeMax = ushort.Parse(iconRangeMax, NumberStyles.HexNumber);
-                if (rangeMin != 0 && rangeMax != 0) {
+                if (rangeMin != 0 && rangeMax != 0)
+                {
                     ushort[] icon_ranges = { rangeMin, rangeMax, 0 };
                     ImGui.AddFontFromFileTTF(fonts, Application.streamingAssetsPath + "/" + iconFont, iconFontPixelSize * uiScale, config, icon_ranges);
                 }
@@ -137,8 +195,10 @@ public class ImGuiUnity : MonoBehaviour {
 
         // Custom fonts
         imFonts = new ImFontPtr[customFonts.Length];
-        for (int i = 0; i < customFonts.Length; i++) {
-            using (ImFontConfig config = new ImFontConfig()) {
+        for (int i = 0; i < customFonts.Length; i++)
+        {
+            using (ImFontConfig config = new ImFontConfig())
+            {
                 config.OversampleH = 1;
                 config.OversampleV = 1;
                 imFonts[i] = fonts.AddFontFromFileTTF(Application.streamingAssetsPath + "/" + customFonts[i], customFontPixelSize * uiScale, config);
@@ -146,19 +206,40 @@ public class ImGuiUnity : MonoBehaviour {
         }
 #endif
 
-        if (useFreetype) {
+        if (useFreetype)
+        {
             // Freetype rasterizer
             ImGui.BuildFontAtlas(fonts, freetype_flags);
-        } else {
+        }
+        else
+        {
             fonts.Build();
         }
         RecreateFontTexture();
     }
 
-    void Awake() {
-        mainCamera = gameObject.GetComponent<Camera>();
+    void Awake()
+    {
+        instance = this;
 
-        textures = new Dictionary<IntPtr, Texture>();
+        if (guiCamera == null)
+        {
+            guiCamera = gameObject.GetComponent<Camera>();
+        }
+
+        if (enableVRInput)
+        {
+            renderTexture = new RenderTexture(vrGuiResolution.x, vrGuiResolution.y, 0);
+            guiCamera.targetTexture = renderTexture;
+
+            objectMaterial.mainTexture = renderTexture;
+            MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+            meshRenderer.material = objectMaterial;
+
+            vrCollider = GetComponent<MeshCollider>();
+        }
+
+        textures = new Dictionary<IntPtr, Texture>(new IntPtrComparer());
         mpb = new MaterialPropertyBlock();
         main_tex_id = Shader.PropertyToID("_MainTex");
 
@@ -185,15 +266,21 @@ public class ImGuiUnity : MonoBehaviour {
         ImGui.DestroyContext(context);
         // We must set it to null to clear the allocated buffer or Unity will complain
         io.SetIniFile(null);
+
+        if (renderTexture != null)
+        {
+            renderTexture.Release();
+            renderTexture = null;
+        }
     }
 
     void OnDisable()
     {
         if (commandBuffer != null)
         {
-            if (mainCamera)
+            if (guiCamera)
             {
-                mainCamera.RemoveCommandBuffer(CameraEvent.AfterEverything, commandBuffer);
+                guiCamera.RemoveCommandBuffer(CameraEvent.AfterEverything, commandBuffer);
             }
             commandBuffer = null;
         }
@@ -203,10 +290,15 @@ public class ImGuiUnity : MonoBehaviour {
     {
         if (textures == null)
         {
-            textures = new Dictionary<IntPtr, Texture>();
+            textures = new Dictionary<IntPtr, Texture>(new IntPtrComparer());
         }
 
-        mainCamera.gameObject.transform.position = new Vector3(0, 0, -10);
+        guiCamera.gameObject.transform.position = new Vector3(0, 0, -10);
+
+        if (enableVRInput && vrCameraObject != null && vrCamera == null)
+        {
+            vrCamera = vrCameraObject.GetComponent<Camera>();
+        }
 
         // ImGuiRenderer should be first in Script Execution Order
         SetPerFrameImGuiData();
@@ -215,16 +307,23 @@ public class ImGuiUnity : MonoBehaviour {
             UpdateInput();
         }
 
-        ImGui.NewFrame();
+        if(!override_new_frame)
+        {
+            ImGui.NewFrame();
+        }
     }
 
-    void LateUpdate() {
-        if (drawDebugWindow) {
+    void LateUpdate()
+    {
+        last_start = stopwatch.Elapsed.TotalSeconds;
+        if (drawDebugWindow)
+        {
             DrawDebugWindow();
         }
         ImGui.EndFrame();
 
-        if (queue_font_rebuild) {
+        if (queue_font_rebuild)
+        {
             RebuildFonts();
             queue_font_rebuild = false;
         }
@@ -260,13 +359,18 @@ public class ImGuiUnity : MonoBehaviour {
                 default:
                     break;
             }
-            if (cursorTex != null)
+            // Don't set cursor if it has not actually changed
+            if (currentCursorTex != cursorTex)
             {
-                Cursor.SetCursor(cursorTex, hotspot, CursorMode.Auto);
-            }
-            else
-            {
-                Cursor.SetCursor(null, cursorHotspot, CursorMode.Auto);
+                if (cursorTex != null)
+                {
+                    Cursor.SetCursor(cursorTex, hotspot, CursorMode.Auto);
+                }
+                else
+                {
+                    Cursor.SetCursor(null, cursorHotspot, CursorMode.Auto);
+                }
+                currentCursorTex = cursorTex;
             }
         }
 
@@ -275,85 +379,107 @@ public class ImGuiUnity : MonoBehaviour {
         // render ImGui
         ImDrawDataPtr data = ImGui.GetDrawData();
 
-        // resize meshes array
-        int numDrawCommands = 0;
-        for (int i = 0; i < data.CmdListsCount; i++)
+        if (commandBuffer != null)
         {
-            ImDrawListPtr cmdList = data.getDrawListPtr(i);
-            var cmdBuffer = cmdList.CmdBuffer;
-            numDrawCommands += cmdBuffer.Size;
+            // Clear buffer regardless of whether we have something to render or not
+            commandBuffer.Clear();
         }
 
-        if (meshes == null)
+        // Don't update meshes and Command Buffers if there is nothing to render
+        if (data.CmdListsCount > 0)
         {
-            meshes = new List<ImGuiMesh>();
-        }
-
-        if (meshes.Count != numDrawCommands)
-        {
-            // add new meshes to list if needed
-            for (int i = meshes.Count; i < numDrawCommands; i++)
+            // resize meshes array
+            int numDrawCommands = 0;
+            for (int i = 0; i < data.CmdListsCount; i++)
             {
-                ImGuiMesh mesh = new ImGuiMesh();
-                meshes.Add(mesh);
+                ImDrawListPtr cmdList = data.getDrawListPtr(i);
+                var cmdBuffer = cmdList.CmdBuffer;
+                numDrawCommands += cmdBuffer.Size;
             }
-            // delete extra meshes if needed
-            for (int i = meshes.Count - 1; i >= numDrawCommands; i--)
-            {
-                Destroy(meshes[i].mesh);
-                meshes.RemoveAt(i);
-            }
-        }
 
-        if (commandBuffer == null)
-        {
-            commandBuffer = new CommandBuffer();
-            commandBuffer.name = "ImGui Renderer";
+            if (meshes == null)
+            {
+                meshes = new List<ImGuiMesh>();
+            }
+
+            if (meshes.Count != numDrawCommands)
+            {
+                // add new meshes to list if needed
+                for (int i = meshes.Count; i < numDrawCommands; i++)
+                {
+                    ImGuiMesh mesh = new ImGuiMesh();
+                    meshes.Add(mesh);
+                }
+                // delete extra meshes if needed
+                for (int i = meshes.Count - 1; i >= numDrawCommands; i--)
+                {
+                    Destroy(meshes[i].mesh);
+                    meshes.RemoveAt(i);
+                }
+            }
+
+            if (commandBuffer == null)
+            {
+                commandBuffer = new CommandBuffer();
+                commandBuffer.name = "ImGui Renderer";
+                commandBuffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
+                guiCamera.AddCommandBuffer(CameraEvent.AfterEverything, commandBuffer);
+            }
+
             commandBuffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
-            mainCamera.AddCommandBuffer(CameraEvent.AfterEverything, commandBuffer);
-        }
+            // orthogonal projection of GUI mesh to camera space
+            Matrix4x4 matrix = Matrix4x4.Ortho(0, Screen.width, 0, Screen.height, 0, 0.1f);
+            // negate world to camera transform and projection which Unity applies itself
+            matrix = guiCamera.cameraToWorldMatrix * guiCamera.projectionMatrix.inverse * matrix;
 
-        commandBuffer.Clear();
-        commandBuffer.SetRenderTarget(BuiltinRenderTextureType.CameraTarget);
-        // orthogonal projection of GUI mesh to camera space
-        Matrix4x4 matrix = Matrix4x4.Ortho(0, Screen.width, 0, Screen.height, 0, 0.1f);
-        // negate world to camera transform and projection which Unity applies itself
-        matrix = mainCamera.cameraToWorldMatrix * mainCamera.projectionMatrix.inverse * matrix;
+            // update Command Buffers
+            int count = 0;
+            for (int i = 0; i < data.CmdListsCount; i++)
+            {
+                ImDrawListPtr cmdList = data.getDrawListPtr(i);
+                var cmdBuffer = cmdList.CmdBuffer;
 
-        // update Command Buffers
-        int count = 0;
-        for (int i = 0; i < data.CmdListsCount; i++) {
-            ImDrawListPtr cmdList = data.getDrawListPtr(i);
-            var cmdBuffer = cmdList.CmdBuffer;
-
-            uint startElement = 0;
-            for (int j = 0; j < cmdBuffer.Size; j++) {
-                ImDrawCmd cmd = cmdBuffer[j];
-                Rect rect = new Rect
+                uint startElement = 0;
+                for (int j = 0; j < cmdBuffer.Size; j++)
                 {
-                    min = new Vector2(cmd.ClipRect.x, Screen.height - cmd.ClipRect.y),
-                    max = new Vector2(cmd.ClipRect.z, Screen.height - cmd.ClipRect.w)
-                };
-                commandBuffer.EnableScissorRect(rect);
+                    ImDrawCmd cmd = cmdBuffer[j];
+                    Rect rect = new Rect
+                    {
+                        min = new Vector2(cmd.ClipRect.x, Screen.height - cmd.ClipRect.y),
+                        max = new Vector2(cmd.ClipRect.z, Screen.height - cmd.ClipRect.w)
+                    };
+                    commandBuffer.EnableScissorRect(rect);
 
-                meshes[count].UpdateMesh(cmd, cmdList.IdxBuffer, cmdList.VtxBuffer, (int)startElement);
-                if (textures.ContainsKey(cmd.TextureId))
-                {
-                    mpb.SetTexture(main_tex_id, textures[cmd.TextureId]);
-                    commandBuffer.DrawMesh(meshes[count].mesh, matrix, material, 0, 0, mpb);
+                    meshes[count].UpdateMesh(cmd, cmdList.IdxBuffer, cmdList.VtxBuffer, (int)startElement);
+                    if (cmd.TextureId == fontTexturePtr)
+                    {
+                        mpb.SetTexture(main_tex_id, fontTexture);
+                        commandBuffer.DrawMesh(meshes[count].mesh, matrix, material, 0, 0, mpb);
+                    }
+                    else if (textures.ContainsKey(cmd.TextureId))
+                    {
+                        mpb.SetTexture(main_tex_id, textures[cmd.TextureId]);
+                        commandBuffer.DrawMesh(meshes[count].mesh, matrix, material, 0, 0, mpb);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Image texture missing!");
+                    }
+
+                    startElement += cmd.ElemCount;
+                    count++;
                 }
-                else
-                {
-                    Debug.LogWarning("Image texture missing!");
-                }
-
-                startElement += cmd.ElemCount;
-                count++;
             }
+        }
+        else if (commandBuffer != null)
+        {
+            // Remove Command Buffer if there is nothing to render
+            guiCamera.RemoveCommandBuffer(CameraEvent.AfterEverything, commandBuffer);
+            commandBuffer = null;
         }
 
         textures.Clear();
-        textures.Add(fontTexture.GetNativeTexturePtr(), fontTexture);
+        last_end = stopwatch.Elapsed.TotalSeconds;
     }
 
     unsafe public void RecreateFontTexture()
@@ -378,7 +504,8 @@ public class ImGuiUnity : MonoBehaviour {
         fontTexture.Apply();
         material.mainTexture = fontTexture;
         // Store our identifier
-        io.Fonts.SetTexID(fontTexture.GetNativeTexturePtr());
+        fontTexturePtr = fontTexture.GetNativeTexturePtr();
+        io.Fonts.SetTexID(fontTexturePtr);
 
         io.Fonts.ClearTexData();
     }
@@ -437,7 +564,41 @@ public class ImGuiUnity : MonoBehaviour {
             io.KeySuper = Input.GetKey(KeyCode.RightWindows) || Input.GetKey(KeyCode.LeftWindows);
         }
 
-        // TODO: io.NavInputs seems to be invalid. Find out why.
+        if (vrMouseDebug && vrCamera != null)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
+            Ray ray = vrCamera.ScreenPointToRay(Input.mousePosition);
+            Vector2 screenPosition;
+            bool mouseOnVRGUI = RaycastVRUI(ray, out screenPosition);
+            if (mouseOnVRGUI)
+            {
+                io.MousePos = screenPosition;
+
+                RangeAccessor<Bool8> mouseDown = io.MouseDown;
+                mouseDown[0] = Input.GetMouseButton(0);
+                mouseDown[1] = Input.GetMouseButton(1);
+                mouseDown[2] = Input.GetMouseButton(2);
+            }
+        }
+        else if (enableVRInput && vrCameraObject != null && vrHandObject != null)
+        {
+            // TODO: should we generate warning if vr input is requested but head/hand objects not assigned?
+            Vector3 handPosition = vrHandObject.transform.position;
+            Ray ray = new Ray(handPosition, vrHandObject.transform.forward);
+            Vector2 screenPosition;
+            bool mouseOnVRGUI = RaycastVRUI(ray, out screenPosition);
+            if (mouseOnVRGUI) {
+                io.MousePos = screenPosition;
+
+#if STEAMVR_ENABLED
+                RangeAccessor<Bool8> mouseDown = io.MouseDown;
+                mouseDown[0] = (VR_Trigger.GetAxis(SteamVR_Input_Sources.RightHand) > VR_Trigger_Value) || (VR_Trigger.GetAxis(SteamVR_Input_Sources.LeftHand) > VR_Trigger_Value);
+#endif  // STEAMVR_ENABLED
+            }
+        }
+
         /*
         if (enableGameController)
         {
@@ -468,8 +629,24 @@ public class ImGuiUnity : MonoBehaviour {
                 buttonsDown[(int)ImGuiNavInput.LStickUp] = vertical;
                 buttonsDown[(int)ImGuiNavInput.KeyUp] = vertical;
             }
+        }*/
+    }
+
+    private bool RaycastVRUI(Ray ray, out Vector2 screenPosition)
+    {
+        RaycastHit hitData;
+
+        if (vrCollider.Raycast(ray, out hitData, 100.0f))
+        {
+            Vector3 worldPosition = hitData.point;
+            Vector3 translateVector = new Vector3(0.5f, -0.5f, 0.0f);
+            Vector3 localPosition = vrCollider.transform.InverseTransformPoint(worldPosition) + translateVector;
+            screenPosition = new Vector2(vrGuiResolution.x * localPosition.x, -vrGuiResolution.y * localPosition.y);
+            return true;
         }
-        */
+
+        screenPosition = new Vector2(0, 0);
+        return false;
     }
 
     void SetKeyMappings()
