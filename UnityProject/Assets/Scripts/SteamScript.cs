@@ -576,13 +576,19 @@ public class SteamworksUGCItem {
             }
         } else {
             ImGui.PushStyleColor(ImGuiCol.Text, SteamScript.buttonTextColor);
-            if (ImGui.Button("Upload to Workshop")) {
-                RequestCreation();
+            if (steamworks_id == PublishedFileId_t.Invalid) {
+                if (ImGui.Button("Upload to Workshop")) {
+                    RequestCreation();
+                }
+            } else {
+                if (ImGui.Button("Update Workshop item")) {
+                    RequestCreation();
+                }
             }
             if (ImGui.Button("Update Workshop preview image")) {
                 RequestPreviewUpload("Update preview");
             }
-            if (ImGui.Button("Update metadata")) {
+            if (ImGui.Button("Update local metadata")) {
                 UpdateMetadata();
             }
             if (ImGui.IsItemHovered()) {
