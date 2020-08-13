@@ -50,8 +50,7 @@ public class ModManager : MonoBehaviour {
         if(PlayerPrefs.GetInt("mods_enabled", 0) != 1)
             return;
 
-        if(availableMods == null)
-            LoadCache();
+        LoadCache();
 
         if(availableMods.Count != GetModFolderCount() + PlayerPrefs.GetInt("num_steam_mods", 0)) { // Is our Cache up to date?
             UnloadAll();
@@ -64,6 +63,11 @@ public class ModManager : MonoBehaviour {
             mod.Load();
 
         InsertMods();
+    }
+
+    public void OnDestroy() {
+        UnloadAll();
+        availableMods.Clear();
     }
 
     public Mod LoadSteamItem(string path) {
