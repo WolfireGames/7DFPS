@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
@@ -332,19 +332,20 @@ public enum ModType {
 public class Mod {
     public ModType modType;
     public string name = "None";
-    
-    private WWW thumbnailProcess;
+
+    private UnityWebRequest thumbnailProcess;
     private Texture2D _thumbnail;
     public Texture2D thumbnail {
         get {
             if(_thumbnail)
                 return _thumbnail;
 
-            if(thumbnailProcess == null) 
-                thumbnailProcess = new WWW($"file:///{ Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg") }");
-            else if(thumbnailProcess.isDone)
-                return _thumbnail = thumbnailProcess.texture;
-                
+            if(thumbnailProcess == null) {
+                thumbnailProcess = UnityWebRequestTexture.GetTexture($"file:///{ Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg")}");
+                thumbnailProcess.SendWebRequest();
+            } else if(thumbnailProcess.isDone)
+                return _thumbnail = DownloadHandlerTexture.GetContent(thumbnailProcess);
+
             return new Texture2D(450, 450);
         }
     }
