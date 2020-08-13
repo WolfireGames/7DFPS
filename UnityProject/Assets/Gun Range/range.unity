@@ -820,55 +820,5 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886372, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_Text
-      value: 'testingsomething: Press [right hand index controller grip button]
-
-        testing
-
-        testing
-
-        testing
-
-        testing
-
-        testing'
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0.666
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.30200002
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178438659886374, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482178439030249831, guid: eaecceba16196a84ea1f5e4c4c76b6b0,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaecceba16196a84ea1f5e4c4c76b6b0, type: 3}
