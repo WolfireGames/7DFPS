@@ -437,8 +437,7 @@ public class SteamworksUGCItem {
 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
-        // TODO: create automatically?
-        string previewImagePath = Application.streamingAssetsPath + "/thumb.png";
+        string previewImagePath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
         if (File.Exists(previewImagePath)) {
             if(SteamUGC.SetItemPreview(update_handle, previewImagePath) == false) {
                 Debug.LogError("SetItemPreview failed");
@@ -488,7 +487,7 @@ public class SteamworksUGCItem {
             Debug.LogError("SetItemTags failed");
         }
 
-        // TODO: create automatically? YES!
+        // Add preview image
         string thumbnailPath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
         if (File.Exists(thumbnailPath)) {
             SteamUGC.SetItemPreview(update_handle, thumbnailPath);
@@ -580,7 +579,7 @@ public class SteamworksUGCItem {
             if (ImGui.Button("Upload to Workshop")) {
                 RequestCreation();
             }
-            if (ImGui.Button("Upload Preview Image")) {
+            if (ImGui.Button("Update Workshop preview image")) {
                 RequestPreviewUpload("Update preview");
             }
             if (ImGui.Button("Update metadata")) {
