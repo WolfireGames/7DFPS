@@ -124,6 +124,16 @@ public class ModManager : MonoBehaviour {
         return mod;
     }
 
+    public void MarkSteamItemForUninstall() {
+        numSteamMods = PlayerPrefs.GetInt("num_steam_mods", 0);
+        numSteamMods--;
+        if (numSteamMods < 0) {
+            Debug.LogWarning("Trying to uninstall more Steam items than what exist");
+            numSteamMods = 0;
+        }
+        PlayerPrefs.SetInt("num_steam_mods", numSteamMods);
+    }
+
     public static string GetModsfolderPath() {
         return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }

@@ -248,6 +248,7 @@ public class SteamScript : MonoBehaviour
             } else {
                 if (ImGui.Button("Uninstall (needs restart)##" + j)) {
                     SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
+                    modManager.MarkSteamItemForUninstall();
                 }
                 ImGui.SameLine();
                 if (ImGui.Button("Show in Steam##" + j)) {
