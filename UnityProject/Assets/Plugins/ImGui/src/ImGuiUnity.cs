@@ -50,7 +50,7 @@ public class ImGuiUnity : MonoBehaviour {
     public bool enableGameController = true;
 
 #if STEAMVR_ENABLED
-    public SteamVR_Action_Single VR_Trigger;
+    public SteamVR_Action_Boolean VR_Trigger;
     public float VR_Trigger_Value = 0.25f;
 #endif  // STEAMVR_ENABLED
 
@@ -599,7 +599,7 @@ public class ImGuiUnity : MonoBehaviour {
 
 #if STEAMVR_ENABLED
                 RangeAccessor<Bool8> mouseDown = io.MouseDown;
-                mouseDown[0] = (VR_Trigger.GetAxis(SteamVR_Input_Sources.RightHand) > VR_Trigger_Value) || (VR_Trigger.GetAxis(SteamVR_Input_Sources.LeftHand) > VR_Trigger_Value);
+                mouseDown[0] = (VR_Trigger.GetState(SteamVR_Input_Sources.RightHand)) || (VR_Trigger.GetState(SteamVR_Input_Sources.LeftHand));
 #endif  // STEAMVR_ENABLED
             }
         }

@@ -80,7 +80,10 @@ public class VRInputController : MonoBehaviour
             canFrontGrab = false;
         }
         
-
+        if(ImGuiUnity.instance != null) {
+            ImGuiUnity.instance.vrHandObject = RightHand;
+            ImGuiUnity.instance.vrCameraObject = Head;
+        }
         
 
         if (VRInputBridge.instance.aimScript_ref.gun_script.HasGunComponent(GunAspect.TRIGGER_VISUAL)) {

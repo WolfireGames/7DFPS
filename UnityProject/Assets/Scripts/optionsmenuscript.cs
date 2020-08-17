@@ -73,6 +73,11 @@ public class optionsmenuscript : MonoBehaviour {
         if (ImGuiUnity.instance != null) {
             raycaster.enabled = !ImGuiUnity.instance.MouseGrabbed;
         }
+
+        if (show_mod_ui) {
+            ImGuiUnity.instance.transform.position = transform.position - transform.forward * 0.1f;
+            ImGuiUnity.instance.transform.rotation = transform.rotation;
+        }
     }
 
     public void OnGUI() {
