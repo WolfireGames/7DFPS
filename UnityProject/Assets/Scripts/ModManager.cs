@@ -53,9 +53,7 @@ public class ModManager : MonoBehaviour {
         LoadCache();
 
         if(availableMods.Count != GetModFolderCount() + PlayerPrefs.GetInt("num_steam_mods", 0)) { // Is our Cache up to date?
-            UnloadAll();
-            ImportMods();
-            UpdateCache();
+            ForceReimport();
         }
         
         // Load everything but guns
@@ -63,6 +61,13 @@ public class ModManager : MonoBehaviour {
             mod.Load();
 
         InsertMods();
+    }
+
+    public static void ForceReimport() {
+        Debug.LogWarning("Forced a mod Reimport");
+        UnloadAll();
+        ImportMods();
+        UpdateCache();
     }
 
     public void OnDestroy() {
