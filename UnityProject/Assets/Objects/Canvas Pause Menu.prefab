@@ -7631,7 +7631,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 7163399577596914369}
-        m_MethodName: UpdateUIValues
+        m_MethodName: UpdateUIValuesAndApplyDefaults
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
