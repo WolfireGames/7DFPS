@@ -705,9 +705,9 @@ public class UnityExamples : MonoBehaviour
                 ImGui.Text(display);
                 if (ImGui.IsItemClicked()) {
                     file_browse_path = filePath + Path.DirectorySeparatorChar;
-                }                    
+                }
             }
-        } catch (Exception exc) { }
+        } catch (Exception) {}
     }
     
     void DrawFileBrowser() {
@@ -785,7 +785,7 @@ public class UnityExamples : MonoBehaviour
                         }
                     }
                 }
-            } catch(Exception exc){}
+            } catch(Exception) {}
             ImGui.EndChild();
             ImGui.SameLine();
             ImGui.BeginChild("right pane", new Vector2(0, -ImGui.GetFrameHeightWithSpacing()*2-10), true);

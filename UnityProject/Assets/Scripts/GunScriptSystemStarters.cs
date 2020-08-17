@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using GunSystemInterfaces;
 
 namespace GunSystemsV1 {
     /// <summary> Use this class to determine initial states for a gun components </summary>

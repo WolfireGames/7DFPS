@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using ExtentionUtil;
 using System.Linq;
+using GunSystemInterfaces;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.SLIDE_LOCK_VISUAL)]

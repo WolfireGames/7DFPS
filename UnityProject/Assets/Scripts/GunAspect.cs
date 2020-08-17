@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 
 public static class GunAspectHelper {
@@ -116,7 +117,7 @@ public static class GunAspectHelper {
 }
 
 [System.Serializable]
-public class GunAspect {
+public class GunAspect : IEnumerable<GunAspect> {
     public const ushort REVOLVER_CYLINDER = 0;
     public const ushort MAGAZINE = 1;
     public const ushort MANUAL_LOADING = 2;
@@ -219,6 +220,16 @@ public class GunAspect {
 
     public static GunAspect operator ~(GunAspect a) {
         return a ^ GunAspect.ALL;
+    }
+
+    public IEnumerator<GunAspect> GetEnumerator() {
+        foreach (GunAspect aspect in value) {
+            yield return aspect;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+        return GetEnumerator();
     }
 
     // Casting

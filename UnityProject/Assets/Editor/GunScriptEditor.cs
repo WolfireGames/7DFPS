@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ExtentionUtil;
+using GunSystemInterfaces;
 
 [CustomEditor(typeof(GunScript))]
 public class GunScriptEditor : Editor {
@@ -22,6 +23,7 @@ public class GunScriptEditor : Editor {
     public static bool autodelete_components = false;
 
     private Dictionary<string, GunAspect> aspect_groups = GatherGunAspectGroups();
+    private GunAspect possible_aspects = GunAspect.ALL;
     private List<Type> possible_components;
     private List<Type> possible_systems;
 
@@ -32,7 +34,7 @@ public class GunScriptEditor : Editor {
     private static readonly Color ASPECT_SELECTED = Color.HSVToRGB(.4f, .3f, .9f);
 
     private static readonly Dictionary<string, GunAspect> gun_presets = new Dictionary<string, GunAspect> {
-        {"Select Preset", GunAspect.ALL},
+        {"Select Preset", null},
         {"M1911 Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.HAMMER_VISUAL, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING, GunAspect.THUMB_SAFETY, GunAspect.GRIP_SAFETY, GunAspect.SLIDE_RELEASE_BUTTON, GunAspect.THUMB_SAFETY_VISUAL, GunAspect.GRIP_SAFETY_VISUAL)},
         {"Glock Preset", new GunAspect(GunAspect.CHAMBER, GunAspect.MAGAZINE, GunAspect.EXTERNAL_MAGAZINE, GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_LOCK_VISUAL, GunAspect.SLIDE_SPRING, GunAspect.SLIDE_VISUAL, GunAspect.HAMMER, GunAspect.THUMB_COCKING, GunAspect.FIRE_MODE, GunAspect.TRIGGER_COCKING, GunAspect.SLIDE_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING, GunAspect.SLIDE_RELEASE_BUTTON, GunAspect.FIRE_MODE_VISUAL)},
         {"Revolver Preset", new GunAspect(GunAspect.MANUAL_LOADING, GunAspect.REVOLVER_CYLINDER, GunAspect.EXTRACTOR_ROD, GunAspect.EXTRACTOR_ROD_VISUAL, GunAspect.CYLINDER_VISUAL, GunAspect.YOKE, GunAspect.YOKE_VISUAL, GunAspect.HAMMER, GunAspect.HAMMER_VISUAL, GunAspect.THUMB_COCKING, GunAspect.TRIGGER_COCKING, GunAspect.TRIGGER, GunAspect.RECOIL, GunAspect.FIRING)},
@@ -57,9 +59,31 @@ public class GunScriptEditor : Editor {
         gun_script = (GunScript)target;
         systems = gun_script.GetGunSystems();
 
-        possible_components = typeof(GunComponent).GetAllDerivedTypes();
+        possible_aspects = GetAllAspectsUsedInSystem(systems);
+        possible_components = typeof(GunComponent).GetAllDerivedTypes(systems.GetType());
         possible_systems = typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType());
         Update();
+    }
+
+    /// <summary> Gets every GunAspect that is referenced by a system version </summary>
+    public GunAspect GetAllAspectsUsedInSystem(GunSystemsContainer systems) {
+        GunAspect usedAspects = new GunAspect();
+        foreach(Type system in typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType())) {
+            GunAspect inclusive = system.GetCustomAttribute<InclusiveAspectsAttribute>(false)?.inclusive_aspects;
+            GunAspect exclusive = system.GetCustomAttribute<ExclusiveAspectsAttribute>(false)?.exclusive_aspects;
+
+            if(inclusive == null && exclusive == null)
+                continue;
+            
+            if(inclusive == null) {
+                usedAspects = usedAspects | exclusive;
+            } else if(exclusive == null) {
+                usedAspects = usedAspects | inclusive;
+            } else {
+                usedAspects = usedAspects | exclusive | inclusive;
+            }
+        }
+        return usedAspects;
     }
 
     public override void OnInspectorGUI() {
@@ -220,7 +244,7 @@ public class GunScriptEditor : Editor {
     public void DrawAspects() {
         // Draw Header
         EditorGUI.BeginChangeCheck();
-        foreach (GunAspect aspect in GunAspect.ALL) {
+        foreach (GunAspect aspect in possible_aspects) {
             if(aspect.IsEmpty() || !loaded_aspects.HasFlag(aspect))
                 continue;
 
@@ -273,7 +297,7 @@ public class GunScriptEditor : Editor {
         foreach(var group in aspect_groups) {
             GUILayout.BeginHorizontal();
 
-            GunAspect group_aspect = GunAspect.ALL.Where((value) => { return group.Value.HasFlag(value);}).ToArray();
+            GunAspect group_aspect = GunAspect.ALL.Where((value) => { return possible_aspects.HasFlag(value) && group.Value.HasFlag(value);}).ToArray();
             for (int i = 0; i < group_aspect.value.Length; i++) {
                 GunAspect current_aspect = group_aspect.value[i];
                 if(i % 2 == 0) {

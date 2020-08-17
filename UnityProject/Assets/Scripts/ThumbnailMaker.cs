@@ -65,7 +65,7 @@ public class ThumbnailMaker : MonoBehaviour {
     private void SetClippingDistance() {
         var angle = cam.transform.eulerAngles.x;
         var highestY = cam.transform.position.y + cam.orthographicSize * Mathf.Cos(angle * Mathf.Deg2Rad);
-        cam.farClipPlane = highestY / Mathf.Sin(angle * Mathf.Deg2Rad);
+        cam.farClipPlane = highestY / Mathf.Sin(angle * Mathf.Deg2Rad) + 0.1f;
     }
 
     private void PrepareGun(GameObject gun) {

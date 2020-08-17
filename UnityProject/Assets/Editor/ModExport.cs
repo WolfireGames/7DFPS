@@ -45,42 +45,12 @@ public class ModExport : MonoBehaviour {
         }
     }
 
-    [MenuItem("Wolfire/Batch Export Mods Android")]
-    public static void BatchExportModsAndroid() {
-        string root_path = EditorUtility.OpenFolderPanel("Select Mods Folder", "Assets/Mods", "");
-        if (root_path == "") // Happens when the user aborts path selection
-            return;
-
-        // Gather mods and names
-        string[] paths = Directory.GetDirectories(root_path);
-        List<string> names = new List<string>();
-        foreach (string path in paths)
-            names.Add(Path.GetFileName(path));
-
-        if (names.Count <= 0)
-            throw new System.Exception("There were no potential mods found in your folder selection. Make sure to select the parent folder of your mods when batch exporting!");
-
-        // Present parameters
-        if (!EditorUtility.DisplayDialog("Batch Export Mods", $"Are you sure you want to batch export following mods?\n - {string.Join("\n - ", names)}\nMods that raise errors will be skipped.", "Export", "Cancel"))
-            return;
-
-        // Export each path individually
-        foreach (string path in paths) {
-            try {
-                ExportBundle(path, true);
-            }
-            catch (System.Exception e) {
-                Debug.LogException(e);
-            }
-        }
-    }
-
     [MenuItem("Wolfire/Open Mods Path")]
     public static void OpenModPath () {
         Application.OpenURL(ModManager.GetModsfolderPath());
     }
 
-    public static void ExportBundle (string source, bool AndroidOnly = false) {
+    public static void ExportBundle (string source) {
         string dest = Path.Combine(ModManager.GetModsfolderPath(), $"modfile_{Path.GetFileName(source)}");
         Debug.Log($"Exporting Mod: Source: \"{source}\", Target: \"{dest}\"");
 
@@ -103,18 +73,9 @@ public class ModExport : MonoBehaviour {
         
         // Build Folder / Bundle
         Directory.CreateDirectory(dest);
-
-        if (!AndroidOnly) {
-            foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> { { OperatingSystemFamily.Linux, BuildTarget.StandaloneLinux64 }, { OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX }, { OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64 } }) {
-                build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
-                BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
-            }
-        }
-        else {
-            foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> { { OperatingSystemFamily.Other, BuildTarget.Android } }) {
-                build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
-                BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
-            }
+        foreach (var target in new Dictionary<OperatingSystemFamily, BuildTarget> {{OperatingSystemFamily.Windows, BuildTarget.StandaloneWindows64}, {OperatingSystemFamily.Linux, BuildTarget.StandaloneLinux64}, {OperatingSystemFamily.MacOSX, BuildTarget.StandaloneOSX}}) {
+            build_map[0].assetBundleName = $"{Path.GetFileName(source)}_{target.Key}";
+            BuildPipeline.BuildAssetBundles(dest, build_map, BuildAssetBundleOptions.None, target.Value);
         }
 
         // Clean out manifest files and bundle holder
