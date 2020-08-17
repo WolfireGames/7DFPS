@@ -228,6 +228,13 @@ public class SteamScript : MonoBehaviour
         }
 
         ImGui.Text("Subscribed Steamworks items");
+        ImGui.SameLine();
+        ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
+        if(ImGui.Button("Refresh")) {
+            QueryPersonalWorkshopItems();
+        }
+        ImGui.PopStyleColor(1);
+
         int j = 0;
         for (int i = 0; i < steamItems.Count; i++) {
             SteamUGCDetails_t details = steamItems[i];
