@@ -73,50 +73,6 @@ public class ModManager : MonoBehaviour {
     public Mod LoadSteamItem(string path) {
         Mod mod = ImportMod(path);
         UpdateCache();
-        
-        // Load everything but guns
-        if (mod.modType != ModType.Gun) {
-            mod.Load();
-        }
-
-        // Insert mods into lists
-        switch (mod.modType) {
-            case ModType.Gun: {
-                ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
-                if (gun_load_type != ModLoadType.DISABLED) {
-                    var guns = new List<GameObject>(guiSkinHolder.weapons);
-                    WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
-                    placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
-                    placeholder.mod = mod;
-                    placeholder.display_name = mod.name;
-                    guns.Add(placeholder.gameObject);
-                    guiSkinHolder.weapons = guns.ToArray();
-                }
-                break;
-            }
-            case ModType.LevelTile: {
-                if (levelCreatorScript) {
-                    ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
-                    if (tile_load_type != ModLoadType.DISABLED) {
-                        var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-                        foreach (GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs) {
-                            tiles.Add(tile);
-                        }
-                        levelCreatorScript.level_tiles = tiles.ToArray();
-                    }
-                }
-                break;
-            }
-            case ModType.Tapes: {
-                ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
-                if (tape_load_type != ModLoadType.DISABLED) {
-                    foreach (AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes) {
-                        guiSkinHolder.sound_tape_content.Add(tape);
-                    }
-                }
-                break;
-            }
-        }
 
         numSteamMods++;
         PlayerPrefs.SetInt("num_steam_mods", numSteamMods);
