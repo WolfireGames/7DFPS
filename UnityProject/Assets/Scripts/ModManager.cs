@@ -264,6 +264,13 @@ public class ModManager : MonoBehaviour {
         return mod;
     }
 
+    public static Mod GetAvailableModWithDirectoryPath(string folder) {
+        for (int i = 0; i < ModManager.availableMods.Count; i++)
+            if(Path.Equals(Path.GetDirectoryName(ModManager.availableMods[i].path), folder))
+                return ModManager.availableMods[i];
+        return null;
+    }
+
     private static int GetModCountInCache() {
         if(CacheExists())
             return LoadRawCacheFile().mods.Length;

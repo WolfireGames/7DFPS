@@ -229,7 +229,9 @@ public class SteamScript : MonoBehaviour
 
         ImGui.Text("Subscribed Steamworks items");
         int j = 0;
-        foreach (SteamUGCDetails_t details in steamItems) {
+        for (int i = 0; i < steamItems.Count; i++) {
+            SteamUGCDetails_t details = steamItems[i];
+
             ImGui.Text(details.m_rgchTitle);
             ImGui.SameLine(hSpacing);
             List<string> tagList = GetTagList(details.m_rgchTags);
@@ -242,8 +244,22 @@ public class SteamScript : MonoBehaviour
                     SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
                 }
             } else {
-                if (ImGui.Button("Uninstall (needs restart)##" + j)) {
+                if (ImGui.Button("Unsubscribe##" + j)) {
+                    // Attempt to restore the reference to the mod object and properly remove it from cache
+                    if(SteamUGC.GetItemInstallInfo(details.m_nPublishedFileId, out ulong sizeOnDisk, out string folder, 512, out uint timeStamp)) {
+                        Mod mod = ModManager.GetAvailableModWithDirectoryPath(folder);
+                        if(mod != null) {
+                            ModManager.availableMods.Remove(mod);
+                            ModManager.UpdateCache();
+                        } else {
+                            Debug.LogWarning("Couldn't find unsubscribed mod.");
+                        }
+                    }
                     SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
+                    QueryPersonalWorkshopItems();
+                    steamItems.Remove(details);
+                    i--;
+                    continue;
                 }
                 ImGui.SameLine();
                 if (ImGui.Button("Show in Steam##" + j)) {
