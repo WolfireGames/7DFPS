@@ -416,7 +416,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1598253423
 PrefabInstance:
@@ -478,15 +478,30 @@ PrefabInstance:
       propertyPath: m_TargetEye
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4934175824470774698, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+    - target: {fileID: 4934175824470774688, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: m_TargetEye
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934175824470774688, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934175824470774688, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
         type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4934175824470774698, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4934175824470774701, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4934175824470774702, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
         type: 3}
@@ -496,12 +511,27 @@ PrefabInstance:
     - target: {fileID: 4934175824470774702, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
         type: 3}
       propertyPath: enableVRInput
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4934175824470774702, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
         type: 3}
       propertyPath: VR_Trigger.actionPath
       value: /actions/default/in/Action
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934175824470774702, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: vrMouseDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934175824823991748, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: m_ClearFlags
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4934175824823991748, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7983f04810e8d9d4590f2ef8f4aeb4dc, type: 3}
