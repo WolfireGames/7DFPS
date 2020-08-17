@@ -43,7 +43,7 @@ public class optionsmenuscript:MonoBehaviour{
         }
 
         Preferences.UpdatePreferences();
-        UpdateUIValues();
+        UpdateUIValuesAndApplyDefaults();
     }
 
     public void Update() {
@@ -108,7 +108,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetInt(dropdown.name, dropdown.value);
     }
 
-    public void UpdateUIValues() {
+    public void UpdateUIValuesAndApplyDefaults() {
         foreach(Transform transform in optionsContent.transform) {
             if(transform.name.StartsWith("_")) // Don't default settings that start with _
                 continue;
@@ -116,7 +116,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
-                slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
+                if(PlayerPrefs.HasKey(slider.name))
+                    slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
                 slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
             }
@@ -124,7 +125,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Toggles
             Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
-                toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                if(PlayerPrefs.HasKey(toggle.name))
+                    toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
                 toggle.onValueChanged.Invoke(toggle.isOn);
                 continue;
             }
@@ -132,7 +134,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Dropdowns
             Dropdown dropdown = transform.GetComponent<Dropdown>();
             if(dropdown != null) {
-                dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
+                if(PlayerPrefs.HasKey(dropdown.name))
+                    dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
                 dropdown.onValueChanged.Invoke(dropdown.value);
                 continue;
             }
