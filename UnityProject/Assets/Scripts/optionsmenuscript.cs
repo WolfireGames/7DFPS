@@ -59,7 +59,7 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void OnGUI() {
-        GUI.depth = -1;
+        GUI.depth = -20;
         if(show_menu && Event.current.type == EventType.Repaint) {
             uiCamera.Render();
         }

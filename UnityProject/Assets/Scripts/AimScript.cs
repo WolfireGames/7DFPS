@@ -1724,6 +1724,7 @@ public class AimScript:MonoBehaviour{
 
     public void OnGUI() {
     	if(main_client_control && Event.current.type == EventType.Repaint){
+			GUI.depth = 0;
     		GunScript gun_script = null;
     		if(gun_instance != null){
     			gun_script = gun_instance.GetComponent<GunScript>();
