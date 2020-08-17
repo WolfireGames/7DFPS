@@ -116,7 +116,8 @@ public class SteamScript : MonoBehaviour
                         return;
                     }
                 }
-                modManager.LoadSteamItem(folder);
+                Mod mod = modManager.LoadSteamItem(folder);
+                mod.steamworksItem = new SteamworksUGCItem(mod);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
