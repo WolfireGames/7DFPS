@@ -10,6 +10,7 @@ public class optionsmenuscript : MonoBehaviour {
     public GameObject menuOptions;
     public GameObject optionsContent;
     public Camera uiCamera;
+    private GraphicRaycaster raycaster;
 
     private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
@@ -29,6 +30,7 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     private void Awake() {
+        raycaster = GetComponent<GraphicRaycaster>();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
@@ -59,6 +61,8 @@ public class optionsmenuscript : MonoBehaviour {
         if(Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
         }
+
+        raycaster.enabled = !ImGuiUnity.instance.MouseGrabbed;
     }
 
     public void OnGUI() {
