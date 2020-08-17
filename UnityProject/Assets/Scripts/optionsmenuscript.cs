@@ -58,11 +58,21 @@ public class optionsmenuscript : MonoBehaviour {
             HideMenu();
         }
 
+        if (VRInputBridge.instance.aimScript_ref != null) {
+            if (VRInputController.instance.GetPauseGame(VRInputBridge.instance.aimScript_ref.secondaryHand) && !show_menu) {
+                ShowMenu();
+            }
+            else if (VRInputController.instance.GetPauseGame(VRInputBridge.instance.aimScript_ref.secondaryHand) && show_menu) {
+                HideMenu();
+            }
+        }
+
         if(Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
         }
-
-        raycaster.enabled = !ImGuiUnity.instance.MouseGrabbed;
+        if (ImGuiUnity.instance != null) {
+            raycaster.enabled = !ImGuiUnity.instance.MouseGrabbed;
+        }
     }
 
     public void OnGUI() {
@@ -84,7 +94,9 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void ShowMenu() {
         show_menu = true;
-        menu.SetActive(true);
+        menu.SetActive(true); 
+        transform.position = VRInputController.instance.transform.GetChild(0).position + (VRInputController.instance.transform.GetChild(0).forward * 1f);
+        transform.LookAt(transform.position + VRInputController.instance.transform.GetChild(0).forward);
         UnlockCursor();
         Time.timeScale = 0.0f;
     }
