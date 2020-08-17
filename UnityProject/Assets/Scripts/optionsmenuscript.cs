@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class optionsmenuscript:MonoBehaviour{
+public class optionsmenuscript : MonoBehaviour {
     public static bool show_menu = false;
     public static bool show_mod_ui = false;
 
@@ -28,8 +28,7 @@ public class optionsmenuscript:MonoBehaviour{
         }
     }
 
-    public void Start() {
-        LockCursor();
+    private void Awake() {
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
@@ -37,6 +36,10 @@ public class optionsmenuscript:MonoBehaviour{
         bloom = postProcessVolume.profile.GetSetting<Bloom>();
         vignette = postProcessVolume.profile.GetSetting<Vignette>();
         ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
+    }
+
+    public void Start() {
+        LockCursor();
 
         if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
