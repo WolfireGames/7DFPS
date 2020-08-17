@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using GunSystemInterfaces;
 
 [System.Serializable]
 public class CharacterInput {
@@ -1024,24 +1025,20 @@ public class AimScript:MonoBehaviour{
     		inspect_cylinder_pose_spring.target_state = 1.0f;
     	}
     	
-        var recoil_data = gun_script.GetRecoilData();
-        if(recoil_data != null) {
-            x_recoil_spring.vel += recoil_data.recoil_transfer_x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
-            y_recoil_spring.vel += recoil_data.recoil_transfer_y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
-            rotation_x += recoil_data.rotation_transfer_x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
-            rotation_y += recoil_data.rotation_transfer_y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
-            recoil_data.recoil_transfer_x = 0.0f;
-            recoil_data.recoil_transfer_y = 0.0f;
-            recoil_data.rotation_transfer_x = 0.0f;
-            recoil_data.rotation_transfer_y = 0.0f;
-            if(recoil_data.add_head_recoil){
-                head_recoil_delay[next_head_recoil_delay] = 0.1f;
-                next_head_recoil_delay = (next_head_recoil_delay + 1)%kMaxHeadRecoil;
-                recoil_data.add_head_recoil = false;
-            }
+        Vector2 recoil_transfer = gun_script.GetRecoilTransfer();
+        Vector2 rotation_transfer = gun_script.GetRecoilRotation();
+
+        x_recoil_spring.vel += recoil_transfer.x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+        y_recoil_spring.vel += recoil_transfer.y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+        rotation_x += rotation_transfer.x * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+        rotation_y += rotation_transfer.y * (VRInputController.instance.isFrontGrabbing ? 0.1f : 1f);
+        if (gun_script.AddHeadRecoil()) {
+            head_recoil_delay[next_head_recoil_delay] = 0.1f;
+            next_head_recoil_delay = (next_head_recoil_delay + 1) % kMaxHeadRecoil;
         }
-    	
-    	if(gun_script.IsReadyToRemoveMagazine() && (magazine_instance_in_hand == null)){
+        gun_script.ResetRecoil();
+
+        if (gun_script.IsReadyToRemoveMagazine() && (magazine_instance_in_hand == null)){
     		magazine_instance_in_hand = gun_script.GrabMag();
     		mag_stage = HandMagStage.HOLD;
     		hold_pose_spring.state = 0.0f;
