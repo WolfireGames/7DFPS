@@ -52,10 +52,10 @@ public class ModManager : MonoBehaviour {
 
         LoadCache();
 
-        if(availableMods.Count != GetModFolderCount() + PlayerPrefs.GetInt("num_steam_mods", 0)) { // Is our Cache up to date?
+        if(availableMods.Count != GetModCountInCache()) { // Is our Cache up to date?
             ForceReimport();
         }
-        
+
         // Load everything but guns
         foreach (var mod in availableMods.Where((mod) => mod.modType != ModType.Gun))
             mod.Load();
@@ -78,9 +78,6 @@ public class ModManager : MonoBehaviour {
     public Mod LoadSteamItem(string path) {
         Mod mod = ImportMod(path);
         UpdateCache();
-
-        numSteamMods++;
-        PlayerPrefs.SetInt("num_steam_mods", numSteamMods);
 
         return mod;
     }
@@ -267,6 +264,11 @@ public class ModManager : MonoBehaviour {
         return mod;
     }
 
+    private static int GetModCountInCache() {
+        if(CacheExists())
+            return LoadRawCacheFile().mods.Length;
+        return 0;
+    }
 
     private static void LoadCache() {
         if(CacheExists())
