@@ -138,6 +138,9 @@ public class ModManager : MonoBehaviour {
                 guns.Clear();
 
             foreach (var mod in availableGuns) {
+                if(mod.ignore) {
+                    continue;
+                }
                 WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
                 placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
                 placeholder.mod = mod;
@@ -155,9 +158,15 @@ public class ModManager : MonoBehaviour {
                 if(HasModsToInsert(ModType.LevelTile) && tile_load_type == ModLoadType.EXCLUSIVE)
                     tiles.Clear();
 
-                foreach (var mod in loadedLevelMods)
-                    foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs)
+                foreach (var mod in loadedLevelMods) {
+                    if(mod.ignore) {
+                        continue;
+                    }
+
+                    foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs) {
                         tiles.Add(tile);
+                    }
+                }
                 levelCreatorScript.level_tiles = tiles.ToArray();
             }
         }
@@ -168,9 +177,15 @@ public class ModManager : MonoBehaviour {
             if(HasModsToInsert(ModType.Tapes) && tape_load_type == ModLoadType.EXCLUSIVE)
                 guiSkinHolder.sound_tape_content.Clear();
 
-            foreach (var mod in loadedTapeMods)
-                foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes)
+            foreach (var mod in loadedTapeMods) {
+                if(mod.ignore) {
+                    continue;
+                }
+
+                foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes) {
                     guiSkinHolder.sound_tape_content.Add(tape);
+                }
+            }
         }
     }
 
@@ -178,6 +193,10 @@ public class ModManager : MonoBehaviour {
         foreach (var mod in availableMods) {
             mod.Unload();
         }
+    }
+
+    public static bool ShouldInsertMod(Mod mod) {
+        return !mod.ignore;
     }
 
     public bool HasModsToInsert(ModType modType) {
