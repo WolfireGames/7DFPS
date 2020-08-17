@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ExtentionUtil;
 using System.Linq;
+using GunSystemInterfaces;
 
 namespace GunSystemsV1 {
     [InclusiveAspects(GunAspect.MANUAL_LOADING, GunAspect.MAGAZINE)]
@@ -94,11 +95,49 @@ namespace GunSystemsV1 {
         public bool ChamberRoundFromMag() {
             if (mc.mag_stage == MagStage.IN && mc.mag_script && mc.mag_script.NumRounds() > 0) {
                 if(gs.Request(GunSystemRequests.PUT_ROUND_IN_CHAMBER)) {
+                    if(Cheats.infinite_ammo)
+                        return true;
+                    
                     mc.mag_script.RemoveRound();
                     return true;
                 }
             }
             return false;
+        }
+    }
+
+    [InclusiveAspects(GunAspect.MAGAZINE)]
+    public class MagazineSystem : GunSystemBase {
+        MagazineComponent mc = null;
+
+        public GameObject DisconnectMag () {
+            if(!mc.mag_script) {
+                return null;
+            }
+
+            // Grag mag reference
+            GameObject mag = mc.mag_script.gameObject;
+
+            // Disconnect mag from systems
+            mc.mag_script = null;
+            mc.ready_to_remove_mag = false;
+            mag.transform.parent = null;
+
+            return mag;
+        }
+
+        public bool ConnectMag(GameObject mag) {
+            // Set this mag as mag to insert
+            mc.mag_script = mag.GetComponent<mag_script>();
+            mag.transform.parent = gs.transform;
+
+            // Tell the systems to push the mag in
+            return gs.Request(GunSystemRequests.INPUT_INSERT_MAGAZINE);
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.disconnectMagazine = DisconnectMag;
+            gs.gun_systems.connectMagazine = ConnectMag;
         }
     }
 
@@ -696,21 +735,8 @@ namespace GunSystemsV1 {
         [GunSystemRequest(GunSystemRequests.INPUT_ADD_ROUND)]
         bool InputAddRoundToCylinder() {
             if (rcc.is_closed == mlc.load_when_closed) {
-                int best_chamber = -1;
-                int next_shot = rcc.active_cylinder;
-                if (!gs.IsHammerCocked()) {
-                    next_shot = (next_shot + 1) % rcc.cylinder_capacity;
-                }
-                for (int i = 0; i < rcc.cylinder_capacity; ++i) {
-                    int check = (next_shot + i) % rcc.cylinder_capacity;
-                    if (check < 0) {
-                        check += rcc.cylinder_capacity;
-                    }
-                    if (rcc.cylinders[check].game_object == null) {
-                        best_chamber = check;
-                        break;
-                    }
-                }
+                
+                int best_chamber = GetBestChamber(); // TODO
                 if (best_chamber == -1) {
                     return false;
                 }
@@ -721,6 +747,34 @@ namespace GunSystemsV1 {
 
             }
             return false;
+        }
+
+        private int GetBestChamber() {
+            int best_chamber = -1;
+            int next_shot = rcc.active_cylinder;
+            if (!gs.IsHammerCocked()) {
+                next_shot = (next_shot + 1) % rcc.cylinder_capacity;
+            }
+            for (int i = 0; i < rcc.cylinder_capacity; ++i) {
+                int check = (next_shot + i) % rcc.cylinder_capacity;
+                if (check < 0) {
+                    check += rcc.cylinder_capacity;
+                }
+                if (!rcc.cylinders[check].game_object && IsChamberAccessible(check)) {
+                    best_chamber = check;
+                    break;
+                }
+            }
+
+            return best_chamber;
+        }
+
+        private bool IsChamberAccessible(int chamber) {
+            int which_chamber = (chamber - rcc.active_cylinder) % rcc.cylinder_capacity;
+            if (which_chamber < 0) {
+                which_chamber += rcc.cylinder_capacity;
+            }
+            return !mlc.inaccessabile_chamber_offsets.Contains(which_chamber);
         }
 
         public void PutRoundInChamber(int index) {
@@ -788,6 +842,20 @@ namespace GunSystemsV1 {
                     gs.PlaySound(yc.sound_cylinder_open, gs.base_volume * 2.0f);
                 }
             }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.REVOLVER_CYLINDER)]
+    public class CylinderSpinSystem : GunSystemBase {
+        RevolverCylinderComponent rcc = null;
+
+        public void SpinCylinder(int amount) {
+            rcc.target_cylinder_offset += amount * (Mathf.Max(1, Mathf.Abs(rcc.target_cylinder_offset)));
+            rcc.target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, rcc.target_cylinder_offset));
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.spinCylinder = SpinCylinder;
         }
     }
 
@@ -1271,6 +1339,9 @@ namespace GunSystemsV1 {
 
         [GunSystemRequest(GunSystemRequests.SPEND_ROUND)]
         public bool SpendRound() {
+            if(Cheats.infinite_ammo)
+                return true;
+
             int which_chamber = rcc.active_cylinder % rcc.cylinder_capacity;
             if (which_chamber < 0) {
                 which_chamber += rcc.cylinder_capacity;
@@ -1380,6 +1451,39 @@ namespace GunSystemsV1 {
 
             fc.fire_count++;
             return true;
+        }
+    }
+
+    [InclusiveAspects(GunAspect.RECOIL)]
+    public class RecoilSystem : GunSystemBase {
+        RecoilComponent rc = null;
+
+        [GunSystemRequest(GunSystemRequests.RESET_RECOIL)]
+        public bool ResetRecoil() {
+            rc.recoil_transfer_x = 0;
+            rc.recoil_transfer_y = 0;
+            rc.rotation_transfer_x = 0;
+            rc.rotation_transfer_y = 0;
+            rc.add_head_recoil = false;
+            return true;
+        }
+
+        public Vector2 GetRecoilTransfer() {
+            return new Vector2(rc.recoil_transfer_x, rc.recoil_transfer_y);
+        }
+
+        public Vector2 GetRecoilRotation() {
+            return new Vector2(rc.rotation_transfer_x, rc.rotation_transfer_y);
+        }
+
+        public bool AddHeadRecoil() {
+            return rc.add_head_recoil;
+        }
+
+        public override void Initialize() {
+            gs.gun_systems.getRecoilTransfer = GetRecoilTransfer;
+            gs.gun_systems.getRecoilRotation = GetRecoilRotation;
+            gs.gun_systems.addHeadRecoil = AddHeadRecoil;
         }
     }
 

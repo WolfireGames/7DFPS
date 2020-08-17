@@ -1,96 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
-
-public enum GunSystemQueries {
-    SHOULD_PULL_SLIDE,
-    IS_ADDING_ROUNDS,
-    IS_EJECTING_ROUNDS,
-    SHOULD_EJECT_MAGAZINE,
-    SHOULD_RELEASE_SLIDE_LOCK,
-    IS_SAFETY_ON,
-    IS_SLIDE_LOCKED,
-    IS_SLIDE_PULLED_BACK,
-    SHOULD_PUSH_SLIDE,
-    IS_WAITING_FOR_SLIDE_PUSH,
-    IS_MAGAZINE_IN_GUN,
-    IS_MAGAZINE_EJECTING,
-    SHOULD_OPEN_CYLINDER,
-    SHOULD_CLOSE_CYLINDER,
-    SHOULD_EXTRACT_CASINGS,
-    SHOULD_INSERT_BULLET,
-    IS_CYLINDER_OPEN,
-    IS_IN_ALTERNATIVE_STANCE,
-    SHOULD_TOGGLE_FIRE_MODE,
-    IS_HAMMER_COCKED,
-    SHOULD_PULL_BACK_HAMMER,
-    IS_PRESS_CHECK,
-    IS_READY_TO_REMOVE_MAGAZINE,
-    SHOULD_TOGGLE_STANCE,
-    SHOULD_TOGGLE_BOLT,
-};
-
-public enum GunSystemRequests {
-    CHAMBER_ROUND_FROM_MAG,
-    PULL_SLIDE_BACK,
-    APPLY_TRIGGER_PRESSURE,
-    RELEASE_TRIGGER_PRESSURE,
-    INPUT_EJECT_MAGAZINE,
-    INPUT_INSERT_MAGAZINE,
-    APPLY_PRESSURE_ON_SLIDE_LOCK,
-    RELEASE_PRESSURE_ON_SLIDE_LOCK,
-    TOGGLE_SAFETY,
-    INPUT_RELEASE_SLIDE_LOCK,
-    RELEASE_SLIDE_LOCK,
-    TOGGLE_FIRE_MODE,
-    INPUT_PULL_SLIDE_BACK,
-    INPUT_PULL_SLIDE_PRESS_CHECK,
-    INPUT_RELEASE_SLIDE,
-    INPUT_PUSH_SLIDE_FORWARD,
-    INPUT_TOGGLE_BOLT_LOCK,
-    COCK_HAMMER,
-    INPUT_PRESSURE_ON_HAMMER,
-    INPUT_RELEASE_HAMMER,
-    INPUT_ADD_ROUND,
-    INPUT_SWING_OUT_CYLINDER,
-    INPUT_CLOSE_CYLINDER,
-    INPUT_USE_EXTRACTOR_ROD,
-    INPUT_TOGGLE_STANCE,
-    PUT_ROUND_IN_CHAMBER,
-    INPUT_START_AIM,
-    INPUT_STOP_AIM,
-    DISCHARGE,
-    SPEND_ROUND,
-    DESTROY_ROUND,
-};
-
-/// <summary> Base class for every Gun System </summary>
-public abstract class GunSystemBase {
-    public delegate bool GunSystemRequest();
-    public delegate bool GunSystemQuery();
-
-    public GunScript gs;
-    public virtual void Initialize() {}
-    public virtual void Update() { gs.gun_systems.UnloadSystem(this); }
-
-    protected void RemoveChildrenShadows(GameObject parent) {
-        foreach(var renderer in parent.GetComponentsInChildren<Renderer>()) {
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        }
-    }
-}
-
-/// <summary> Container class for a Gun System version, this class is extended in a separate namespace and connects GunScript logic with GunSystem logic </summary>
-public abstract class GunSystemsContainer {
-    public Dictionary<GunSystemRequests, GunSystemBase.GunSystemRequest> requests;
-    public Dictionary<GunSystemQueries, GunSystemBase.GunSystemQuery> queries;
-
-    public abstract void LoadSystems(GunScript gs, GunAspect aspects);
-    public abstract bool ShouldLoadSystem(Type system, GunAspect aspects, bool ignore_exclusives = false, bool ignore_inclusives = false);
-    public abstract void UnloadSystem(GunSystemBase system);
-    public abstract void Initialize();
-    public abstract void Update();
-}
+using GunSystemInterfaces;
 
 [RequireComponent(typeof(AudioSource))]
 public class GunScript : MonoBehaviour {
@@ -143,49 +54,37 @@ public class GunScript : MonoBehaviour {
 
     /// <summary> Disconnect the magazine from the GunSystems and returns the disconnected GameObject </summary>
     public GameObject GrabMag() {
-        MagazineComponent mc = GetComponent<MagazineComponent>();
-        if(!mc || !mc.mag_script) {
-            return null;
-        }
-
-        // Grag mag reference
-        GameObject mag = mc.mag_script.gameObject;
-
-        // Disconnect mag from systems
-        mc.mag_script = null;
-        mc.ready_to_remove_mag = false;
-        mag.transform.parent = null;
-
-        return mag;
+        if(gun_systems.disconnectMagazine != null)
+            return gun_systems.disconnectMagazine();
+        return null;
     }
 
     /// <summary> Connect a magazine to the GunSystems and notifies the Systems to handle it from now on </summary>
     public bool InsertMag(GameObject mag) {
-        MagazineComponent mc = GetComponent<MagazineComponent>();
-        if (!mc) {
-            return false;
-        }
-
-        // Set this mag as mag to insert
-        mc.mag_script = mag.GetComponent<mag_script>();
-        mag.transform.parent = transform;
-
-        // Tell the systems to push the mag in
-        return Request(GunSystemRequests.INPUT_INSERT_MAGAZINE);
+        if(gun_systems.connectMagazine != null)
+            return gun_systems.connectMagazine(mag);
+        return false;
     }
 
     public void RotateCylinder(int how_many) {
-        RevolverCylinderComponent rcc = GetComponent<RevolverCylinderComponent>();
-        if(!rcc) {
-            return;
-        }
-        
-        rcc.target_cylinder_offset += how_many * (Mathf.Max(1, Mathf.Abs(rcc.target_cylinder_offset)));
-        rcc.target_cylinder_offset = Mathf.Max(-12, Mathf.Min(12, rcc.target_cylinder_offset));
+        if(gun_systems.spinCylinder != null)
+            gun_systems.spinCylinder(how_many);
     }
 
-    public RecoilComponent GetRecoilData() {
-        return GetComponent<RecoilComponent>();
+    public Vector2 GetRecoilTransfer() {
+        if(gun_systems.getRecoilTransfer != null)
+            return gun_systems.getRecoilTransfer();
+        return Vector2.zero;
+    }
+    public Vector2 GetRecoilRotation() {
+        if(gun_systems.getRecoilRotation != null)
+            return gun_systems.getRecoilRotation();
+        return Vector2.zero;
+    }
+    public bool AddHeadRecoil() {
+        if(gun_systems.addHeadRecoil != null)
+            return gun_systems.addHeadRecoil();
+        return false;
     }
 
     /// <summary> Return a gun system instance of the selected gun systems version </summary>
@@ -420,5 +319,9 @@ public class GunScript : MonoBehaviour {
 
     public bool IsReadyToRemoveMagazine() {
         return Query(GunSystemQueries.IS_READY_TO_REMOVE_MAGAZINE);
+    }
+
+    public bool ResetRecoil() {
+        return Request(GunSystemRequests.RESET_RECOIL);
     }
 }

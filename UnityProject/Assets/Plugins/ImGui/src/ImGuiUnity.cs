@@ -313,6 +313,11 @@ public class ImGuiUnity : MonoBehaviour {
         }
     }
 
+    void OnGUI() {
+        GUI.depth = -99;
+        guiCamera.Render();
+    }
+
     void LateUpdate()
     {
         last_start = stopwatch.Elapsed.TotalSeconds;

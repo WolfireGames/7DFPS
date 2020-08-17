@@ -129,7 +129,12 @@ public class RobotScript:MonoBehaviour{
     			barrel_alive = false;
     		}
     		PlaySoundFromGroup(sound_damage_battery,1.0f);
-    		rotation_x.target_state = 40.0f;
+            if (transform.up.y < 0) {
+                rotation_x.target_state = -40.0f;
+            }
+            else {
+                rotation_x.target_state = 40.0f;
+            }
     		damage_done = true;
     	} else if((obj.name == "pivot motor" || obj.name == "motor") && motor_alive){
     		motor_alive = false;
@@ -199,7 +204,8 @@ public class RobotScript:MonoBehaviour{
     		case RobotType.MOBILE_TURRET:
     		case RobotType.STATIONARY_TURRET:
     			lightObject = gun_camera.Find("light").GetComponent<Light>();
-    			break;
+                lensFlareObject = gun_camera.Find("lens flare").GetComponent<LensFlare>();
+                break;
     		case RobotType.GUN_DRONE:
     		case RobotType.SHOCK_DRONE:
     			lightObject = drone_camera.Find("light").GetComponent<Light>();
@@ -472,7 +478,9 @@ public class RobotScript:MonoBehaviour{
     	if(!camera_alive){
     		lightObject.intensity *= Mathf.Pow(0.01f, Time.deltaTime);
     	}
-    	float target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01f;
+        lensFlareObject.color = lightObject.color;
+        lensFlareObject.brightness = lightObject.intensity;
+        float target_pitch = (Mathf.Abs(rotation_y.vel) + Mathf.Abs(rotation_x.vel)) * 0.01f;
     	target_pitch = Mathf.Clamp(target_pitch, 0.2f, 2.0f);
     	audiosource_motor.pitch = Mathf.Lerp(audiosource_motor.pitch, target_pitch, Mathf.Pow(0.0001f, Time.deltaTime));
     	

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
-public class optionsmenuscript:MonoBehaviour{
+public class optionsmenuscript : MonoBehaviour {
     public static bool show_menu = false;
     public static bool show_mod_ui = false;
 
@@ -10,6 +10,7 @@ public class optionsmenuscript:MonoBehaviour{
     public GameObject menuOptions;
     public GameObject optionsContent;
     public Camera uiCamera;
+    private GraphicRaycaster raycaster;
 
     private PostProcessLayer postProcessLayer;
     private PostProcessVolume postProcessVolume;
@@ -28,8 +29,8 @@ public class optionsmenuscript:MonoBehaviour{
         }
     }
 
-    public void Start() {
-        LockCursor();
+    private void Awake() {
+        raycaster = GetComponent<GraphicRaycaster>();
 
         postProcessVolume = Camera.main.GetComponent<PostProcessVolume>();
         postProcessLayer = Camera.main.GetComponent<PostProcessLayer>();
@@ -37,13 +38,17 @@ public class optionsmenuscript:MonoBehaviour{
         bloom = postProcessVolume.profile.GetSetting<Bloom>();
         vignette = postProcessVolume.profile.GetSetting<Vignette>();
         ambientOcclusion = postProcessVolume.profile.GetSetting<AmbientOcclusion>();
+    }
+
+    public void Start() {
+        LockCursor();
 
         if(PlayerPrefs.GetInt("set_defaults", 1) == 1) {
             RestoreDefaults();
         }
 
         Preferences.UpdatePreferences();
-        UpdateUIValues();
+        UpdateUIValuesAndApplyDefaults();
     }
 
     public void Update() {
@@ -56,10 +61,12 @@ public class optionsmenuscript:MonoBehaviour{
         if(Input.GetMouseButtonDown(0) && !show_menu) {
             LockCursor();
         }
+
+        raycaster.enabled = !ImGuiUnity.instance.MouseGrabbed;
     }
 
     public void OnGUI() {
-        GUI.depth = -1;
+        GUI.depth = -20;
         if(show_menu && Event.current.type == EventType.Repaint) {
             uiCamera.Render();
         }
@@ -108,7 +115,7 @@ public class optionsmenuscript:MonoBehaviour{
         PlayerPrefs.SetInt(dropdown.name, dropdown.value);
     }
 
-    public void UpdateUIValues() {
+    public void UpdateUIValuesAndApplyDefaults() {
         foreach(Transform transform in optionsContent.transform) {
             if(transform.name.StartsWith("_")) // Don't default settings that start with _
                 continue;
@@ -116,7 +123,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Sliders
             Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
-                slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
+                if(PlayerPrefs.HasKey(slider.name))
+                    slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name));
                 slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
             }
@@ -124,7 +132,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Toggles
             Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
-                toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                if(PlayerPrefs.HasKey(toggle.name))
+                    toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name) == 1);
                 toggle.onValueChanged.Invoke(toggle.isOn);
                 continue;
             }
@@ -132,7 +141,8 @@ public class optionsmenuscript:MonoBehaviour{
             // Update Dropdowns
             Dropdown dropdown = transform.GetComponent<Dropdown>();
             if(dropdown != null) {
-                dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
+                if(PlayerPrefs.HasKey(dropdown.name))
+                    dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name));
                 dropdown.onValueChanged.Invoke(dropdown.value);
                 continue;
             }
@@ -193,15 +203,15 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
-          autoExposure.minLuminance.Override(autoExposureMinLuminance);
+        autoExposure.minLuminance.Override(autoExposureMinLuminance);
     }
 
     public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
-          autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
+        autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
     }
 
     public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
-          autoExposure.keyValue.Override(autoExposureExposureCompensation);
+        autoExposure.keyValue.Override(autoExposureExposureCompensation);
     }
  
     public void SetAAMode(int mode) {
