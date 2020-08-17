@@ -196,15 +196,15 @@ public class optionsmenuscript:MonoBehaviour{
     }
 
     public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
-          autoExposure.minLuminance.Override(autoExposureMinLuminance);
+        autoExposure.minLuminance.Override(autoExposureMinLuminance);
     }
 
     public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
-          autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
+        autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
     }
 
     public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
-          autoExposure.keyValue.Override(autoExposureExposureCompensation);
+        autoExposure.keyValue.Override(autoExposureExposureCompensation);
     }
  
     public void SetAAMode(int mode) {
