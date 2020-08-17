@@ -267,18 +267,17 @@ public class ModManager : MonoBehaviour {
         return mod;
     }
 
-    private static void LoadCache() {
-        string path = Path.Combine(ModManager.GetModsfolderPath(), "cache");
 
-        if(File.Exists(path))
-            availableMods = new List<Mod> (JsonUtility.FromJson<Cache>(File.ReadAllText(path)).mods);
+    private static void LoadCache() {
+        if(CacheExists())
+            availableMods = new List<Mod> (LoadRawCacheFile().mods);
         else
             availableMods = new List<Mod> ();
     }
 
     public static void UpdateCache() {
         try {
-            string path = Path.Combine(ModManager.GetModsfolderPath(), "cache");
+            string path = GetCachePath();
 
             if(File.Exists(path))
                 File.Delete(path);
@@ -288,6 +287,18 @@ public class ModManager : MonoBehaviour {
         } catch (Exception e) {
             Debug.LogError(e);
         }
+    }
+
+    private static bool CacheExists() {
+        return File.Exists(GetCachePath());
+    }
+
+    private static Cache LoadRawCacheFile() {
+        return JsonUtility.FromJson<Cache>(File.ReadAllText(GetCachePath()));
+    }
+
+    private static string GetCachePath() {
+        return Path.Combine(ModManager.GetModsfolderPath(), "cache");
     }
 
     [System.Serializable]
