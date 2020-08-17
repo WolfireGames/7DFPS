@@ -75,13 +75,6 @@ public class ModManager : MonoBehaviour {
         availableMods.Clear();
     }
 
-    public Mod LoadSteamItem(string path) {
-        Mod mod = ImportMod(path);
-        UpdateCache();
-
-        return mod;
-    }
-
     public static string GetModsfolderPath() {
         return Path.Combine(Application.persistentDataPath, "Mods").Replace('\\', '/');
     }
@@ -229,6 +222,13 @@ public class ModManager : MonoBehaviour {
             }
         }
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
+    }
+
+    public Mod ImportSteamMod(string path) {
+        Mod mod = ImportMod(path);
+        UpdateCache();
+
+        return mod;
     }
 
     public static Mod ImportMod(string path) {

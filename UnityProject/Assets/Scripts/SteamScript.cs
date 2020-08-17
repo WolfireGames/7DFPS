@@ -48,6 +48,8 @@ public class SteamScript : MonoBehaviour
             return;
         }
 
+        Debug.Log("OnItemInstalled");
+
         LoadModIntoGame(pCallback.m_nPublishedFileId);
         // Refresh list
         QueryPersonalWorkshopItems();
@@ -116,7 +118,7 @@ public class SteamScript : MonoBehaviour
                         return;
                     }
                 }
-                modManager.LoadSteamItem(folder);
+                modManager.ImportSteamMod(folder);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
