@@ -150,7 +150,7 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    public void UnloadAll() {
+    public static void UnloadAll() {
         foreach (var mod in availableMods) {
             mod.Unload();
         }
