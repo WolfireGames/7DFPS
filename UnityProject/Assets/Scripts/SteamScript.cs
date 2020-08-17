@@ -216,16 +216,8 @@ public class SteamScript : MonoBehaviour
                     ImGui.SetTooltip("Show mod info and Workshop upload window");
                 }
                 ImGui.SameLine();
-                if (mod.loaded) {
-                    if (ImGui.Button("Unload##" + i)) {
-                        mod.Unload();
-                    }
-                } else {
-                    if (ImGui.Button("Load##" + i)) {
-                        mod.Load();
-                    }
-                }
                 ImGui.PopStyleColor(1);
+                ImGui.Checkbox($"Ignore ##{mod.path}", ref mod.ignore);
                 i++;
             }
         }

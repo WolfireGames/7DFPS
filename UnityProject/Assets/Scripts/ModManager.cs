@@ -134,7 +134,7 @@ public class ModManager : MonoBehaviour {
         if(gun_load_type != ModLoadType.DISABLED) {
             var guns = new List<GameObject>(guiSkinHolder.weapons);
             var availableGuns = availableMods.Where((mod) => mod.modType == ModType.Gun);
-            if(availableGuns.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+            if(HasModsToInsert(ModType.Gun) && gun_load_type == ModLoadType.EXCLUSIVE)
                 guns.Clear();
 
             foreach (var mod in availableGuns) {
@@ -152,7 +152,7 @@ public class ModManager : MonoBehaviour {
             ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
             if(tile_load_type != ModLoadType.DISABLED) {
                 var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
-                if(loadedLevelMods.Count > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                if(HasModsToInsert(ModType.LevelTile) && tile_load_type == ModLoadType.EXCLUSIVE)
                     tiles.Clear();
 
                 foreach (var mod in loadedLevelMods)
@@ -165,7 +165,7 @@ public class ModManager : MonoBehaviour {
         // Insert all Tape mods
         ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
         if(tape_load_type != ModLoadType.DISABLED) {
-            if(loadedTapeMods.Count > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
+            if(HasModsToInsert(ModType.Tapes) && tape_load_type == ModLoadType.EXCLUSIVE)
                 guiSkinHolder.sound_tape_content.Clear();
 
             foreach (var mod in loadedTapeMods)
@@ -178,6 +178,10 @@ public class ModManager : MonoBehaviour {
         foreach (var mod in availableMods) {
             mod.Unload();
         }
+    }
+
+    public bool HasModsToInsert(ModType modType) {
+        return GetModList(modType).Count( (mod) => !mod.ignore) > 0;
     }
 
     private static List<Mod> GetModList(ModType modType) {
@@ -358,6 +362,7 @@ public class Mod {
     [NonSerialized] public bool loaded = false;
     
     public string path;
+    public bool ignore = false;
     [NonSerialized] public AssetBundle assetBundle;
 
     [NonSerialized] public GameObject mainAsset;
