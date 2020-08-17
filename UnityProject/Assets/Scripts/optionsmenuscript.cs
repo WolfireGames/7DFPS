@@ -117,7 +117,7 @@ public class optionsmenuscript:MonoBehaviour{
             Slider slider = transform.GetComponent<Slider>();
             if(slider != null) {
                 if(PlayerPrefs.HasKey(slider.name))
-                    slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name, 1f));
+                    slider.SetValueWithoutNotify(PlayerPrefs.GetFloat(slider.name));
                 slider.onValueChanged.Invoke(slider.value);
                 continue; // Don't need to check for other Setting types
             }
@@ -126,7 +126,7 @@ public class optionsmenuscript:MonoBehaviour{
             Toggle toggle = transform.GetComponent<Toggle>();
             if(toggle != null) {
                 if(PlayerPrefs.HasKey(toggle.name))
-                    toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name, 0) == 1);
+                    toggle.SetIsOnWithoutNotify(PlayerPrefs.GetInt(toggle.name) == 1);
                 toggle.onValueChanged.Invoke(toggle.isOn);
                 continue;
             }
@@ -135,7 +135,7 @@ public class optionsmenuscript:MonoBehaviour{
             Dropdown dropdown = transform.GetComponent<Dropdown>();
             if(dropdown != null) {
                 if(PlayerPrefs.HasKey(dropdown.name))
-                    dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name, 0));
+                    dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name));
                 dropdown.onValueChanged.Invoke(dropdown.value);
                 continue;
             }
