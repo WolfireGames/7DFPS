@@ -341,10 +341,15 @@ public class Mod {
                 return _thumbnail;
 
             if(thumbnailProcess == null) {
-                thumbnailProcess = UnityWebRequestTexture.GetTexture($"file:///{ Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg")}");
-                thumbnailProcess.SendWebRequest();
-            } else if(thumbnailProcess.isDone)
+                if(File.Exists(GetThumbnailPath())) {
+                    thumbnailProcess = UnityWebRequestTexture.GetTexture($"file:///{GetThumbnailPath()}");
+                    thumbnailProcess.SendWebRequest();
+                } else {
+                    _thumbnail = new Texture2D(450, 450);
+                }
+            } else if(thumbnailProcess.isDone && !thumbnailProcess.isNetworkError) {
                 return _thumbnail = DownloadHandlerTexture.GetContent(thumbnailProcess);
+            }
 
             return new Texture2D(450, 450);
         }
@@ -393,6 +398,10 @@ public class Mod {
                 return "Tapes";
         }
         return "";
+    }
+
+    public string GetThumbnailPath() {
+        return Path.Combine(Path.GetDirectoryName(path), "thumbnail.jpg");
     }
 }
 
