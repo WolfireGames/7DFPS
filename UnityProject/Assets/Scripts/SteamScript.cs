@@ -218,6 +218,9 @@ public class SteamScript : MonoBehaviour
                 ImGui.SameLine();
                 ImGui.PopStyleColor(1);
                 ImGui.Checkbox($"Ignore ##{mod.path}", ref mod.ignore);
+                if(ImGui.IsItemEdited()) {
+                    ModManager.UpdateCache();
+                }
                 i++;
             }
         }

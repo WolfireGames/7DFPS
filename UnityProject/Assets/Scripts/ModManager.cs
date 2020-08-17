@@ -296,7 +296,7 @@ public class ModManager : MonoBehaviour {
             availableMods = new List<Mod> ();
     }
 
-    private static void UpdateCache() {
+    public static void UpdateCache() {
         try {
             string path = Path.Combine(ModManager.GetModsfolderPath(), "cache");
 
