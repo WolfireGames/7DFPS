@@ -226,6 +226,7 @@ public class ImGuiUnity : MonoBehaviour {
         {
             guiCamera = gameObject.GetComponent<Camera>();
         }
+        guiCamera.gameObject.transform.position = new Vector3(0, 0, -10);
 
         if (enableVRInput)
         {
@@ -292,8 +293,6 @@ public class ImGuiUnity : MonoBehaviour {
         {
             textures = new Dictionary<IntPtr, Texture>(new IntPtrComparer());
         }
-
-        guiCamera.gameObject.transform.position = new Vector3(0, 0, -10);
 
         if (enableVRInput && vrCameraObject != null && vrCamera == null)
         {
