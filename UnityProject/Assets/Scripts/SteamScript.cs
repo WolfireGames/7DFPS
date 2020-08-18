@@ -204,7 +204,7 @@ public class SteamScript : MonoBehaviour
         
         ImGui.SameLine();
         ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
-        if(ImGui.Button("Refresh")) {
+        if(ImGui.Button("Refresh Steam")) {
             QueryPersonalWorkshopItems();
             loadItems = true;
         }
