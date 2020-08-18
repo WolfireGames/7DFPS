@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
+using Steamworks;
 
 public class ModManager : MonoBehaviour {
     public static List<Mod> loadedGunMods = new List<Mod>();
@@ -17,6 +18,7 @@ public class ModManager : MonoBehaviour {
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
     public InbuildMod[] inbuildMods;
+    private SteamScript steamScript;
 
     public static Dictionary<ModType, string> mainAssets = new Dictionary<ModType, string> {
         {ModType.Gun, "gun_holder.prefab"},
@@ -36,6 +38,7 @@ public class ModManager : MonoBehaviour {
     public void Awake() {
         // Setup static reference
         ModManager._instance = this;
+        steamScript = GameObject.FindObjectOfType<SteamScript>();
 
         //Make sure these folders are generated if they don't exist
         if(!Directory.Exists(GetModsfolderPath())) {
