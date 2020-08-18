@@ -248,6 +248,7 @@ public class ModManager : MonoBehaviour {
         var mod = new Mod(assetPath);
         mod.name = Path.GetFileName(bundleName);
         mod.modType = GetModTypeFromBundle(modBundle);
+        mod.steamworksItem = new SteamworksUGCItem(mod);
 
         // Determine gun display name for the cache
         if(mod.modType == ModType.Gun)
@@ -279,6 +280,10 @@ public class ModManager : MonoBehaviour {
             availableMods = new List<Mod> (LoadRawCacheFile().mods);
         else
             availableMods = new List<Mod> ();
+
+        // Reload steamworks item data
+        foreach (Mod mod in availableMods)
+            mod.steamworksItem = new SteamworksUGCItem(mod);
     }
 
     public static void UpdateCache() {
