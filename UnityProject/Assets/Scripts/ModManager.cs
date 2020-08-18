@@ -289,7 +289,7 @@ public class ModManager : MonoBehaviour {
                 File.Delete(path);
 
             File.Create(path).Close();
-            File.WriteAllText(path, JsonUtility.ToJson(new Cache(availableMods.ToArray())));
+            File.WriteAllText(path, JsonUtility.ToJson(new Cache(availableMods.ToArray()), true));
         } catch (Exception e) {
             Debug.LogError(e);
         }
@@ -365,6 +365,7 @@ public class Mod {
     [NonSerialized] public GameObject mainAsset;
 
     [NonSerialized] public SteamworksUGCItem steamworksItem;
+    public SteamUGCDetails_t steamworksDetails;
 
     public Mod(string path) {
         this.path = path;
