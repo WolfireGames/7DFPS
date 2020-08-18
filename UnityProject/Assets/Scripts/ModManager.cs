@@ -99,7 +99,7 @@ public class ModManager : MonoBehaviour {
                 WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
                 placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
                 placeholder.mod = mod;
-                placeholder.display_name = mod.name;
+                placeholder.display_name = mod.steamworksItem.GetName();
                 guns.Add(placeholder.gameObject);
             }
             guiSkinHolder.weapons = guns.ToArray();
@@ -246,13 +246,12 @@ public class ModManager : MonoBehaviour {
 
         // Generate Mod Object
         var mod = new Mod(assetPath);
-        mod.name = Path.GetFileName(bundleName);
         mod.modType = GetModTypeFromBundle(modBundle);
         mod.steamworksItem = new SteamworksUGCItem(mod);
 
         // Determine gun display name for the cache
         if(mod.modType == ModType.Gun)
-            mod.name = modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name;
+            mod.steamworksItem.SetName(modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name);
 
         // Register mod and clean up
         availableMods.Add(mod);
@@ -337,7 +336,6 @@ public enum ModType {
 [System.Serializable]
 public class Mod {
     public ModType modType;
-    public string name = "None";
 
     private UnityWebRequest thumbnailProcess;
     private Texture2D _thumbnail;

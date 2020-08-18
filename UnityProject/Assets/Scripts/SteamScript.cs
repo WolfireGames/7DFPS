@@ -213,7 +213,7 @@ public class SteamScript : MonoBehaviour
         for (int i = 0; i < ModManager.availableMods.Count; i++) {
             Mod mod = ModManager.availableMods[i];
 
-            ImGui.Text(mod.name);
+            ImGui.Text(mod.steamworksItem.GetName());
             ImGui.SameLine(hSpacing);
             ImGui.Text(mod.GetTypeString());
             ImGui.SameLine(1.2f * hSpacing);
@@ -279,7 +279,6 @@ public class SteamworksUGCItem {
     private UGCUpdateHandle_t update_handle;
 
     private Mod mod;
-    private string title;
     private char[] name;
     private char[] description;
     private char[] tags;
@@ -289,6 +288,14 @@ public class SteamworksUGCItem {
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
 
+    public string GetName() {
+        return GetChars(name);
+    }
+
+    public void SetName(string name) {
+        this.name = new char[1024];
+        CopyChars(name, this.name);
+    }
 
     private string GetChars(char[] text) {
         string t = new string(text);
@@ -360,9 +367,7 @@ public class SteamworksUGCItem {
         uploading = false;
         visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
         mod = _mod;
-        title = mod.name;
         name = new char[1024];
-        CopyChars(title, name);
         description = new char[1024]; description[0] = '\0';
         tags = new char[512]; tags[0] = '\0';
         author = new char[256]; author[0] = '\0';
@@ -386,7 +391,6 @@ public class SteamworksUGCItem {
                 CopyChars(jnRoot["author"].Value, author);
                 CopyChars(jnRoot["version"].Value, version);
                 steamworks_id = new PublishedFileId_t((ulong)jnRoot["steamworks_id"].AsLong);
-                mod.name = GetChars(name);
             } catch (Exception e) {
                 Debug.LogError("Error reading metadata for mod: " + e);
             }
@@ -410,8 +414,6 @@ public class SteamworksUGCItem {
         } catch (Exception e) {
             Debug.LogError("Failed to write metadata for mod: " + e);
         }
-
-        mod.name = GetChars(name);
     }
 
 
