@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Steamworks;
 
-public class ModManager : MonoBehaviour {
+public class ModManager : Singleton<ModManager> {
     public static List<Mod> loadedGunMods = new List<Mod>();
     public static List<Mod> loadedLevelMods = new List<Mod>();
     public static List<Mod> loadedTapeMods = new List<Mod>();
@@ -24,18 +24,8 @@ public class ModManager : MonoBehaviour {
         {ModType.Tapes, "tape_holder.prefab"},
     };
 
-    private static ModManager _instance;
-    public static ModManager instance {
-        get {
-            if(!_instance) // static "_instance" is cleared during hotswaps, reassign value
-                _instance = UnityEngine.Object.FindObjectOfType<ModManager>();
-            return _instance;
-        }
-    }
-
-    public void Awake() {
+    public override void Init() {
         // Setup static reference
-        ModManager._instance = this;
         steamScript = GameObject.FindObjectOfType<SteamScript>();
 
         //Make sure these folders are generated if they don't exist
