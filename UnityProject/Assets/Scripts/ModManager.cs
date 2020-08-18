@@ -70,6 +70,7 @@ public class ModManager : MonoBehaviour {
         Debug.LogWarning("Forced a mod Reimport");
         UnloadAll();
         ImportLocalMods();
+        instance.steamScript.ImportSteamMods(); // Start importing steam mods, they will load in with a delay
         UpdateCache();
     }
 

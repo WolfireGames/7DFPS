@@ -81,7 +81,7 @@ public class SteamScript : MonoBehaviour
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
                 steamItems.Add(details);
-                // Load items at startup, but not after later queries
+                // Only load items when explicitly requested by something
                 if (loadItems) {
                     uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
                     if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
@@ -132,7 +132,6 @@ public class SteamScript : MonoBehaviour
 
 
     void Awake() {
-        loadItems = true;
         uploadingItem = null;
         steamItems = new List<SteamUGCDetails_t>();
 
@@ -147,6 +146,14 @@ public class SteamScript : MonoBehaviour
             m_DeleteItemResult = CallResult<DeleteItemResult_t>.Create(OnItemDeleted);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
 
+            QueryPersonalWorkshopItems();
+        }
+    }
+
+
+    public void ImportSteamMods() {
+        if(SteamManager.Initialized) {
+            loadItems = true; // We assume the mod manager no longer has a reference to the mod
             QueryPersonalWorkshopItems();
         }
     }
