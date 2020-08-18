@@ -224,7 +224,7 @@ public class ModManager : MonoBehaviour {
         availableMods = new List<Mod>();
         foreach(var path in GetModPaths()) {
             try {
-                ImportMod(path);
+                ImportMod(path, true);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
@@ -232,7 +232,7 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Local mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    public static Mod ImportMod(string path) {
+    public static Mod ImportMod(string path, bool local) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -249,7 +249,7 @@ public class ModManager : MonoBehaviour {
         var modBundle = AssetBundle.LoadFromFile(assetPath);
 
         // Generate Mod Object
-        var mod = new Mod(assetPath);
+        var mod = new Mod(assetPath, local);
         mod.modType = GetModTypeFromBundle(modBundle);
         mod.steamworksItem = new SteamworksUGCItem(mod);
 
