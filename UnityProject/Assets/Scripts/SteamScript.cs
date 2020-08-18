@@ -76,6 +76,11 @@ public class SteamScript : MonoBehaviour
         Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
 
         if (failed == false) {
+            if(pResult.m_unNumResultsReturned != ModManager.GetAvailableSteamModCount()) {
+                loadItems = true;
+                ModManager.availableMods.RemoveAll( (mod) => !mod.IsLocalMod() );
+            }
+
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);

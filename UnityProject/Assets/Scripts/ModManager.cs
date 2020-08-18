@@ -219,6 +219,10 @@ public class ModManager : MonoBehaviour {
         return availableMods.Count( (x) => x.IsLocalMod() );
     }
 
+    public static int GetAvailableSteamModCount() {
+        return availableMods.Count( (x) => !x.IsLocalMod() );
+    }
+
     public static void ImportLocalMods() {
         Debug.Log($"Importing mods..");
         availableMods = new List<Mod>();
