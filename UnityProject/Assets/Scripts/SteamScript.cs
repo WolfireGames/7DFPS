@@ -204,32 +204,30 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, buttonActiveColor);
 
         ImGui.Begin("Mod window");
-        ImGui.Text("Local installed mods");
-        if (PlayerPrefs.GetInt("mods_enabled", 0) == 1) {
-            int i = 0;
-            foreach (Mod mod in ModManager.availableMods) {
-                ImGui.Text(mod.name);
-                ImGui.SameLine(hSpacing);
-                ImGui.Text(mod.GetTypeString());
-                ImGui.SameLine(1.2f * hSpacing);
-                ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
-                if (ImGui.Button("Show info##" + i)) {
-                    if (uploadingItem != null) {
-                        uploadingItem.waiting_for_create = false;
-                    }
-                    uploadingItem = mod.steamworksItem;
-                    uploadingItem.waiting_for_create = true;
+        ImGui.Text("Installed mods"); // TODO gray them out when mods are not enabled
+        for (int i = 0; i < ModManager.availableMods.Count; i++) {
+            Mod mod = ModManager.availableMods[i];
+
+            ImGui.Text(mod.name);
+            ImGui.SameLine(hSpacing);
+            ImGui.Text(mod.GetTypeString());
+            ImGui.SameLine(1.2f * hSpacing);
+            ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
+            if (ImGui.Button("Show info##" + i)) {
+                if (uploadingItem != null) {
+                    uploadingItem.waiting_for_create = false;
                 }
-                if (ImGui.IsItemHovered()) {
-                    ImGui.SetTooltip("Show mod info and Workshop upload window");
-                }
-                ImGui.SameLine();
-                ImGui.PopStyleColor(1);
-                ImGui.Checkbox($"Ignore ##{mod.path}", ref mod.ignore);
-                if(ImGui.IsItemEdited()) {
-                    ModManager.UpdateCache();
-                }
-                i++;
+                uploadingItem = mod.steamworksItem;
+                uploadingItem.waiting_for_create = true;
+            }
+            if (ImGui.IsItemHovered()) {
+                ImGui.SetTooltip("Show mod info and Workshop upload window");
+            }
+            ImGui.SameLine();
+            ImGui.PopStyleColor(1);
+            ImGui.Checkbox($"Ignore ##{mod.path}", ref mod.ignore);
+            if(ImGui.IsItemEdited()) {
+                ModManager.UpdateCache();
             }
         }
 
