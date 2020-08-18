@@ -12,7 +12,7 @@ public class GunMenuScript : MonoBehaviour {
         gui_skin_holder = GameObject.Find("gui_skin_holder").GetComponent<GUISkinHolder>();
     }
 
-    public void Start() {
+    public void OnEnable() {
         // Clear previous options
         dropdown.ClearOptions();
 
