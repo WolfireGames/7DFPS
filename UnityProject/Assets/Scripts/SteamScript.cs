@@ -20,7 +20,6 @@ public class SteamScript : MonoBehaviour
     private bool loadItems;
     private SteamworksUGCItem uploadingItem;
     private List<SteamUGCDetails_t> steamItems;
-    private ModManager modManager;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
     protected Callback<DownloadItemResult_t> m_DownloadItemResult;
@@ -118,7 +117,7 @@ public class SteamScript : MonoBehaviour
                         return;
                     }
                 }
-                modManager.ImportSteamMod(folder);
+                ModManager.ImportSteamMod(folder);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
@@ -133,9 +132,6 @@ public class SteamScript : MonoBehaviour
         loadItems = true;
         uploadingItem = null;
         steamItems = new List<SteamUGCDetails_t>();
-
-        GameObject mm = GameObject.Find("ModManager");
-        modManager = mm.GetComponent<ModManager>();
 
         // Preload metadata
         foreach (Mod mod in ModManager.availableMods) {

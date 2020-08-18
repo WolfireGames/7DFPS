@@ -224,7 +224,7 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    public Mod ImportSteamMod(string path) {
+    public static Mod ImportSteamMod(string path) {
         Mod mod = ImportMod(path);
         UpdateCache();
 
