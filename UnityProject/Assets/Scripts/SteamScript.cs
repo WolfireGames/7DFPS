@@ -200,6 +200,14 @@ public class SteamScript : MonoBehaviour
 
         ImGui.Begin("Mod window");
         ImGui.Text("Installed mods"); // TODO gray them out when mods are not enabled
+        
+        ImGui.SameLine();
+        ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
+        if(ImGui.Button("Refresh")) {
+            QueryPersonalWorkshopItems();
+        }
+        ImGui.PopStyleColor(1);
+
         for (int i = 0; i < ModManager.availableMods.Count; i++) {
             Mod mod = ModManager.availableMods[i];
 
@@ -219,57 +227,25 @@ public class SteamScript : MonoBehaviour
                 ImGui.SetTooltip("Show mod info and Workshop upload window");
             }
             ImGui.SameLine();
-            ImGui.PopStyleColor(1);
             ImGui.Checkbox($"Disabled ##{mod.path}", ref mod.ignore);
             if(ImGui.IsItemEdited()) {
                 ModManager.UpdateCache();
             }
-        }
 
-        ImGui.Text("Subscribed Steamworks items");
-        ImGui.SameLine();
-        ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
-        if(ImGui.Button("Refresh")) {
-            QueryPersonalWorkshopItems();
-        }
-        ImGui.PopStyleColor(1);
+            if(mod.steamworksItem.steamworks_id != PublishedFileId_t.Invalid) {
+                ImGui.SameLine();
+                if (ImGui.Button("Unsubscribe##" + i)) {
+                    ModManager.availableMods.Remove(mod);
+                    ModManager.UpdateCache();
 
-        int j = 0;
-        for (int i = 0; i < steamItems.Count; i++) {
-            SteamUGCDetails_t details = steamItems[i];
-
-            ImGui.Text(details.m_rgchTitle);
-            ImGui.SameLine(hSpacing);
-            List<string> tagList = GetTagList(details.m_rgchTags);
-            ImGui.Text(tagList[tagList.Count - 1]); // Type tag inserted last
-            ImGui.SameLine(1.2f * hSpacing);
-            uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
-            ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
-            if ((itemState & (uint)EItemState.k_EItemStateInstalled) == 0) {
-                if (ImGui.Button("Install##" + j)) {
-                    SteamUGC.DownloadItem(details.m_nPublishedFileId, false);
-                }
-            } else {
-                if (ImGui.Button("Unsubscribe##" + j)) {
-                    // Attempt to restore the reference to the mod object and properly remove it from cache
-                    if(SteamUGC.GetItemInstallInfo(details.m_nPublishedFileId, out ulong sizeOnDisk, out string folder, 512, out uint timeStamp)) {
-                        Mod mod = ModManager.GetAvailableModWithDirectoryPath(folder);
-                        if(mod != null) {
-                            ModManager.availableMods.Remove(mod);
-                            ModManager.UpdateCache();
-                        } else {
-                            Debug.LogWarning("Couldn't find unsubscribed mod.");
-                        }
-                    }
-                    SteamUGC.UnsubscribeItem(details.m_nPublishedFileId);
+                    SteamUGC.UnsubscribeItem(mod.steamworksItem.steamworks_id);
                     QueryPersonalWorkshopItems();
-                    steamItems.Remove(details);
                     i--;
                     continue;
                 }
                 ImGui.SameLine();
-                if (ImGui.Button("Show in Steam##" + j)) {
-                    string itemPath = "steam://url/CommunityFilePage/" + details.m_nPublishedFileId.ToString();
+                if (ImGui.Button("Show in Steam##" + i)) {
+                    string itemPath = $"steam://url/CommunityFilePage/{mod.steamworksItem.steamworks_id}";
                     SteamFriends.ActivateGameOverlayToWebPage(itemPath);
                 }
                 if (ImGui.IsItemHovered()) {
@@ -277,7 +253,6 @@ public class SteamScript : MonoBehaviour
                 }
             }
             ImGui.PopStyleColor(1);
-            j++;
         }
 
         ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
@@ -297,7 +272,7 @@ public class SteamworksUGCItem {
     public bool waiting_for_create;
 
     private bool uploading;
-    private PublishedFileId_t steamworks_id;
+    public PublishedFileId_t steamworks_id;
     private ERemoteStoragePublishedFileVisibility visibility;
     private UGCUpdateHandle_t update_handle;
 
