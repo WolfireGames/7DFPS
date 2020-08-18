@@ -151,7 +151,6 @@ namespace Steamworks {
 	}
 
 	// Details for a single published file/UGC
-	[System.Serializable]
 	[StructLayout(LayoutKind.Sequential, Pack = Packsize.value)]
 	public struct SteamUGCDetails_t {
 		public PublishedFileId_t m_nPublishedFileId;

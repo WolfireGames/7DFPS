@@ -370,7 +370,6 @@ public class Mod {
     [NonSerialized] public GameObject mainAsset;
 
     [NonSerialized] public SteamworksUGCItem steamworksItem;
-    public SteamUGCDetails_t steamworksDetails;
 
     public Mod(string path) {
         this.path = path;
