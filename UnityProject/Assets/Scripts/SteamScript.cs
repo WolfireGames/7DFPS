@@ -208,6 +208,10 @@ public class SteamScript : MonoBehaviour
             QueryPersonalWorkshopItems();
             loadItems = true;
         }
+        ImGui.SameLine();
+        if(ImGui.Button("DEBUG Reimport All")) {
+            ModManager.ForceReimport(); // TODO this will unload active assets, requiring to restart the round
+        }
         ImGui.PopStyleColor(1);
 
         for (int i = 0; i < ModManager.availableMods.Count; i++) {
