@@ -19,7 +19,6 @@ public class SteamScript : MonoBehaviour
 
     private bool loadItems;
     private SteamworksUGCItem uploadingItem;
-    private List<SteamUGCDetails_t> steamItems;
 
     protected Callback<ItemInstalled_t> m_ItemInstalled;
     protected Callback<DownloadItemResult_t> m_DownloadItemResult;
@@ -65,6 +64,7 @@ public class SteamScript : MonoBehaviour
 
 
     private void OnItemDeleted(DeleteItemResult_t pResult, bool failed) {
+        Debug.Log("OnItemDeleted");
         if (failed == false) {
             // Refresh list
             QueryPersonalWorkshopItems();
@@ -76,11 +76,9 @@ public class SteamScript : MonoBehaviour
         Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
 
         if (failed == false) {
-            steamItems.Clear();
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
-                steamItems.Add(details);
                 // Only load items when explicitly requested by something
                 if (loadItems) {
                     uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
@@ -134,7 +132,6 @@ public class SteamScript : MonoBehaviour
     void Awake() {
         loadItems = true;
         uploadingItem = null;
-        steamItems = new List<SteamUGCDetails_t>();
 
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
