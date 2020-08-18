@@ -13,8 +13,6 @@ public class ModManager : MonoBehaviour {
 
     public static List<Mod> availableMods = new List<Mod>();
 
-    private static int numSteamMods = 0;
-
     public LevelCreatorScript levelCreatorScript;
     public GUISkinHolder guiSkinHolder;
     public InbuildMod[] inbuildMods;
