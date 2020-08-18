@@ -224,13 +224,6 @@ public class ModManager : MonoBehaviour {
         Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
     }
 
-    public static Mod ImportSteamMod(string path) {
-        Mod mod = ImportMod(path);
-        UpdateCache();
-
-        return mod;
-    }
-
     public static Mod ImportMod(string path) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
