@@ -35,7 +35,7 @@ public class ModManager : MonoBehaviour {
         }
     }
 
-    public void Start() {
+    public void Awake() {
         // Setup static reference
         ModManager._instance = this;
         steamScript = GameObject.FindObjectOfType<SteamScript>();
