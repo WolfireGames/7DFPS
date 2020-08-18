@@ -55,7 +55,7 @@ public class ModManager : MonoBehaviour {
 
         LoadCache();
 
-        if(availableMods.Count != GetModCountInCache()) { // Is our Cache up to date?
+        if(GetAvailableLocalModCount() != GetModFolderCount()) { // Is our Cache up to date? (only consider local mods)
             ForceReimport();
         }
 
@@ -213,6 +213,10 @@ public class ModManager : MonoBehaviour {
 
     public static int GetModFolderCount() {
         return GetModPaths().Count();
+    }
+
+    public static int GetAvailableLocalModCount() {
+        return availableMods.Count( (x) => x.IsLocalMod() );
     }
 
     public static void ImportLocalMods() {
