@@ -66,7 +66,7 @@ public class ModManager : MonoBehaviour {
     public static void ForceReimport() {
         Debug.LogWarning("Forced a mod Reimport");
         UnloadAll();
-        ImportMods();
+        ImportLocalMods();
         UpdateCache();
     }
 
@@ -211,7 +211,7 @@ public class ModManager : MonoBehaviour {
         return GetModPaths().Count();
     }
 
-    public static void ImportMods() {
+    public static void ImportLocalMods() {
         Debug.Log($"Importing mods..");
         availableMods = new List<Mod>();
         foreach(var path in GetModPaths()) {
@@ -221,7 +221,7 @@ public class ModManager : MonoBehaviour {
                 Debug.LogWarning($"Failed to import {path}: {e.Message}");
             }
         }
-        Debug.Log($"Mod importing completed. Imported {availableMods.Count} mods!");
+        Debug.Log($"Local mod importing completed. Imported {availableMods.Count} mods!");
     }
 
     public static Mod ImportMod(string path) {
