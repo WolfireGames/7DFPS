@@ -250,7 +250,7 @@ public class ModManager : MonoBehaviour {
 
         // Init
         var assetPath = Path.Combine(path, bundleName);
-        var modBundle = AssetBundle.LoadFromFile(assetPath);
+        var modBundle = LoadAssetBundle(assetPath);
 
         // Generate Mod Object
         var mod = new Mod(assetPath, local);
@@ -327,6 +327,11 @@ public class ModManager : MonoBehaviour {
             this.mods = mods;
         }
     }
+
+    public static AssetBundle LoadAssetBundle(string path) {
+        AssetBundle loadedAssetBundle = AssetBundle.GetAllLoadedAssetBundles().FirstOrDefault( (bundle) => bundle.name == Path.GetFileNameWithoutExtension(path));
+        return loadedAssetBundle ?? AssetBundle.LoadFromFile(path);
+    }
 }
 
 public enum ModLoadType {
@@ -394,7 +399,7 @@ public class Mod {
 
         // Loading
         loaded = true;
-        assetBundle = AssetBundle.LoadFromFile(path);
+        assetBundle = ModManager.LoadAssetBundle(path);
         mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
         ModManager.UpdateModInLoadedModlist(this);
     }
