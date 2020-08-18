@@ -361,6 +361,8 @@ public class Mod {
 
     [NonSerialized] public bool loaded = false;
     
+    [SerializeField] private bool isLocal = false;
+
     public string path;
     public bool ignore = false;
     [NonSerialized] public AssetBundle assetBundle;
@@ -369,8 +371,13 @@ public class Mod {
 
     [NonSerialized] public SteamworksUGCItem steamworksItem;
 
-    public Mod(string path) {
-        this.path = path;
+    public Mod(string path, bool isLocal) {
+        this.path = Path.GetFullPath(path);
+        this.isLocal = isLocal;
+    }
+
+    public bool IsLocalMod() {
+        return isLocal;
     }
 
     public void Load() {

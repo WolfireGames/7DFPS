@@ -119,7 +119,7 @@ public class SteamScript : MonoBehaviour
                 }
 
                 // Register new mod in the ModManager
-                ModManager.ImportMod(folder);
+                ModManager.ImportMod(folder, false);
                 ModManager.UpdateCache();
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
@@ -238,7 +238,7 @@ public class SteamScript : MonoBehaviour
                 ModManager.UpdateCache();
             }
 
-            if(mod.steamworksItem.steamworks_id != PublishedFileId_t.Invalid) {
+            if(!mod.IsLocalMod()) {
                 ImGui.SameLine();
                 if (ImGui.Button("Unsubscribe##" + i)) {
                     ModManager.availableMods.Remove(mod);
