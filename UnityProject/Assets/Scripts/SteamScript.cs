@@ -135,11 +135,6 @@ public class SteamScript : MonoBehaviour
         uploadingItem = null;
         steamItems = new List<SteamUGCDetails_t>();
 
-        // Preload metadata
-        foreach (Mod mod in ModManager.availableMods) {
-            mod.steamworksItem = new SteamworksUGCItem(mod);
-        }
-
         if (SteamManager.Initialized) {
             m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
             m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnItemDownloaded);
