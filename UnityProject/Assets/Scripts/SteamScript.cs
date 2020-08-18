@@ -132,6 +132,7 @@ public class SteamScript : MonoBehaviour
 
 
     void Awake() {
+        loadItems = true;
         uploadingItem = null;
         steamItems = new List<SteamUGCDetails_t>();
 
@@ -205,6 +206,7 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
         if(ImGui.Button("Refresh")) {
             QueryPersonalWorkshopItems();
+            loadItems = true;
         }
         ImGui.PopStyleColor(1);
 
