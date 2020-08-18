@@ -296,6 +296,7 @@ public class SteamworksUGCItem {
     public void SetName(string name) {
         this.name = new char[1024];
         CopyChars(name, this.name);
+        UpdateMetadata();
     }
 
     private string GetChars(char[] text) {
