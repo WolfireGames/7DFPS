@@ -523,7 +523,7 @@ public class ImGuiUnity : MonoBehaviour {
     {
         ImGuiIOPtr io = ImGui.GetIO();
         io.DisplaySize = new Vector2(Screen.width, Screen.height);
-        io.DeltaTime = Time.deltaTime; // in seconds
+        io.DeltaTime = Time.unscaledDeltaTime; // in seconds
     }
 
     void UpdateInput()
