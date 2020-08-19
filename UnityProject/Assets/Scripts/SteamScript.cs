@@ -196,7 +196,6 @@ public class SteamScript : MonoBehaviour
             QueryPersonalWorkshopItems();
             loadItems = true;
         }
-        ImGui.SameLine();
         ImGui.PopStyleColor(1);
 
         for (int i = 0; i < ModManager.importedMods.Count; i++) {
