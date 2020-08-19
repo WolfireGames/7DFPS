@@ -30,13 +30,13 @@ public class GUISkinHolder : MonoBehaviour {
         weapon.GetComponent<WeaponHolder>().Load();
     }
 
-    private void InsertGunMods() {
     private void InsertMods() {
         InsertGunMods();
         InsertTapeMods();
         InsertLevelMods();
     }
 
+    public void InsertGunMods() {
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var gunMods = ModManager.GetAvailableMods(ModType.Gun);
