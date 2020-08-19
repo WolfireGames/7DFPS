@@ -113,9 +113,13 @@ public class ModManager : Singleton<ModManager> {
         mod.modType = GetModTypeFromBundle(modBundle);
         mod.steamworksItem = new SteamworksUGCItem(mod);
 
-        // Determine gun display name for the cache
-        if(mod.modType == ModType.Gun)
-            mod.steamworksItem.SetName(modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name);
+        // Default steam name to *something* more descriptive than nothing
+        if(mod.steamworksItem.GetName() == "") {
+            if(mod.modType == ModType.Gun)
+                mod.steamworksItem.SetName(modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name);
+            else
+                mod.steamworksItem.SetName(modBundle.name);
+        }
 
         // Register mod and clean up
         importedMods.Add(mod);
