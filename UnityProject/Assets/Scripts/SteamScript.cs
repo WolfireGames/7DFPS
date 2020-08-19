@@ -46,8 +46,6 @@ public class SteamScript : MonoBehaviour
             return;
         }
 
-        Debug.Log("OnItemInstalled");
-
         LoadModIntoGame(pCallback.m_nPublishedFileId);
         // Refresh list
         QueryPersonalWorkshopItems();
@@ -64,7 +62,6 @@ public class SteamScript : MonoBehaviour
 
 
     private void OnItemDeleted(DeleteItemResult_t pResult, bool failed) {
-        Debug.Log("OnItemDeleted");
         if (failed == false) {
             // Refresh list
             QueryPersonalWorkshopItems();
