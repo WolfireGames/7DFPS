@@ -216,9 +216,12 @@ public class SteamScript : MonoBehaviour
             if (ImGui.IsItemHovered()) {
                 ImGui.SetTooltip("Show mod info and Workshop upload window");
             }
+            ImGui.PopStyleColor(1);
+            
             ImGui.SameLine();
             ImGui.Checkbox($"Disabled ##{mod.path}", ref mod.ignore);
 
+            ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
             if(!mod.IsLocalMod()) {
                 ImGui.SameLine();
                 if (ImGui.Button("Unsubscribe##" + i)) {
