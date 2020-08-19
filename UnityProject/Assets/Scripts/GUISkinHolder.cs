@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GUISkinHolder:MonoBehaviour{
     
     public GUISkin gui_skin;
+    public LevelCreatorScript levelCreatorScript;
     public List<AudioClip> sound_scream;
 	public List<AudioClip> sound_tape_content;
     public AudioClip sound_tape_start;
@@ -19,8 +21,67 @@ public class GUISkinHolder:MonoBehaviour{
     public GameObject pause_menu;
     
     public void Awake() {
+        if(ModManager.IsModsEnabled()) {
+            InsertGunMods();
+            InsertTapeMods();
+            InsertLevelMods();
+        }
+
         weapon = GetGunHolder();
         weapon.GetComponent<WeaponHolder>().Load();
+    }
+
+    private void InsertGunMods() {
+        ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
+        if(gun_load_type != ModLoadType.DISABLED) {
+            var gunMods = ModManager.GetAvailableMods(ModType.Gun);
+            var guns = new List<GameObject>(weapons);
+            if(gunMods.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
+                guns.Clear();
+
+            foreach (var mod in gunMods) {
+                WeaponHolder placeholder = new GameObject().AddComponent<WeaponHolder>();
+                placeholder.gameObject.hideFlags = HideFlags.DontSave | HideFlags.HideInHierarchy;
+                placeholder.mod = mod;
+                placeholder.display_name = mod.steamworksItem.GetName();
+                guns.Add(placeholder.gameObject);
+            }
+            weapons = guns.ToArray();
+        }
+    }
+
+    private void InsertTapeMods() {
+        ModLoadType tape_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tape_loading", 0);
+        if(tape_load_type != ModLoadType.DISABLED) {
+            var tapeMods = ModManager.GetAvailableMods(ModType.Tapes);
+            if(tapeMods.Count() > 0 && tape_load_type == ModLoadType.EXCLUSIVE)
+                sound_tape_content.Clear();
+
+            foreach (var mod in tapeMods) {
+                foreach(AudioClip tape in mod.mainAsset.GetComponent<ModTapesHolder>().tapes) {
+                    sound_tape_content.Add(tape);
+                }
+            }
+        }
+    }
+
+    private void InsertLevelMods() {
+        if(levelCreatorScript) {
+            ModLoadType tile_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_tile_loading", 0);
+            if(tile_load_type != ModLoadType.DISABLED) {
+                var tileMods = ModManager.GetAvailableMods(ModType.LevelTile);
+                var tiles = new List<GameObject>(levelCreatorScript.level_tiles);
+                if(tileMods.Count() > 0 && tile_load_type == ModLoadType.EXCLUSIVE)
+                    tiles.Clear();
+
+                foreach (var mod in tileMods) {
+                    foreach(GameObject tile in mod.mainAsset.GetComponent<ModTilesHolder>().tile_prefabs) {
+                        tiles.Add(tile);
+                    }
+                }
+                levelCreatorScript.level_tiles = tiles.ToArray();
+            }
+        }
     }
 
     private GameObject GetGunHolder() {

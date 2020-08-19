@@ -175,7 +175,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &725390608
 GameObject:
@@ -305,7 +305,7 @@ Transform:
   m_Children:
   - {fileID: 725390609}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &1064218109
 Camera:
@@ -510,7 +510,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1799330309
 GameObject:
@@ -554,7 +554,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1799330312
 MonoBehaviour:
@@ -568,7 +568,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 889c4298b31207b4e987de07771a5b28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modManager: {fileID: 131495379}
 --- !u!1001 &1808478806
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -670,7 +669,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1854270037
 MonoBehaviour:
@@ -729,7 +728,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2106325458
 MonoBehaviour:
@@ -744,6 +743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gui_skin: {fileID: 11400000, guid: 553b407bfa47d5845abd84fa8b47b938, type: 2}
+  levelCreatorScript: {fileID: 1854270037}
   sound_scream:
   - {fileID: 8300000, guid: 2b950a5b6a199164daac27dc1c846852, type: 3}
   - {fileID: 8300000, guid: 22b4da19b6846994d93bb41b7ddbfc3b, type: 3}

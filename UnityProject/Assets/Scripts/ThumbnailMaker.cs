@@ -146,8 +146,7 @@ public class ThumbnailMaker : MonoBehaviour {
         RenderTexture.active = renderTexture;
         cam.targetTexture = renderTexture;
         
-        if(!mod.loaded)
-            mod.Load();
+        mod.Load();
 
         //mod.assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(mod.modType));
         PrepareScene(mod);
@@ -178,7 +177,6 @@ public class ThumbnailMaker : MonoBehaviour {
         cam.targetTexture = null;
 
         GameObject.DestroyImmediate(this.gameObject);
-        mod.Unload();
 
         return texture;
     }

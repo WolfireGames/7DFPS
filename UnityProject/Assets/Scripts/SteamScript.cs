@@ -76,11 +76,6 @@ public class SteamScript : MonoBehaviour
         Debug.Log("OnUGCSteamUGCQueryCompleted() " + pResult.m_eResult);
 
         if (failed == false) {
-            if(pResult.m_unNumResultsReturned != ModManager.GetAvailableSteamModCount()) {
-                loadItems = true;
-                ModManager.availableMods.RemoveAll( (mod) => !mod.IsLocalMod() );
-            }
-
             for (uint i = 0; i < pResult.m_unNumResultsReturned; i++) {
                 SteamUGCDetails_t details;
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
@@ -114,7 +109,7 @@ public class SteamScript : MonoBehaviour
 
         if (SteamUGC.GetItemInstallInfo(publishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
             try {
-                foreach (Mod m in ModManager.availableMods) {
+                foreach (Mod m in ModManager.importedMods) {
                     if (m.path.Contains(folder)) {
                         // Don't load twice
                         return;
@@ -123,7 +118,6 @@ public class SteamScript : MonoBehaviour
 
                 // Register new mod in the ModManager
                 ModManager.ImportMod(folder, false);
-                ModManager.UpdateCache();
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
@@ -144,14 +138,6 @@ public class SteamScript : MonoBehaviour
             m_DeleteItemResult = CallResult<DeleteItemResult_t>.Create(OnItemDeleted);
             m_callSteamUGCQueryCompleted = CallResult<SteamUGCQueryCompleted_t>.Create(OnUGCSteamUGCQueryCompleted);
 
-            QueryPersonalWorkshopItems();
-        }
-    }
-
-
-    public void ImportSteamMods() {
-        if(SteamManager.Initialized) {
-            loadItems = true; // We assume the mod manager no longer has a reference to the mod
             QueryPersonalWorkshopItems();
         }
     }
@@ -211,13 +197,10 @@ public class SteamScript : MonoBehaviour
             loadItems = true;
         }
         ImGui.SameLine();
-        if(ImGui.Button("DEBUG Reimport All")) {
-            ModManager.ForceReimport(); // TODO this will unload active assets, requiring to restart the round
-        }
         ImGui.PopStyleColor(1);
 
-        for (int i = 0; i < ModManager.availableMods.Count; i++) {
-            Mod mod = ModManager.availableMods[i];
+        for (int i = 0; i < ModManager.importedMods.Count; i++) {
+            Mod mod = ModManager.importedMods[i];
 
             ImGui.Text(mod.steamworksItem.GetName());
             ImGui.SameLine(hSpacing);
@@ -236,15 +219,11 @@ public class SteamScript : MonoBehaviour
             }
             ImGui.SameLine();
             ImGui.Checkbox($"Disabled ##{mod.path}", ref mod.ignore);
-            if(ImGui.IsItemEdited()) {
-                ModManager.UpdateCache();
-            }
 
             if(!mod.IsLocalMod()) {
                 ImGui.SameLine();
                 if (ImGui.Button("Unsubscribe##" + i)) {
-                    ModManager.availableMods.Remove(mod);
-                    ModManager.UpdateCache();
+                    ModManager.importedMods.Remove(mod);
 
                     SteamUGC.UnsubscribeItem(mod.steamworksItem.steamworks_id);
                     QueryPersonalWorkshopItems();
