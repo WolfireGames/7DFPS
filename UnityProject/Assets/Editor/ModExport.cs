@@ -97,7 +97,7 @@ public class ModExport : MonoBehaviour {
         // Make Thumbnail
         GameObject thumbnailMakerPrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ThumbnailMaker.prefab");
         if(thumbnailMakerPrefab) {
-            Mod mod = ModManager.ImportMod(dest);
+            Mod mod = ModImporter.ImportModNow(dest, true);
 
             string lastScene = EditorSceneManager.GetActiveScene().path;
             int lastBuildIndex = EditorSceneManager.GetActiveScene().buildIndex;
