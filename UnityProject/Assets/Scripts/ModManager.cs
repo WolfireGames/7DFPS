@@ -29,7 +29,9 @@ public class ModManager : Singleton<ModManager> {
             foreach (var mod in inbuildMods)
                 mod.Generate();
         }
+    }
 
+    public void Start() {
         // Are mods enabled?
         if(!IsModsEnabled())
             return;
