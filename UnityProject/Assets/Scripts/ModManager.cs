@@ -121,12 +121,12 @@ public class ModManager : Singleton<ModManager> {
                 mod.steamworksItem.SetName(modBundle.name);
         }
 
-        // Register mod and clean up
+        // Register mod
         importedMods.Add(mod);
         mod.Load();
 
         // Make sure we already have access to the gun mods in the current run, (required for the gun selection)
-        if(mod.modType == ModType.Gun)
+        if(Application.isPlaying && mod.modType == ModType.Gun)
             GameObject.FindObjectOfType<GUISkinHolder>().InsertGunMods();
 
         //Debug.Log($" + {bundleName} ({mod.modType})");
