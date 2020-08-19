@@ -96,7 +96,4 @@ public class GUISkinHolder:MonoBehaviour{
     public void Start() {
         Instantiate(pause_menu);
     }
-    
-    public void Update() {
-    }
 }
