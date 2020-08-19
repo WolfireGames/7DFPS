@@ -8,6 +8,11 @@ using ImGuiNET;
 using Valve.VR;
 #endif  // STEAMVR_ENABLED
 
+// VR support: Toggle between normal and VR by
+// - enabling/disabling Mesh Renderer and Mesh Collider components of ImGuiUnity game object
+// - enabling/disabling "Vr Mouse Debug" and "EnableVR Input" properties of ImGuiUnity script
+// - for VR, assign the "Gui Camera" property of ImGuiUnity script to GUICamera game object
+
 public class ImGuiUnity : MonoBehaviour {
     public Material material;
 
@@ -226,6 +231,7 @@ public class ImGuiUnity : MonoBehaviour {
         {
             guiCamera = gameObject.GetComponent<Camera>();
         }
+        guiCamera.gameObject.transform.position = new Vector3(0, 0, -10);
 
         if (enableVRInput)
         {
@@ -292,8 +298,6 @@ public class ImGuiUnity : MonoBehaviour {
         {
             textures = new Dictionary<IntPtr, Texture>(new IntPtrComparer());
         }
-
-        guiCamera.gameObject.transform.position = new Vector3(0, 0, -10);
 
         if (enableVRInput && vrCameraObject != null && vrCamera == null)
         {
