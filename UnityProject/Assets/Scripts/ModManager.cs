@@ -8,8 +8,6 @@ using UnityEngine.Networking;
 public class ModManager : Singleton<ModManager> {
     public static List<Mod> importedMods = new List<Mod>();
 
-    public LevelCreatorScript levelCreatorScript;
-    public GUISkinHolder guiSkinHolder;
     public InbuildMod[] inbuildMods;
     private SteamScript steamScript;
 

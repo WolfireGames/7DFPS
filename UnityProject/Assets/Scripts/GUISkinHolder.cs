@@ -2,8 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GUISkinHolder:MonoBehaviour{
-    
+public class GUISkinHolder : MonoBehaviour {
     public GUISkin gui_skin;
     public LevelCreatorScript levelCreatorScript;
     public List<AudioClip> sound_scream;
@@ -24,9 +23,7 @@ public class GUISkinHolder:MonoBehaviour{
     public void Awake() {
         weapons_origin = weapons;
         if(ModManager.IsModsEnabled()) {
-            InsertGunMods();
-            InsertTapeMods();
-            InsertLevelMods();
+            InsertMods();
         }
 
         weapon = GetGunHolder();
@@ -34,6 +31,12 @@ public class GUISkinHolder:MonoBehaviour{
     }
 
     private void InsertGunMods() {
+    private void InsertMods() {
+        InsertGunMods();
+        InsertTapeMods();
+        InsertLevelMods();
+    }
+
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var gunMods = ModManager.GetAvailableMods(ModType.Gun);
