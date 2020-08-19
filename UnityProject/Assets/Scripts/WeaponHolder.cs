@@ -20,8 +20,6 @@ public class WeaponHolder : MonoBehaviour {
         if(mod == null)
             return; // Don't need to load anything if it isn't a mod placeholder
 
-        mod.Load();
-
         WeaponHolder holder = mod.mainAsset.GetComponent<WeaponHolder>();
         this.display_name = holder.display_name;
 

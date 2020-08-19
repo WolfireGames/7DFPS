@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.Collections;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -36,7 +37,7 @@ public class ModManager : Singleton<ModManager> {
         if(!IsModsEnabled())
             return;
 
-        ImportLocalMods();
+        ModImporter.ImportLocalMods();
     }
 
     public static bool IsModsEnabled() {
@@ -67,76 +68,8 @@ public class ModManager : Singleton<ModManager> {
         return path;
     }
 
-    public static ModType GetModTypeFromBundle(AssetBundle assetBundle) {
-        foreach (ModType modType in mainAssets.Keys)
-            if(assetBundle.Contains(mainAssets[modType]))
-                return modType;
-
-        throw new System.InvalidOperationException($"Unable to find Mod Type for \"{assetBundle.name}\"");
-    }
-
     public static string[] GetModPaths() {
         return Directory.GetDirectories(GetModsfolderPath(), "modfile_*", SearchOption.AllDirectories);
-    }
-
-    public static void ImportLocalMods() {
-        Debug.Log($"Importing mods..");
-        importedMods = new List<Mod>();
-        foreach(var path in GetModPaths()) {
-            try {
-                ImportMod(path, true);
-            } catch (System.Exception e) {
-                Debug.LogWarning($"Failed to import {path}: {e.Message}");
-            }
-        }
-        Debug.Log($"Local mod importing completed. Imported {importedMods.Count} mods!");
-    }
-
-    public static Mod ImportMod(string path, bool local) {
-        string[] bundles = Directory.GetFiles(path);
-        string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
-
-        // Fallback to unsigned mods (old naming version without os versions)
-        if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
-            bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null) && !Path.GetFileName(name).StartsWith("modfile_"));
-            if(bundleName == null) {
-                throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
-            }
-        }
-
-        // Init
-        var assetPath = Path.Combine(path, bundleName);
-        var modBundle = LoadAssetBundle(assetPath);
-
-        // Generate Mod Object
-        var mod = new Mod(assetPath, local);
-        mod.modType = GetModTypeFromBundle(modBundle);
-        mod.steamworksItem = new SteamworksUGCItem(mod);
-
-        // Default steam name to *something* more descriptive than nothing
-        if(mod.steamworksItem.GetName() == "") {
-            if(mod.modType == ModType.Gun)
-                mod.steamworksItem.SetName(modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(ModType.Gun)).GetComponent<WeaponHolder>().display_name);
-            else
-                mod.steamworksItem.SetName(modBundle.name);
-        }
-
-        // Register mod
-        importedMods.Add(mod);
-        mod.Load();
-
-        // Make sure we already have access to the gun mods in the current run, (required for the gun selection)
-        if(Application.isPlaying && mod.modType == ModType.Gun)
-            GameObject.FindObjectOfType<GUISkinHolder>().InsertGunMods();
-
-        //Debug.Log($" + {bundleName} ({mod.modType})");
-
-        return mod;
-    }
-
-    public static AssetBundle LoadAssetBundle(string path) {
-        AssetBundle loadedAssetBundle = AssetBundle.GetAllLoadedAssetBundles().FirstOrDefault( (bundle) => bundle.name == Path.GetFileNameWithoutExtension(path));
-        return loadedAssetBundle ?? AssetBundle.LoadFromFile(path);
     }
 }
 
@@ -195,11 +128,6 @@ public class Mod {
 
     public bool IsLocalMod() {
         return isLocal;
-    }
-
-    public void Load() {
-        assetBundle = ModManager.LoadAssetBundle(path);
-        mainAsset = assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(this.modType));
     }
 
     public string GetTypeString() {

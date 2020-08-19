@@ -114,7 +114,7 @@ public class SteamScript : MonoBehaviour
                 }
 
                 // Register new mod in the ModManager
-                ModManager.ImportMod(folder, false);
+                ModImporter.ImportMod(folder, false);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }

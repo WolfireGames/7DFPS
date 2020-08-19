@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 131495380}
   - component: {fileID: 131495379}
+  - component: {fileID: 131495381}
   m_Layer: 0
   m_Name: ModManager
   m_TagString: Untagged
@@ -150,8 +151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29010c74751b684b9967b4ff9e8b72b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelCreatorScript: {fileID: 1854270037}
-  guiSkinHolder: {fileID: 2106325458}
   inbuildMods:
   - name: rem870_josh
     files:
@@ -177,6 +176,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &131495381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 131495378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e8eaf06470d674fa9ed68058f56d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &725390608
 GameObject:
   m_ObjectHideFlags: 0

@@ -145,10 +145,7 @@ public class ThumbnailMaker : MonoBehaviour {
         RenderTexture temp = RenderTexture.active;
         RenderTexture.active = renderTexture;
         cam.targetTexture = renderTexture;
-        
-        mod.Load();
 
-        //mod.assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(mod.modType));
         PrepareScene(mod);
 
         // Photo Time
