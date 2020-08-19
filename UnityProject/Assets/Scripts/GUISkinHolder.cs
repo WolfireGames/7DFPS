@@ -13,6 +13,7 @@ public class GUISkinHolder:MonoBehaviour{
     public AudioClip sound_tape_background;
     public GameObject tape_object;
     public AudioClip win_sting;
+    private GameObject[] weapons_origin;
     public GameObject[] weapons;
     public GameObject weapon;
     public GameObject flashlight_object;
@@ -21,6 +22,7 @@ public class GUISkinHolder:MonoBehaviour{
     public GameObject pause_menu;
     
     public void Awake() {
+        weapons_origin = weapons;
         if(ModManager.IsModsEnabled()) {
             InsertGunMods();
             InsertTapeMods();
@@ -35,7 +37,7 @@ public class GUISkinHolder:MonoBehaviour{
         ModLoadType gun_load_type = (ModLoadType)PlayerPrefs.GetInt("mod_gun_loading", 0);
         if(gun_load_type != ModLoadType.DISABLED) {
             var gunMods = ModManager.GetAvailableMods(ModType.Gun);
-            var guns = new List<GameObject>(weapons);
+            var guns = new List<GameObject>(weapons_origin);
             if(gunMods.Count() > 0 && gun_load_type == ModLoadType.EXCLUSIVE)
                 guns.Clear();
 
