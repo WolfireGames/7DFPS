@@ -112,7 +112,7 @@ public class SteamScript : MonoBehaviour
                         return;
                     }
                 }
-
+                
                 // Register new mod in the ModManager
                 ModManager.ImportMod(folder, false);
             } catch (System.Exception e) {
