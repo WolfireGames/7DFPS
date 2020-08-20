@@ -60,7 +60,7 @@ public class GunScriptEditor : Editor {
         systems = gun_script.GetGunSystems();
 
         possible_aspects = GetAllAspectsUsedInSystem(systems);
-        possible_components = typeof(GunComponent).GetAllDerivedTypes(systems.GetType());
+        possible_components = typeof(GunComponent).GetAllDerivedTypes();
         possible_systems = typeof(GunSystemBase).GetAllDerivedTypes(systems.GetType());
         Update();
     }
