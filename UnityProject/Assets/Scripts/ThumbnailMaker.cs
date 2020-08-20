@@ -54,6 +54,7 @@ public class ThumbnailMaker : MonoBehaviour {
 
         // Determine bounds
         Bounds bounds = GetBounds(model);
+        ClampBoundsY(ref bounds);
         DrawBounds(bounds, Color.red, 10); // DEBUG
         last = bounds;
 
@@ -184,6 +185,14 @@ public class ThumbnailMaker : MonoBehaviour {
             bounds.Encapsulate(renderer.bounds);
         
         return bounds;
+    }
+
+    private void ClampBoundsY(ref Bounds bounds) {
+        if(bounds.center.y - bounds.extents.y < 0) {
+            var zero_height = bounds.center.y + bounds.extents.y;
+            bounds.center = new Vector3(bounds.center.x, zero_height / 2f, bounds.center.z);
+            bounds.size = new Vector3(bounds.size.x, zero_height, bounds.size.z);
+        }
     }
 
     // DEBUG method
