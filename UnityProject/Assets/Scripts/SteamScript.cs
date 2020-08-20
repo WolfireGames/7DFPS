@@ -172,7 +172,7 @@ public class SteamScript : MonoBehaviour
 
     void DrawModWindow() {
         const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(550.0f, 300.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(650.0f, 300.0f), ImGuiCond.FirstUseEver);
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
         ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
@@ -490,7 +490,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, SteamScript.buttonActiveColor);
 
-        ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(600.0f, 480.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
 
         ImGui.Text("Type: " + mod.GetTypeString());
