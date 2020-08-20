@@ -145,11 +145,7 @@ public class ThumbnailMaker : MonoBehaviour {
         RenderTexture temp = RenderTexture.active;
         RenderTexture.active = renderTexture;
         cam.targetTexture = renderTexture;
-        
-        if(!mod.loaded)
-            mod.Load();
 
-        //mod.assetBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(mod.modType));
         PrepareScene(mod);
 
         // Photo Time
@@ -178,7 +174,6 @@ public class ThumbnailMaker : MonoBehaviour {
         cam.targetTexture = null;
 
         GameObject.DestroyImmediate(this.gameObject);
-        mod.Unload();
 
         return texture;
     }
