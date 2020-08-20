@@ -420,7 +420,7 @@ public class SteamworksUGCItem {
 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
 
-        string previewImagePath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
+        string previewImagePath = Path.Combine(mod.GetThumbnailPath());
         if (File.Exists(previewImagePath)) {
             if(SteamUGC.SetItemPreview(update_handle, previewImagePath) == false) {
                 Debug.LogError("SetItemPreview failed");
@@ -471,7 +471,7 @@ public class SteamworksUGCItem {
         }
 
         // Add preview image
-        string thumbnailPath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
+        string thumbnailPath = Path.Combine(mod.GetThumbnailPath());
         if (File.Exists(thumbnailPath)) {
             SteamUGC.SetItemPreview(update_handle, thumbnailPath);
         }
