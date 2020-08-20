@@ -183,6 +183,10 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, buttonColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, buttonHoveredColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBgActive, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.CheckMark, headerColor);
 
         ImGui.Begin("Mod window");
         ImGui.Text("Installed mods"); // TODO gray them out when mods are not enabled
@@ -249,7 +253,7 @@ public class SteamScript : MonoBehaviour
 
         ImGui.End();
 
-        ImGui.PopStyleColor(9);
+        ImGui.PopStyleColor(13);
     }
 }
 
