@@ -411,27 +411,7 @@ public class SteamworksUGCItem {
         }
         uploading = true;
     }
-    
-    private void RequestPreviewUpload(string update_message) {
-        Debug.Log("Doing Steam Workshop preview update");
 
-        // Store metadata
-        UpdateMetadata();
-
-        update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
-
-        string previewImagePath = Path.Combine(mod.GetThumbnailPath());
-        if (File.Exists(previewImagePath)) {
-            if(SteamUGC.SetItemPreview(update_handle, previewImagePath) == false) {
-                Debug.LogError("SetItemPreview failed");
-            }
-        } else {
-            Debug.LogError("Preview image path \"" + previewImagePath + "\" is invalid.");
-        }
-
-        SteamAPICall_t hSteamAPICall = SteamUGC.SubmitItemUpdate(update_handle, update_message);
-        m_SubmitItemUpdateResult.Set(hSteamAPICall);
-    }
 
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
@@ -567,9 +547,6 @@ public class SteamworksUGCItem {
                 if (ImGui.Button("Update Workshop item")) {
                     RequestCreation();
                 }
-            }
-            if (ImGui.Button("Update Workshop preview image")) {
-                RequestPreviewUpload("Update preview");
             }
             if (ImGui.Button("Update local metadata")) {
                 UpdateMetadata();
