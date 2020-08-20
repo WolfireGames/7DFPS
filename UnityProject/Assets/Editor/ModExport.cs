@@ -106,7 +106,7 @@ public class ModExport : MonoBehaviour {
             Scene thumbnailScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             ThumbnailMaker thumbnailMaker = Instantiate(thumbnailMakerPrefab).GetComponent<ThumbnailMaker>();
             
-            File.WriteAllBytes(Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.jpg"), thumbnailMaker.CreateThumbnail(mod).EncodeToJPG(90));
+            File.WriteAllBytes(mod.GetThumbnailPath(), thumbnailMaker.CreateThumbnail(mod).EncodeToJPG(90));
             // Cleanup
             if(lastBuildIndex >= 0) {
                 EditorSceneManager.OpenScene(lastScene, OpenSceneMode.Single);
