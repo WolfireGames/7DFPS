@@ -153,14 +153,18 @@ MonoBehaviour:
   inbuildMods:
   - name: rem870_josh
     files:
-    - {fileID: 4900000, guid: bd8201d101807534fa7a8b217d8369d2, type: 3}
-    - {fileID: 4900000, guid: 50bbd313986a22b4fac17b9b55e03940, type: 3}
-    - {fileID: 4900000, guid: d7d9d095c61d87a4aaccd80686d45409, type: 3}
+    - {fileID: 4900000, guid: b4fbde535a466b04dbd7ec4532b8c645, type: 3}
+    - {fileID: 4900000, guid: 7678d3da03cd6984d8c9b5f1e81994e7, type: 3}
+    - {fileID: 4900000, guid: 77b653f4cdcf32f47a59eea4d13abe16, type: 3}
+    - {fileID: 4900000, guid: c36c0718552de5f4caaf3b47fddb3d0c, type: 3}
+    - {fileID: 4900000, guid: 6dcca02aa5cb8784baa27ded291a77b9, type: 3}
   - name: gew98_josh
     files:
-    - {fileID: 4900000, guid: a0ee1981749e5d14a8170d167d915715, type: 3}
-    - {fileID: 4900000, guid: f372ccda183fc72489bf9efd476ce11c, type: 3}
-    - {fileID: 4900000, guid: b8b112aa184da0a45bb5a84e65996e87, type: 3}
+    - {fileID: 4900000, guid: 2a02f4e0c476bbc429bc0389b1b14875, type: 3}
+    - {fileID: 4900000, guid: f92e34a739681fb4289c027eda4252d4, type: 3}
+    - {fileID: 4900000, guid: afc1f6da405035a45a620c49e3078b5c, type: 3}
+    - {fileID: 4900000, guid: 830af69f978e7a849833080d1655f3fb, type: 3}
+    - {fileID: 4900000, guid: 572de2d4cd4db9c458372b4addc71a2a, type: 3}
 --- !u!4 &131495380
 Transform:
   m_ObjectHideFlags: 0

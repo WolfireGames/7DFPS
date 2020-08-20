@@ -172,7 +172,7 @@ public class SteamScript : MonoBehaviour
 
     void DrawModWindow() {
         const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(550.0f, 300.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(650.0f, 300.0f), ImGuiCond.FirstUseEver);
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
         ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
@@ -183,6 +183,10 @@ public class SteamScript : MonoBehaviour
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, buttonColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, buttonColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, buttonHoveredColor);
+        ImGui.PushStyleColor(ImGuiCol.FrameBgActive, buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.CheckMark, headerColor);
 
         ImGui.Begin("Mod window");
         ImGui.Text("Installed mods"); // TODO gray them out when mods are not enabled
@@ -249,7 +253,7 @@ public class SteamScript : MonoBehaviour
 
         ImGui.End();
 
-        ImGui.PopStyleColor(9);
+        ImGui.PopStyleColor(13);
     }
 }
 
@@ -411,27 +415,7 @@ public class SteamworksUGCItem {
         }
         uploading = true;
     }
-    
-    private void RequestPreviewUpload(string update_message) {
-        Debug.Log("Doing Steam Workshop preview update");
 
-        // Store metadata
-        UpdateMetadata();
-
-        update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
-
-        string previewImagePath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
-        if (File.Exists(previewImagePath)) {
-            if(SteamUGC.SetItemPreview(update_handle, previewImagePath) == false) {
-                Debug.LogError("SetItemPreview failed");
-            }
-        } else {
-            Debug.LogError("Preview image path \"" + previewImagePath + "\" is invalid.");
-        }
-
-        SteamAPICall_t hSteamAPICall = SteamUGC.SubmitItemUpdate(update_handle, update_message);
-        m_SubmitItemUpdateResult.Set(hSteamAPICall);
-    }
 
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
@@ -471,7 +455,7 @@ public class SteamworksUGCItem {
         }
 
         // Add preview image
-        string thumbnailPath = Path.Combine(Path.GetDirectoryName(mod.path), "thumbnail.png");
+        string thumbnailPath = Path.Combine(mod.GetThumbnailPath());
         if (File.Exists(thumbnailPath)) {
             SteamUGC.SetItemPreview(update_handle, thumbnailPath);
         }
@@ -506,7 +490,7 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, SteamScript.buttonActiveColor);
 
-        ImGui.SetNextWindowSize(new Vector2(500.0f, 350.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(600.0f, 480.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
 
         ImGui.Text("Type: " + mod.GetTypeString());
@@ -567,9 +551,6 @@ public class SteamworksUGCItem {
                 if (ImGui.Button("Update Workshop item")) {
                     RequestCreation();
                 }
-            }
-            if (ImGui.Button("Update Workshop preview image")) {
-                RequestPreviewUpload("Update preview");
             }
             if (ImGui.Button("Update local metadata")) {
                 UpdateMetadata();
