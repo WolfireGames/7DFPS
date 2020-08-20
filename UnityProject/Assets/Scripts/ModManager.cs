@@ -160,7 +160,7 @@ public class InbuildMod {
 
             // Create files
             foreach(TextAsset file in files) {
-                string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(file.name));
+                string path = Path.Combine(directory, file.name);
                 File.Create(path).Close();
                 File.WriteAllBytes(path, file.bytes);
             }
