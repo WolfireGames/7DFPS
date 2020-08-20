@@ -69,7 +69,15 @@ public class ModImporter : Singleton<ModImporter> {
         var assetPath = Path.Combine(path, bundleName);
         AssetBundle modBundle = GetLoadedAssetBundle(assetPath);
         if(modBundle == null) { // Wasn't loaded before, load it!
-            var assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(assetPath);
+            AssetBundleCreateRequest assetBundleCreateRequest = null;
+            try {
+                assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(assetPath);
+            } catch (Exception e) {
+                Debug.LogException(e);
+                currentModRoutine = null;
+                yield break;
+            }
+
             yield return assetBundleCreateRequest;
             modBundle = assetBundleCreateRequest.assetBundle;
         }
