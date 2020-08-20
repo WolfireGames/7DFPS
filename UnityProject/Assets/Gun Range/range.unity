@@ -436,6 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gui_skin: {fileID: 11400000, guid: 553b407bfa47d5845abd84fa8b47b938, type: 2}
+  levelCreatorScript: {fileID: 0}
   sound_scream:
   - {fileID: 8300000, guid: 2b950a5b6a199164daac27dc1c846852, type: 3}
   - {fileID: 8300000, guid: 22b4da19b6846994d93bb41b7ddbfc3b, type: 3}
@@ -588,6 +589,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1588214036}
   - component: {fileID: 1588214035}
+  - component: {fileID: 1588214037}
   m_Layer: 0
   m_Name: ModManager
   m_TagString: Untagged
@@ -607,8 +609,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29010c74751b684b9967b4ff9e8b72b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelCreatorScript: {fileID: 0}
-  guiSkinHolder: {fileID: 1444765976}
   inbuildMods:
   - name: rem870_josh
     files:
@@ -634,6 +634,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1588214037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588214034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e8eaf06470d674fa9ed68058f56d32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1975186554
 PrefabInstance:
   m_ObjectHideFlags: 0
