@@ -14,7 +14,7 @@ public class ModImporter : Singleton<ModImporter> {
     private void Update() {
         if(modImportQueue.Any() && currentModRoutine == null ) {
             ImportData importData = modImportQueue.Dequeue();
-            currentModRoutine = StartCoroutine(ImportModCoroutine(importData.path, importData.local));
+            currentModRoutine = StartCoroutine(ImportModCoroutine(importData.path, importData.local, importData.owner));
         }
     }
 
@@ -29,13 +29,13 @@ public class ModImporter : Singleton<ModImporter> {
     }
 
     /// <summary> Imports a mod without waiting for the queue, this will block and it will throw if the same mod is currently loaded through the queue </summary>
-    public static Mod ImportModNow(string path, bool local) {
-        return (Mod) SyncronousCoroutine(ImportModCoroutine(path, local));
+    public static Mod ImportModNow(string path, bool local, bool owner = true) {
+        return (Mod) SyncronousCoroutine(ImportModCoroutine(path, local, owner));
     }
 
     /// <summary> Queue a mod for import </summary>
-    public static void ImportMod(string path, bool local) {
-        modImportQueue.Enqueue(new ImportData(path, local));
+    public static void ImportMod(string path, bool local, bool owner = true) {
+        modImportQueue.Enqueue(new ImportData(path, local, owner));
     }
 
 
@@ -53,7 +53,7 @@ public class ModImporter : Singleton<ModImporter> {
         return last;
     }
 
-    private static IEnumerator ImportModCoroutine(string path, bool local) {
+    private static IEnumerator ImportModCoroutine(string path, bool local, bool owner) {
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -87,6 +87,7 @@ public class ModImporter : Singleton<ModImporter> {
         mod.assetBundle = modBundle;
         mod.modType = GetModTypeFromBundle(modBundle);
         mod.steamworksItem = new SteamworksUGCItem(mod);
+        mod.steamworksItem.SetOwner(owner);
         mod.mainAsset = modBundle.LoadAsset<GameObject>(ModManager.GetMainAssetName(mod.modType));
 
         // Default steam name to *something* more descriptive than nothing
@@ -126,10 +127,12 @@ public class ModImporter : Singleton<ModImporter> {
     private struct ImportData {
         public string path;
         public bool local;
+        public bool owner;
 
-        public ImportData(string path, bool local) {
+        public ImportData(string path, bool local, bool owner) {
             this.path = path;
             this.local = local;
+            this.owner = owner;
         }
     }
 }
