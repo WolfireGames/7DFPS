@@ -122,7 +122,6 @@ public class SteamScript : MonoBehaviour
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
-            // Store Steamworks ID?
         } else {
             Debug.LogWarning("Attempted to load non-installed Steam Workshop item ID " + publishedFileId);
         }
