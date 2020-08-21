@@ -232,14 +232,14 @@ public class SteamScript : MonoBehaviour
                 if (ImGui.Button("Unsubscribe##" + i)) {
                     ModManager.importedMods.Remove(mod);
 
-                    SteamUGC.UnsubscribeItem(mod.steamworksItem.steamworks_id);
+                    SteamUGC.UnsubscribeItem(mod.steamworksItem.GetSteamworksId());
                     QueryPersonalWorkshopItems();
                     i--;
                     continue;
                 }
                 ImGui.SameLine();
                 if (ImGui.Button("Show in Steam##" + i)) {
-                    string itemPath = $"steam://url/CommunityFilePage/{mod.steamworksItem.steamworks_id}";
+                    string itemPath = $"steam://url/CommunityFilePage/{mod.steamworksItem.GetSteamworksId()}";
                     SteamFriends.ActivateGameOverlayToWebPage(itemPath);
                 }
                 if (ImGui.IsItemHovered()) {
@@ -266,7 +266,7 @@ public class SteamworksUGCItem {
     public bool waiting_for_create;
 
     private bool uploading;
-    public PublishedFileId_t steamworks_id;
+    private PublishedFileId_t steamworks_id;
     private ERemoteStoragePublishedFileVisibility visibility;
     private UGCUpdateHandle_t update_handle;
 
@@ -280,6 +280,10 @@ public class SteamworksUGCItem {
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
+
+    public PublishedFileId_t GetSteamworksId() {
+        return steamworks_id;
+    }
 
     public string GetName() {
         return GetChars(name);
