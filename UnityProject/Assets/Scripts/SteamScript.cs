@@ -46,7 +46,7 @@ public class SteamScript : MonoBehaviour
             return;
         }
 
-        LoadModIntoGame(pCallback.m_nPublishedFileId);
+        loadItems = true;
         // Refresh list
         QueryPersonalWorkshopItems();
     }
@@ -78,9 +78,13 @@ public class SteamScript : MonoBehaviour
                 SteamUGC.GetQueryUGCResult(pResult.m_handle, i, out details);
                 // Only load items when explicitly requested by something
                 if (loadItems) {
+                    bool owner = false;
+                    if (details.m_ulSteamIDOwner == SteamUser.GetSteamID().m_SteamID) {
+                        owner = true;
+                    }
                     uint itemState = SteamUGC.GetItemState(details.m_nPublishedFileId);
                     if ((itemState & (uint)EItemState.k_EItemStateInstalled) != 0) {
-                        LoadModIntoGame(details.m_nPublishedFileId);
+                        LoadModIntoGame(details.m_nPublishedFileId, owner);
                     }
                 }
             }
@@ -93,7 +97,7 @@ public class SteamScript : MonoBehaviour
     }
 
 
-    private void LoadModIntoGame(PublishedFileId_t publishedFileId) {
+    private void LoadModIntoGame(PublishedFileId_t publishedFileId, bool owner) {
         ulong sizeOnDisk = 0;
         uint folderSize = 512;
         char[] temp = new char[folderSize];
@@ -114,7 +118,7 @@ public class SteamScript : MonoBehaviour
                 }
                 
                 // Register new mod in the ModManager
-                ModImporter.ImportMod(folder, false);
+                ModImporter.ImportMod(folder, false, owner);
             } catch (System.Exception e) {
                 Debug.LogWarning($"Failed to import {folder}: {e.Message}");
             }
@@ -272,6 +276,7 @@ public class SteamworksUGCItem {
     private char[] tags;
     private char[] author;
     private char[] version;
+    private bool is_owner;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
@@ -284,6 +289,10 @@ public class SteamworksUGCItem {
         this.name = new char[1024];
         CopyChars(name, this.name);
         UpdateMetadata();
+    }
+
+    public void SetOwner(bool value) {
+        is_owner = value;
     }
 
     private string GetChars(char[] text) {
@@ -361,6 +370,7 @@ public class SteamworksUGCItem {
         tags = new char[512]; tags[0] = '\0';
         author = new char[256]; author[0] = '\0';
         version = new char[128]; version[0] = '\0';
+        is_owner = true;
 
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
@@ -547,7 +557,7 @@ public class SteamworksUGCItem {
                 if (ImGui.Button("Upload to Workshop")) {
                     RequestCreation();
                 }
-            } else {
+            } else if (is_owner) {
                 if (ImGui.Button("Update Workshop item")) {
                     RequestCreation();
                 }
