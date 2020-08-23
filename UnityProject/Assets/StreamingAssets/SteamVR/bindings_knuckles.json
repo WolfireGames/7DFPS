@@ -202,10 +202,10 @@
                      "output" : "/actions/default/in/snapturnright"
                   },
                   "north" : {
-                     "output" : "/actions/default/in/guninteractlongpress"
+                     "output" : "/actions/default/in/guninteract3"
                   },
                   "south" : {
-                     "output" : "/actions/default/in/guninteract3"
+                     "output" : "/actions/default/in/guninteractlongpress"
                   },
                   "west" : {
                      "output" : "/actions/default/in/snapturnleft"
