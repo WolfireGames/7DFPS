@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gui_skin: {fileID: 11400000, guid: 553b407bfa47d5845abd84fa8b47b938, type: 2}
-  levelCreatorScript: {fileID: 0}
+  levelCreatorScript: {fileID: 1854270037}
   sound_scream:
   - {fileID: 8300000, guid: 2b950a5b6a199164daac27dc1c846852, type: 3}
   - {fileID: 8300000, guid: 22b4da19b6846994d93bb41b7ddbfc3b, type: 3}
