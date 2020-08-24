@@ -15,6 +15,9 @@ public class GunMenuScript : MonoBehaviour {
     public void OnEnable() {
         // Clear previous options
         dropdown.ClearOptions();
+        if(ModManager.IsModsEnabled()) {
+            gui_skin_holder.InsertGunMods();
+        }
 
         // Extract names from WeaponHolder array
         List<string> strings = new List<string>();

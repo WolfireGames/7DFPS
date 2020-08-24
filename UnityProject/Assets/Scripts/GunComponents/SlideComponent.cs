@@ -24,6 +24,8 @@ public class SlideComponent : GunComponent {
     public float press_check_position = 0.4f;
     public float slide_lock_speed = 20.0f;
 
+    public float slide_cock_position = 0.3f; // At what position does the slide fully cock the firing mechanism
+
     public bool kick_slide_back = true;
     public bool release_slide_automatically = false; // If we pull the slide all the way back: release it!
 

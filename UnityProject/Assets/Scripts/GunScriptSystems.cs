@@ -1265,7 +1265,7 @@ namespace GunSystemsV1 {
 
         public override void Update() {
             if(!hc.is_blocked) {
-                hc.hammer_cocked = Mathf.Max(hc.hammer_cocked, sc.slide_amount);
+                hc.hammer_cocked = Mathf.Max(hc.hammer_cocked, Mathf.Clamp01(sc.slide_amount / sc.slide_cock_position));
             }
         }
     }
