@@ -136,10 +136,6 @@ public class ModImporter : Singleton<ModImporter> {
         // Register mod
         ModManager.importedMods.Add(mod);
 
-        // Make sure we already have access to the gun mods in the current run, (required for the gun selection)
-        if(Application.isPlaying && mod.modType == ModType.Gun)
-            GameObject.FindObjectOfType<GUISkinHolder>().InsertGunMods();
-
         Debug.Log($" + {bundleName} ({mod.modType})");
 
         currentModRoutine = null;
