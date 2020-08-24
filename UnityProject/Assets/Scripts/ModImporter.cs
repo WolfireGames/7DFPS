@@ -26,8 +26,7 @@ public class ModImporter : Singleton<ModImporter> {
 
     private void UpdateTimeout() {
         if(currentModRoutine != null && IsImportTimedOut()) {
-            instance.StopCoroutine(currentModRoutine);
-            currentModRoutine = null;
+            AbortCurrentImport();
         }
     }
 
@@ -37,6 +36,13 @@ public class ModImporter : Singleton<ModImporter> {
 
     private static bool IsImportTimedOut() {
         return importTimeoutTime < Time.time;
+    }
+
+    private static void AbortCurrentImport() {
+        if(currentModRoutine != null) {
+            instance.StopCoroutine(currentModRoutine);
+            currentModRoutine = null;
+        }
     }
 
 
@@ -84,6 +90,7 @@ public class ModImporter : Singleton<ModImporter> {
         if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
             bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null) && !Path.GetFileName(name).StartsWith("modfile_"));
             if(bundleName == null) {
+                AbortCurrentImport();
                 throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
             }
         }
@@ -97,12 +104,17 @@ public class ModImporter : Singleton<ModImporter> {
                 assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(assetPath);
             } catch (Exception e) {
                 Debug.LogException(e);
-                currentModRoutine = null;
+                AbortCurrentImport();
                 yield break;
             }
 
             yield return assetBundleCreateRequest;
             modBundle = assetBundleCreateRequest.assetBundle;
+
+            if(modBundle == null) { // We assume something went wrong
+                AbortCurrentImport();
+                yield break;
+            }
         }
 
         // Generate Mod Object
