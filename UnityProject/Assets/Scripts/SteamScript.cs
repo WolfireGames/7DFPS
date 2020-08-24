@@ -174,8 +174,8 @@ public class SteamScript : MonoBehaviour
 
 
     void DrawModWindow() {
-        const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(650.0f, 300.0f), ImGuiCond.FirstUseEver);
+        const float hSpacing = 250.0f;
+        ImGui.SetNextWindowSize(new Vector2(700.0f, 300.0f), ImGuiCond.FirstUseEver);
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
         ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
