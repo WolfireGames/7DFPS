@@ -44,7 +44,7 @@ public class ModManager : Singleton<ModManager> {
     }
 
     public static IEnumerable<Mod> GetAvailableMods(ModType type) {
-        return importedMods.Where((mod) => mod.modType == type && !mod.ignore);
+        return importedMods.Where((mod) => mod.modType == type && !mod.steamworksItem.ignore);
     }
 
     public static String GetMainAssetName(ModType modType) {
@@ -109,7 +109,6 @@ public class Mod {
     [SerializeField] private bool isLocal = false;
 
     public string path;
-    public bool ignore = false;
     [NonSerialized] public AssetBundle assetBundle;
 
     [NonSerialized] public GameObject mainAsset;
