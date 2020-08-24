@@ -8,13 +8,25 @@ using UnityEngine;
 public class ModImporter : Singleton<ModImporter> {
     private static Queue<ImportData> modImportQueue = new Queue<ImportData>();
     private static Coroutine currentModRoutine = null;
+    private static float importTimeoutTime = 0f;
+    private static float importTimeoutDuration = 20;
 
     public override void Init() { }
 
     private void Update() {
-        if(modImportQueue.Any() && currentModRoutine == null ) {
+        UpdateTimeout();
+
+        if(modImportQueue.Any() && currentModRoutine == null) {
+            ResetImportTimeout();
+
             ImportData importData = modImportQueue.Dequeue();
             currentModRoutine = StartCoroutine(ImportModCoroutine(importData.path, importData.local, importData.owner));
+        }
+    }
+
+    private void UpdateTimeout() {
+        if(currentModRoutine != null && IsImportTimedOut()) {
+            AbortCurrentImport();
         }
     }
 
@@ -41,6 +53,21 @@ public class ModImporter : Singleton<ModImporter> {
 
     // Internal Methods
 
+    private static void ResetImportTimeout() {
+        importTimeoutTime = Time.time + importTimeoutDuration;
+    }
+
+    private static bool IsImportTimedOut() {
+        return importTimeoutTime < Time.time;
+    }
+
+    private static void AbortCurrentImport() {
+        if(currentModRoutine != null) {
+            instance.StopCoroutine(currentModRoutine);
+            currentModRoutine = null;
+        }
+    }
+
     private static object SyncronousCoroutine(IEnumerator coroutine) {
         object last = null;
         while(coroutine.MoveNext()) {
@@ -54,6 +81,8 @@ public class ModImporter : Singleton<ModImporter> {
     }
 
     private static IEnumerator ImportModCoroutine(string path, bool local, bool owner) {
+        yield return null; // We need to yield once to let the update method set us as the current routine
+
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
@@ -61,6 +90,7 @@ public class ModImporter : Singleton<ModImporter> {
         if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
             bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null) && !Path.GetFileName(name).StartsWith("modfile_"));
             if(bundleName == null) {
+                AbortCurrentImport();
                 throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
             }
         }
@@ -74,12 +104,17 @@ public class ModImporter : Singleton<ModImporter> {
                 assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(assetPath);
             } catch (Exception e) {
                 Debug.LogException(e);
-                currentModRoutine = null;
+                AbortCurrentImport();
                 yield break;
             }
 
             yield return assetBundleCreateRequest;
             modBundle = assetBundleCreateRequest.assetBundle;
+
+            if(modBundle == null) { // We assume something went wrong
+                AbortCurrentImport();
+                yield break;
+            }
         }
 
         // Generate Mod Object
@@ -100,10 +135,6 @@ public class ModImporter : Singleton<ModImporter> {
 
         // Register mod
         ModManager.importedMods.Add(mod);
-
-        // Make sure we already have access to the gun mods in the current run, (required for the gun selection)
-        if(Application.isPlaying && mod.modType == ModType.Gun)
-            GameObject.FindObjectOfType<GUISkinHolder>().InsertGunMods();
 
         Debug.Log($" + {bundleName} ({mod.modType})");
 
