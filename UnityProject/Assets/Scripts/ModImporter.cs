@@ -75,6 +75,8 @@ public class ModImporter : Singleton<ModImporter> {
     }
 
     private static IEnumerator ImportModCoroutine(string path, bool local, bool owner) {
+        yield return null; // We need to yield once to let the update method set us as the current routine
+
         string[] bundles = Directory.GetFiles(path);
         string bundleName = bundles.FirstOrDefault((name) => name.EndsWith(SystemInfo.operatingSystemFamily.ToString(), true, null));
 
