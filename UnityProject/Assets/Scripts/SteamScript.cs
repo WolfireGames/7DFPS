@@ -155,6 +155,14 @@ public class SteamScript : MonoBehaviour
     }
 
 
+    void OnApplicationQuit() {
+        // Store ignore status for mods
+        for (int i = 0; i < ModManager.importedMods.Count; i++) {
+            ModManager.importedMods[i].steamworksItem.UpdateMetadata();
+        }
+    }
+
+
     void QueryPersonalWorkshopItems() {
         CSteamID userid = SteamUser.GetSteamID();
 
@@ -174,8 +182,8 @@ public class SteamScript : MonoBehaviour
 
 
     void DrawModWindow() {
-        const float hSpacing = 200.0f;
-        ImGui.SetNextWindowSize(new Vector2(650.0f, 300.0f), ImGuiCond.FirstUseEver);
+        const float hSpacing = 250.0f;
+        ImGui.SetNextWindowSize(new Vector2(700.0f, 300.0f), ImGuiCond.FirstUseEver);
 
         ImGui.PushStyleColor(ImGuiCol.WindowBg, backgroundColor);
         ImGui.PushStyleColor(ImGuiCol.Button, buttonColor);
@@ -223,7 +231,7 @@ public class SteamScript : MonoBehaviour
             ImGui.PopStyleColor(1);
             
             ImGui.SameLine();
-            ImGui.Checkbox($"Disabled ##{mod.path}", ref mod.ignore);
+            ImGui.Checkbox($"Disabled ##{mod.path}", ref mod.steamworksItem.ignore);
 
             ImGui.PushStyleColor(ImGuiCol.Text, buttonTextColor);
             if(!mod.IsLocalMod()) {
@@ -276,6 +284,9 @@ public class SteamworksUGCItem {
     private char[] author;
     private char[] version;
     private bool is_owner;
+
+    public bool ignore;
+    private bool prev_ignore;
 
     private CallResult<CreateItemResult_t> m_CreateItemResult;
     private CallResult<SubmitItemUpdateResult_t> m_SubmitItemUpdateResult;
@@ -360,6 +371,8 @@ public class SteamworksUGCItem {
 
         waiting_for_create = false;
         uploading = false;
+        ignore = prev_ignore;
+        UpdateMetadata();
     }
 
 
@@ -374,6 +387,8 @@ public class SteamworksUGCItem {
         author = new char[256]; author[0] = '\0';
         version = new char[128]; version[0] = '\0';
         is_owner = true;
+        ignore = false;
+        prev_ignore = false;
 
         if (SteamManager.Initialized) {
             m_CreateItemResult = CallResult<CreateItemResult_t>.Create(OnCreateItemResult);
@@ -393,6 +408,7 @@ public class SteamworksUGCItem {
                 CopyChars(jnRoot["author"].Value, author);
                 CopyChars(jnRoot["version"].Value, version);
                 steamworks_id = new PublishedFileId_t((ulong)jnRoot["steamworks_id"].AsLong);
+                ignore = jnRoot["ignore"].AsBool;
             } catch (Exception e) {
                 Debug.LogError("Error reading metadata for mod: " + e);
             }
@@ -400,7 +416,7 @@ public class SteamworksUGCItem {
     }
 
 
-    private void UpdateMetadata() {
+    public void UpdateMetadata() {
         JSONObject jn = new JSONObject();
         jn.Add("name", new JSONString(GetChars(name)));
         jn.Add("description", new JSONString(GetChars(description)));
@@ -408,6 +424,7 @@ public class SteamworksUGCItem {
         jn.Add("author", new JSONString(GetChars(author)));
         jn.Add("version", new JSONString(GetChars(version)));
         jn.Add("steamworks_id", new JSONNumber(steamworks_id.m_PublishedFileId));
+        jn.Add("ignore", new JSONBool(ignore));
 
         string metaPath = Path.GetDirectoryName(mod.path) + "/metadata.json";
         try {
@@ -433,7 +450,9 @@ public class SteamworksUGCItem {
     private void RequestUpload(string update_message) {
         Debug.Log("Doing Steam Workshop upload");
 
-        // Store metadata
+        // Store metadata, but not ignore status
+        prev_ignore = ignore;
+        ignore = false;
         UpdateMetadata();
 
         update_handle = SteamUGC.StartItemUpdate(SteamScript.RECEIVER1_APP_ID, steamworks_id);
