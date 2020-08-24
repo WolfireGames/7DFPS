@@ -8,14 +8,35 @@ using UnityEngine;
 public class ModImporter : Singleton<ModImporter> {
     private static Queue<ImportData> modImportQueue = new Queue<ImportData>();
     private static Coroutine currentModRoutine = null;
+    private static float importTimeoutTime = 0f;
+    private static float importTimeoutDuration = 20;
 
     public override void Init() { }
 
     private void Update() {
-        if(modImportQueue.Any() && currentModRoutine == null ) {
+        UpdateTimeout();
+
+        if(modImportQueue.Any() && currentModRoutine == null) {
+            ResetImportTimeout();
+
             ImportData importData = modImportQueue.Dequeue();
             currentModRoutine = StartCoroutine(ImportModCoroutine(importData.path, importData.local, importData.owner));
         }
+    }
+
+    private void UpdateTimeout() {
+        if(currentModRoutine != null && IsImportTimedOut()) {
+            instance.StopCoroutine(currentModRoutine);
+            currentModRoutine = null;
+        }
+    }
+
+    private static void ResetImportTimeout() {
+        importTimeoutTime = Time.time + importTimeoutDuration;
+    }
+
+    private static bool IsImportTimedOut() {
+        return importTimeoutTime < Time.time;
     }
 
 
