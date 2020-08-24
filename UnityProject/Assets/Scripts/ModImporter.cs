@@ -30,21 +30,6 @@ public class ModImporter : Singleton<ModImporter> {
         }
     }
 
-    private static void ResetImportTimeout() {
-        importTimeoutTime = Time.time + importTimeoutDuration;
-    }
-
-    private static bool IsImportTimedOut() {
-        return importTimeoutTime < Time.time;
-    }
-
-    private static void AbortCurrentImport() {
-        if(currentModRoutine != null) {
-            instance.StopCoroutine(currentModRoutine);
-            currentModRoutine = null;
-        }
-    }
-
 
     // User Methods
 
@@ -67,6 +52,21 @@ public class ModImporter : Singleton<ModImporter> {
 
 
     // Internal Methods
+
+    private static void ResetImportTimeout() {
+        importTimeoutTime = Time.time + importTimeoutDuration;
+    }
+
+    private static bool IsImportTimedOut() {
+        return importTimeoutTime < Time.time;
+    }
+
+    private static void AbortCurrentImport() {
+        if(currentModRoutine != null) {
+            instance.StopCoroutine(currentModRoutine);
+            currentModRoutine = null;
+        }
+    }
 
     private static object SyncronousCoroutine(IEnumerator coroutine) {
         object last = null;
