@@ -26,7 +26,7 @@ public class ModImporter : Singleton<ModImporter> {
 
     private void UpdateTimeout() {
         if(currentModRoutine != null && IsImportTimedOut()) {
-            AbortCurrentImport();
+            AbortCurrentImport(true);
         }
     }
 
@@ -61,9 +61,11 @@ public class ModImporter : Singleton<ModImporter> {
         return importTimeoutTime < Time.time;
     }
 
-    private static void AbortCurrentImport() {
+    private static void AbortCurrentImport(bool stopCoroutine) {
         if(currentModRoutine != null) {
-            instance.StopCoroutine(currentModRoutine);
+            if(stopCoroutine) {
+                instance.StopCoroutine(currentModRoutine);
+            }
             currentModRoutine = null;
         }
     }
@@ -90,7 +92,7 @@ public class ModImporter : Singleton<ModImporter> {
         if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
             bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null) && !Path.GetFileName(name).StartsWith("modfile_"));
             if(bundleName == null) {
-                AbortCurrentImport();
+                AbortCurrentImport(false);
                 throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
             }
         }
@@ -104,7 +106,7 @@ public class ModImporter : Singleton<ModImporter> {
                 assetBundleCreateRequest = AssetBundle.LoadFromFileAsync(assetPath);
             } catch (Exception e) {
                 Debug.LogException(e);
-                AbortCurrentImport();
+                AbortCurrentImport(false);
                 yield break;
             }
 
@@ -112,7 +114,7 @@ public class ModImporter : Singleton<ModImporter> {
             modBundle = assetBundleCreateRequest.assetBundle;
 
             if(modBundle == null) { // We assume something went wrong
-                AbortCurrentImport();
+                AbortCurrentImport(false);
                 yield break;
             }
         }
