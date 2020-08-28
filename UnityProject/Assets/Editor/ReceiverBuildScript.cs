@@ -193,7 +193,7 @@ public class ReceiverBuildScript {
 
         public static BuildConfiguration linux32 = new BuildConfiguration() {
             target_path = "Build/linux32/Receiver/receiver",
-            build_target = BuildTarget.StandaloneLinux,
+            build_target = BuildTarget.StandaloneLinux64,
             build_options = BuildOptions.None,
             define_symbols = new string[0],
         };
