@@ -314,9 +314,9 @@ public class AimScript:MonoBehaviour{
     int unplayed_tapes = 0;
     int tape_count = 11;
     
-    // Cheats
     float level_reset_hold = 0.0f;
-    float slomoWarningDuration = 0f;
+    float slomo_warning_duration = 0f;
+    float start_info_duration = 5f;
     
     // Inventory slots
     int target_weapon_slot = -2;
@@ -1066,7 +1066,7 @@ public class AimScript:MonoBehaviour{
     		if(Cheats.slomo_mode) {
     			Cheats.ToggleSlomo();
     		} else {
-    			slomoWarningDuration = 1f;
+    			slomo_warning_duration = 5f;
     		}
     	}
         if(character_input.GetButtonDown("Flashlight Toggle")){
@@ -1709,15 +1709,21 @@ public class AimScript:MonoBehaviour{
     }
     
     /// <summary> Draws a line in the help menu, can only be called from within OnGUI </summary>
-    private void DrawHelpLine(string text, bool bold = false) {
+    private void DrawHelpLine(string text, bool bold = false, float opacity = 1f) {
         float width = Screen.width * 0.5f;
         help_text_style.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
         help_text_style.fontSize = 18;
 
-        help_text_style.normal.textColor = Color.black;
+        var color_shadow = Color.black;
+        color_shadow.a = opacity;
+
+        var color_text = bold ? Color.white : help_normal_color;
+        color_text.a = opacity;
+
+        help_text_style.normal.textColor = color_shadow;
         GUI.Label(new Rect(width - 4f, help_text_offset + 0.5f, width + 0.5f, help_text_offset + 20 + 0.5f), text, help_text_style);
     
-        help_text_style.normal.textColor = bold ? Color.white : help_normal_color;
+        help_text_style.normal.textColor = color_text;
         GUI.Label(new Rect(width - 4.5f, help_text_offset, width, help_text_offset + 30), text, help_text_style);
         help_text_offset += 20;
     }
@@ -1884,9 +1890,16 @@ public class AimScript:MonoBehaviour{
     				DrawHelpLine("Infinite Ammo enabled");
     		}
 
-    		if(slomoWarningDuration > 0) {
-    			DrawHelpLine("Slomo button requires slomo cheat!");
-    			slomoWarningDuration -= Time.deltaTime * 0.2f;
+    		if(start_info_duration > 0 && holder.weapon) {
+    			DrawHelpLine("");
+    			DrawHelpLine($"Weapon: {holder.weapon.GetComponent<WeaponHolder>().display_name}", true, Mathf.Clamp01(start_info_duration));
+    			start_info_duration -= Time.deltaTime;
+    		}
+
+    		if(slomo_warning_duration > 0) {
+    			DrawHelpLine("");
+    			DrawHelpLine("Slomo button requires slomo cheat!", false, Mathf.Clamp01(slomo_warning_duration));
+    			slomo_warning_duration -= Time.deltaTime;
     		}
 
     		if(dead_fade > 0.0f){
