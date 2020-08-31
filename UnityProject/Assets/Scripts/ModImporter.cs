@@ -91,10 +91,12 @@ public class ModImporter : Singleton<ModImporter> {
         // Fallback to unsigned mods (old naming version without os versions)
         if(bundleName == null && Path.GetFileName(path).StartsWith("modfile_")) {
             bundleName = bundles.FirstOrDefault((name) => name.EndsWith(Path.GetFileName(path).Substring(8), true, null) && !Path.GetFileName(name).StartsWith("modfile_"));
-            if(bundleName == null) {
-                AbortCurrentImport(false);
-                throw new Exception($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'");
-            }
+        }
+
+        if(bundleName == null) {
+            Debug.LogError($"No compatible mod version found for os family: '{SystemInfo.operatingSystemFamily}' for mod: '{path}'\n - '{(string.Join("'\n - '", bundles))}'");
+            AbortCurrentImport(false);
+            yield break;
         }
 
         // Init
