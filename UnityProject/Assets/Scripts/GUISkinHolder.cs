@@ -28,6 +28,7 @@ public class GUISkinHolder : MonoBehaviour {
 
         weapon = GetGunHolder();
         weapon.GetComponent<WeaponHolder>().Load();
+        Debug.Log($"Starting Weapon: {weapon.GetComponent<WeaponHolder>().display_name}, mods: {ModManager.IsModsEnabled()}");
     }
 
     private void InsertMods() {
