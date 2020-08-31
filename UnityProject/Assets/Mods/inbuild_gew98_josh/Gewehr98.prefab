@@ -700,9 +700,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stance_blocks_trigger: 0
-  stance_blocks_slide: 1
-  stance_blocks_bolt: 1
-  stance_blocks_mag: 1
+  stance_blocks_slide: 0
+  stance_blocks_bolt: 0
+  stance_blocks_mag: 0
   alt_stance_blocks_trigger: 1
   alt_stance_blocks_slide: 0
   alt_stance_blocks_bolt: 0
