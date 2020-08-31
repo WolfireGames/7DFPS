@@ -315,7 +315,7 @@ public class AimScript:MonoBehaviour{
     int tape_count = 11;
     
     float level_reset_hold = 0.0f;
-    float slomoWarningDuration = 0f;
+    float slomo_warning_duration = 0f;
     float start_info_duration = 5f;
     
     // Inventory slots
@@ -1066,7 +1066,7 @@ public class AimScript:MonoBehaviour{
     		if(Cheats.slomo_mode) {
     			Cheats.ToggleSlomo();
     		} else {
-    			slomoWarningDuration = 1f;
+    			slomo_warning_duration = 5f;
     		}
     	}
         if(character_input.GetButtonDown("Flashlight Toggle")){
@@ -1891,9 +1891,9 @@ public class AimScript:MonoBehaviour{
     			start_info_duration -= Time.deltaTime;
     		}
 
-    		if(slomoWarningDuration > 0) {
-    			DrawHelpLine("Slomo button requires slomo cheat!");
-    			slomoWarningDuration -= Time.deltaTime * 0.2f;
+    		if(slomo_warning_duration > 0) {
+    			DrawHelpLine("Slomo button requires slomo cheat!", false, Mathf.Clamp01(slomo_warning_duration));
+    			slomo_warning_duration -= Time.deltaTime;
     		}
 
     		if(dead_fade > 0.0f){
