@@ -49,6 +49,8 @@ public class SteamScript : MonoBehaviour
         loadItems = true;
         // Refresh list
         QueryPersonalWorkshopItems();
+
+        Debug.Log("Steam OnItemInstalled");
     }
 
 
@@ -65,6 +67,8 @@ public class SteamScript : MonoBehaviour
         if (failed == false) {
             // Refresh list
             QueryPersonalWorkshopItems();
+
+            Debug.Log("Steam OnItemDeleted");
         }
     }
 
