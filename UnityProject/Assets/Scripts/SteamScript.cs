@@ -379,7 +379,7 @@ public class SteamworksUGCItem {
     public SteamworksUGCItem(Mod _mod) {
         waiting_for_create = false;
         uploading = false;
-        visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
+        visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPublic;
         mod = _mod;
         name = new char[1024];
         description = new char[1024]; description[0] = '\0';
