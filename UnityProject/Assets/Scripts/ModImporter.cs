@@ -33,6 +33,16 @@ public class ModImporter : Singleton<ModImporter> {
 
     // User Methods
 
+    /// <summary> Returns true if any mods are currently being imported or waiting in the queue </summary>
+    public static bool IsImportingMods() {
+        return currentModRoutine != null || modImportQueue.Any();
+    }
+
+    /// <summary> How many mods are being loaded right now? (Includes half finished imported mod) </summary>
+    public static int GetRemainingModsCount() {
+        return modImportQueue.Count() + (currentModRoutine != null ? 1 : 0);
+    }
+
     /// <summary> Loads every local mod at the default path </summary>
     public static void ImportLocalMods() {
         foreach(var path in ModManager.GetModPaths()) {
