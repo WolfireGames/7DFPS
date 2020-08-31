@@ -1887,11 +1887,13 @@ public class AimScript:MonoBehaviour{
     		}
 
     		if(start_info_duration > 0 && holder.weapon) {
+    			DrawHelpLine("");
     			DrawHelpLine($"Weapon: {holder.weapon.GetComponent<WeaponHolder>().display_name}", true, Mathf.Clamp01(start_info_duration));
     			start_info_duration -= Time.deltaTime;
     		}
 
     		if(slomo_warning_duration > 0) {
+    			DrawHelpLine("");
     			DrawHelpLine("Slomo button requires slomo cheat!", false, Mathf.Clamp01(slomo_warning_duration));
     			slomo_warning_duration -= Time.deltaTime;
     		}
