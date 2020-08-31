@@ -314,9 +314,9 @@ public class AimScript:MonoBehaviour{
     int unplayed_tapes = 0;
     int tape_count = 11;
     
-    // Cheats
     float level_reset_hold = 0.0f;
     float slomoWarningDuration = 0f;
+    float start_info_duration = 5f;
     
     // Inventory slots
     int target_weapon_slot = -2;
@@ -1884,6 +1884,11 @@ public class AimScript:MonoBehaviour{
     				DrawHelpLine("Slomo Mode enabled", Time.timeScale == 0.1f);
     			if(Cheats.infinite_ammo)
     				DrawHelpLine("Infinite Ammo enabled");
+    		}
+
+    		if(start_info_duration > 0 && holder.weapon) {
+    			DrawHelpLine($"Weapon: {holder.weapon.GetComponent<WeaponHolder>().display_name}", true, Mathf.Clamp01(start_info_duration));
+    			start_info_duration -= Time.deltaTime;
     		}
 
     		if(slomoWarningDuration > 0) {
