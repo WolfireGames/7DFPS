@@ -1709,15 +1709,21 @@ public class AimScript:MonoBehaviour{
     }
     
     /// <summary> Draws a line in the help menu, can only be called from within OnGUI </summary>
-    private void DrawHelpLine(string text, bool bold = false) {
+    private void DrawHelpLine(string text, bool bold = false, float opacity = 1f) {
         float width = Screen.width * 0.5f;
         help_text_style.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
         help_text_style.fontSize = 18;
 
-        help_text_style.normal.textColor = Color.black;
+        var color_shadow = Color.black;
+        color_shadow.a = opacity;
+
+        var color_text = bold ? Color.white : help_normal_color;
+        color_text.a = opacity;
+
+        help_text_style.normal.textColor = color_shadow;
         GUI.Label(new Rect(width - 4f, help_text_offset + 0.5f, width + 0.5f, help_text_offset + 20 + 0.5f), text, help_text_style);
     
-        help_text_style.normal.textColor = bold ? Color.white : help_normal_color;
+        help_text_style.normal.textColor = color_text;
         GUI.Label(new Rect(width - 4.5f, help_text_offset, width, help_text_offset + 30), text, help_text_style);
         help_text_offset += 20;
     }
