@@ -1868,6 +1868,10 @@ public class AimScript:MonoBehaviour{
     			}
     		}
 
+    		if(ModImporter.IsImportingMods()) {
+    			DrawHelpLine($"Importing mods.. ({ModImporter.GetRemainingModsCount()} remaining)", false);
+    		}
+
     		if(Cheats.hasCheated) {
     			DrawHelpLine("");
     			DrawHelpLine("Cheats used", true);
