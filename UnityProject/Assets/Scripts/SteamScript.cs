@@ -525,8 +525,9 @@ public class SteamworksUGCItem {
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, SteamScript.buttonColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, SteamScript.buttonActiveColor);
         ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, SteamScript.buttonActiveColor);
+        ImGui.PushStyleColor(ImGuiCol.CheckMark, SteamScript.buttonColor);
 
-        ImGui.SetNextWindowSize(new Vector2(600.0f, 480.0f), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSize(new Vector2(600.0f, 500.0f), ImGuiCond.FirstUseEver);
         ImGui.Begin("Local mod info");
 
         ImGui.Text("Type: " + mod.GetTypeString());
@@ -545,6 +546,19 @@ public class SteamworksUGCItem {
         ImGui.InputText("Author", author);
 
         ImGui.InputText("Version", version);
+
+        ImGui.Text("Steam visibility");
+        if (ImGui.RadioButton("Public", visibility == ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPublic)) {
+            visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPublic;
+        }
+        ImGui.SameLine();
+        if (ImGui.RadioButton("Friends only", visibility == ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityFriendsOnly)) {
+            visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityFriendsOnly;
+        }
+        ImGui.SameLine();
+        if (ImGui.RadioButton("Private", visibility == ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate)) {
+            visibility = ERemoteStoragePublishedFileVisibility.k_ERemoteStoragePublishedFileVisibilityPrivate;
+        }
 
         ImGui.Image(mod.thumbnail, Vector2.one * 100);
 
@@ -602,6 +616,6 @@ public class SteamworksUGCItem {
 
         ImGui.End();
 
-        ImGui.PopStyleColor(10);
+        ImGui.PopStyleColor(11);
     }
 }
