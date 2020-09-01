@@ -428,6 +428,23 @@ namespace GunSystemsV1 {
         }
     }
 
+    [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
+    public class ChamberRoundDroppingSystem : GunSystemBase {
+        MagazineComponent mc = null;
+        ChamberComponent cc = null;
+
+        public override void Update() {
+            if(mc.mag_stage != MagStage.IN && cc.active_round_state == RoundState.LOADING && cc.active_round != null) {
+                cc.active_round.AddComponent<Rigidbody>();
+                cc.active_round.transform.parent = null;
+                cc.active_round.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                cc.active_round.GetComponent<Rigidbody>().velocity = gs.velocity;
+                cc.active_round = null;
+                cc.active_round_state = RoundState.EMPTY;
+            }
+        }
+    }
+
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.SLIDE_LOCK, GunAspect.SLIDE_RELEASE_BUTTON)]
     public class SlideLockSwichSystem : GunSystemBase {
         SlideComponent sc = null;
