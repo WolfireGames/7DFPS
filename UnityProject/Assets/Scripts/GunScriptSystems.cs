@@ -391,6 +391,7 @@ namespace GunSystemsV1 {
         }
     }
 
+    [Priority(PriorityAttribute.NORMAL + 1)]
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberingSystem : GunSystemBase {
         SlideComponent slide_c = null;
@@ -424,6 +425,23 @@ namespace GunSystemsV1 {
                         chamber_c.active_round_state = RoundState.READY;
                     }
                 }
+            }
+        }
+    }
+
+    [InclusiveAspects(GunAspect.MAGAZINE, GunAspect.CHAMBER)]
+    public class ChamberRoundDroppingSystem : GunSystemBase {
+        MagazineComponent mc = null;
+        ChamberComponent cc = null;
+
+        public override void Update() {
+            if(mc.mag_stage != MagStage.IN && cc.active_round_state == RoundState.LOADING && cc.active_round != null) {
+                cc.active_round.AddComponent<Rigidbody>();
+                cc.active_round.transform.parent = null;
+                cc.active_round.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
+                cc.active_round.GetComponent<Rigidbody>().velocity = gs.velocity;
+                cc.active_round = null;
+                cc.active_round_state = RoundState.EMPTY;
             }
         }
     }
