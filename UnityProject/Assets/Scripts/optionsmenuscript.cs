@@ -218,6 +218,10 @@ public class optionsmenuscript : MonoBehaviour {
         postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
     }
 
+    public void SetQualityLevel(int level) {
+        QualitySettings.SetQualityLevel(level, true);
+    }
+
     public void SetVignette(bool enabled) {
         vignette.active = enabled;
     }
