@@ -209,6 +209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sound_firemode_toggle:
   - {fileID: 8300000, guid: 2b43a4edf32193c478929bfde893e4e8, type: 3}
+  fire_modes: 0100000000000000
 --- !u!114 &6067651196356063951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,10 +245,11 @@ MonoBehaviour:
   eject_round: 1
   chamber_round: 1
   chamber_on_pull: 0
-  slide_chambering_position: 0.7
+  slide_chambering_position: 0.65
   slide_lock_position: 0.9
   press_check_position: 0.4
   slide_lock_speed: 20
+  slide_cock_position: 0.3
   kick_slide_back: 1
   release_slide_automatically: 0
 --- !u!114 &7801254754374949103
@@ -274,13 +276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c153c4d6a2f66b24eb53c16e0b7643ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sound_gunshot_bigroom:
-  - {fileID: 8300000, guid: 16cd8b1e8988f424c86fbff5045a0043, type: 3}
-  - {fileID: 8300000, guid: 60b7cce2617ee5f4f8f308887280331f, type: 3}
-  - {fileID: 8300000, guid: e42907c52b97d9348ad6b2da4ac4f8cc, type: 3}
-  - {fileID: 8300000, guid: 71d41b8beb9a8d1449f810e899958552, type: 3}
-  - {fileID: 8300000, guid: b1983060451713242bcb01fbe57e38fe, type: 3}
-  - {fileID: 8300000, guid: 68e0ce0fbb007dc47afcba8af43ae785, type: 3}
   sound_gunshot_smallroom:
   - {fileID: 8300000, guid: ba5ce73ca94273e42a2b1248603cecef, type: 3}
   - {fileID: 8300000, guid: 3c675dde8fcb1bb478a3ac238c829964, type: 3}
@@ -288,13 +283,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3f68d29fb23623242abdf24b583cb6a8, type: 3}
   - {fileID: 8300000, guid: b0cf8e1a33d57d44a84dc5ca203e6ab1, type: 3}
   - {fileID: 8300000, guid: e2916fd7713f22849affc6ce2a95788a, type: 3}
-  sound_gunshot_open:
-  - {fileID: 8300000, guid: 16cd8b1e8988f424c86fbff5045a0043, type: 3}
-  - {fileID: 8300000, guid: 60b7cce2617ee5f4f8f308887280331f, type: 3}
-  - {fileID: 8300000, guid: e42907c52b97d9348ad6b2da4ac4f8cc, type: 3}
-  - {fileID: 8300000, guid: 71d41b8beb9a8d1449f810e899958552, type: 3}
-  - {fileID: 8300000, guid: b1983060451713242bcb01fbe57e38fe, type: 3}
-  - {fileID: 8300000, guid: 68e0ce0fbb007dc47afcba8af43ae785, type: 3}
   point_muzzleflash: {fileID: 400024}
   point_muzzle: {fileID: 400022}
   bullet_obj: {fileID: 100000, guid: 45aa8aee963396647970bee4b0342c1b, type: 3}
@@ -302,6 +290,7 @@ MonoBehaviour:
   exit_velocity: 251
   projectile_count: 1
   inaccuracy: 0
+  caseless_ammunition: 0
   recoil_multiplier: 1
 --- !u!114 &-3319915350454369051
 MonoBehaviour:
@@ -571,6 +560,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -582,6 +572,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -652,6 +643,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -663,6 +655,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -969,6 +962,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -980,6 +974,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1046,6 +1041,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1057,6 +1053,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1123,6 +1120,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1134,6 +1132,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1200,6 +1199,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1211,6 +1211,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1277,6 +1278,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1288,6 +1290,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1354,6 +1357,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1365,6 +1369,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1431,6 +1436,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1442,6 +1448,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1508,6 +1515,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1519,6 +1527,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1585,6 +1594,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1596,6 +1606,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1662,6 +1673,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1673,6 +1685,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -1799,6 +1812,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1810,6 +1824,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
