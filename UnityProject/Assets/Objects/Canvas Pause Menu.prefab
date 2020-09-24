@@ -11533,14 +11533,14 @@ MonoBehaviour:
   m_CaptionImage: {fileID: 0}
   m_ItemText: {fileID: 5031785578939596151}
   m_ItemImage: {fileID: 0}
-  m_Value: 3
+  m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: ExclusiveFullScreen
+    - m_Text: Fullscreen (Exclusive)
       m_Image: {fileID: 0}
-    - m_Text: FullScreenWindow
+    - m_Text: Fullscreen (Borderless)
       m_Image: {fileID: 0}
-    - m_Text: MaximizedWindow
+    - m_Text: Maximized Window
       m_Image: {fileID: 0}
     - m_Text: Windowed
       m_Image: {fileID: 0}
