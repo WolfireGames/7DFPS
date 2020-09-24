@@ -87,7 +87,7 @@ public class RobotScript:MonoBehaviour{
     float stuck_delay = 0.0f;
     Vector3 tilt_correction;
     bool distance_sleep = false;
-    float kSleepDistance = 20.0f;
+    float kSleepDistance = 40.0f;
     
     public Vector3 target_pos;
 
