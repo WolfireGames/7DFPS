@@ -20,8 +20,7 @@ public class GraphicsInitializer : MonoBehaviour {
         }
 
         Resolution new_res = Screen.resolutions[resolution_id];
-        Resolution current_res = Screen.currentResolution;
-        if(new_res.height != Screen.currentResolution.height || new_res.refreshRate != Screen.currentResolution.refreshRate || new_res.width != Screen.currentResolution.width || Screen.fullScreenMode != fullscreen_mode) {
+        if(!Screen.Equals(new_res, Screen.currentResolution) || Screen.fullScreenMode != fullscreen_mode || !Screen.fullScreen) {
             Screen.SetResolution(new_res.width, new_res.height, fullscreen_mode, new_res.refreshRate);
         }
     }

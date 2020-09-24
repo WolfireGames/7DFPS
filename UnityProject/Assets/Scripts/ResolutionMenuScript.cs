@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 [RequireComponent(typeof(Dropdown))]
 public class ResolutionMenuScript : OptionInitializerBase {
@@ -10,17 +11,35 @@ public class ResolutionMenuScript : OptionInitializerBase {
         UpdateDropdown();
     }
 
+    private void Awake() {
+        UpdateDropdown();
+    }
+
+    private void OnEnable() {
+        UpdateDropdown();
+    }
+
     private void UpdateDropdown() {
         dropdown = GetComponent<Dropdown>();
+
+        int index_override = dropdown.value;
 
         // Clear previous options
         dropdown.ClearOptions();
 
-        List<string> strings = new List<string>();
-        foreach (var resolution in Screen.resolutions)
-            strings.Add(resolution.ToString());
+        string[] strings = new string[Screen.resolutions.Length];
+        for (int i = 0; i < Screen.resolutions.Length; i++) {
+            var screen = Screen.resolutions[i];
 
+            strings[i] = Screen.resolutions[i].ToString();
+            if(Screen.fullScreen && Screen.Equals(screen, Screen.currentResolution)) {
+                index_override = i;
+            }
+        }
         // Add new options
-        dropdown.AddOptions(strings);
+        dropdown.AddOptions(strings.ToList());
+        if(index_override != -1) {
+            dropdown.SetValueWithoutNotify(index_override);
+        }
     }
 }
