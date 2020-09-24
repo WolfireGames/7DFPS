@@ -391,7 +391,7 @@ namespace GunSystemsV1 {
         }
     }
 
-    [Priority(PriorityAttribute.NORMAL + 1)]
+    [Priority(PriorityAttribute.NORMAL)]
     [InclusiveAspects(GunAspect.SLIDE, GunAspect.CHAMBER)]
     public class SlideChamberingSystem : GunSystemBase {
         SlideComponent slide_c = null;
