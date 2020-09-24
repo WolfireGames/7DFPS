@@ -6,14 +6,6 @@ using UnityEngine.UI;
 public class ResolutionMenuScript : OptionInitializerBase {
     private Dropdown dropdown;
 
-    public void Awake() {
-        UpdateDropdown();
-    }
-
-    private void OnEnable() {
-        UpdateDropdown();
-    }
-
     public override void Initialize() {
         UpdateDropdown();
     }
@@ -30,7 +22,5 @@ public class ResolutionMenuScript : OptionInitializerBase {
 
         // Add new options
         dropdown.AddOptions(strings);
-
-        Debug.LogError($"Update resolution dropdown with {dropdown.options.Count} options");
     }
 }
