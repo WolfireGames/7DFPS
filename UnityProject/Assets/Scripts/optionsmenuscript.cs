@@ -117,6 +117,10 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void UpdateUIValuesAndApplyDefaults() {
         foreach(Transform transform in optionsContent.transform) {
+            if(transform.gameObject.GetComponent<OptionInitializerBase>()) {
+                transform.gameObject.GetComponent<OptionInitializerBase>().Initialize();
+            }
+
             if(transform.name.StartsWith("_")) // Don't default settings that start with _
                 continue;
 
