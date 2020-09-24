@@ -222,10 +222,6 @@ public class optionsmenuscript : MonoBehaviour {
         postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
     }
 
-    public void SetQualityLevel(int level) {
-        QualitySettings.SetQualityLevel(level, true);
-    }
-
     public void SetVignette(bool enabled) {
         vignette.active = enabled;
     }
@@ -240,6 +236,10 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void ToggleModUI() {
         show_mod_ui = !show_mod_ui;
+    }
+
+    public void UpdateGraphics() {
+        GraphicsInitializer.ApplyGraphics();
     }
 
     public void ReopenCurrentScene() {
