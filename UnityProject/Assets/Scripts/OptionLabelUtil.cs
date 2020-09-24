@@ -6,13 +6,6 @@ public class OptionLabelUtil : MonoBehaviour {
     private Text textBox;
 
     [TextArea] public string prefix = "";
-    public bool is_mod_path_label = false;
-
-    public void Start() {
-        if(is_mod_path_label) {
-            ChangeValue(ModManager.GetModsfolderPath());
-        }
-    }
 
     public void ChangeValue(float value) {
         if(!textBox)
