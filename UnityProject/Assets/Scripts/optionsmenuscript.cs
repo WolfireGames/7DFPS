@@ -170,10 +170,6 @@ public class optionsmenuscript : MonoBehaviour {
         PlayerPrefs.SetFloat("ambient_intensity", 0.44f);
         PlayerPrefs.SetFloat("bloom_intensity", 1f);
 
-        PlayerPrefs.SetFloat("auto_exposure_min_luminance", -3.3f);
-        PlayerPrefs.SetFloat("auto_exposure_max_luminance", 2.8f);
-        PlayerPrefs.SetFloat("auto_exposure_exposure_compensation", 0.93f);
-        
         PlayerPrefs.SetInt("antialiasing_mode", 3);
         PlayerPrefs.SetInt("vignette", 0);
 
@@ -204,18 +200,6 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void SetBloomIntensity(float intensity) {
         bloom.intensity.Override(intensity);
-    }
-
-    public void SetAutoExposureMinEV(float autoExposureMinLuminance) {
-        autoExposure.minLuminance.Override(autoExposureMinLuminance);
-    }
-
-    public void SetAutoExposureMaxEV(float autoExposureMaxLuminance) {
-        autoExposure.maxLuminance.Override(autoExposureMaxLuminance);
-    }
-
-    public void SetAutoExposureExposureCompensation(float autoExposureExposureCompensation) {
-        autoExposure.keyValue.Override(autoExposureExposureCompensation);
     }
  
     public void SetAAMode(int mode) {
