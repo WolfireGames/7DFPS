@@ -102,17 +102,3 @@ public class RoundStackerUtility : EditorWindow {
         return index;
     }
 }
-
-[CustomEditor(typeof(mag_script))]
-public class MagScriptEditor : Editor { // Might want to move this to its own file
-    public override void OnInspectorGUI() {
-        // Draw MagScript
-        base.OnInspectorGUI();
-
-        // Buttons
-        if(GUILayout.Button("Open Bullet Stacker Utility")) {
-            EditorWindow.GetWindow(typeof(RoundStackerUtility), false, "Bullet Stacker");
-            //EditorWindow.GetWindowWithRect(typeof(RoundStackerUtility), new Rect(0, 0, 300, 200), false, "Bullet Stacker"); // Window varient to force a specific size
-        }
-    }
-}
