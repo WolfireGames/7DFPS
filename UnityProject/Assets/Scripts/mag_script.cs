@@ -8,21 +8,23 @@ public enum MagLoadStage {NONE, PUSHING_DOWN, ADDING_ROUND, REMOVING_ROUND, PUSH
 public class mag_script : MonoBehaviour {
     int num_rounds = 8;
     public int kMaxRounds = 8;
+    
     Vector3[] round_pos;
     Quaternion[] round_rot;
     Vector3 old_pos;
+    
     public Vector3 hold_offset;
     public Vector3 hold_rotation;
-    private bool collided = false;
     public List<AudioClip> sound_add_round;
     public List<AudioClip> sound_mag_bounce;
+    public bool disable_interp = true;
+    public float bulletReloadTime = 1 / 20f;
+    
+    private bool collided = false;
     private float life_time = 0.0f;
-
+    
     private MagLoadStage mag_load_stage = MagLoadStage.NONE;
     private float mag_load_progress = 0.0f;
-    public bool disable_interp = true;
-
-	public float bulletReloadTime = 1 / 20f;
     
     public bool RemoveRound() {
     	if(num_rounds == 0){
