@@ -2,7 +2,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 
-public class RInput {
+public class RInput : MonoBehaviour {
     public static MovementInputs inputs_player;
     public static GunInputs inputs_gun;
 
@@ -29,6 +29,11 @@ public class RInput {
 
         inputs_gun.Enable();
         inputs_player.Enable();
+
+        // Create an RInput object to hook into Unity's update cycle
+        RInput instance = new GameObject().AddComponent<RInput>();
+        GameObject.DontDestroyOnLoad(instance);
+        instance.gameObject.hideFlags = HideFlags.HideAndDontSave;
     }
 
     private static void SetupInputActionMap(InputActionMap map) {
