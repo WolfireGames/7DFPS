@@ -4,22 +4,6 @@ using System.Collections.Generic;
 using System.Collections;
 using GunSystemInterfaces;
 
-[System.Serializable]
-public class CharacterInput {
-	public bool GetButtonDown(string input_str) {
-		return Input.GetButtonDown(input_str);
-	}
-	public bool GetButton(string input_str) {
-		return Input.GetButton(input_str);
-	}
-	public bool GetButtonUp(string input_str) {
-		return Input.GetButtonUp(input_str);
-	}
-	public float GetAxis(string input_str) {
-		return Input.GetAxis(input_str);
-	}
-};
-
 public enum GunTilt {NONE, LEFT, CENTER, RIGHT};
 
 public enum HandMagStage {HOLD, HOLD_TO_INSERT, EMPTY};
@@ -194,8 +178,6 @@ public class AimScript:MonoBehaviour{
     
     AudioSource audiosource_tape_background;
     AudioSource audiosource_audio_content;
-
-    CharacterInput character_input;
     
     // Links to other objects in scene
     [HideInInspector]
@@ -451,7 +433,6 @@ public class AimScript:MonoBehaviour{
     	magazine_obj = weapon_holder.mag_object;
     	gun_obj = weapon_holder.gun_object;
     	casing_with_bullet = weapon_holder.bullet_object;
-    	character_input = new CharacterInput();
     
     	if(UnityEngine.Random.Range(0f, 1f) < 0.35f) {
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
