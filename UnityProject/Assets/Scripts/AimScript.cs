@@ -862,8 +862,8 @@ public class AimScript:MonoBehaviour{
     	if(RInput.GetButtonDown(RInput.gun.main.ToggleStance)){
     		gun_script.InputToggleStance();
     	}
-    	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
-    		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
+    	if(RInput.GetAxis(RInput.gun.main.SpinCylinder) != 0.0f){
+    		gun_script.RotateCylinder((int)RInput.GetAxis(RInput.gun.main.SpinCylinder));
     	}		
     	if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){ // TODO have a different bind for inserting rounds in the gun and the magazine
     		if(loose_bullets.Count > 0){
@@ -1317,16 +1317,17 @@ public class AimScript:MonoBehaviour{
     	
     	bool in_menu = optionsmenuscript.IsMenuShown();
     	if(!dead && !in_menu){
-    		rotation_x += character_input.GetAxis("Mouse X") * sensitivity_x;
-    		rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
+			Vector2 mouse_input = RInput.GetAxis2D(RInput.player.main.AimDelta);
+    		rotation_x += mouse_input.x * sensitivity_x;
+    		rotation_y += mouse_input.y * sensitivity_y;
     		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
     	
     		if((RInput.GetButton(RInput.player.main.AimHold) || aim_toggle) && (gun_instance != null)){
     			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
     			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
     		} else {
-    			view_rotation_x += character_input.GetAxis("Mouse X") * sensitivity_x;
-    			view_rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
+    			view_rotation_x += mouse_input.x * sensitivity_x;
+    			view_rotation_y += mouse_input.y * sensitivity_y;
     			view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
     			
     			rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
@@ -1924,9 +1925,9 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), 0.0f, character_input.GetAxis("Vertical"));
+    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.main.Horizontal), 0.0f, RInput.GetAxis(RInput.player.main.Vertical));
     	
-    	if(old_vert_axis < 0.9f && character_input.GetAxis("Vertical") >= 0.9f){
+    	if(old_vert_axis < 0.9f && RInput.GetAxis(RInput.player.main.Vertical) >= 0.9f){
     		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
@@ -1941,7 +1942,7 @@ public class AimScript:MonoBehaviour{
     	if(bool_running){
     		directionVector.z = 1.0f;
     	}
-    	old_vert_axis = character_input.GetAxis("Vertical");
+    	old_vert_axis = RInput.GetAxis(RInput.player.main.Vertical);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1972,7 +1973,7 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), character_input.GetAxis("Vertical"), 0.0f);
+    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.main.Horizontal), RInput.GetAxis(RInput.player.main.Vertical), 0.0f);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
