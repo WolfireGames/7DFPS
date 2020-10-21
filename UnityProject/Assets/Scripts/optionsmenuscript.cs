@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 
@@ -52,13 +53,13 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     public void Update() {
-        if(Input.GetKeyDown("escape") && !show_menu) {
+        if(Keyboard.current[Key.Escape].wasPressedThisFrame && !show_menu) {
             ShowMenu();
-        } else if(Input.GetKeyDown("escape") && show_menu) {
+        } else if(Keyboard.current[Key.Escape].wasPressedThisFrame && show_menu) {
             HideMenu();
         }
 
-        if(Input.GetMouseButtonDown(0) && !show_menu) {
+        if(Mouse.current.leftButton.IsPressed() && !show_menu) {
             LockCursor();
         }
 
