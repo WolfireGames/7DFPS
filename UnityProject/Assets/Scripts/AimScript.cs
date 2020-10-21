@@ -649,37 +649,37 @@ public class AimScript:MonoBehaviour{
     }
     
     public bool HandleInventoryControls() {	
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Holster)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Holster)){
     		target_weapon_slot = -1;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory1)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory1)){
     		target_weapon_slot = 0;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory2)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory2)){
     		target_weapon_slot = 1;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory3)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory3)){
     		target_weapon_slot = 2;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory4)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory4)){
     		target_weapon_slot = 3;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory5)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory5)){
     		target_weapon_slot = 4;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory6)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory6)){
     		target_weapon_slot = 5;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory7)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory7)){
     		target_weapon_slot = 6;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory8)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory8)){
     		target_weapon_slot = 7;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory9)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory9)){
     		target_weapon_slot = 8;
     	}
-    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory10)){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory10)){
     		target_weapon_slot = 9;
     	}
     	

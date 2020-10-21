@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class RInput : MonoBehaviour {
-    public static MovementInputs inputs_player;
+    public static MovementInputs player;
     public static GunInputs gun;
 
     private static HashSet<int> actions_started = new HashSet<int>();
@@ -19,16 +19,16 @@ public class RInput : MonoBehaviour {
 
     [RuntimeInitializeOnLoadMethod]
     public static void Init() {
-        inputs_player = new MovementInputs();
+        player = new MovementInputs();
         gun = new GunInputs();
         
         SetupInputActionMap(gun.main); // TODO can we do this in a loop somehow?
-        SetupInputActionMap(inputs_player.main);
-        SetupInputActionMap(inputs_player.Magazine);
-        SetupInputActionMap(inputs_player.Inventory);
+        SetupInputActionMap(player.main);
+        SetupInputActionMap(player.Magazine);
+        SetupInputActionMap(player.Inventory);
 
         gun.Enable();
-        inputs_player.Enable();
+        player.Enable();
 
         // Create an RInput object to hook into Unity's update cycle
         RInput instance = new GameObject().AddComponent<RInput>();
