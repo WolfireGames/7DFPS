@@ -14,7 +14,7 @@ public class RInput {
     }
 
     private static void AddCanceledAction(InputAction action) {
-        actions_started.Add(action.GetHashCode());
+        actions_canceled.Add(action.GetHashCode());
     }
 
     [RuntimeInitializeOnLoadMethod]
