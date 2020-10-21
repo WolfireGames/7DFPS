@@ -57,6 +57,14 @@ public class RInput : MonoBehaviour {
         return actions_canceled.Contains(action.GetHashCode());
     }
 
+    public static float GetAxis(InputAction action) {
+        return action.ReadValue<float>();
+    }
+
+    public static Vector2 GetAxis2D(InputAction action) {
+        return action.ReadValue<Vector2>();
+    }
+
     private void LateUpdate() {
         actions_started.Clear();
         actions_canceled.Clear();
