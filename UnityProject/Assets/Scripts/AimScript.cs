@@ -997,7 +997,7 @@ public class AimScript:MonoBehaviour{
     	
     	bool insert_mag_with_number_key = HandleInventoryControls();
     	
-    	if(character_input.GetButtonDown("Eject/Drop") || queue_drop){
+    	if(RInput.GetButtonDown(RInput.player.main.Drop) || queue_drop){
     		if(mag_stage == HandMagStage.HOLD){
     			mag_stage = HandMagStage.EMPTY;
     			magazine_instance_in_hand.AddComponent<Rigidbody>();
@@ -1027,7 +1027,7 @@ public class AimScript:MonoBehaviour{
             }
     	}
     	
-    	if(character_input.GetButtonDown("Eject/Drop")){
+    	if(RInput.GetButtonDown(RInput.gun.main.Eject)){
     		if(mag_stage == HandMagStage.EMPTY && (gun_instance != null)){
     			if(gun_instance.GetComponent<GunScript>().IsMagCurrentlyEjecting()){
     				queue_drop = true;
