@@ -649,37 +649,37 @@ public class AimScript:MonoBehaviour{
     }
     
     public bool HandleInventoryControls() {	
-    	if(character_input.GetButtonDown("Holster")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Holster)){
     		target_weapon_slot = -1;
     	}
-    	if(character_input.GetButtonDown("Inventory 1")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory1)){
     		target_weapon_slot = 0;
     	}
-    	if(character_input.GetButtonDown("Inventory 2")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory2)){
     		target_weapon_slot = 1;
     	}
-    	if(character_input.GetButtonDown("Inventory 3")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory3)){
     		target_weapon_slot = 2;
     	}
-    	if(character_input.GetButtonDown("Inventory 4")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory4)){
     		target_weapon_slot = 3;
     	}
-    	if(character_input.GetButtonDown("Inventory 5")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory5)){
     		target_weapon_slot = 4;
     	}
-    	if(character_input.GetButtonDown("Inventory 6")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory6)){
     		target_weapon_slot = 5;
     	}
-    	if(character_input.GetButtonDown("Inventory 7")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory7)){
     		target_weapon_slot = 6;
     	}
-    	if(character_input.GetButtonDown("Inventory 8")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory8)){
     		target_weapon_slot = 7;
     	}
-    	if(character_input.GetButtonDown("Inventory 9")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory9)){
     		target_weapon_slot = 8;
     	}
-    	if(character_input.GetButtonDown("Inventory 10")){
+    	if(RInput.GetButtonDown(RInput.inputs_player.Inventory.Inventory10)){
     		target_weapon_slot = 9;
     	}
     	
