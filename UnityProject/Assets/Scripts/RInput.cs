@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RInput : MonoBehaviour {
     public static MovementInputs inputs_player;
-    public static GunInputs inputs_gun;
+    public static GunInputs gun;
 
     private static HashSet<int> actions_started = new HashSet<int>();
     private static HashSet<int> actions_canceled = new HashSet<int>();
@@ -20,14 +20,14 @@ public class RInput : MonoBehaviour {
     [RuntimeInitializeOnLoadMethod]
     public static void Init() {
         inputs_player = new MovementInputs();
-        inputs_gun = new GunInputs();
+        gun = new GunInputs();
         
-        SetupInputActionMap(inputs_gun.main); // TODO can we do this in a loop somehow?
+        SetupInputActionMap(gun.main); // TODO can we do this in a loop somehow?
         SetupInputActionMap(inputs_player.main);
         SetupInputActionMap(inputs_player.Magazine);
         SetupInputActionMap(inputs_player.Inventory);
 
-        inputs_gun.Enable();
+        gun.Enable();
         inputs_player.Enable();
 
         // Create an RInput object to hook into Unity's update cycle
