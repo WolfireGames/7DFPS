@@ -30,8 +30,10 @@ public class RInput {
 
     private static void SetupInputActionMap(InputActionMap map) {
         foreach (InputAction item in map) {
-            item.started += ctx => AddStartedAction(ctx.action);
-            item.canceled += ctx => AddCanceledAction(ctx.action);
+            if(item.type == InputActionType.Button) {
+                item.started += ctx => RInput.AddStartedAction(ctx.action);
+                item.canceled += ctx => RInput.AddCanceledAction(ctx.action);
+            }
         }
     }
 
