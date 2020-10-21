@@ -2,33 +2,33 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 
-public class RInput : MonoBehaviour {
+public class RInput {
     public static MovementInputs inputs_player;
     public static GunInputs inputs_gun;
 
     private static HashSet<int> actions_started = new HashSet<int>();
     private static HashSet<int> actions_canceled = new HashSet<int>();
 
-    private void AddStartedAction(InputAction action) {
+    private static void AddStartedAction(InputAction action) {
         actions_started.Add(action.GetHashCode());
     }
 
-    private void AddCanceledAction(InputAction action) {
+    private static void AddCanceledAction(InputAction action) {
         actions_started.Add(action.GetHashCode());
     }
 
     [RuntimeInitializeOnLoadMethod]
-    private void Init() {
+    public static void Init() {
         inputs_player = new MovementInputs();
         inputs_gun = new GunInputs();
-
+        
         SetupInputActionMap(inputs_gun.main); // TODO can we do this in a loop somehow?
         SetupInputActionMap(inputs_player.main);
         SetupInputActionMap(inputs_player.Magazine);
         SetupInputActionMap(inputs_player.Inventory);
     }
 
-    private void SetupInputActionMap(InputActionMap map) {
+    private static void SetupInputActionMap(InputActionMap map) {
         foreach (InputAction item in map) {
             item.started += ctx => AddStartedAction(ctx.action);
             item.canceled += ctx => AddCanceledAction(ctx.action);
