@@ -121,6 +121,14 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Drop"",
+                    ""type"": ""Button"",
+                    ""id"": ""0a353ead-4743-4645-bce0-d82f62004375"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -308,6 +316,17 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Help Button"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dbf9c423-ea3e-42a7-b02e-0d3489fed915"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -575,6 +594,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         m_main_LevelReset = m_main.FindAction("Level Reset", throwIfNotFound: true);
         m_main_FlashlightToggle = m_main.FindAction("Flashlight Toggle", throwIfNotFound: true);
         m_main_HelpButton = m_main.FindAction("Help Button", throwIfNotFound: true);
+        m_main_Drop = m_main.FindAction("Drop", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_Inventory1 = m_Inventory.FindAction("Inventory1", throwIfNotFound: true);
@@ -653,6 +673,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
     private readonly InputAction m_main_LevelReset;
     private readonly InputAction m_main_FlashlightToggle;
     private readonly InputAction m_main_HelpButton;
+    private readonly InputAction m_main_Drop;
     public struct MainActions
     {
         private @MovementInputs m_Wrapper;
@@ -670,6 +691,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         public InputAction @LevelReset => m_Wrapper.m_main_LevelReset;
         public InputAction @FlashlightToggle => m_Wrapper.m_main_FlashlightToggle;
         public InputAction @HelpButton => m_Wrapper.m_main_HelpButton;
+        public InputAction @Drop => m_Wrapper.m_main_Drop;
         public InputActionMap Get() { return m_Wrapper.m_main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -718,6 +740,9 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 @HelpButton.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
                 @HelpButton.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
                 @HelpButton.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
+                @Drop.started -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
+                @Drop.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
+                @Drop.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -761,6 +786,9 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 @HelpButton.started += instance.OnHelpButton;
                 @HelpButton.performed += instance.OnHelpButton;
                 @HelpButton.canceled += instance.OnHelpButton;
+                @Drop.started += instance.OnDrop;
+                @Drop.performed += instance.OnDrop;
+                @Drop.canceled += instance.OnDrop;
             }
         }
     }
@@ -926,6 +954,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         void OnLevelReset(InputAction.CallbackContext context);
         void OnFlashlightToggle(InputAction.CallbackContext context);
         void OnHelpButton(InputAction.CallbackContext context);
+        void OnDrop(InputAction.CallbackContext context);
     }
     public interface IInventoryActions
     {
