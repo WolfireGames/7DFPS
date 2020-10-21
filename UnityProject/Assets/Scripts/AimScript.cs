@@ -801,71 +801,71 @@ public class AimScript:MonoBehaviour{
     
     public void HandleGunControls(bool insert_mag_with_number_key) {
     	GunScript gun_script = GetGunScript();
-    	if(character_input.GetButton("Trigger")){
+    	if(RInput.GetButton(RInput.gun.main.Trigger)){
     		gun_script.ApplyPressureToTrigger();
     	} else {
     		gun_script.ReleasePressureFromTrigger();
     	}
-    	if(character_input.GetButtonDown("Slide Lock")){
+    	if(RInput.GetButtonDown(RInput.gun.main.SlideLock)){
     		gun_script.ReleaseSlideLock();
     	}
-    	if(character_input.GetButtonUp("Slide Lock")){
+    	if(RInput.GetButtonUp(RInput.gun.main.SlideLock)){
     		gun_script.ReleasePressureOnSlideLock();
     	}
 
     	// Pull slide or do press check
-    	if(character_input.GetButton("Pull Back Slide")) {
-    		if(character_input.GetButton("Slide Lock")) {
+    	if(RInput.GetButton(RInput.gun.main.PullSlide)) {
+    		if(RInput.GetButton(RInput.gun.main.SlideLock)) {
     			gun_script.Request(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK);
-    		} else if(character_input.GetButtonUp("Slide Lock")) {
+    		} else if(RInput.GetButtonUp(RInput.gun.main.SlideLock)) {
 				gun_script.InputPullSlideBack();
     		}
     	}
 
-		if(character_input.GetButtonDown("Pull Back Slide")){
+		if(RInput.GetButtonDown(RInput.gun.main.PullSlide)){
 			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
 			}
 		}
-		if(character_input.GetButtonUp("Pull Back Slide")){
+		if(RInput.GetButtonUp(RInput.gun.main.PullSlide)){
 			gun_script.ReleaseSlide();
 		}
-    	if(character_input.GetButton("Slide Lock")) {
+    	if(RInput.GetButton(RInput.gun.main.SlideLock)) {
     		gun_script.PressureOnSlideLock();
     	}
-    	if(character_input.GetButtonDown("Toggle Bolt Lock")) {
+    	if(RInput.GetButtonDown(RInput.gun.main.BoltLock)) {
     		gun_script.ToggleBoltLock();
     	}
-    	if(character_input.GetButtonDown("Safety")){
+    	if(RInput.GetButtonDown(RInput.gun.main.Safety)){
     		gun_script.ToggleSafety();			
     	}	
-    	if(character_input.GetButtonDown("Auto Mod Toggle")){
+    	if(RInput.GetButtonDown(RInput.gun.main.Safety)){ // TODO have a different bind for the auto mod
     		gun_script.ToggleAutoMod();			
     	}
-    	if(character_input.GetButtonDown("Swing Out Cylinder")){
+    	if(RInput.GetButtonDown(RInput.gun.main.SwingOutCylinder)){
     		gun_script.SwingOutCylinder();
     	}	
-    	if(character_input.GetButtonDown("Close Cylinder")){
+    	if(RInput.GetButtonDown(RInput.gun.main.CloseCylinder)){
     		gun_script.CloseCylinder();
     	}	
-    	if(character_input.GetButton("Extractor Rod")){
+    	if(RInput.GetButton(RInput.gun.main.ExtractorRod)){
     		gun_script.ExtractorRod();
     	}
-    	if(character_input.GetButton("Hammer")){
+    	if(RInput.GetButton(RInput.gun.main.Hammer)){
     		gun_script.PressureOnHammer();
     	}
-    	if(character_input.GetButtonUp("Hammer")){
+    	if(RInput.GetButtonUp(RInput.gun.main.Hammer)){
     		gun_script.ReleaseHammer();
     	}
-    	if(character_input.GetButtonDown("Toggle Stance")){
+    	if(RInput.GetButtonDown(RInput.gun.main.ToggleStance)){
     		gun_script.InputToggleStance();
     	}
     	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
     		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
     	}		
-    	if(character_input.GetButtonDown("Insert")){
+    	if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){ // TODO have a different bind for inserting rounds in the gun and the magazine
     		if(loose_bullets.Count > 0){
     			if(GetGunScript().AddRoundToCylinder()){
     				GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -876,13 +876,13 @@ public class AimScript:MonoBehaviour{
     	}
     	// Aiming notification
     	if(!aim_toggle) {
-    		if(character_input.GetButtonDown("Hold To Aim")) {
+    		if(RInput.GetButtonDown(RInput.player.main.AimHold)) {
     			gun_script.InputStartAim();
-    		} else if(character_input.GetButtonUp("Hold To Aim")) {
+    		} else if(RInput.GetButtonUp(RInput.player.main.AimHold)) {
     			gun_script.InputStopAim();
     		}
     	}
-		if(character_input.GetButtonDown("Aim Toggle") && !character_input.GetButton("Hold To Aim")) {
+		if(RInput.GetButtonDown(RInput.player.main.AimToggle) && !RInput.GetButton(RInput.player.main.AimHold)) {
 			if(aim_toggle) {
 				gun_script.InputStopAim();
 			} else {
@@ -964,7 +964,7 @@ public class AimScript:MonoBehaviour{
     		hold_pose_spring.vel = 0.0f;
     		hold_pose_spring.target_state = 1.0f;
     	}
-    	if((character_input.GetButtonDown("Insert")/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
+    	if((RInput.GetButtonDown(RInput.player.Magazine.InsertRound)/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){ // TODO have a different bind for inserting a magazine
     		if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
     			hold_pose_spring.target_state = 0.0f;
     			mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -980,7 +980,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void HandleControls() {
-    	if(character_input.GetButton("Get")){
+    	if(RInput.GetButton(RInput.player.main.Pickup)){
     		HandleGetControl();
     	}
     	
@@ -1043,7 +1043,7 @@ public class AimScript:MonoBehaviour{
     	if(gun_instance != null){
     		HandleGunControls(insert_mag_with_number_key);
     	} else if(mag_stage == HandMagStage.HOLD){
-    		if(character_input.GetButtonDown("Insert")){
+    		if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){
     			if(loose_bullets.Count > 0){
     				if(magazine_instance_in_hand.GetComponent<mag_script>().AddRound()){
     					GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -1052,24 +1052,24 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     		}
-    		if(character_input.GetButtonDown("Pull Back Slide")){
+    		if(RInput.GetButtonDown(RInput.gun.main.PullSlide)){ // TODO have a different bind for removing rounds from a mag
     			if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
     				AddLooseBullet(true);
     				PlaySoundFromGroup(sound_bullet_grab, 0.2f);
     			}
     		}
     	}
-    	if(character_input.GetButtonDown("Aim Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.main.AimToggle)){
     		aim_toggle = !aim_toggle;
     	}
-    	if(character_input.GetButtonDown("Slow Motion Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.main.SlomoToggle)){
     		if(Cheats.slomo_mode) {
     			Cheats.ToggleSlomo();
     		} else {
     			slomo_warning_duration = 5f;
     		}
     	}
-        if(character_input.GetButtonDown("Flashlight Toggle")){
+        if(RInput.GetButtonDown(RInput.player.main.FlashlightToggle)){
             if(held_flashlight != null && mag_stage == HandMagStage.EMPTY && gun_instance == null){
                 held_flashlight.GetComponent<FlashlightScript>().ToggleSwitch();
             }
@@ -1136,7 +1136,7 @@ public class AimScript:MonoBehaviour{
     		--unplayed_tapes;
     		StartTapePlay();
     	}
-    	if(character_input.GetButtonDown("Tape Player") && tape_in_progress){
+    	if(RInput.GetButtonDown(RInput.player.main.TapePlayer) && tape_in_progress){
     		if(!audiosource_tape_background.isPlaying){
     			StartTapePlay();
     		} else {
@@ -1186,13 +1186,13 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateHelpToggle() {
-    	if(character_input.GetButton("Help Toggle")){
+    	if(RInput.GetButton(RInput.player.main.HelpButton)){
     		help_hold_time += Time.deltaTime;
     		if(show_help && help_hold_time >= 1.0f){
     			show_advanced_help = true;
     		}
     	}
-    	if(character_input.GetButtonDown("Help Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.main.HelpButton)){
     		if(!show_help){
     			show_help = true;
     			help_ever_shown = true;
@@ -1200,7 +1200,7 @@ public class AimScript:MonoBehaviour{
     		}
     		help_hold_time = 0.0f;
     	}
-    	if(character_input.GetButtonUp("Help Toggle")){
+    	if(RInput.GetButtonUp(RInput.player.main.HelpButton)){
     		if(show_help && help_hold_time < 1.0f && !just_started_help){
     			show_help = false;
     			show_advanced_help = false;
@@ -1210,10 +1210,10 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateLevelResetButton() {
-    	if(character_input.GetButtonDown("Level Reset")){
+    	if(RInput.GetButtonDown(RInput.player.main.LevelReset)){
     		level_reset_hold = 0.01f;
     	}
-    	if(level_reset_hold != 0.0f && Input.GetButton("Level Reset")){
+    	if(level_reset_hold != 0.0f && RInput.GetButton(RInput.player.main.LevelReset)){
     		level_reset_hold += Time.deltaTime; 
     		dead_volume_fade = Mathf.Min(1.0f-level_reset_hold * 0.5f, dead_volume_fade);
     		dead_fade = level_reset_hold * 0.5f;
@@ -1277,7 +1277,7 @@ public class AimScript:MonoBehaviour{
     
     public void UpdateAimSpring() {
     	bool offset_aim_target = false;
-    	if((character_input.GetButton("Hold To Aim") || aim_toggle) && !dead && (gun_instance != null)){
+    	if((RInput.GetButton(RInput.player.main.AimHold) || aim_toggle) && !dead && (gun_instance != null)){
     		aim_spring.target_state = 1.0f;
     		RaycastHit hit = new RaycastHit();
     		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2f, out hit, 1 << 0)){
@@ -1321,7 +1321,7 @@ public class AimScript:MonoBehaviour{
     		rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
     		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
     	
-    		if((character_input.GetButton("Hold To Aim") || aim_toggle) && (gun_instance != null)){
+    		if((RInput.GetButton(RInput.player.main.AimHold) || aim_toggle) && (gun_instance != null)){
     			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
     			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
     		} else {
@@ -1962,7 +1962,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = transform.rotation * directionVector;
-    	inputJump = character_input.GetButton("Jump");	
+    	inputJump = RInput.GetButton(RInput.player.main.Jump);
     }
     
     // This makes the character turn to face the current movement speed per default.
@@ -2000,7 +2000,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = directionVector;
-    	inputJump = character_input.GetButton("Jump");
+    	inputJump = RInput.GetButton(RInput.player.main.Jump);
     	
     	// Set rotation to the move direction	
     	if (autoRotate && directionVector.sqrMagnitude > 0.01f) {
@@ -2276,12 +2276,12 @@ public class AimScript:MonoBehaviour{
     
     public void CharacterMotorUpdate() {
     	if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
-    		if(!GetComponent<AimScript>().IsDead() && character_input.GetButtonDown("Crouch Toggle")){
+    		if(!GetComponent<AimScript>().IsDead() && RInput.GetButtonDown(RInput.player.main.Crouch)){
     			crouching = !crouching;
     		}
     	} else {
     		if(!GetComponent<AimScript>().IsDead()){
-    			crouching = character_input.GetButton("Crouch Toggle");
+    			crouching = RInput.GetButton(RInput.player.main.Crouch);
     		}
     	}	
     	if(running > 0.0f){
