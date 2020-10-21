@@ -26,6 +26,9 @@ public class RInput {
         SetupInputActionMap(inputs_player.main);
         SetupInputActionMap(inputs_player.Magazine);
         SetupInputActionMap(inputs_player.Inventory);
+
+        inputs_gun.Enable();
+        inputs_player.Enable();
     }
 
     private static void SetupInputActionMap(InputActionMap map) {
