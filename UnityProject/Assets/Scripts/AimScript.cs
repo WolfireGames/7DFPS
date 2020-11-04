@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using GunSystemInterfaces;
+using System.Linq;
 
 public enum GunTilt {NONE, LEFT, CENTER, RIGHT};
 
@@ -1710,6 +1711,15 @@ public class AimScript:MonoBehaviour{
         help_text_offset += 20;
     }
 
+	private string GetBoundKey(params UnityEngine.InputSystem.InputAction[] actions) { // TODO should probably cache this
+		string output = "";
+		foreach (var action in actions)
+			foreach (var control in action.controls)
+				output += control.displayName;
+
+		return output;
+	}
+
     public void OnGUI() {
     	if(main_client_control && Event.current.type == EventType.Repaint){
 			GUI.depth = 0;
@@ -1722,18 +1732,18 @@ public class AimScript:MonoBehaviour{
 
     		DrawHelpLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true);
     		if(!show_help){
-    			DrawHelpLine("View help: Press [ ? ]", !help_ever_shown);
+    			DrawHelpLine($"View help: Press [ {GetBoundKey(RInput.player.main.HelpButton)} ]", !help_ever_shown);
     		} else {
-    			DrawHelpLine("Hide help: Press [ ? ]");
+    			DrawHelpLine($"Hide help: Press [ {GetBoundKey(RInput.player.main.HelpButton)} ]");
     			DrawHelpLine("");
     			if(tape_in_progress){
-    				DrawHelpLine("Pause/Resume tape player: [ x ]");
+    				DrawHelpLine($"Pause/Resume tape player: [ {GetBoundKey(RInput.player.main.TapePlayer)} ]");
     			}
     			
-    			DrawHelpLine("Look: [ move mouse ]");
-    			DrawHelpLine("Move: [ WASD ]");
-    			DrawHelpLine("Jump: [ space ]");
-    			DrawHelpLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby());
+    			DrawHelpLine($"Look: [ {GetBoundKey(RInput.player.main.AimDelta)} ]");
+    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.main.Vertical, RInput.player.main.Horizontal)} ]");
+    			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.main.Jump)} ]");
+    			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.main.Pickup)} ]", ShouldPickUpNearby());
                 if(held_flashlight != null){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
@@ -1754,49 +1764,49 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     			if(gun_instance != null){
-    				DrawHelpLine("Fire weapon: tap [ left mouse button ]");
+    				DrawHelpLine($"Fire weapon: tap [ {GetBoundKey(RInput.gun.main.Trigger)} ]");
     				bool should_aim = (aim_spring.state < 0.5f);
-    				DrawHelpLine("Aim weapon: hold [ right mouse button ]", should_aim);
-    				DrawHelpLine("Aim weapon: tap [ q ]", should_aim);
-    				DrawHelpLine("Holster weapon: tap [ ~ ]", ShouldHolsterGun());
+    				DrawHelpLine($"Aim weapon: hold [ {GetBoundKey(RInput.player.main.AimHold)} ]", should_aim);
+    				DrawHelpLine($"Aim weapon: tap [ {GetBoundKey(RInput.player.main.AimToggle)} ]", should_aim);
+    				DrawHelpLine($"Holster weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldHolsterGun());
     			} else {
-    				DrawHelpLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon());
+    				DrawHelpLine($"Draw weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldDrawWeapon());
     			}
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
 						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
-    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward());
+    						DrawHelpLine($"Push forward slide: tap [ {GetBoundKey(RInput.gun.main.PullSlide)} ]",  gun_script.ShouldPushSlideForward()); // TODO needs to be adjusted
 						} else {
-    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
+    						DrawHelpLine($"Pull back slide: hold [ {GetBoundKey(RInput.gun.main.PullSlide)} ]", gun_script.ShouldPullSlide());
 						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-    						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock());
+    						DrawHelpLine($"Release slide lock: tap [ {GetBoundKey(RInput.gun.main.SlideLock)} ]", gun_script.ShouldReleaseSlideLock());
     					}
     				}
     				if(gun_script.HasSafety()){
-    					DrawHelpLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn());
+    					DrawHelpLine($"Toggle safety: tap [ {GetBoundKey(RInput.gun.main.Safety)} ]", gun_script.IsSafetyOn());
     				}
     				if(gun_script.HasAutoMod()){
-    					DrawHelpLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod());
+    					DrawHelpLine($"Toggle full-automatic: tap [ {GetBoundKey(RInput.gun.main.FireSelector)} ]", gun_script.ShouldToggleAutoMod());
     				}
     				if(gun_script.HasHammer()){
-    					DrawHelpLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer());
+    					DrawHelpLine($"Pull back hammer: hold [ {GetBoundKey(RInput.gun.main.Hammer)} ]", gun_script.ShouldPullBackHammer());
     				}
     				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
-    					DrawHelpLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt());
+    					DrawHelpLine($"Toggle Bolt: tap [ {GetBoundKey(RInput.gun.main.BoltLock)} ]", gun_script.ShouldToggleBolt());
     				}
     				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
-    					DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance());
+    					DrawHelpLine($"Switch holdingstyle: tap [ {GetBoundKey(RInput.gun.main.ToggleStance)} ]", gun_script.ShouldToggleStance());
     				}
     				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
-    						DrawHelpLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
+    						DrawHelpLine($"Open cylinder: tap [ {GetBoundKey(RInput.gun.main.SwingOutCylinder)} ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
     					} else {
-    						DrawHelpLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
-    						DrawHelpLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings());
+    						DrawHelpLine($"Close cylinder: tap [ {GetBoundKey(RInput.gun.main.CloseCylinder)} ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
+    						DrawHelpLine($"Extract casings: hold [ {GetBoundKey(RInput.gun.main.ExtractorRod)} ]", gun_script.ShouldExtractCasings());
     						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     					}
-    					DrawHelpLine("Spin cylinder: [ mousewheel ]");
+    					DrawHelpLine($"Spin cylinder: [ {GetBoundKey(RInput.gun.main.SpinCylinder)} ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
     					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     				}
@@ -1832,16 +1842,16 @@ public class AimScript:MonoBehaviour{
     			DrawHelpLine("");
     			if(show_advanced_help){
     				DrawHelpLine("Advanced help:");
-    				DrawHelpLine("Toggle crouch: [ c ]");
+    				DrawHelpLine($"Toggle crouch: [ {GetBoundKey(RInput.player.main.Crouch)} ]");
     				if(aim_spring.state < 0.5f){
     					DrawHelpLine("Run: tap repeatedly [ w ]");
     				}
     				if(gun_instance != null){
     					if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-    						DrawHelpLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby());
+    						DrawHelpLine($"Decock: Hold [ {GetBoundKey(RInput.gun.main.Hammer)} ], hold [ {GetBoundKey(RInput.gun.main.Trigger)} ], release [ {GetBoundKey(RInput.gun.main.Hammer)} ]", ShouldPickUpNearby());
     					}
     					if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
-    						DrawHelpLine("Inspect chamber: hold [ t ] and then [ r ]");
+    						DrawHelpLine($"Inspect chamber: hold [ {GetBoundKey(RInput.gun.main.SlideLock)} ] and then [ {GetBoundKey(RInput.gun.main.PullSlide)} ]");
     					}
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
@@ -1850,9 +1860,9 @@ public class AimScript:MonoBehaviour{
     						}
     					}
     				}
-    				DrawHelpLine("Reset game: hold [ l ]");
+    				DrawHelpLine($"Reset game: hold [ {GetBoundKey(RInput.player.main.LevelReset)} ]");
     			} else {
-    				DrawHelpLine("Advanced help: Hold [ ? ]");
+    				DrawHelpLine($"Advanced help: Hold [ {GetBoundKey(RInput.player.main.HelpButton)} ]");
     			}
     		}
 
