@@ -21,6 +21,9 @@ public class RInput : MonoBehaviour {
     public static void Init() {
         player = new MovementInputs();
         gun = new GunInputs();
+
+        LoadOverrides();
+        SaveOverrides();
         
         SetupInputActionMap(gun.main); // TODO can we do this in a loop somehow?
         SetupInputActionMap(player.main);
@@ -68,5 +71,21 @@ public class RInput : MonoBehaviour {
     private void LateUpdate() {
         actions_started.Clear();
         actions_canceled.Clear();
+    }
+
+    public static void SaveOverrides() {
+        PlayerPrefs.SetString("player_input", player.asset.ToJson());
+        PlayerPrefs.SetString("gun_input", gun.asset.ToJson());
+    }
+
+    public static void LoadOverrides() {
+        if(PlayerPrefs.HasKey("player_input")) {
+            player.asset.LoadFromJson(PlayerPrefs.GetString("player_input"));
+        }
+
+        if(PlayerPrefs.HasKey("gun_input")) {
+            gun.asset.LoadFromJson(PlayerPrefs.GetString("gun_input"));
+            Debug.Log(PlayerPrefs.GetString("gun_input"));
+        }
     }
 }
