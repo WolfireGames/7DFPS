@@ -8,11 +8,19 @@ public class KeybindMenu : MonoBehaviour {
     public Transform container;
 
     private void Awake() {
-        foreach (var item in RInput.player) {
-            KeybindElement element = Instantiate(template, container);
-            element.input_action = item;
-            element.SetContent(item.name, item.GetBindingDisplayString());
-            element.gameObject.SetActive(true);
+        foreach (InputAction action in RInput.player) {
+            AddKeybindElement(action);
         }
+
+        foreach (InputAction action in RInput.gun) {
+            AddKeybindElement(action);
+        }
+    }
+
+    private void AddKeybindElement(InputAction action) {
+        KeybindElement element = Instantiate(template, container);
+        element.input_action = action;
+        element.SetContent(action.name, action.GetBindingDisplayString());
+        element.gameObject.SetActive(true);
     }
 }
