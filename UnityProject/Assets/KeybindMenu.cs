@@ -21,7 +21,6 @@ public class KeybindMenu : MonoBehaviour {
     private void AddKeybindElement(InputAction action) {
         KeybindElement element = Instantiate(template, container);
         element.input_action = action;
-        element.SetContent(action.name, action.GetBindingDisplayString());
         element.rebind_dialog_script = rebind_dialog_script;
         element.gameObject.SetActive(true);
     }

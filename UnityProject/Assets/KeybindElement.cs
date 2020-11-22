@@ -14,8 +14,8 @@ public class KeybindElement : MonoBehaviour {
         rebind_dialog_script.Rebind(input_action);
     }
 
-    public void SetContent(string text, string binding) {
-        label.text = text;
-        current_binding.text = binding;
+    public void OnEnable() {
+        label.text = input_action.name;
+        current_binding.text = input_action.GetBindingDisplayString();
     }
 }
