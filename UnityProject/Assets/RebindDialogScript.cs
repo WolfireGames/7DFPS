@@ -35,6 +35,10 @@ public class RebindDialogScript : MonoBehaviour {
         input_action.Enable();
         SetWindow(false);
         CleanUp();
+
+        // Hack to refresh pause menu and reset content of all Keybind settings
+        transform.parent.gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(true);
     }
 
     public void Cancel(InputActionRebindingExtensions.RebindingOperation operation) {
