@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class KeybindMenu : MonoBehaviour {
     public KeybindElement template;
+    public RebindDialogScript rebind_dialog_script;
     public Transform container;
 
     private void Awake() {
@@ -21,6 +22,7 @@ public class KeybindMenu : MonoBehaviour {
         KeybindElement element = Instantiate(template, container);
         element.input_action = action;
         element.SetContent(action.name, action.GetBindingDisplayString());
+        element.rebind_dialog_script = rebind_dialog_script;
         element.gameObject.SetActive(true);
     }
 }
