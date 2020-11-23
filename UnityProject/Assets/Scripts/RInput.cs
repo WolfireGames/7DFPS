@@ -23,8 +23,8 @@ public class RInput : MonoBehaviour {
         player = new MovementInputs();
         gun = new GunInputs();
         
-        SetupInputActionMap(gun.main); // TODO can we do this in a loop somehow?
-        SetupInputActionMap(player.main);
+        SetupInputActionMap(gun.Gun); // TODO can we do this in a loop somehow?
+        SetupInputActionMap(player.Player);
         SetupInputActionMap(player.Magazine);
         SetupInputActionMap(player.Inventory);
 

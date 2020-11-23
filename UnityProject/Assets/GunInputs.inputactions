@@ -2,7 +2,7 @@
     "name": "GunInputs",
     "maps": [
         {
-            "name": "main",
+            "name": "Gun",
             "id": "3a569327-08a2-4d14-9ae4-bc8dfadb4b06",
             "actions": [
                 {

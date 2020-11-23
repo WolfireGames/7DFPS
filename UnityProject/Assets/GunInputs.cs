@@ -15,7 +15,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
     ""name"": ""GunInputs"",
     ""maps"": [
         {
-            ""name"": ""main"",
+            ""name"": ""Gun"",
             ""id"": ""3a569327-08a2-4d14-9ae4-bc8dfadb4b06"",
             ""actions"": [
                 {
@@ -289,21 +289,21 @@ public class @GunInputs : IInputActionCollection, IDisposable
         }
     ]
 }");
-        // main
-        m_main = asset.FindActionMap("main", throwIfNotFound: true);
-        m_main_Trigger = m_main.FindAction("Trigger", throwIfNotFound: true);
-        m_main_Hammer = m_main.FindAction("Hammer", throwIfNotFound: true);
-        m_main_SlideLock = m_main.FindAction("SlideLock", throwIfNotFound: true);
-        m_main_Safety = m_main.FindAction("Safety", throwIfNotFound: true);
-        m_main_FireSelector = m_main.FindAction("FireSelector", throwIfNotFound: true);
-        m_main_PullSlide = m_main.FindAction("PullSlide", throwIfNotFound: true);
-        m_main_SwingOutCylinder = m_main.FindAction("SwingOutCylinder", throwIfNotFound: true);
-        m_main_CloseCylinder = m_main.FindAction("CloseCylinder", throwIfNotFound: true);
-        m_main_ExtractorRod = m_main.FindAction("ExtractorRod", throwIfNotFound: true);
-        m_main_SpinCylinder = m_main.FindAction("SpinCylinder", throwIfNotFound: true);
-        m_main_ToggleStance = m_main.FindAction("ToggleStance", throwIfNotFound: true);
-        m_main_BoltLock = m_main.FindAction("BoltLock", throwIfNotFound: true);
-        m_main_Eject = m_main.FindAction("Eject", throwIfNotFound: true);
+        // Gun
+        m_Gun = asset.FindActionMap("Gun", throwIfNotFound: true);
+        m_Gun_Trigger = m_Gun.FindAction("Trigger", throwIfNotFound: true);
+        m_Gun_Hammer = m_Gun.FindAction("Hammer", throwIfNotFound: true);
+        m_Gun_SlideLock = m_Gun.FindAction("SlideLock", throwIfNotFound: true);
+        m_Gun_Safety = m_Gun.FindAction("Safety", throwIfNotFound: true);
+        m_Gun_FireSelector = m_Gun.FindAction("FireSelector", throwIfNotFound: true);
+        m_Gun_PullSlide = m_Gun.FindAction("PullSlide", throwIfNotFound: true);
+        m_Gun_SwingOutCylinder = m_Gun.FindAction("SwingOutCylinder", throwIfNotFound: true);
+        m_Gun_CloseCylinder = m_Gun.FindAction("CloseCylinder", throwIfNotFound: true);
+        m_Gun_ExtractorRod = m_Gun.FindAction("ExtractorRod", throwIfNotFound: true);
+        m_Gun_SpinCylinder = m_Gun.FindAction("SpinCylinder", throwIfNotFound: true);
+        m_Gun_ToggleStance = m_Gun.FindAction("ToggleStance", throwIfNotFound: true);
+        m_Gun_BoltLock = m_Gun.FindAction("BoltLock", throwIfNotFound: true);
+        m_Gun_Eject = m_Gun.FindAction("Eject", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -350,89 +350,89 @@ public class @GunInputs : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // main
-    private readonly InputActionMap m_main;
-    private IMainActions m_MainActionsCallbackInterface;
-    private readonly InputAction m_main_Trigger;
-    private readonly InputAction m_main_Hammer;
-    private readonly InputAction m_main_SlideLock;
-    private readonly InputAction m_main_Safety;
-    private readonly InputAction m_main_FireSelector;
-    private readonly InputAction m_main_PullSlide;
-    private readonly InputAction m_main_SwingOutCylinder;
-    private readonly InputAction m_main_CloseCylinder;
-    private readonly InputAction m_main_ExtractorRod;
-    private readonly InputAction m_main_SpinCylinder;
-    private readonly InputAction m_main_ToggleStance;
-    private readonly InputAction m_main_BoltLock;
-    private readonly InputAction m_main_Eject;
-    public struct MainActions
+    // Gun
+    private readonly InputActionMap m_Gun;
+    private IGunActions m_GunActionsCallbackInterface;
+    private readonly InputAction m_Gun_Trigger;
+    private readonly InputAction m_Gun_Hammer;
+    private readonly InputAction m_Gun_SlideLock;
+    private readonly InputAction m_Gun_Safety;
+    private readonly InputAction m_Gun_FireSelector;
+    private readonly InputAction m_Gun_PullSlide;
+    private readonly InputAction m_Gun_SwingOutCylinder;
+    private readonly InputAction m_Gun_CloseCylinder;
+    private readonly InputAction m_Gun_ExtractorRod;
+    private readonly InputAction m_Gun_SpinCylinder;
+    private readonly InputAction m_Gun_ToggleStance;
+    private readonly InputAction m_Gun_BoltLock;
+    private readonly InputAction m_Gun_Eject;
+    public struct GunActions
     {
         private @GunInputs m_Wrapper;
-        public MainActions(@GunInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Trigger => m_Wrapper.m_main_Trigger;
-        public InputAction @Hammer => m_Wrapper.m_main_Hammer;
-        public InputAction @SlideLock => m_Wrapper.m_main_SlideLock;
-        public InputAction @Safety => m_Wrapper.m_main_Safety;
-        public InputAction @FireSelector => m_Wrapper.m_main_FireSelector;
-        public InputAction @PullSlide => m_Wrapper.m_main_PullSlide;
-        public InputAction @SwingOutCylinder => m_Wrapper.m_main_SwingOutCylinder;
-        public InputAction @CloseCylinder => m_Wrapper.m_main_CloseCylinder;
-        public InputAction @ExtractorRod => m_Wrapper.m_main_ExtractorRod;
-        public InputAction @SpinCylinder => m_Wrapper.m_main_SpinCylinder;
-        public InputAction @ToggleStance => m_Wrapper.m_main_ToggleStance;
-        public InputAction @BoltLock => m_Wrapper.m_main_BoltLock;
-        public InputAction @Eject => m_Wrapper.m_main_Eject;
-        public InputActionMap Get() { return m_Wrapper.m_main; }
+        public GunActions(@GunInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Trigger => m_Wrapper.m_Gun_Trigger;
+        public InputAction @Hammer => m_Wrapper.m_Gun_Hammer;
+        public InputAction @SlideLock => m_Wrapper.m_Gun_SlideLock;
+        public InputAction @Safety => m_Wrapper.m_Gun_Safety;
+        public InputAction @FireSelector => m_Wrapper.m_Gun_FireSelector;
+        public InputAction @PullSlide => m_Wrapper.m_Gun_PullSlide;
+        public InputAction @SwingOutCylinder => m_Wrapper.m_Gun_SwingOutCylinder;
+        public InputAction @CloseCylinder => m_Wrapper.m_Gun_CloseCylinder;
+        public InputAction @ExtractorRod => m_Wrapper.m_Gun_ExtractorRod;
+        public InputAction @SpinCylinder => m_Wrapper.m_Gun_SpinCylinder;
+        public InputAction @ToggleStance => m_Wrapper.m_Gun_ToggleStance;
+        public InputAction @BoltLock => m_Wrapper.m_Gun_BoltLock;
+        public InputAction @Eject => m_Wrapper.m_Gun_Eject;
+        public InputActionMap Get() { return m_Wrapper.m_Gun; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MainActions set) { return set.Get(); }
-        public void SetCallbacks(IMainActions instance)
+        public static implicit operator InputActionMap(GunActions set) { return set.Get(); }
+        public void SetCallbacks(IGunActions instance)
         {
-            if (m_Wrapper.m_MainActionsCallbackInterface != null)
+            if (m_Wrapper.m_GunActionsCallbackInterface != null)
             {
-                @Trigger.started -= m_Wrapper.m_MainActionsCallbackInterface.OnTrigger;
-                @Trigger.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnTrigger;
-                @Trigger.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnTrigger;
-                @Hammer.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHammer;
-                @Hammer.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHammer;
-                @Hammer.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHammer;
-                @SlideLock.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSlideLock;
-                @SlideLock.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSlideLock;
-                @SlideLock.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSlideLock;
-                @Safety.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSafety;
-                @Safety.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSafety;
-                @Safety.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSafety;
-                @FireSelector.started -= m_Wrapper.m_MainActionsCallbackInterface.OnFireSelector;
-                @FireSelector.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnFireSelector;
-                @FireSelector.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnFireSelector;
-                @PullSlide.started -= m_Wrapper.m_MainActionsCallbackInterface.OnPullSlide;
-                @PullSlide.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnPullSlide;
-                @PullSlide.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnPullSlide;
-                @SwingOutCylinder.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSwingOutCylinder;
-                @SwingOutCylinder.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSwingOutCylinder;
-                @SwingOutCylinder.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSwingOutCylinder;
-                @CloseCylinder.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCloseCylinder;
-                @CloseCylinder.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCloseCylinder;
-                @CloseCylinder.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCloseCylinder;
-                @ExtractorRod.started -= m_Wrapper.m_MainActionsCallbackInterface.OnExtractorRod;
-                @ExtractorRod.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnExtractorRod;
-                @ExtractorRod.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnExtractorRod;
-                @SpinCylinder.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSpinCylinder;
-                @SpinCylinder.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSpinCylinder;
-                @SpinCylinder.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSpinCylinder;
-                @ToggleStance.started -= m_Wrapper.m_MainActionsCallbackInterface.OnToggleStance;
-                @ToggleStance.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnToggleStance;
-                @ToggleStance.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnToggleStance;
-                @BoltLock.started -= m_Wrapper.m_MainActionsCallbackInterface.OnBoltLock;
-                @BoltLock.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnBoltLock;
-                @BoltLock.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnBoltLock;
-                @Eject.started -= m_Wrapper.m_MainActionsCallbackInterface.OnEject;
-                @Eject.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnEject;
-                @Eject.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnEject;
+                @Trigger.started -= m_Wrapper.m_GunActionsCallbackInterface.OnTrigger;
+                @Trigger.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnTrigger;
+                @Trigger.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnTrigger;
+                @Hammer.started -= m_Wrapper.m_GunActionsCallbackInterface.OnHammer;
+                @Hammer.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnHammer;
+                @Hammer.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnHammer;
+                @SlideLock.started -= m_Wrapper.m_GunActionsCallbackInterface.OnSlideLock;
+                @SlideLock.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnSlideLock;
+                @SlideLock.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnSlideLock;
+                @Safety.started -= m_Wrapper.m_GunActionsCallbackInterface.OnSafety;
+                @Safety.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnSafety;
+                @Safety.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnSafety;
+                @FireSelector.started -= m_Wrapper.m_GunActionsCallbackInterface.OnFireSelector;
+                @FireSelector.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnFireSelector;
+                @FireSelector.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnFireSelector;
+                @PullSlide.started -= m_Wrapper.m_GunActionsCallbackInterface.OnPullSlide;
+                @PullSlide.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnPullSlide;
+                @PullSlide.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnPullSlide;
+                @SwingOutCylinder.started -= m_Wrapper.m_GunActionsCallbackInterface.OnSwingOutCylinder;
+                @SwingOutCylinder.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnSwingOutCylinder;
+                @SwingOutCylinder.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnSwingOutCylinder;
+                @CloseCylinder.started -= m_Wrapper.m_GunActionsCallbackInterface.OnCloseCylinder;
+                @CloseCylinder.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnCloseCylinder;
+                @CloseCylinder.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnCloseCylinder;
+                @ExtractorRod.started -= m_Wrapper.m_GunActionsCallbackInterface.OnExtractorRod;
+                @ExtractorRod.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnExtractorRod;
+                @ExtractorRod.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnExtractorRod;
+                @SpinCylinder.started -= m_Wrapper.m_GunActionsCallbackInterface.OnSpinCylinder;
+                @SpinCylinder.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnSpinCylinder;
+                @SpinCylinder.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnSpinCylinder;
+                @ToggleStance.started -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
+                @ToggleStance.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
+                @ToggleStance.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
+                @BoltLock.started -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
+                @BoltLock.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
+                @BoltLock.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
+                @Eject.started -= m_Wrapper.m_GunActionsCallbackInterface.OnEject;
+                @Eject.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnEject;
+                @Eject.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnEject;
             }
-            m_Wrapper.m_MainActionsCallbackInterface = instance;
+            m_Wrapper.m_GunActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Trigger.started += instance.OnTrigger;
@@ -477,7 +477,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
             }
         }
     }
-    public MainActions @main => new MainActions(this);
+    public GunActions @Gun => new GunActions(this);
     private int m_MouseKeyboardSchemeIndex = -1;
     public InputControlScheme MouseKeyboardScheme
     {
@@ -487,7 +487,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
             return asset.controlSchemes[m_MouseKeyboardSchemeIndex];
         }
     }
-    public interface IMainActions
+    public interface IGunActions
     {
         void OnTrigger(InputAction.CallbackContext context);
         void OnHammer(InputAction.CallbackContext context);

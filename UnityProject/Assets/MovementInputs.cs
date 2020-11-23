@@ -15,7 +15,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
     ""name"": ""MovementInputs"",
     ""maps"": [
         {
-            ""name"": ""main"",
+            ""name"": ""Player"",
             ""id"": ""84a2c5b6-195c-4b1f-8f83-b249b1b80f12"",
             ""actions"": [
                 {
@@ -579,22 +579,22 @@ public class @MovementInputs : IInputActionCollection, IDisposable
     ],
     ""controlSchemes"": []
 }");
-        // main
-        m_main = asset.FindActionMap("main", throwIfNotFound: true);
-        m_main_Vertical = m_main.FindAction("Vertical", throwIfNotFound: true);
-        m_main_Horizontal = m_main.FindAction("Horizontal", throwIfNotFound: true);
-        m_main_Jump = m_main.FindAction("Jump", throwIfNotFound: true);
-        m_main_Pickup = m_main.FindAction("Pickup", throwIfNotFound: true);
-        m_main_AimDelta = m_main.FindAction("Aim Delta", throwIfNotFound: true);
-        m_main_TapePlayer = m_main.FindAction("Tape Player", throwIfNotFound: true);
-        m_main_Crouch = m_main.FindAction("Crouch", throwIfNotFound: true);
-        m_main_AimHold = m_main.FindAction("Aim Hold", throwIfNotFound: true);
-        m_main_AimToggle = m_main.FindAction("Aim Toggle", throwIfNotFound: true);
-        m_main_SlomoToggle = m_main.FindAction("Slomo Toggle", throwIfNotFound: true);
-        m_main_LevelReset = m_main.FindAction("Level Reset", throwIfNotFound: true);
-        m_main_FlashlightToggle = m_main.FindAction("Flashlight Toggle", throwIfNotFound: true);
-        m_main_HelpButton = m_main.FindAction("Help Button", throwIfNotFound: true);
-        m_main_Drop = m_main.FindAction("Drop", throwIfNotFound: true);
+        // Player
+        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
+        m_Player_Vertical = m_Player.FindAction("Vertical", throwIfNotFound: true);
+        m_Player_Horizontal = m_Player.FindAction("Horizontal", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Pickup = m_Player.FindAction("Pickup", throwIfNotFound: true);
+        m_Player_AimDelta = m_Player.FindAction("Aim Delta", throwIfNotFound: true);
+        m_Player_TapePlayer = m_Player.FindAction("Tape Player", throwIfNotFound: true);
+        m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
+        m_Player_AimHold = m_Player.FindAction("Aim Hold", throwIfNotFound: true);
+        m_Player_AimToggle = m_Player.FindAction("Aim Toggle", throwIfNotFound: true);
+        m_Player_SlomoToggle = m_Player.FindAction("Slomo Toggle", throwIfNotFound: true);
+        m_Player_LevelReset = m_Player.FindAction("Level Reset", throwIfNotFound: true);
+        m_Player_FlashlightToggle = m_Player.FindAction("Flashlight Toggle", throwIfNotFound: true);
+        m_Player_HelpButton = m_Player.FindAction("Help Button", throwIfNotFound: true);
+        m_Player_Drop = m_Player.FindAction("Drop", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_Inventory1 = m_Inventory.FindAction("Inventory1", throwIfNotFound: true);
@@ -657,94 +657,94 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         asset.Disable();
     }
 
-    // main
-    private readonly InputActionMap m_main;
-    private IMainActions m_MainActionsCallbackInterface;
-    private readonly InputAction m_main_Vertical;
-    private readonly InputAction m_main_Horizontal;
-    private readonly InputAction m_main_Jump;
-    private readonly InputAction m_main_Pickup;
-    private readonly InputAction m_main_AimDelta;
-    private readonly InputAction m_main_TapePlayer;
-    private readonly InputAction m_main_Crouch;
-    private readonly InputAction m_main_AimHold;
-    private readonly InputAction m_main_AimToggle;
-    private readonly InputAction m_main_SlomoToggle;
-    private readonly InputAction m_main_LevelReset;
-    private readonly InputAction m_main_FlashlightToggle;
-    private readonly InputAction m_main_HelpButton;
-    private readonly InputAction m_main_Drop;
-    public struct MainActions
+    // Player
+    private readonly InputActionMap m_Player;
+    private IPlayerActions m_PlayerActionsCallbackInterface;
+    private readonly InputAction m_Player_Vertical;
+    private readonly InputAction m_Player_Horizontal;
+    private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Pickup;
+    private readonly InputAction m_Player_AimDelta;
+    private readonly InputAction m_Player_TapePlayer;
+    private readonly InputAction m_Player_Crouch;
+    private readonly InputAction m_Player_AimHold;
+    private readonly InputAction m_Player_AimToggle;
+    private readonly InputAction m_Player_SlomoToggle;
+    private readonly InputAction m_Player_LevelReset;
+    private readonly InputAction m_Player_FlashlightToggle;
+    private readonly InputAction m_Player_HelpButton;
+    private readonly InputAction m_Player_Drop;
+    public struct PlayerActions
     {
         private @MovementInputs m_Wrapper;
-        public MainActions(@MovementInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Vertical => m_Wrapper.m_main_Vertical;
-        public InputAction @Horizontal => m_Wrapper.m_main_Horizontal;
-        public InputAction @Jump => m_Wrapper.m_main_Jump;
-        public InputAction @Pickup => m_Wrapper.m_main_Pickup;
-        public InputAction @AimDelta => m_Wrapper.m_main_AimDelta;
-        public InputAction @TapePlayer => m_Wrapper.m_main_TapePlayer;
-        public InputAction @Crouch => m_Wrapper.m_main_Crouch;
-        public InputAction @AimHold => m_Wrapper.m_main_AimHold;
-        public InputAction @AimToggle => m_Wrapper.m_main_AimToggle;
-        public InputAction @SlomoToggle => m_Wrapper.m_main_SlomoToggle;
-        public InputAction @LevelReset => m_Wrapper.m_main_LevelReset;
-        public InputAction @FlashlightToggle => m_Wrapper.m_main_FlashlightToggle;
-        public InputAction @HelpButton => m_Wrapper.m_main_HelpButton;
-        public InputAction @Drop => m_Wrapper.m_main_Drop;
-        public InputActionMap Get() { return m_Wrapper.m_main; }
+        public PlayerActions(@MovementInputs wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Vertical => m_Wrapper.m_Player_Vertical;
+        public InputAction @Horizontal => m_Wrapper.m_Player_Horizontal;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Pickup => m_Wrapper.m_Player_Pickup;
+        public InputAction @AimDelta => m_Wrapper.m_Player_AimDelta;
+        public InputAction @TapePlayer => m_Wrapper.m_Player_TapePlayer;
+        public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
+        public InputAction @AimHold => m_Wrapper.m_Player_AimHold;
+        public InputAction @AimToggle => m_Wrapper.m_Player_AimToggle;
+        public InputAction @SlomoToggle => m_Wrapper.m_Player_SlomoToggle;
+        public InputAction @LevelReset => m_Wrapper.m_Player_LevelReset;
+        public InputAction @FlashlightToggle => m_Wrapper.m_Player_FlashlightToggle;
+        public InputAction @HelpButton => m_Wrapper.m_Player_HelpButton;
+        public InputAction @Drop => m_Wrapper.m_Player_Drop;
+        public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MainActions set) { return set.Get(); }
-        public void SetCallbacks(IMainActions instance)
+        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+        public void SetCallbacks(IPlayerActions instance)
         {
-            if (m_Wrapper.m_MainActionsCallbackInterface != null)
+            if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
             {
-                @Vertical.started -= m_Wrapper.m_MainActionsCallbackInterface.OnVertical;
-                @Vertical.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnVertical;
-                @Vertical.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnVertical;
-                @Horizontal.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHorizontal;
-                @Horizontal.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHorizontal;
-                @Horizontal.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHorizontal;
-                @Jump.started -= m_Wrapper.m_MainActionsCallbackInterface.OnJump;
-                @Jump.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnJump;
-                @Jump.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnJump;
-                @Pickup.started -= m_Wrapper.m_MainActionsCallbackInterface.OnPickup;
-                @Pickup.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnPickup;
-                @Pickup.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnPickup;
-                @AimDelta.started -= m_Wrapper.m_MainActionsCallbackInterface.OnAimDelta;
-                @AimDelta.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnAimDelta;
-                @AimDelta.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnAimDelta;
-                @TapePlayer.started -= m_Wrapper.m_MainActionsCallbackInterface.OnTapePlayer;
-                @TapePlayer.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnTapePlayer;
-                @TapePlayer.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnTapePlayer;
-                @Crouch.started -= m_Wrapper.m_MainActionsCallbackInterface.OnCrouch;
-                @Crouch.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnCrouch;
-                @Crouch.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnCrouch;
-                @AimHold.started -= m_Wrapper.m_MainActionsCallbackInterface.OnAimHold;
-                @AimHold.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnAimHold;
-                @AimHold.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnAimHold;
-                @AimToggle.started -= m_Wrapper.m_MainActionsCallbackInterface.OnAimToggle;
-                @AimToggle.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnAimToggle;
-                @AimToggle.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnAimToggle;
-                @SlomoToggle.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSlomoToggle;
-                @SlomoToggle.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSlomoToggle;
-                @SlomoToggle.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSlomoToggle;
-                @LevelReset.started -= m_Wrapper.m_MainActionsCallbackInterface.OnLevelReset;
-                @LevelReset.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnLevelReset;
-                @LevelReset.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnLevelReset;
-                @FlashlightToggle.started -= m_Wrapper.m_MainActionsCallbackInterface.OnFlashlightToggle;
-                @FlashlightToggle.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnFlashlightToggle;
-                @FlashlightToggle.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnFlashlightToggle;
-                @HelpButton.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
-                @HelpButton.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
-                @HelpButton.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHelpButton;
-                @Drop.started -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
-                @Drop.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
-                @Drop.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnDrop;
+                @Vertical.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVertical;
+                @Vertical.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVertical;
+                @Vertical.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVertical;
+                @Horizontal.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorizontal;
+                @Horizontal.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorizontal;
+                @Horizontal.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHorizontal;
+                @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Pickup.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
+                @Pickup.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
+                @Pickup.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickup;
+                @AimDelta.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimDelta;
+                @AimDelta.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimDelta;
+                @AimDelta.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimDelta;
+                @TapePlayer.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTapePlayer;
+                @TapePlayer.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTapePlayer;
+                @TapePlayer.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTapePlayer;
+                @Crouch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                @AimHold.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimHold;
+                @AimHold.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimHold;
+                @AimHold.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimHold;
+                @AimToggle.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimToggle;
+                @AimToggle.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimToggle;
+                @AimToggle.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAimToggle;
+                @SlomoToggle.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlomoToggle;
+                @SlomoToggle.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlomoToggle;
+                @SlomoToggle.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlomoToggle;
+                @LevelReset.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLevelReset;
+                @LevelReset.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLevelReset;
+                @LevelReset.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLevelReset;
+                @FlashlightToggle.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlightToggle;
+                @FlashlightToggle.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlightToggle;
+                @FlashlightToggle.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnFlashlightToggle;
+                @HelpButton.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHelpButton;
+                @HelpButton.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHelpButton;
+                @HelpButton.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHelpButton;
+                @Drop.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrop;
+                @Drop.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrop;
+                @Drop.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnDrop;
             }
-            m_Wrapper.m_MainActionsCallbackInterface = instance;
+            m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
                 @Vertical.started += instance.OnVertical;
@@ -792,7 +792,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
             }
         }
     }
-    public MainActions @main => new MainActions(this);
+    public PlayerActions @Player => new PlayerActions(this);
 
     // Inventory
     private readonly InputActionMap m_Inventory;
@@ -939,7 +939,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         }
     }
     public MagazineActions @Magazine => new MagazineActions(this);
-    public interface IMainActions
+    public interface IPlayerActions
     {
         void OnVertical(InputAction.CallbackContext context);
         void OnHorizontal(InputAction.CallbackContext context);

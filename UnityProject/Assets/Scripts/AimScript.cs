@@ -783,69 +783,69 @@ public class AimScript:MonoBehaviour{
     
     public void HandleGunControls(bool insert_mag_with_number_key) {
     	GunScript gun_script = GetGunScript();
-    	if(RInput.GetButton(RInput.gun.main.Trigger)){
+    	if(RInput.GetButton(RInput.gun.Gun.Trigger)){
     		gun_script.ApplyPressureToTrigger();
     	} else {
     		gun_script.ReleasePressureFromTrigger();
     	}
-    	if(RInput.GetButtonDown(RInput.gun.main.SlideLock)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.SlideLock)){
     		gun_script.ReleaseSlideLock();
     	}
-    	if(RInput.GetButtonUp(RInput.gun.main.SlideLock)){
+    	if(RInput.GetButtonUp(RInput.gun.Gun.SlideLock)){
     		gun_script.ReleasePressureOnSlideLock();
     	}
 
     	// Pull slide or do press check
-    	if(RInput.GetButton(RInput.gun.main.PullSlide)) {
-    		if(RInput.GetButton(RInput.gun.main.SlideLock)) {
+    	if(RInput.GetButton(RInput.gun.Gun.PullSlide)) {
+    		if(RInput.GetButton(RInput.gun.Gun.SlideLock)) {
     			gun_script.Request(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK);
-    		} else if(RInput.GetButtonUp(RInput.gun.main.SlideLock)) {
+    		} else if(RInput.GetButtonUp(RInput.gun.Gun.SlideLock)) {
 				gun_script.InputPullSlideBack();
     		}
     	}
 
-		if(RInput.GetButtonDown(RInput.gun.main.PullSlide)){
+		if(RInput.GetButtonDown(RInput.gun.Gun.PullSlide)){
 			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
 			}
 		}
-		if(RInput.GetButtonUp(RInput.gun.main.PullSlide)){
+		if(RInput.GetButtonUp(RInput.gun.Gun.PullSlide)){
 			gun_script.ReleaseSlide();
 		}
-    	if(RInput.GetButton(RInput.gun.main.SlideLock)) {
+    	if(RInput.GetButton(RInput.gun.Gun.SlideLock)) {
     		gun_script.PressureOnSlideLock();
     	}
-    	if(RInput.GetButtonDown(RInput.gun.main.BoltLock)) {
+    	if(RInput.GetButtonDown(RInput.gun.Gun.BoltLock)) {
     		gun_script.ToggleBoltLock();
     	}
-    	if(RInput.GetButtonDown(RInput.gun.main.Safety)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.Safety)){
     		gun_script.ToggleSafety();			
     	}	
-    	if(RInput.GetButtonDown(RInput.gun.main.Safety)){ // TODO have a different bind for the auto mod
+    	if(RInput.GetButtonDown(RInput.gun.Gun.Safety)){ // TODO have a different bind for the auto mod
     		gun_script.ToggleAutoMod();			
     	}
-    	if(RInput.GetButtonDown(RInput.gun.main.SwingOutCylinder)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.SwingOutCylinder)){
     		gun_script.SwingOutCylinder();
     	}	
-    	if(RInput.GetButtonDown(RInput.gun.main.CloseCylinder)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.CloseCylinder)){
     		gun_script.CloseCylinder();
     	}	
-    	if(RInput.GetButton(RInput.gun.main.ExtractorRod)){
+    	if(RInput.GetButton(RInput.gun.Gun.ExtractorRod)){
     		gun_script.ExtractorRod();
     	}
-    	if(RInput.GetButton(RInput.gun.main.Hammer)){
+    	if(RInput.GetButton(RInput.gun.Gun.Hammer)){
     		gun_script.PressureOnHammer();
     	}
-    	if(RInput.GetButtonUp(RInput.gun.main.Hammer)){
+    	if(RInput.GetButtonUp(RInput.gun.Gun.Hammer)){
     		gun_script.ReleaseHammer();
     	}
-    	if(RInput.GetButtonDown(RInput.gun.main.ToggleStance)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.ToggleStance)){
     		gun_script.InputToggleStance();
     	}
-    	if(RInput.GetAxis(RInput.gun.main.SpinCylinder) != 0.0f){
-    		gun_script.RotateCylinder((int)RInput.GetAxis(RInput.gun.main.SpinCylinder));
+    	if(RInput.GetAxis(RInput.gun.Gun.SpinCylinder) != 0.0f){
+    		gun_script.RotateCylinder((int)RInput.GetAxis(RInput.gun.Gun.SpinCylinder));
     	}		
     	if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){ // TODO have a different bind for inserting rounds in the gun and the magazine
     		if(loose_bullets.Count > 0){
@@ -858,13 +858,13 @@ public class AimScript:MonoBehaviour{
     	}
     	// Aiming notification
     	if(!aim_toggle) {
-    		if(RInput.GetButtonDown(RInput.player.main.AimHold)) {
+    		if(RInput.GetButtonDown(RInput.player.Player.AimHold)) {
     			gun_script.InputStartAim();
-    		} else if(RInput.GetButtonUp(RInput.player.main.AimHold)) {
+    		} else if(RInput.GetButtonUp(RInput.player.Player.AimHold)) {
     			gun_script.InputStopAim();
     		}
     	}
-		if(RInput.GetButtonDown(RInput.player.main.AimToggle) && !RInput.GetButton(RInput.player.main.AimHold)) {
+		if(RInput.GetButtonDown(RInput.player.Player.AimToggle) && !RInput.GetButton(RInput.player.Player.AimHold)) {
 			if(aim_toggle) {
 				gun_script.InputStopAim();
 			} else {
@@ -962,7 +962,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void HandleControls() {
-    	if(RInput.GetButton(RInput.player.main.Pickup)){
+    	if(RInput.GetButton(RInput.player.Player.Pickup)){
     		HandleGetControl();
     	}
     	
@@ -979,7 +979,7 @@ public class AimScript:MonoBehaviour{
     	
     	bool insert_mag_with_number_key = HandleInventoryControls();
     	
-    	if(RInput.GetButtonDown(RInput.player.main.Drop) || queue_drop){
+    	if(RInput.GetButtonDown(RInput.player.Player.Drop) || queue_drop){
     		if(mag_stage == HandMagStage.HOLD){
     			mag_stage = HandMagStage.EMPTY;
     			magazine_instance_in_hand.AddComponent<Rigidbody>();
@@ -1009,7 +1009,7 @@ public class AimScript:MonoBehaviour{
             }
     	}
     	
-    	if(RInput.GetButtonDown(RInput.gun.main.Eject)){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.Eject)){
     		if(mag_stage == HandMagStage.EMPTY && (gun_instance != null)){
     			if(gun_instance.GetComponent<GunScript>().IsMagCurrentlyEjecting()){
     				queue_drop = true;
@@ -1034,24 +1034,24 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     		}
-    		if(RInput.GetButtonDown(RInput.gun.main.PullSlide)){ // TODO have a different bind for removing rounds from a mag
+    		if(RInput.GetButtonDown(RInput.gun.Gun.PullSlide)){ // TODO have a different bind for removing rounds from a mag
     			if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
     				AddLooseBullet(true);
     				PlaySoundFromGroup(sound_bullet_grab, 0.2f);
     			}
     		}
     	}
-    	if(RInput.GetButtonDown(RInput.player.main.AimToggle)){
+    	if(RInput.GetButtonDown(RInput.player.Player.AimToggle)){
     		aim_toggle = !aim_toggle;
     	}
-    	if(RInput.GetButtonDown(RInput.player.main.SlomoToggle)){
+    	if(RInput.GetButtonDown(RInput.player.Player.SlomoToggle)){
     		if(Cheats.slomo_mode) {
     			Cheats.ToggleSlomo();
     		} else {
     			slomo_warning_duration = 5f;
     		}
     	}
-        if(RInput.GetButtonDown(RInput.player.main.FlashlightToggle)){
+        if(RInput.GetButtonDown(RInput.player.Player.FlashlightToggle)){
             if(held_flashlight != null && mag_stage == HandMagStage.EMPTY && gun_instance == null){
                 held_flashlight.GetComponent<FlashlightScript>().ToggleSwitch();
             }
@@ -1118,7 +1118,7 @@ public class AimScript:MonoBehaviour{
     		--unplayed_tapes;
     		StartTapePlay();
     	}
-    	if(RInput.GetButtonDown(RInput.player.main.TapePlayer) && tape_in_progress){
+    	if(RInput.GetButtonDown(RInput.player.Player.TapePlayer) && tape_in_progress){
     		if(!audiosource_tape_background.isPlaying){
     			StartTapePlay();
     		} else {
@@ -1168,13 +1168,13 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateHelpToggle() {
-    	if(RInput.GetButton(RInput.player.main.HelpButton)){
+    	if(RInput.GetButton(RInput.player.Player.HelpButton)){
     		help_hold_time += Time.deltaTime;
     		if(show_help && help_hold_time >= 1.0f){
     			show_advanced_help = true;
     		}
     	}
-    	if(RInput.GetButtonDown(RInput.player.main.HelpButton)){
+    	if(RInput.GetButtonDown(RInput.player.Player.HelpButton)){
     		if(!show_help){
     			show_help = true;
     			help_ever_shown = true;
@@ -1182,7 +1182,7 @@ public class AimScript:MonoBehaviour{
     		}
     		help_hold_time = 0.0f;
     	}
-    	if(RInput.GetButtonUp(RInput.player.main.HelpButton)){
+    	if(RInput.GetButtonUp(RInput.player.Player.HelpButton)){
     		if(show_help && help_hold_time < 1.0f && !just_started_help){
     			show_help = false;
     			show_advanced_help = false;
@@ -1192,10 +1192,10 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateLevelResetButton() {
-    	if(RInput.GetButtonDown(RInput.player.main.LevelReset)){
+    	if(RInput.GetButtonDown(RInput.player.Player.LevelReset)){
     		level_reset_hold = 0.01f;
     	}
-    	if(level_reset_hold != 0.0f && RInput.GetButton(RInput.player.main.LevelReset)){
+    	if(level_reset_hold != 0.0f && RInput.GetButton(RInput.player.Player.LevelReset)){
     		level_reset_hold += Time.deltaTime; 
     		dead_volume_fade = Mathf.Min(1.0f-level_reset_hold * 0.5f, dead_volume_fade);
     		dead_fade = level_reset_hold * 0.5f;
@@ -1259,7 +1259,7 @@ public class AimScript:MonoBehaviour{
     
     public void UpdateAimSpring() {
     	bool offset_aim_target = false;
-    	if((RInput.GetButton(RInput.player.main.AimHold) || aim_toggle) && !dead && (gun_instance != null)){
+    	if((RInput.GetButton(RInput.player.Player.AimHold) || aim_toggle) && !dead && (gun_instance != null)){
     		aim_spring.target_state = 1.0f;
     		RaycastHit hit = new RaycastHit();
     		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2f, out hit, 1 << 0)){
@@ -1299,12 +1299,12 @@ public class AimScript:MonoBehaviour{
     	
     	bool in_menu = optionsmenuscript.IsMenuShown();
     	if(!dead && !in_menu){
-			Vector2 mouse_input = RInput.GetAxis2D(RInput.player.main.AimDelta);
+			Vector2 mouse_input = RInput.GetAxis2D(RInput.player.Player.AimDelta);
     		rotation_x += mouse_input.x * sensitivity_x;
     		rotation_y += mouse_input.y * sensitivity_y;
     		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
     	
-    		if((RInput.GetButton(RInput.player.main.AimHold) || aim_toggle) && (gun_instance != null)){
+    		if((RInput.GetButton(RInput.player.Player.AimHold) || aim_toggle) && (gun_instance != null)){
     			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
     			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
     		} else {
@@ -1732,18 +1732,18 @@ public class AimScript:MonoBehaviour{
 
     		DrawHelpLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true);
     		if(!show_help){
-    			DrawHelpLine($"View help: Press [ {GetBoundKey(RInput.player.main.HelpButton)} ]", !help_ever_shown);
+    			DrawHelpLine($"View help: Press [ {GetBoundKey(RInput.player.Player.HelpButton)} ]", !help_ever_shown);
     		} else {
-    			DrawHelpLine($"Hide help: Press [ {GetBoundKey(RInput.player.main.HelpButton)} ]");
+    			DrawHelpLine($"Hide help: Press [ {GetBoundKey(RInput.player.Player.HelpButton)} ]");
     			DrawHelpLine("");
     			if(tape_in_progress){
-    				DrawHelpLine($"Pause/Resume tape player: [ {GetBoundKey(RInput.player.main.TapePlayer)} ]");
+    				DrawHelpLine($"Pause/Resume tape player: [ {GetBoundKey(RInput.player.Player.TapePlayer)} ]");
     			}
     			
-    			DrawHelpLine($"Look: [ {GetBoundKey(RInput.player.main.AimDelta)} ]");
-    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.main.Vertical, RInput.player.main.Horizontal)} ]");
-    			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.main.Jump)} ]");
-    			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.main.Pickup)} ]", ShouldPickUpNearby());
+    			DrawHelpLine($"Look: [ {GetBoundKey(RInput.player.Player.AimDelta)} ]");
+    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.Player.Vertical, RInput.player.Player.Horizontal)} ]");
+    			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.Player.Jump)} ]");
+    			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.Player.Pickup)} ]", ShouldPickUpNearby());
                 if(held_flashlight != null){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
@@ -1764,10 +1764,10 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     			if(gun_instance != null){
-    				DrawHelpLine($"Fire weapon: tap [ {GetBoundKey(RInput.gun.main.Trigger)} ]");
+    				DrawHelpLine($"Fire weapon: tap [ {GetBoundKey(RInput.gun.Gun.Trigger)} ]");
     				bool should_aim = (aim_spring.state < 0.5f);
-    				DrawHelpLine($"Aim weapon: hold [ {GetBoundKey(RInput.player.main.AimHold)} ]", should_aim);
-    				DrawHelpLine($"Aim weapon: tap [ {GetBoundKey(RInput.player.main.AimToggle)} ]", should_aim);
+    				DrawHelpLine($"Aim weapon: hold [ {GetBoundKey(RInput.player.Player.AimHold)} ]", should_aim);
+    				DrawHelpLine($"Aim weapon: tap [ {GetBoundKey(RInput.player.Player.AimToggle)} ]", should_aim);
     				DrawHelpLine($"Holster weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldHolsterGun());
     			} else {
     				DrawHelpLine($"Draw weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldDrawWeapon());
@@ -1775,38 +1775,38 @@ public class AimScript:MonoBehaviour{
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
 						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
-    						DrawHelpLine($"Push forward slide: tap [ {GetBoundKey(RInput.gun.main.PullSlide)} ]",  gun_script.ShouldPushSlideForward()); // TODO needs to be adjusted
+    						DrawHelpLine($"Push forward slide: tap [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]",  gun_script.ShouldPushSlideForward()); // TODO needs to be adjusted
 						} else {
-    						DrawHelpLine($"Pull back slide: hold [ {GetBoundKey(RInput.gun.main.PullSlide)} ]", gun_script.ShouldPullSlide());
+    						DrawHelpLine($"Pull back slide: hold [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]", gun_script.ShouldPullSlide());
 						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-    						DrawHelpLine($"Release slide lock: tap [ {GetBoundKey(RInput.gun.main.SlideLock)} ]", gun_script.ShouldReleaseSlideLock());
+    						DrawHelpLine($"Release slide lock: tap [ {GetBoundKey(RInput.gun.Gun.SlideLock)} ]", gun_script.ShouldReleaseSlideLock());
     					}
     				}
     				if(gun_script.HasSafety()){
-    					DrawHelpLine($"Toggle safety: tap [ {GetBoundKey(RInput.gun.main.Safety)} ]", gun_script.IsSafetyOn());
+    					DrawHelpLine($"Toggle safety: tap [ {GetBoundKey(RInput.gun.Gun.Safety)} ]", gun_script.IsSafetyOn());
     				}
     				if(gun_script.HasAutoMod()){
-    					DrawHelpLine($"Toggle full-automatic: tap [ {GetBoundKey(RInput.gun.main.FireSelector)} ]", gun_script.ShouldToggleAutoMod());
+    					DrawHelpLine($"Toggle full-automatic: tap [ {GetBoundKey(RInput.gun.Gun.FireSelector)} ]", gun_script.ShouldToggleAutoMod());
     				}
     				if(gun_script.HasHammer()){
-    					DrawHelpLine($"Pull back hammer: hold [ {GetBoundKey(RInput.gun.main.Hammer)} ]", gun_script.ShouldPullBackHammer());
+    					DrawHelpLine($"Pull back hammer: hold [ {GetBoundKey(RInput.gun.Gun.Hammer)} ]", gun_script.ShouldPullBackHammer());
     				}
     				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
-    					DrawHelpLine($"Toggle Bolt: tap [ {GetBoundKey(RInput.gun.main.BoltLock)} ]", gun_script.ShouldToggleBolt());
+    					DrawHelpLine($"Toggle Bolt: tap [ {GetBoundKey(RInput.gun.Gun.BoltLock)} ]", gun_script.ShouldToggleBolt());
     				}
     				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
-    					DrawHelpLine($"Switch holdingstyle: tap [ {GetBoundKey(RInput.gun.main.ToggleStance)} ]", gun_script.ShouldToggleStance());
+    					DrawHelpLine($"Switch holdingstyle: tap [ {GetBoundKey(RInput.gun.Gun.ToggleStance)} ]", gun_script.ShouldToggleStance());
     				}
     				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
-    						DrawHelpLine($"Open cylinder: tap [ {GetBoundKey(RInput.gun.main.SwingOutCylinder)} ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
+    						DrawHelpLine($"Open cylinder: tap [ {GetBoundKey(RInput.gun.Gun.SwingOutCylinder)} ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
     					} else {
-    						DrawHelpLine($"Close cylinder: tap [ {GetBoundKey(RInput.gun.main.CloseCylinder)} ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
-    						DrawHelpLine($"Extract casings: hold [ {GetBoundKey(RInput.gun.main.ExtractorRod)} ]", gun_script.ShouldExtractCasings());
+    						DrawHelpLine($"Close cylinder: tap [ {GetBoundKey(RInput.gun.Gun.CloseCylinder)} ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
+    						DrawHelpLine($"Extract casings: hold [ {GetBoundKey(RInput.gun.Gun.ExtractorRod)} ]", gun_script.ShouldExtractCasings());
     						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     					}
-    					DrawHelpLine($"Spin cylinder: [ {GetBoundKey(RInput.gun.main.SpinCylinder)} ]");
+    					DrawHelpLine($"Spin cylinder: [ {GetBoundKey(RInput.gun.Gun.SpinCylinder)} ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
     					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     				}
@@ -1842,16 +1842,16 @@ public class AimScript:MonoBehaviour{
     			DrawHelpLine("");
     			if(show_advanced_help){
     				DrawHelpLine("Advanced help:");
-    				DrawHelpLine($"Toggle crouch: [ {GetBoundKey(RInput.player.main.Crouch)} ]");
+    				DrawHelpLine($"Toggle crouch: [ {GetBoundKey(RInput.player.Player.Crouch)} ]");
     				if(aim_spring.state < 0.5f){
     					DrawHelpLine("Run: tap repeatedly [ w ]");
     				}
     				if(gun_instance != null){
     					if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-    						DrawHelpLine($"Decock: Hold [ {GetBoundKey(RInput.gun.main.Hammer)} ], hold [ {GetBoundKey(RInput.gun.main.Trigger)} ], release [ {GetBoundKey(RInput.gun.main.Hammer)} ]", ShouldPickUpNearby());
+    						DrawHelpLine($"Decock: Hold [ {GetBoundKey(RInput.gun.Gun.Hammer)} ], hold [ {GetBoundKey(RInput.gun.Gun.Trigger)} ], release [ {GetBoundKey(RInput.gun.Gun.Hammer)} ]", ShouldPickUpNearby());
     					}
     					if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
-    						DrawHelpLine($"Inspect chamber: hold [ {GetBoundKey(RInput.gun.main.SlideLock)} ] and then [ {GetBoundKey(RInput.gun.main.PullSlide)} ]");
+    						DrawHelpLine($"Inspect chamber: hold [ {GetBoundKey(RInput.gun.Gun.SlideLock)} ] and then [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]");
     					}
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
@@ -1860,9 +1860,9 @@ public class AimScript:MonoBehaviour{
     						}
     					}
     				}
-    				DrawHelpLine($"Reset game: hold [ {GetBoundKey(RInput.player.main.LevelReset)} ]");
+    				DrawHelpLine($"Reset game: hold [ {GetBoundKey(RInput.player.Player.LevelReset)} ]");
     			} else {
-    				DrawHelpLine($"Advanced help: Hold [ {GetBoundKey(RInput.player.main.HelpButton)} ]");
+    				DrawHelpLine($"Advanced help: Hold [ {GetBoundKey(RInput.player.Player.HelpButton)} ]");
     			}
     		}
 
@@ -1916,9 +1916,9 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.main.Horizontal), 0.0f, RInput.GetAxis(RInput.player.main.Vertical));
+    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.Player.Horizontal), 0.0f, RInput.GetAxis(RInput.player.Player.Vertical));
     	
-    	if(old_vert_axis < 0.9f && RInput.GetAxis(RInput.player.main.Vertical) >= 0.9f){
+    	if(old_vert_axis < 0.9f && RInput.GetAxis(RInput.player.Player.Vertical) >= 0.9f){
     		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
@@ -1933,7 +1933,7 @@ public class AimScript:MonoBehaviour{
     	if(bool_running){
     		directionVector.z = 1.0f;
     	}
-    	old_vert_axis = RInput.GetAxis(RInput.player.main.Vertical);
+    	old_vert_axis = RInput.GetAxis(RInput.player.Player.Vertical);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1954,7 +1954,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = transform.rotation * directionVector;
-    	inputJump = RInput.GetButton(RInput.player.main.Jump);
+    	inputJump = RInput.GetButton(RInput.player.Player.Jump);
     }
     
     // This makes the character turn to face the current movement speed per default.
@@ -1964,7 +1964,7 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.main.Horizontal), RInput.GetAxis(RInput.player.main.Vertical), 0.0f);
+    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.Player.Horizontal), RInput.GetAxis(RInput.player.Player.Vertical), 0.0f);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1992,7 +1992,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = directionVector;
-    	inputJump = RInput.GetButton(RInput.player.main.Jump);
+    	inputJump = RInput.GetButton(RInput.player.Player.Jump);
     	
     	// Set rotation to the move direction	
     	if (autoRotate && directionVector.sqrMagnitude > 0.01f) {
@@ -2268,12 +2268,12 @@ public class AimScript:MonoBehaviour{
     
     public void CharacterMotorUpdate() {
     	if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
-    		if(!GetComponent<AimScript>().IsDead() && RInput.GetButtonDown(RInput.player.main.Crouch)){
+    		if(!GetComponent<AimScript>().IsDead() && RInput.GetButtonDown(RInput.player.Player.Crouch)){
     			crouching = !crouching;
     		}
     	} else {
     		if(!GetComponent<AimScript>().IsDead()){
-    			crouching = RInput.GetButton(RInput.player.main.Crouch);
+    			crouching = RInput.GetButton(RInput.player.Player.Crouch);
     		}
     	}	
     	if(running > 0.0f){
