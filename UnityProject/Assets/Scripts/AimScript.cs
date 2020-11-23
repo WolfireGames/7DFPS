@@ -1711,11 +1711,10 @@ public class AimScript:MonoBehaviour{
         help_text_offset += 20;
     }
 
-	private string GetBoundKey(params UnityEngine.InputSystem.InputAction[] actions) { // TODO should probably cache this
+	private string GetBoundKey(UnityEngine.InputSystem.InputAction action) { // TODO should probably cache this
 		string output = "";
-		foreach (var action in actions)
-			foreach (var control in action.controls)
-				output += control.displayName;
+		foreach (var control in action.controls)
+			output += control.displayName;
 
 		return output;
 	}
