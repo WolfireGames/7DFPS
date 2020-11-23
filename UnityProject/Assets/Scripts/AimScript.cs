@@ -1741,7 +1741,7 @@ public class AimScript:MonoBehaviour{
     			}
     			
     			DrawHelpLine("Look: [ Mouse ]");
-    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.Player.Vertical, RInput.player.Player.Horizontal)} ]");
+    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.Player.Move)} ]");
     			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.Player.Jump)} ]");
     			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.Player.Pickup)} ]", ShouldPickUpNearby());
                 if(held_flashlight != null){
@@ -1916,9 +1916,10 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.Player.Horizontal), 0.0f, RInput.GetAxis(RInput.player.Player.Vertical));
+    	Vector2 input = RInput.GetAxis2D(RInput.player.Player.Move);
+    	Vector3 directionVector = new Vector3(input.x, 0.0f, input.y);
     	
-    	if(old_vert_axis < 0.9f && RInput.GetAxis(RInput.player.Player.Vertical) >= 0.9f){
+    	if(old_vert_axis < 0.9f && input.y >= 0.9f){
     		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
@@ -1933,7 +1934,7 @@ public class AimScript:MonoBehaviour{
     	if(bool_running){
     		directionVector.z = 1.0f;
     	}
-    	old_vert_axis = RInput.GetAxis(RInput.player.Player.Vertical);
+    	old_vert_axis = input.y;
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1964,7 +1965,8 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(RInput.GetAxis(RInput.player.Player.Horizontal), RInput.GetAxis(RInput.player.Player.Vertical), 0.0f);
+    	Vector2 input = RInput.GetAxis2D(RInput.player.Player.Move);
+    	Vector3 directionVector = new Vector3(input.x, 0.0f, input.y);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
