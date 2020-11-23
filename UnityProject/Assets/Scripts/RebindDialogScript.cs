@@ -8,14 +8,16 @@ public class RebindDialogScript : MonoBehaviour {
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
     private string new_binding;
     private InputAction input_action;
+    private InputBinding binding;
     public Text text;
 
     public Button cancel_button;
     public Button confirm_button;
 
-    public void Rebind(InputAction input_action) {
-        text.text = "Press the key you want to rebind to.\nCancel with \"ESC\"";
+    public void Rebind(InputAction input_action, InputBinding binding) {
+        text.text = $"Press the key you want to rebind {input_action.name} to.\nCancel with \"ESC\"";
         this.input_action = input_action;
+        this.binding = binding;
         SetButtons(false);
         SetWindow(true);
 
@@ -29,8 +31,11 @@ public class RebindDialogScript : MonoBehaviour {
     }
 
     public void Confirm() {
-        input_action.ApplyBindingOverride(new_binding);
-        //SetContent(label.text, input_action.GetBindingDisplayString());
+        if(binding.isPartOfComposite)
+            input_action.ApplyBindingOverride(input_action.bindings.IndexOf((x) => x.name == binding.name), new_binding);
+        else
+            input_action.ApplyBindingOverride(new_binding);
+
         RInput.SaveOverrides();
         input_action.Enable();
         SetWindow(false);

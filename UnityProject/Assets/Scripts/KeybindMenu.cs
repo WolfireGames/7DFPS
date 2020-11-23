@@ -13,15 +13,19 @@ public class KeybindMenu : MonoBehaviour {
 
     private void Awake() {
         foreach (InputAction action in RInput.player) {
-            AddKeybindElement(action);
+            foreach (var item in action.bindings) {
+                AddKeybindElement(action, item);
+            }
         }
 
         foreach (InputAction action in RInput.gun) {
-            AddKeybindElement(action);
+            foreach (var item in action.bindings) {
+                AddKeybindElement(action, item);
+            }
         }
     }
 
-    private void AddKeybindElement(InputAction action) {
+    private void AddKeybindElement(InputAction action, InputBinding binding) {
         if(last_label != action.actionMap.name) {
             var text = Instantiate(label_template, container);
             text.text = action.actionMap.name;
@@ -32,6 +36,7 @@ public class KeybindMenu : MonoBehaviour {
 
         KeybindElement element = Instantiate(template, container);
         element.input_action = action;
+        element.binding = binding;
         element.rebind_dialog_script = rebind_dialog_script;
         element.gameObject.SetActive(true);
     }

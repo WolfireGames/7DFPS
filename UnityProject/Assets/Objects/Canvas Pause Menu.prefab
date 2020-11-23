@@ -6606,10 +6606,10 @@ Canvas:
   m_GameObject: {fileID: 2866556412233748978}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 5228456363570771587}
   m_PlaneDistance: 100
-  m_PixelPerfect: 1
+  m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -6948,7 +6948,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2866556412434144598
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18639,9 +18639,19 @@ MonoBehaviour:
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
+  binding:
+    m_Name: 
+    m_Id: 
+    m_Path: 
+    m_Interactions: 
+    m_Processors: 
+    m_Groups: 
+    m_Action: 
+    m_Flags: 0
   rebind_dialog_script: {fileID: 0}
   label: {fileID: 2563695177494565910}
   current_binding: {fileID: 8823834467910204052}
+  button: {fileID: 1062207573351935088}
 --- !u!1 &6661716584843779752
 GameObject:
   m_ObjectHideFlags: 0
