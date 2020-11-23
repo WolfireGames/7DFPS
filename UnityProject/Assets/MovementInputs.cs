@@ -337,7 +337,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
             ""id"": ""e6489541-2696-4e39-80be-570f392320fb"",
             ""actions"": [
                 {
-                    ""name"": ""Inventory1"",
+                    ""name"": ""Inventory 1"",
                     ""type"": ""Button"",
                     ""id"": ""ae36eb54-050f-48b7-ac1f-4ca122695f41"",
                     ""expectedControlType"": ""Button"",
@@ -345,7 +345,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory2"",
+                    ""name"": ""Inventory 2"",
                     ""type"": ""Button"",
                     ""id"": ""f1160d00-2952-412d-88a5-93b43640beac"",
                     ""expectedControlType"": ""Button"",
@@ -353,7 +353,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory3"",
+                    ""name"": ""Inventory 3"",
                     ""type"": ""Button"",
                     ""id"": ""e118eacc-b617-4bdf-954c-64715be11ee3"",
                     ""expectedControlType"": ""Button"",
@@ -361,7 +361,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory4"",
+                    ""name"": ""Inventory 4"",
                     ""type"": ""Button"",
                     ""id"": ""2836aab7-f8d2-4605-bb5e-32611a524c62"",
                     ""expectedControlType"": ""Button"",
@@ -369,7 +369,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory5"",
+                    ""name"": ""Inventory 5"",
                     ""type"": ""Button"",
                     ""id"": ""dfee9fb9-cde2-4cd6-9aba-d2ac4eaab6e5"",
                     ""expectedControlType"": ""Button"",
@@ -377,7 +377,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory6"",
+                    ""name"": ""Inventory 6"",
                     ""type"": ""Button"",
                     ""id"": ""5538aef0-9c2f-42ad-b187-8855f4be86ea"",
                     ""expectedControlType"": ""Button"",
@@ -385,7 +385,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory7"",
+                    ""name"": ""Inventory 7"",
                     ""type"": ""Button"",
                     ""id"": ""0b93472f-3fff-4281-97c8-45cb12ed0f40"",
                     ""expectedControlType"": ""Button"",
@@ -393,7 +393,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory8"",
+                    ""name"": ""Inventory 8"",
                     ""type"": ""Button"",
                     ""id"": ""db188fbd-acbe-45e7-9189-20b67d2bec97"",
                     ""expectedControlType"": ""Button"",
@@ -401,7 +401,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory9"",
+                    ""name"": ""Inventory 9"",
                     ""type"": ""Button"",
                     ""id"": ""d78bc6a9-a8bf-40d4-a47e-b63487a8171e"",
                     ""expectedControlType"": ""Button"",
@@ -409,7 +409,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""Inventory10"",
+                    ""name"": ""Inventory 10"",
                     ""type"": ""Button"",
                     ""id"": ""0facd9b8-9e49-47ec-8972-f7d88b8b7d75"",
                     ""expectedControlType"": ""Button"",
@@ -433,7 +433,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory1"",
+                    ""action"": ""Inventory 1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -444,7 +444,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory2"",
+                    ""action"": ""Inventory 2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -455,7 +455,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory3"",
+                    ""action"": ""Inventory 3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -466,7 +466,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory4"",
+                    ""action"": ""Inventory 4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -477,7 +477,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory5"",
+                    ""action"": ""Inventory 5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -488,7 +488,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory6"",
+                    ""action"": ""Inventory 6"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -499,7 +499,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory7"",
+                    ""action"": ""Inventory 7"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -510,7 +510,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory8"",
+                    ""action"": ""Inventory 8"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -521,7 +521,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory9"",
+                    ""action"": ""Inventory 9"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -532,7 +532,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Inventory10"",
+                    ""action"": ""Inventory 10"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -597,16 +597,16 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         m_Player_Drop = m_Player.FindAction("Drop", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
-        m_Inventory_Inventory1 = m_Inventory.FindAction("Inventory1", throwIfNotFound: true);
-        m_Inventory_Inventory2 = m_Inventory.FindAction("Inventory2", throwIfNotFound: true);
-        m_Inventory_Inventory3 = m_Inventory.FindAction("Inventory3", throwIfNotFound: true);
-        m_Inventory_Inventory4 = m_Inventory.FindAction("Inventory4", throwIfNotFound: true);
-        m_Inventory_Inventory5 = m_Inventory.FindAction("Inventory5", throwIfNotFound: true);
-        m_Inventory_Inventory6 = m_Inventory.FindAction("Inventory6", throwIfNotFound: true);
-        m_Inventory_Inventory7 = m_Inventory.FindAction("Inventory7", throwIfNotFound: true);
-        m_Inventory_Inventory8 = m_Inventory.FindAction("Inventory8", throwIfNotFound: true);
-        m_Inventory_Inventory9 = m_Inventory.FindAction("Inventory9", throwIfNotFound: true);
-        m_Inventory_Inventory10 = m_Inventory.FindAction("Inventory10", throwIfNotFound: true);
+        m_Inventory_Inventory1 = m_Inventory.FindAction("Inventory 1", throwIfNotFound: true);
+        m_Inventory_Inventory2 = m_Inventory.FindAction("Inventory 2", throwIfNotFound: true);
+        m_Inventory_Inventory3 = m_Inventory.FindAction("Inventory 3", throwIfNotFound: true);
+        m_Inventory_Inventory4 = m_Inventory.FindAction("Inventory 4", throwIfNotFound: true);
+        m_Inventory_Inventory5 = m_Inventory.FindAction("Inventory 5", throwIfNotFound: true);
+        m_Inventory_Inventory6 = m_Inventory.FindAction("Inventory 6", throwIfNotFound: true);
+        m_Inventory_Inventory7 = m_Inventory.FindAction("Inventory 7", throwIfNotFound: true);
+        m_Inventory_Inventory8 = m_Inventory.FindAction("Inventory 8", throwIfNotFound: true);
+        m_Inventory_Inventory9 = m_Inventory.FindAction("Inventory 9", throwIfNotFound: true);
+        m_Inventory_Inventory10 = m_Inventory.FindAction("Inventory 10", throwIfNotFound: true);
         m_Inventory_Holster = m_Inventory.FindAction("Holster", throwIfNotFound: true);
         // Magazine
         m_Magazine = asset.FindActionMap("Magazine", throwIfNotFound: true);

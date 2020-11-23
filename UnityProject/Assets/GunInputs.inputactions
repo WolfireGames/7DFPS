@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SlideLock",
+                    "name": "Slide Lock",
                     "type": "Button",
                     "id": "46921d76-33df-4293-a1ec-9c393cc3bdb2",
                     "expectedControlType": "",
@@ -38,7 +38,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "FireSelector",
+                    "name": "Fire Selector",
                     "type": "Button",
                     "id": "7954041c-84b9-4619-a054-921b355af3f6",
                     "expectedControlType": "",
@@ -46,7 +46,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "PullSlide",
+                    "name": "Pull Slide",
                     "type": "Button",
                     "id": "00ca8563-88b4-4e22-9af0-554bd06b0819",
                     "expectedControlType": "",
@@ -54,7 +54,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SwingOutCylinder",
+                    "name": "Swing Out Cylinder",
                     "type": "Button",
                     "id": "7effeeeb-a628-424c-9233-898d68c7965d",
                     "expectedControlType": "Button",
@@ -62,7 +62,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "CloseCylinder",
+                    "name": "Close Cylinder",
                     "type": "Button",
                     "id": "d1030576-ddb8-48a6-9dce-4e39445bc980",
                     "expectedControlType": "Button",
@@ -70,7 +70,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ExtractorRod",
+                    "name": "Extractor Rod",
                     "type": "Button",
                     "id": "e01e1e85-0e34-4f91-ae3e-bec813a10f0f",
                     "expectedControlType": "Button",
@@ -78,7 +78,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SpinCylinder",
+                    "name": "Spin Cylinder",
                     "type": "Value",
                     "id": "049796db-3e74-4709-8825-d24e1df81950",
                     "expectedControlType": "Axis",
@@ -86,7 +86,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ToggleStance",
+                    "name": "Toggle Stance",
                     "type": "Button",
                     "id": "6d35e334-2108-49d0-ab5a-8e16368a0655",
                     "expectedControlType": "Button",
@@ -94,7 +94,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "BoltLock",
+                    "name": "Bolt Lock",
                     "type": "Button",
                     "id": "10830232-f342-42d3-a619-85c34e1f12cd",
                     "expectedControlType": "Button",
@@ -140,7 +140,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "SlideLock",
+                    "action": "Slide Lock",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -162,7 +162,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "FireSelector",
+                    "action": "Fire Selector",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -173,7 +173,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "PullSlide",
+                    "action": "Pull Slide",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -184,7 +184,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "SwingOutCylinder",
+                    "action": "Swing Out Cylinder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -195,7 +195,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "CloseCylinder",
+                    "action": "Close Cylinder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -206,7 +206,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "ExtractorRod",
+                    "action": "Extractor Rod",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -217,7 +217,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "SpinCylinder",
+                    "action": "Spin Cylinder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -228,7 +228,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "ToggleStance",
+                    "action": "Toggle Stance",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -239,7 +239,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse & Keyboard",
-                    "action": "BoltLock",
+                    "action": "Bolt Lock",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

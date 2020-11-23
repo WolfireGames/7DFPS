@@ -35,7 +35,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""SlideLock"",
+                    ""name"": ""Slide Lock"",
                     ""type"": ""Button"",
                     ""id"": ""46921d76-33df-4293-a1ec-9c393cc3bdb2"",
                     ""expectedControlType"": """",
@@ -51,7 +51,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""FireSelector"",
+                    ""name"": ""Fire Selector"",
                     ""type"": ""Button"",
                     ""id"": ""7954041c-84b9-4619-a054-921b355af3f6"",
                     ""expectedControlType"": """",
@@ -59,7 +59,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""PullSlide"",
+                    ""name"": ""Pull Slide"",
                     ""type"": ""Button"",
                     ""id"": ""00ca8563-88b4-4e22-9af0-554bd06b0819"",
                     ""expectedControlType"": """",
@@ -67,7 +67,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""SwingOutCylinder"",
+                    ""name"": ""Swing Out Cylinder"",
                     ""type"": ""Button"",
                     ""id"": ""7effeeeb-a628-424c-9233-898d68c7965d"",
                     ""expectedControlType"": ""Button"",
@@ -75,7 +75,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""CloseCylinder"",
+                    ""name"": ""Close Cylinder"",
                     ""type"": ""Button"",
                     ""id"": ""d1030576-ddb8-48a6-9dce-4e39445bc980"",
                     ""expectedControlType"": ""Button"",
@@ -83,7 +83,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""ExtractorRod"",
+                    ""name"": ""Extractor Rod"",
                     ""type"": ""Button"",
                     ""id"": ""e01e1e85-0e34-4f91-ae3e-bec813a10f0f"",
                     ""expectedControlType"": ""Button"",
@@ -91,7 +91,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""SpinCylinder"",
+                    ""name"": ""Spin Cylinder"",
                     ""type"": ""Value"",
                     ""id"": ""049796db-3e74-4709-8825-d24e1df81950"",
                     ""expectedControlType"": ""Axis"",
@@ -99,7 +99,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""ToggleStance"",
+                    ""name"": ""Toggle Stance"",
                     ""type"": ""Button"",
                     ""id"": ""6d35e334-2108-49d0-ab5a-8e16368a0655"",
                     ""expectedControlType"": ""Button"",
@@ -107,7 +107,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""BoltLock"",
+                    ""name"": ""Bolt Lock"",
                     ""type"": ""Button"",
                     ""id"": ""10830232-f342-42d3-a619-85c34e1f12cd"",
                     ""expectedControlType"": ""Button"",
@@ -153,7 +153,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""SlideLock"",
+                    ""action"": ""Slide Lock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -175,7 +175,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""FireSelector"",
+                    ""action"": ""Fire Selector"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -186,7 +186,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""PullSlide"",
+                    ""action"": ""Pull Slide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -197,7 +197,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""SwingOutCylinder"",
+                    ""action"": ""Swing Out Cylinder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -208,7 +208,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""CloseCylinder"",
+                    ""action"": ""Close Cylinder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -219,7 +219,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""ExtractorRod"",
+                    ""action"": ""Extractor Rod"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -230,7 +230,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""SpinCylinder"",
+                    ""action"": ""Spin Cylinder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -241,7 +241,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""ToggleStance"",
+                    ""action"": ""Toggle Stance"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -252,7 +252,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
-                    ""action"": ""BoltLock"",
+                    ""action"": ""Bolt Lock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -293,16 +293,16 @@ public class @GunInputs : IInputActionCollection, IDisposable
         m_Gun = asset.FindActionMap("Gun", throwIfNotFound: true);
         m_Gun_Trigger = m_Gun.FindAction("Trigger", throwIfNotFound: true);
         m_Gun_Hammer = m_Gun.FindAction("Hammer", throwIfNotFound: true);
-        m_Gun_SlideLock = m_Gun.FindAction("SlideLock", throwIfNotFound: true);
+        m_Gun_SlideLock = m_Gun.FindAction("Slide Lock", throwIfNotFound: true);
         m_Gun_Safety = m_Gun.FindAction("Safety", throwIfNotFound: true);
-        m_Gun_FireSelector = m_Gun.FindAction("FireSelector", throwIfNotFound: true);
-        m_Gun_PullSlide = m_Gun.FindAction("PullSlide", throwIfNotFound: true);
-        m_Gun_SwingOutCylinder = m_Gun.FindAction("SwingOutCylinder", throwIfNotFound: true);
-        m_Gun_CloseCylinder = m_Gun.FindAction("CloseCylinder", throwIfNotFound: true);
-        m_Gun_ExtractorRod = m_Gun.FindAction("ExtractorRod", throwIfNotFound: true);
-        m_Gun_SpinCylinder = m_Gun.FindAction("SpinCylinder", throwIfNotFound: true);
-        m_Gun_ToggleStance = m_Gun.FindAction("ToggleStance", throwIfNotFound: true);
-        m_Gun_BoltLock = m_Gun.FindAction("BoltLock", throwIfNotFound: true);
+        m_Gun_FireSelector = m_Gun.FindAction("Fire Selector", throwIfNotFound: true);
+        m_Gun_PullSlide = m_Gun.FindAction("Pull Slide", throwIfNotFound: true);
+        m_Gun_SwingOutCylinder = m_Gun.FindAction("Swing Out Cylinder", throwIfNotFound: true);
+        m_Gun_CloseCylinder = m_Gun.FindAction("Close Cylinder", throwIfNotFound: true);
+        m_Gun_ExtractorRod = m_Gun.FindAction("Extractor Rod", throwIfNotFound: true);
+        m_Gun_SpinCylinder = m_Gun.FindAction("Spin Cylinder", throwIfNotFound: true);
+        m_Gun_ToggleStance = m_Gun.FindAction("Toggle Stance", throwIfNotFound: true);
+        m_Gun_BoltLock = m_Gun.FindAction("Bolt Lock", throwIfNotFound: true);
         m_Gun_Eject = m_Gun.FindAction("Eject", throwIfNotFound: true);
     }
 
