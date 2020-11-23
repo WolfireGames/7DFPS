@@ -12,17 +12,22 @@ public class KeybindMenu : MonoBehaviour {
     private string last_label = "";
 
     private void Awake() {
-        foreach (InputAction action in RInput.player) {
-            foreach (var item in action.bindings) {
-                AddKeybindElement(action, item);
-            }
-        }
+        AddKeybindElements(RInput.player);
+        AddKeybindElements(RInput.gun);
+    }
 
-        foreach (InputAction action in RInput.gun) {
+    public void AddKeybindElements(IEnumerable<InputAction> actions) {
+        foreach (InputAction action in actions) {
             foreach (var item in action.bindings) {
-                AddKeybindElement(action, item);
+                if(IsRebindableAction(action, item)) {
+                    AddKeybindElement(action, item);
+                }
             }
         }
+    }
+
+    private bool IsRebindableAction(InputAction action, InputBinding binding) {
+        return binding.isComposite || binding.isPartOfComposite || action.expectedControlType == "Button";
     }
 
     public void ResetKeybinds() {
