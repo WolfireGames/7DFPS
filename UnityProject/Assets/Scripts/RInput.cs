@@ -74,6 +74,13 @@ public class RInput : MonoBehaviour {
         actions_canceled.Clear();
     }
 
+    public static void ResetKeybinds() {
+        Load(player.asset, new Overrides());
+        Load(gun.asset, new Overrides());
+
+        SaveOverrides();
+    }
+
     public static void SaveOverrides() {
         PlayerPrefs.SetString("player_input", Save(player.asset).ToJSON());
         PlayerPrefs.SetString("gun_input", Save(gun.asset).ToJSON());
@@ -147,6 +154,7 @@ public class RInput : MonoBehaviour {
     // Modified from https://forum.unity.com/threads/saving-user-bindings.805722/#post-5384310 
     private static void Load(InputActionAsset asset, Overrides overrides) {
         foreach (var map in asset.actionMaps) {
+            map.RemoveAllBindingOverrides();
             var bindings = map.bindings;
             for (var i = 0; i < bindings.Count; ++i) {
                 if (overrides.TryGetValue(bindings[i].id, out var overridePath)) {

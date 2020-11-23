@@ -25,6 +25,14 @@ public class KeybindMenu : MonoBehaviour {
         }
     }
 
+    public void ResetKeybinds() {
+        RInput.ResetKeybinds();
+
+        // Refresh window
+        gameObject.SetActive(false);
+        gameObject.SetActive(true);
+    }
+
     private void AddKeybindElement(InputAction action, InputBinding binding) {
         if(last_label != action.actionMap.name) {
             var text = Instantiate(label_template, container);
