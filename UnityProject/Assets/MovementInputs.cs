@@ -560,6 +560,22 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Remove Round"",
+                    ""type"": ""Button"",
+                    ""id"": ""755a0173-3d3a-413e-9c2c-78fcd72908aa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Insert Magazine"",
+                    ""type"": ""Button"",
+                    ""id"": ""8038eef4-d9e6-4209-b520-2ede50bbb091"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -571,6 +587,28 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Insert Round"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7362d795-81e4-4e8e-b8b2-608736babf60"",
+                    ""path"": ""<Keyboard>/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Insert Magazine"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c47934ab-4e60-4121-8c51-9fcaed484c33"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Remove Round"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -611,6 +649,8 @@ public class @MovementInputs : IInputActionCollection, IDisposable
         // Magazine
         m_Magazine = asset.FindActionMap("Magazine", throwIfNotFound: true);
         m_Magazine_InsertRound = m_Magazine.FindAction("Insert Round", throwIfNotFound: true);
+        m_Magazine_RemoveRound = m_Magazine.FindAction("Remove Round", throwIfNotFound: true);
+        m_Magazine_InsertMagazine = m_Magazine.FindAction("Insert Magazine", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -911,11 +951,15 @@ public class @MovementInputs : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Magazine;
     private IMagazineActions m_MagazineActionsCallbackInterface;
     private readonly InputAction m_Magazine_InsertRound;
+    private readonly InputAction m_Magazine_RemoveRound;
+    private readonly InputAction m_Magazine_InsertMagazine;
     public struct MagazineActions
     {
         private @MovementInputs m_Wrapper;
         public MagazineActions(@MovementInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @InsertRound => m_Wrapper.m_Magazine_InsertRound;
+        public InputAction @RemoveRound => m_Wrapper.m_Magazine_RemoveRound;
+        public InputAction @InsertMagazine => m_Wrapper.m_Magazine_InsertMagazine;
         public InputActionMap Get() { return m_Wrapper.m_Magazine; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -928,6 +972,12 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 @InsertRound.started -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertRound;
                 @InsertRound.performed -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertRound;
                 @InsertRound.canceled -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertRound;
+                @RemoveRound.started -= m_Wrapper.m_MagazineActionsCallbackInterface.OnRemoveRound;
+                @RemoveRound.performed -= m_Wrapper.m_MagazineActionsCallbackInterface.OnRemoveRound;
+                @RemoveRound.canceled -= m_Wrapper.m_MagazineActionsCallbackInterface.OnRemoveRound;
+                @InsertMagazine.started -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertMagazine;
+                @InsertMagazine.performed -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertMagazine;
+                @InsertMagazine.canceled -= m_Wrapper.m_MagazineActionsCallbackInterface.OnInsertMagazine;
             }
             m_Wrapper.m_MagazineActionsCallbackInterface = instance;
             if (instance != null)
@@ -935,6 +985,12 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 @InsertRound.started += instance.OnInsertRound;
                 @InsertRound.performed += instance.OnInsertRound;
                 @InsertRound.canceled += instance.OnInsertRound;
+                @RemoveRound.started += instance.OnRemoveRound;
+                @RemoveRound.performed += instance.OnRemoveRound;
+                @RemoveRound.canceled += instance.OnRemoveRound;
+                @InsertMagazine.started += instance.OnInsertMagazine;
+                @InsertMagazine.performed += instance.OnInsertMagazine;
+                @InsertMagazine.canceled += instance.OnInsertMagazine;
             }
         }
     }
@@ -973,5 +1029,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
     public interface IMagazineActions
     {
         void OnInsertRound(InputAction.CallbackContext context);
+        void OnRemoveRound(InputAction.CallbackContext context);
+        void OnInsertMagazine(InputAction.CallbackContext context);
     }
 }

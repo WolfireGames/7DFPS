@@ -107,6 +107,14 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
+                    ""name"": ""Insert Round"",
+                    ""type"": ""Button"",
+                    ""id"": ""73837fd4-67b8-4c6d-a914-a5344f0cb47a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
                     ""name"": ""Bolt Lock"",
                     ""type"": ""Button"",
                     ""id"": ""10830232-f342-42d3-a619-85c34e1f12cd"",
@@ -266,6 +274,17 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""action"": ""Eject"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ada938ba-9a57-40f3-89e7-7b757b31fc72"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse & Keyboard"",
+                    ""action"": ""Insert Round"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -302,6 +321,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
         m_Gun_ExtractorRod = m_Gun.FindAction("Extractor Rod", throwIfNotFound: true);
         m_Gun_SpinCylinder = m_Gun.FindAction("Spin Cylinder", throwIfNotFound: true);
         m_Gun_ToggleStance = m_Gun.FindAction("Toggle Stance", throwIfNotFound: true);
+        m_Gun_InsertRound = m_Gun.FindAction("Insert Round", throwIfNotFound: true);
         m_Gun_BoltLock = m_Gun.FindAction("Bolt Lock", throwIfNotFound: true);
         m_Gun_Eject = m_Gun.FindAction("Eject", throwIfNotFound: true);
     }
@@ -364,6 +384,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
     private readonly InputAction m_Gun_ExtractorRod;
     private readonly InputAction m_Gun_SpinCylinder;
     private readonly InputAction m_Gun_ToggleStance;
+    private readonly InputAction m_Gun_InsertRound;
     private readonly InputAction m_Gun_BoltLock;
     private readonly InputAction m_Gun_Eject;
     public struct GunActions
@@ -381,6 +402,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
         public InputAction @ExtractorRod => m_Wrapper.m_Gun_ExtractorRod;
         public InputAction @SpinCylinder => m_Wrapper.m_Gun_SpinCylinder;
         public InputAction @ToggleStance => m_Wrapper.m_Gun_ToggleStance;
+        public InputAction @InsertRound => m_Wrapper.m_Gun_InsertRound;
         public InputAction @BoltLock => m_Wrapper.m_Gun_BoltLock;
         public InputAction @Eject => m_Wrapper.m_Gun_Eject;
         public InputActionMap Get() { return m_Wrapper.m_Gun; }
@@ -425,6 +447,9 @@ public class @GunInputs : IInputActionCollection, IDisposable
                 @ToggleStance.started -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
                 @ToggleStance.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
                 @ToggleStance.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnToggleStance;
+                @InsertRound.started -= m_Wrapper.m_GunActionsCallbackInterface.OnInsertRound;
+                @InsertRound.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnInsertRound;
+                @InsertRound.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnInsertRound;
                 @BoltLock.started -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
                 @BoltLock.performed -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
                 @BoltLock.canceled -= m_Wrapper.m_GunActionsCallbackInterface.OnBoltLock;
@@ -468,6 +493,9 @@ public class @GunInputs : IInputActionCollection, IDisposable
                 @ToggleStance.started += instance.OnToggleStance;
                 @ToggleStance.performed += instance.OnToggleStance;
                 @ToggleStance.canceled += instance.OnToggleStance;
+                @InsertRound.started += instance.OnInsertRound;
+                @InsertRound.performed += instance.OnInsertRound;
+                @InsertRound.canceled += instance.OnInsertRound;
                 @BoltLock.started += instance.OnBoltLock;
                 @BoltLock.performed += instance.OnBoltLock;
                 @BoltLock.canceled += instance.OnBoltLock;
@@ -500,6 +528,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
         void OnExtractorRod(InputAction.CallbackContext context);
         void OnSpinCylinder(InputAction.CallbackContext context);
         void OnToggleStance(InputAction.CallbackContext context);
+        void OnInsertRound(InputAction.CallbackContext context);
         void OnBoltLock(InputAction.CallbackContext context);
         void OnEject(InputAction.CallbackContext context);
     }

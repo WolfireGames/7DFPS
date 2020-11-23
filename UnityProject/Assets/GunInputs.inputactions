@@ -94,6 +94,14 @@
                     "interactions": ""
                 },
                 {
+                    "name": "Insert Round",
+                    "type": "Button",
+                    "id": "73837fd4-67b8-4c6d-a914-a5344f0cb47a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
                     "name": "Bolt Lock",
                     "type": "Button",
                     "id": "10830232-f342-42d3-a619-85c34e1f12cd",
@@ -251,6 +259,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Eject",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ada938ba-9a57-40f3-89e7-7b757b31fc72",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse & Keyboard",
+                    "action": "Insert Round",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

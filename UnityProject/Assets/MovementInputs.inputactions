@@ -547,6 +547,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "Remove Round",
+                    "type": "Button",
+                    "id": "755a0173-3d3a-413e-9c2c-78fcd72908aa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Insert Magazine",
+                    "type": "Button",
+                    "id": "8038eef4-d9e6-4209-b520-2ede50bbb091",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -558,6 +574,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Insert Round",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7362d795-81e4-4e8e-b8b2-608736babf60",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Insert Magazine",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c47934ab-4e60-4121-8c51-9fcaed484c33",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Remove Round",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

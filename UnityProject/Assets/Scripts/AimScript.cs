@@ -823,7 +823,7 @@ public class AimScript:MonoBehaviour{
     	if(RInput.GetButtonDown(RInput.gun.Gun.Safety)){
     		gun_script.ToggleSafety();			
     	}	
-    	if(RInput.GetButtonDown(RInput.gun.Gun.Safety)){ // TODO have a different bind for the auto mod
+    	if(RInput.GetButtonDown(RInput.gun.Gun.FireSelector)){
     		gun_script.ToggleAutoMod();			
     	}
     	if(RInput.GetButtonDown(RInput.gun.Gun.SwingOutCylinder)){
@@ -847,7 +847,7 @@ public class AimScript:MonoBehaviour{
     	if(RInput.GetAxis(RInput.gun.Gun.SpinCylinder) != 0.0f){
     		gun_script.RotateCylinder((int)RInput.GetAxis(RInput.gun.Gun.SpinCylinder));
     	}		
-    	if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){ // TODO have a different bind for inserting rounds in the gun and the magazine
+    	if(RInput.GetButtonDown(RInput.gun.Gun.InsertRound)){
     		if(loose_bullets.Count > 0){
     			if(GetGunScript().AddRoundToCylinder()){
     				GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -946,7 +946,7 @@ public class AimScript:MonoBehaviour{
     		hold_pose_spring.vel = 0.0f;
     		hold_pose_spring.target_state = 1.0f;
     	}
-    	if((RInput.GetButtonDown(RInput.player.Magazine.InsertRound)/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){ // TODO have a different bind for inserting a magazine
+    	if((RInput.GetButtonDown(RInput.player.Magazine.InsertMagazine)/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
     		if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
     			hold_pose_spring.target_state = 0.0f;
     			mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -1034,7 +1034,7 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     		}
-    		if(RInput.GetButtonDown(RInput.gun.Gun.PullSlide)){ // TODO have a different bind for removing rounds from a mag
+    		if(RInput.GetButtonDown(RInput.player.Magazine.RemoveRound)){
     			if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
     				AddLooseBullet(true);
     				PlaySoundFromGroup(sound_bullet_grab, 0.2f);
@@ -1804,39 +1804,39 @@ public class AimScript:MonoBehaviour{
     					} else {
     						DrawHelpLine($"Close cylinder: tap [ {GetBoundKey(RInput.gun.Gun.CloseCylinder)} ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
     						DrawHelpLine($"Extract casings: hold [ {GetBoundKey(RInput.gun.Gun.ExtractorRod)} ]", gun_script.ShouldExtractCasings());
-    						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    						DrawHelpLine($"Insert bullet: tap [ {GetBoundKey(RInput.gun.Gun.InsertRound)} ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     					}
     					DrawHelpLine($"Spin cylinder: [ {GetBoundKey(RInput.gun.Gun.SpinCylinder)} ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
-    					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    					DrawHelpLine($"Insert bullet: tap [ {GetBoundKey(RInput.gun.Gun.InsertRound)} ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     				}
     				if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
-    						DrawHelpLine("Insert magazine: tap [ z ]", should_insert_mag);
+    						DrawHelpLine($"Insert magazine: tap [ {GetBoundKey(RInput.player.Magazine.InsertMagazine)} ]", should_insert_mag);
     					} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
-    						DrawHelpLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag());
+    						DrawHelpLine($"Eject magazine: tap [ {GetBoundKey(RInput.gun.Gun.Eject)} ]", gun_script.ShouldEjectMag());
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true);
+    							DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true); // TODO this doesn't reflect the right button
     						}
     					}
     				}
     			} else {
     				if(CanLoadBulletsInMag()){
-    					DrawHelpLine("Insert bullet in magazine: tap [ z ]", true);
+    					DrawHelpLine($"Insert bullet in magazine: tap [ {GetBoundKey(RInput.player.Magazine.InsertRound)} ]", true);
     				}
     				if(CanRemoveBulletFromMag()){
-    					DrawHelpLine("Remove bullet from magazine: tap [ r ]");
+    					DrawHelpLine($"Remove bullet from magazine: tap [ {GetBoundKey(RInput.player.Magazine.RemoveRound)} ]");
     				}
     			}
     			if(mag_stage == HandMagStage.HOLD){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory());
+    					DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory()); // TODO this doesn't reflect the right button
     				}
-    				DrawHelpLine("Drop magazine: tap [ e ]");
+    				DrawHelpLine($"Drop magazine: tap [ {GetBoundKey(RInput.player.Player.Drop)} ]");
     			}
     			
     			DrawHelpLine("");
