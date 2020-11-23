@@ -1740,7 +1740,7 @@ public class AimScript:MonoBehaviour{
     				DrawHelpLine($"Pause/Resume tape player: [ {GetBoundKey(RInput.player.Player.TapePlayer)} ]");
     			}
     			
-    			DrawHelpLine($"Look: [ {GetBoundKey(RInput.player.Player.AimDelta)} ]");
+    			DrawHelpLine("Look: [ Mouse ]");
     			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.Player.Vertical, RInput.player.Player.Horizontal)} ]");
     			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.Player.Jump)} ]");
     			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.Player.Pickup)} ]", ShouldPickUpNearby());
