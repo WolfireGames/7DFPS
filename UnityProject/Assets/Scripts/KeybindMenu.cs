@@ -23,7 +23,10 @@ public class KeybindMenu : MonoBehaviour {
 
     private void AddKeybindElement(InputAction action) {
         if(last_label != action.actionMap.name) {
-            Instantiate(label_template, container).text = action.actionMap.name;
+            var text = Instantiate(label_template, container);
+            text.text = action.actionMap.name;
+            text.gameObject.SetActive(true);
+
             last_label = action.actionMap.name;
         }
 
