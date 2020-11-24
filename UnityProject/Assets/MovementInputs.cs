@@ -279,9 +279,9 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Down"",
-                    ""id"": ""3bc1283b-b0c0-4f4b-ad1f-da65a3096d5c"",
-                    ""path"": ""<Keyboard>/s"",
+                    ""name"": ""Left"",
+                    ""id"": ""7a859548-81cc-4d0c-9042-fc0b68a38286"",
+                    ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -290,9 +290,9 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Left"",
-                    ""id"": ""7a859548-81cc-4d0c-9042-fc0b68a38286"",
-                    ""path"": ""<Keyboard>/a"",
+                    ""name"": ""Down"",
+                    ""id"": ""3bc1283b-b0c0-4f4b-ad1f-da65a3096d5c"",
+                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
