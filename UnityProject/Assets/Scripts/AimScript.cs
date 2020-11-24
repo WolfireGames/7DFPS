@@ -306,6 +306,19 @@ public class AimScript:MonoBehaviour{
 
     WeaponSlot[] weapon_slots = new WeaponSlot[10];
     
+    private readonly UnityEngine.InputSystem.InputAction[] inventory_input_actions = new UnityEngine.InputSystem.InputAction[] {
+    	RInput.player.Inventory.Inventory1,
+    	RInput.player.Inventory.Inventory2,
+    	RInput.player.Inventory.Inventory3,
+    	RInput.player.Inventory.Inventory4,
+    	RInput.player.Inventory.Inventory5,
+    	RInput.player.Inventory.Inventory6,
+    	RInput.player.Inventory.Inventory7,
+    	RInput.player.Inventory.Inventory8,
+    	RInput.player.Inventory.Inventory9,
+    	RInput.player.Inventory.Inventory10,
+    };
+
     // Player state
     float health = 1.0f;
     bool dying = false;
@@ -1711,6 +1724,12 @@ public class AimScript:MonoBehaviour{
         help_text_offset += 20;
     }
 
+    private string GetBoundInventoryKey(int inventory_slot) {
+    	if(0 < inventory_slot && inventory_slot < inventory_input_actions.Length)
+    		return GetBoundKey(inventory_input_actions[inventory_slot]);
+    	return "INVALID";
+    }
+
 	private string GetBoundKey(UnityEngine.InputSystem.InputAction action) { // TODO should probably cache this
 		string output = "";
 		foreach (var control in action.controls)
@@ -1818,7 +1837,7 @@ public class AimScript:MonoBehaviour{
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true); // TODO this doesn't reflect the right button
+    							DrawHelpLine($"Equip magazine: tap [ {GetBoundInventoryKey(max_rounds_slot)} ]", true);
     						}
     					}
     				}
@@ -1833,7 +1852,7 @@ public class AimScript:MonoBehaviour{
     			if(mag_stage == HandMagStage.HOLD){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory()); // TODO this doesn't reflect the right button
+    					DrawHelpLine($"Put magazine in inventory: tap [ {GetBoundInventoryKey(empty_slot)} ]", ShouldPutMagInInventory());
     				}
     				DrawHelpLine($"Drop magazine: tap [ {GetBoundKey(RInput.player.Player.Drop)} ]");
     			}
@@ -1855,7 +1874,7 @@ public class AimScript:MonoBehaviour{
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							DrawHelpLine($"Quick load magazine: double tap [ {max_rounds_slot} ]");
+    							DrawHelpLine($"Quick load magazine: double tap [ {GetBoundInventoryKey(max_rounds_slot)} ]");
     						}
     					}
     				}
