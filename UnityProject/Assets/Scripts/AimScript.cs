@@ -305,19 +305,7 @@ public class AimScript:MonoBehaviour{
     int target_weapon_slot = -2;
 
     WeaponSlot[] weapon_slots = new WeaponSlot[10];
-    
-    private readonly UnityEngine.InputSystem.InputAction[] inventory_input_actions = new UnityEngine.InputSystem.InputAction[] {
-    	RInput.player.Inventory.Inventory1,
-    	RInput.player.Inventory.Inventory2,
-    	RInput.player.Inventory.Inventory3,
-    	RInput.player.Inventory.Inventory4,
-    	RInput.player.Inventory.Inventory5,
-    	RInput.player.Inventory.Inventory6,
-    	RInput.player.Inventory.Inventory7,
-    	RInput.player.Inventory.Inventory8,
-    	RInput.player.Inventory.Inventory9,
-    	RInput.player.Inventory.Inventory10,
-    };
+    private UnityEngine.InputSystem.InputAction[] inventory_input_actions;
 
     // Player state
     float health = 1.0f;
@@ -481,6 +469,20 @@ public class AimScript:MonoBehaviour{
     	for(int i=0; i<10; ++i){
     		weapon_slots[i] = new WeaponSlot();
     	}
+    	
+    	inventory_input_actions = new UnityEngine.InputSystem.InputAction[] {
+    		RInput.player.Inventory.Inventory1,
+    		RInput.player.Inventory.Inventory2,
+    		RInput.player.Inventory.Inventory3,
+    		RInput.player.Inventory.Inventory4,
+    		RInput.player.Inventory.Inventory5,
+    		RInput.player.Inventory.Inventory6,
+    		RInput.player.Inventory.Inventory7,
+    		RInput.player.Inventory.Inventory8,
+    		RInput.player.Inventory.Inventory9,
+    		RInput.player.Inventory.Inventory10,
+    	};
+    	
     	int num_start_bullets = UnityEngine.Random.Range(0,10);
     	if(magazine_obj != null) {
     		int num_start_mags = UnityEngine.Random.Range(0,3);
