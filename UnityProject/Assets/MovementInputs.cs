@@ -520,7 +520,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b99fb4f6-ce1a-4a63-9c63-d5756ec54fc6"",
-                    ""path"": ""<Keyboard>/semicolon"",
+                    ""path"": ""<Keyboard>/backquote"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
