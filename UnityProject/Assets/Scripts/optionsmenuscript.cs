@@ -1,6 +1,9 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
+using System.Collections.Generic;
+using System;
 
 public class optionsmenuscript : MonoBehaviour {
     public static bool show_menu = false;
@@ -18,6 +21,20 @@ public class optionsmenuscript : MonoBehaviour {
     private Bloom bloom;
     private Vignette vignette;
     private AmbientOcclusion ambientOcclusion;
+
+    public static Stack<GameObject> window_stack = new Stack<GameObject>();
+
+    public static bool TryCloseCurrentWindow() {
+        if(window_stack.Count > 0) {
+            var window = window_stack.Pop();
+            if(window.activeSelf) {
+                window.SetActive(false);
+                return true;
+            }
+            return TryCloseCurrentWindow();
+        }
+        return false;
+    }
 
     public void OnApplicationPause() {  
         UnlockCursor();
@@ -52,13 +69,15 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     public void Update() {
-        if(Input.GetKeyDown("escape") && !show_menu) {
+        if(Keyboard.current[Key.Escape].wasPressedThisFrame && !show_menu) {
             ShowMenu();
-        } else if(Input.GetKeyDown("escape") && show_menu) {
-            HideMenu();
+        } else if(Keyboard.current[Key.Escape].wasPressedThisFrame && show_menu) {
+            if(!TryCloseCurrentWindow()) {
+                HideMenu();
+            }
         }
 
-        if(Input.GetMouseButtonDown(0) && !show_menu) {
+        if(Mouse.current.leftButton.IsPressed() && !show_menu) {
             LockCursor();
         }
 

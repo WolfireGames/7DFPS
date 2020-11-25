@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 using System.Linq;
 
@@ -69,7 +70,7 @@ public class Cheats : MonoBehaviour {
         // Update Cheats
         for (int i = 0; i < progress.Length; i++) {
             KeyValuePair<string, Action> cheat = cheats.ElementAt(i);
-            if(Input.GetKeyDown(cheat.Key[progress[i]].ToString())) {
+            if(Keyboard.current[cheat.Key[progress[i]].ToString()].IsPressed()) {
                 progress[i]++;
                 if(progress[i] >= cheat.Key.Length) { // Cheat used
                     cheat.Value.Invoke();

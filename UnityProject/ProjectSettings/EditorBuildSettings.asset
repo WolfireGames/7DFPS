@@ -17,4 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Gun Range/range.unity
     guid: 477e6449cd7fab244a54d665c05e78c0
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 739b3497588c0384c9b6e9570f955d6a,
+      type: 2}

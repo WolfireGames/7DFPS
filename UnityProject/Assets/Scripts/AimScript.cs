@@ -3,22 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 using GunSystemInterfaces;
-
-[System.Serializable]
-public class CharacterInput {
-	public bool GetButtonDown(string input_str) {
-		return Input.GetButtonDown(input_str);
-	}
-	public bool GetButton(string input_str) {
-		return Input.GetButton(input_str);
-	}
-	public bool GetButtonUp(string input_str) {
-		return Input.GetButtonUp(input_str);
-	}
-	public float GetAxis(string input_str) {
-		return Input.GetAxis(input_str);
-	}
-};
+using System.Linq;
 
 public enum GunTilt {NONE, LEFT, CENTER, RIGHT};
 
@@ -194,8 +179,6 @@ public class AimScript:MonoBehaviour{
     
     AudioSource audiosource_tape_background;
     AudioSource audiosource_audio_content;
-
-    CharacterInput character_input;
     
     // Links to other objects in scene
     [HideInInspector]
@@ -323,6 +306,19 @@ public class AimScript:MonoBehaviour{
 
     WeaponSlot[] weapon_slots = new WeaponSlot[10];
     
+    private readonly UnityEngine.InputSystem.InputAction[] inventory_input_actions = new UnityEngine.InputSystem.InputAction[] {
+    	RInput.player.Inventory.Inventory1,
+    	RInput.player.Inventory.Inventory2,
+    	RInput.player.Inventory.Inventory3,
+    	RInput.player.Inventory.Inventory4,
+    	RInput.player.Inventory.Inventory5,
+    	RInput.player.Inventory.Inventory6,
+    	RInput.player.Inventory.Inventory7,
+    	RInput.player.Inventory.Inventory8,
+    	RInput.player.Inventory.Inventory9,
+    	RInput.player.Inventory.Inventory10,
+    };
+
     // Player state
     float health = 1.0f;
     bool dying = false;
@@ -451,7 +447,6 @@ public class AimScript:MonoBehaviour{
     	magazine_obj = weapon_holder.mag_object;
     	gun_obj = weapon_holder.gun_object;
     	casing_with_bullet = weapon_holder.bullet_object;
-    	character_input = new CharacterInput();
     
     	if(UnityEngine.Random.Range(0f, 1f) < 0.35f) {
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
@@ -649,37 +644,37 @@ public class AimScript:MonoBehaviour{
     }
     
     public bool HandleInventoryControls() {	
-    	if(character_input.GetButtonDown("Holster")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Holster)){
     		target_weapon_slot = -1;
     	}
-    	if(character_input.GetButtonDown("Inventory 1")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory1)){
     		target_weapon_slot = 0;
     	}
-    	if(character_input.GetButtonDown("Inventory 2")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory2)){
     		target_weapon_slot = 1;
     	}
-    	if(character_input.GetButtonDown("Inventory 3")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory3)){
     		target_weapon_slot = 2;
     	}
-    	if(character_input.GetButtonDown("Inventory 4")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory4)){
     		target_weapon_slot = 3;
     	}
-    	if(character_input.GetButtonDown("Inventory 5")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory5)){
     		target_weapon_slot = 4;
     	}
-    	if(character_input.GetButtonDown("Inventory 6")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory6)){
     		target_weapon_slot = 5;
     	}
-    	if(character_input.GetButtonDown("Inventory 7")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory7)){
     		target_weapon_slot = 6;
     	}
-    	if(character_input.GetButtonDown("Inventory 8")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory8)){
     		target_weapon_slot = 7;
     	}
-    	if(character_input.GetButtonDown("Inventory 9")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory9)){
     		target_weapon_slot = 8;
     	}
-    	if(character_input.GetButtonDown("Inventory 10")){
+    	if(RInput.GetButtonDown(RInput.player.Inventory.Inventory10)){
     		target_weapon_slot = 9;
     	}
     	
@@ -801,71 +796,71 @@ public class AimScript:MonoBehaviour{
     
     public void HandleGunControls(bool insert_mag_with_number_key) {
     	GunScript gun_script = GetGunScript();
-    	if(character_input.GetButton("Trigger")){
+    	if(RInput.GetButton(RInput.gun.Gun.Trigger)){
     		gun_script.ApplyPressureToTrigger();
     	} else {
     		gun_script.ReleasePressureFromTrigger();
     	}
-    	if(character_input.GetButtonDown("Slide Lock")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.SlideLock)){
     		gun_script.ReleaseSlideLock();
     	}
-    	if(character_input.GetButtonUp("Slide Lock")){
+    	if(RInput.GetButtonUp(RInput.gun.Gun.SlideLock)){
     		gun_script.ReleasePressureOnSlideLock();
     	}
 
     	// Pull slide or do press check
-    	if(character_input.GetButton("Pull Back Slide")) {
-    		if(character_input.GetButton("Slide Lock")) {
+    	if(RInput.GetButton(RInput.gun.Gun.PullSlide)) {
+    		if(RInput.GetButton(RInput.gun.Gun.SlideLock)) {
     			gun_script.Request(GunSystemRequests.INPUT_PULL_SLIDE_PRESS_CHECK);
-    		} else if(character_input.GetButtonUp("Slide Lock")) {
+    		} else if(RInput.GetButtonUp(RInput.gun.Gun.SlideLock)) {
 				gun_script.InputPullSlideBack();
     		}
     	}
 
-		if(character_input.GetButtonDown("Pull Back Slide")){
+		if(RInput.GetButtonDown(RInput.gun.Gun.PullSlide)){
 			if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) { // Slide input should push slide forward
 				gun_script.PushSlideForward();
 			} else {
 				gun_script.InputPullSlideBack();
 			}
 		}
-		if(character_input.GetButtonUp("Pull Back Slide")){
+		if(RInput.GetButtonUp(RInput.gun.Gun.PullSlide)){
 			gun_script.ReleaseSlide();
 		}
-    	if(character_input.GetButton("Slide Lock")) {
+    	if(RInput.GetButton(RInput.gun.Gun.SlideLock)) {
     		gun_script.PressureOnSlideLock();
     	}
-    	if(character_input.GetButtonDown("Toggle Bolt Lock")) {
+    	if(RInput.GetButtonDown(RInput.gun.Gun.BoltLock)) {
     		gun_script.ToggleBoltLock();
     	}
-    	if(character_input.GetButtonDown("Safety")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.Safety)){
     		gun_script.ToggleSafety();			
     	}	
-    	if(character_input.GetButtonDown("Auto Mod Toggle")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.FireSelector)){
     		gun_script.ToggleAutoMod();			
     	}
-    	if(character_input.GetButtonDown("Swing Out Cylinder")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.SwingOutCylinder)){
     		gun_script.SwingOutCylinder();
     	}	
-    	if(character_input.GetButtonDown("Close Cylinder")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.CloseCylinder)){
     		gun_script.CloseCylinder();
     	}	
-    	if(character_input.GetButton("Extractor Rod")){
+    	if(RInput.GetButton(RInput.gun.Gun.ExtractorRod)){
     		gun_script.ExtractorRod();
     	}
-    	if(character_input.GetButton("Hammer")){
+    	if(RInput.GetButton(RInput.gun.Gun.Hammer)){
     		gun_script.PressureOnHammer();
     	}
-    	if(character_input.GetButtonUp("Hammer")){
+    	if(RInput.GetButtonUp(RInput.gun.Gun.Hammer)){
     		gun_script.ReleaseHammer();
     	}
-    	if(character_input.GetButtonDown("Toggle Stance")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.ToggleStance)){
     		gun_script.InputToggleStance();
     	}
-    	if(character_input.GetAxis("Mouse ScrollWheel") != 0.0f){
-    		gun_script.RotateCylinder((int)Input.GetAxis("Mouse ScrollWheel"));
+    	if(RInput.GetAxis(RInput.gun.Gun.SpinCylinder) != 0.0f){
+    		gun_script.RotateCylinder((int)RInput.GetAxis(RInput.gun.Gun.SpinCylinder));
     	}		
-    	if(character_input.GetButtonDown("Insert")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.InsertRound)){
     		if(loose_bullets.Count > 0){
     			if(GetGunScript().AddRoundToCylinder()){
     				GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -876,13 +871,13 @@ public class AimScript:MonoBehaviour{
     	}
     	// Aiming notification
     	if(!aim_toggle) {
-    		if(character_input.GetButtonDown("Hold To Aim")) {
+    		if(RInput.GetButtonDown(RInput.player.Player.AimHold)) {
     			gun_script.InputStartAim();
-    		} else if(character_input.GetButtonUp("Hold To Aim")) {
+    		} else if(RInput.GetButtonUp(RInput.player.Player.AimHold)) {
     			gun_script.InputStopAim();
     		}
     	}
-		if(character_input.GetButtonDown("Aim Toggle") && !character_input.GetButton("Hold To Aim")) {
+		if(RInput.GetButtonDown(RInput.player.Player.AimToggle) && !RInput.GetButton(RInput.player.Player.AimHold)) {
 			if(aim_toggle) {
 				gun_script.InputStopAim();
 			} else {
@@ -964,7 +959,7 @@ public class AimScript:MonoBehaviour{
     		hold_pose_spring.vel = 0.0f;
     		hold_pose_spring.target_state = 1.0f;
     	}
-    	if((character_input.GetButtonDown("Insert")/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
+    	if((RInput.GetButtonDown(RInput.player.Magazine.InsertMagazine)/* && aim_spring.state > 0.5*/) || insert_mag_with_number_key){
     		if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun() || insert_mag_with_number_key){
     			hold_pose_spring.target_state = 0.0f;
     			mag_stage = HandMagStage.HOLD_TO_INSERT;
@@ -980,7 +975,7 @@ public class AimScript:MonoBehaviour{
     }
     
     public void HandleControls() {
-    	if(character_input.GetButton("Get")){
+    	if(RInput.GetButton(RInput.player.Player.Pickup)){
     		HandleGetControl();
     	}
     	
@@ -997,7 +992,7 @@ public class AimScript:MonoBehaviour{
     	
     	bool insert_mag_with_number_key = HandleInventoryControls();
     	
-    	if(character_input.GetButtonDown("Eject/Drop") || queue_drop){
+    	if(RInput.GetButtonDown(RInput.player.Player.Drop) || queue_drop){
     		if(mag_stage == HandMagStage.HOLD){
     			mag_stage = HandMagStage.EMPTY;
     			magazine_instance_in_hand.AddComponent<Rigidbody>();
@@ -1027,7 +1022,7 @@ public class AimScript:MonoBehaviour{
             }
     	}
     	
-    	if(character_input.GetButtonDown("Eject/Drop")){
+    	if(RInput.GetButtonDown(RInput.gun.Gun.Eject)){
     		if(mag_stage == HandMagStage.EMPTY && (gun_instance != null)){
     			if(gun_instance.GetComponent<GunScript>().IsMagCurrentlyEjecting()){
     				queue_drop = true;
@@ -1043,7 +1038,7 @@ public class AimScript:MonoBehaviour{
     	if(gun_instance != null){
     		HandleGunControls(insert_mag_with_number_key);
     	} else if(mag_stage == HandMagStage.HOLD){
-    		if(character_input.GetButtonDown("Insert")){
+    		if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){
     			if(loose_bullets.Count > 0){
     				if(magazine_instance_in_hand.GetComponent<mag_script>().AddRound()){
     					GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
@@ -1052,24 +1047,24 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     		}
-    		if(character_input.GetButtonDown("Pull Back Slide")){
+    		if(RInput.GetButtonDown(RInput.player.Magazine.RemoveRound)){
     			if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
     				AddLooseBullet(true);
     				PlaySoundFromGroup(sound_bullet_grab, 0.2f);
     			}
     		}
     	}
-    	if(character_input.GetButtonDown("Aim Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.Player.AimToggle)){
     		aim_toggle = !aim_toggle;
     	}
-    	if(character_input.GetButtonDown("Slow Motion Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.Player.SlomoToggle)){
     		if(Cheats.slomo_mode) {
     			Cheats.ToggleSlomo();
     		} else {
     			slomo_warning_duration = 5f;
     		}
     	}
-        if(character_input.GetButtonDown("Flashlight Toggle")){
+        if(RInput.GetButtonDown(RInput.player.Player.FlashlightToggle)){
             if(held_flashlight != null && mag_stage == HandMagStage.EMPTY && gun_instance == null){
                 held_flashlight.GetComponent<FlashlightScript>().ToggleSwitch();
             }
@@ -1136,7 +1131,7 @@ public class AimScript:MonoBehaviour{
     		--unplayed_tapes;
     		StartTapePlay();
     	}
-    	if(character_input.GetButtonDown("Tape Player") && tape_in_progress){
+    	if(RInput.GetButtonDown(RInput.player.Player.TapePlayer) && tape_in_progress){
     		if(!audiosource_tape_background.isPlaying){
     			StartTapePlay();
     		} else {
@@ -1186,13 +1181,13 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateHelpToggle() {
-    	if(character_input.GetButton("Help Toggle")){
+    	if(RInput.GetButton(RInput.player.Player.HelpButton)){
     		help_hold_time += Time.deltaTime;
     		if(show_help && help_hold_time >= 1.0f){
     			show_advanced_help = true;
     		}
     	}
-    	if(character_input.GetButtonDown("Help Toggle")){
+    	if(RInput.GetButtonDown(RInput.player.Player.HelpButton)){
     		if(!show_help){
     			show_help = true;
     			help_ever_shown = true;
@@ -1200,7 +1195,7 @@ public class AimScript:MonoBehaviour{
     		}
     		help_hold_time = 0.0f;
     	}
-    	if(character_input.GetButtonUp("Help Toggle")){
+    	if(RInput.GetButtonUp(RInput.player.Player.HelpButton)){
     		if(show_help && help_hold_time < 1.0f && !just_started_help){
     			show_help = false;
     			show_advanced_help = false;
@@ -1210,10 +1205,10 @@ public class AimScript:MonoBehaviour{
     }
     
     public void UpdateLevelResetButton() {
-    	if(character_input.GetButtonDown("Level Reset")){
+    	if(RInput.GetButtonDown(RInput.player.Player.LevelReset)){
     		level_reset_hold = 0.01f;
     	}
-    	if(level_reset_hold != 0.0f && Input.GetButton("Level Reset")){
+    	if(level_reset_hold != 0.0f && RInput.GetButton(RInput.player.Player.LevelReset)){
     		level_reset_hold += Time.deltaTime; 
     		dead_volume_fade = Mathf.Min(1.0f-level_reset_hold * 0.5f, dead_volume_fade);
     		dead_fade = level_reset_hold * 0.5f;
@@ -1277,7 +1272,7 @@ public class AimScript:MonoBehaviour{
     
     public void UpdateAimSpring() {
     	bool offset_aim_target = false;
-    	if((character_input.GetButton("Hold To Aim") || aim_toggle) && !dead && (gun_instance != null)){
+    	if((RInput.GetButton(RInput.player.Player.AimHold) || aim_toggle) && !dead && (gun_instance != null)){
     		aim_spring.target_state = 1.0f;
     		RaycastHit hit = new RaycastHit();
     		if(Physics.Linecast(main_camera.transform.position, AimPos() + AimDir() * 0.2f, out hit, 1 << 0)){
@@ -1317,16 +1312,17 @@ public class AimScript:MonoBehaviour{
     	
     	bool in_menu = optionsmenuscript.IsMenuShown();
     	if(!dead && !in_menu){
-    		rotation_x += character_input.GetAxis("Mouse X") * sensitivity_x;
-    		rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
+			Vector2 mouse_input = RInput.GetAxis2D(RInput.player.Player.AimDelta);
+    		rotation_x += mouse_input.x * sensitivity_x;
+    		rotation_y += mouse_input.y * sensitivity_y;
     		rotation_y = Mathf.Clamp (rotation_y, min_angle_y, max_angle_y);
     	
-    		if((character_input.GetButton("Hold To Aim") || aim_toggle) && (gun_instance != null)){
+    		if((RInput.GetButton(RInput.player.Player.AimHold) || aim_toggle) && (gun_instance != null)){
     			view_rotation_y = Mathf.Clamp(view_rotation_y, rotation_y - rotation_y_min_leeway, rotation_y + rotation_y_max_leeway);
     			view_rotation_x = Mathf.Clamp(view_rotation_x, rotation_x - rotation_x_leeway, rotation_x + rotation_x_leeway);
     		} else {
-    			view_rotation_x += character_input.GetAxis("Mouse X") * sensitivity_x;
-    			view_rotation_y += character_input.GetAxis("Mouse Y") * sensitivity_y;
+    			view_rotation_x += mouse_input.x * sensitivity_x;
+    			view_rotation_y += mouse_input.y * sensitivity_y;
     			view_rotation_y = Mathf.Clamp (view_rotation_y, min_angle_y, max_angle_y);
     			
     			rotation_y = Mathf.Clamp(rotation_y, view_rotation_y - rotation_y_max_leeway, view_rotation_y + rotation_y_min_leeway);
@@ -1728,6 +1724,20 @@ public class AimScript:MonoBehaviour{
         help_text_offset += 20;
     }
 
+    private string GetBoundInventoryKey(int inventory_slot) {
+    	if(0 < inventory_slot && inventory_slot < inventory_input_actions.Length)
+    		return GetBoundKey(inventory_input_actions[inventory_slot]);
+    	return "INVALID";
+    }
+
+	private string GetBoundKey(UnityEngine.InputSystem.InputAction action) { // TODO should probably cache this
+		string output = "";
+		foreach (var control in action.controls)
+			output += control.displayName;
+
+		return output;
+	}
+
     public void OnGUI() {
     	if(main_client_control && Event.current.type == EventType.Repaint){
 			GUI.depth = 0;
@@ -1740,18 +1750,18 @@ public class AimScript:MonoBehaviour{
 
     		DrawHelpLine($"{tapes_heard.Count} tapes absorbed out of {total_tapes.Count}", true);
     		if(!show_help){
-    			DrawHelpLine("View help: Press [ ? ]", !help_ever_shown);
+    			DrawHelpLine($"View help: Press [ {GetBoundKey(RInput.player.Player.HelpButton)} ]", !help_ever_shown);
     		} else {
-    			DrawHelpLine("Hide help: Press [ ? ]");
+    			DrawHelpLine($"Hide help: Press [ {GetBoundKey(RInput.player.Player.HelpButton)} ]");
     			DrawHelpLine("");
     			if(tape_in_progress){
-    				DrawHelpLine("Pause/Resume tape player: [ x ]");
+    				DrawHelpLine($"Pause/Resume tape player: [ {GetBoundKey(RInput.player.Player.TapePlayer)} ]");
     			}
     			
-    			DrawHelpLine("Look: [ move mouse ]");
-    			DrawHelpLine("Move: [ WASD ]");
-    			DrawHelpLine("Jump: [ space ]");
-    			DrawHelpLine("Pick up nearby: hold [ g ]", ShouldPickUpNearby());
+    			DrawHelpLine("Look: [ Mouse ]");
+    			DrawHelpLine($"Move: [ {GetBoundKey(RInput.player.Player.Move)} ]");
+    			DrawHelpLine($"Jump: [ {GetBoundKey(RInput.player.Player.Jump)} ]");
+    			DrawHelpLine($"Pick up nearby: hold [ {GetBoundKey(RInput.player.Player.Pickup)} ]", ShouldPickUpNearby());
                 if(held_flashlight != null){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
@@ -1772,105 +1782,105 @@ public class AimScript:MonoBehaviour{
     				}
     			}
     			if(gun_instance != null){
-    				DrawHelpLine("Fire weapon: tap [ left mouse button ]");
+    				DrawHelpLine($"Fire weapon: tap [ {GetBoundKey(RInput.gun.Gun.Trigger)} ]");
     				bool should_aim = (aim_spring.state < 0.5f);
-    				DrawHelpLine("Aim weapon: hold [ right mouse button ]", should_aim);
-    				DrawHelpLine("Aim weapon: tap [ q ]", should_aim);
-    				DrawHelpLine("Holster weapon: tap [ ~ ]", ShouldHolsterGun());
+    				DrawHelpLine($"Aim weapon: hold [ {GetBoundKey(RInput.player.Player.AimHold)} ]", should_aim);
+    				DrawHelpLine($"Aim weapon: tap [ {GetBoundKey(RInput.player.Player.AimToggle)} ]", should_aim);
+    				DrawHelpLine($"Holster weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldHolsterGun());
     			} else {
-    				DrawHelpLine("Draw weapon: tap [ ~ ]", ShouldDrawWeapon());
+    				DrawHelpLine($"Draw weapon: tap [ {GetBoundKey(RInput.player.Inventory.Holster)} ]", ShouldDrawWeapon());
     			}
                 if(gun_instance != null){
     				if(gun_script.HasSlide()){
 						if(gun_script.Query(GunSystemQueries.IS_WAITING_FOR_SLIDE_PUSH)) {
-    						DrawHelpLine("Push forward slide: tap [ r ]",  gun_script.ShouldPushSlideForward());
+    						DrawHelpLine($"Push forward slide: tap [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]",  gun_script.ShouldPushSlideForward()); // TODO needs to be adjusted
 						} else {
-    						DrawHelpLine("Pull back slide: hold [ r ]", gun_script.ShouldPullSlide());
+    						DrawHelpLine($"Pull back slide: hold [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]", gun_script.ShouldPullSlide());
 						}
     					if(gun_script.HasGunComponent(GunAspect.SLIDE_RELEASE_BUTTON)) {
-    						DrawHelpLine("Release slide lock: tap [ t ]", gun_script.ShouldReleaseSlideLock());
+    						DrawHelpLine($"Release slide lock: tap [ {GetBoundKey(RInput.gun.Gun.SlideLock)} ]", gun_script.ShouldReleaseSlideLock());
     					}
     				}
     				if(gun_script.HasSafety()){
-    					DrawHelpLine("Toggle safety: tap [ v ]", gun_script.IsSafetyOn());
+    					DrawHelpLine($"Toggle safety: tap [ {GetBoundKey(RInput.gun.Gun.Safety)} ]", gun_script.IsSafetyOn());
     				}
     				if(gun_script.HasAutoMod()){
-    					DrawHelpLine("Toggle full-automatic: tap [ v ]", gun_script.ShouldToggleAutoMod());
+    					DrawHelpLine($"Toggle full-automatic: tap [ {GetBoundKey(RInput.gun.Gun.FireSelector)} ]", gun_script.ShouldToggleAutoMod());
     				}
     				if(gun_script.HasHammer()){
-    					DrawHelpLine("Pull back hammer: hold [ f ]", gun_script.ShouldPullBackHammer());
+    					DrawHelpLine($"Pull back hammer: hold [ {GetBoundKey(RInput.gun.Gun.Hammer)} ]", gun_script.ShouldPullBackHammer());
     				}
     				if(gun_script.HasGunComponent(GunAspect.LOCKABLE_BOLT)){
-    					DrawHelpLine("Toggle Bolt: tap [ t ]", gun_script.ShouldToggleBolt());
+    					DrawHelpLine($"Toggle Bolt: tap [ {GetBoundKey(RInput.gun.Gun.BoltLock)} ]", gun_script.ShouldToggleBolt());
     				}
     				if(gun_script.HasGunComponent(GunAspect.ALTERNATIVE_STANCE)){
-    					DrawHelpLine("Switch holdingstyle: tap [ f ]", gun_script.ShouldToggleStance());
+    					DrawHelpLine($"Switch holdingstyle: tap [ {GetBoundKey(RInput.gun.Gun.ToggleStance)} ]", gun_script.ShouldToggleStance());
     				}
     				if(gun_script.HasGunComponent(GunAspect.REVOLVER_CYLINDER)){
     					if(!gun_script.IsCylinderOpen()){
-    						DrawHelpLine("Open cylinder: tap [ e ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
+    						DrawHelpLine($"Open cylinder: tap [ {GetBoundKey(RInput.gun.Gun.SwingOutCylinder)} ]", (gun_script.ShouldOpenCylinder() && loose_bullets.Count!=0));
     					} else {
-    						DrawHelpLine("Close cylinder: tap [ r ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
-    						DrawHelpLine("Extract casings: hold [ v ]", gun_script.ShouldExtractCasings());
-    						DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    						DrawHelpLine($"Close cylinder: tap [ {GetBoundKey(RInput.gun.Gun.CloseCylinder)} ]", (gun_script.ShouldCloseCylinder() || loose_bullets.Count==0));
+    						DrawHelpLine($"Extract casings: hold [ {GetBoundKey(RInput.gun.Gun.ExtractorRod)} ]", gun_script.ShouldExtractCasings());
+    						DrawHelpLine($"Insert bullet: tap [ {GetBoundKey(RInput.gun.Gun.InsertRound)} ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     					}
-    					DrawHelpLine("Spin cylinder: [ mousewheel ]");
+    					DrawHelpLine($"Spin cylinder: [ {GetBoundKey(RInput.gun.Gun.SpinCylinder)} ]");
     				} else if(gun_script.HasGunComponent(GunAspect.MANUAL_LOADING)) {
-    					DrawHelpLine("Insert bullet: tap [ z ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
+    					DrawHelpLine($"Insert bullet: tap [ {GetBoundKey(RInput.gun.Gun.InsertRound)} ]", (gun_script.ShouldInsertBullet() && loose_bullets.Count!=0));
     				}
     				if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
     					if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
     						bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
-    						DrawHelpLine("Insert magazine: tap [ z ]", should_insert_mag);
+    						DrawHelpLine($"Insert magazine: tap [ {GetBoundKey(RInput.player.Magazine.InsertMagazine)} ]", should_insert_mag);
     					} else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
-    						DrawHelpLine("Eject magazine: tap [ e ]", gun_script.ShouldEjectMag());
+    						DrawHelpLine($"Eject magazine: tap [ {GetBoundKey(RInput.gun.Gun.Eject)} ]", gun_script.ShouldEjectMag());
     					} else if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							DrawHelpLine($"Equip magazine: tap [ {max_rounds_slot} ]", true);
+    							DrawHelpLine($"Equip magazine: tap [ {GetBoundInventoryKey(max_rounds_slot)} ]", true);
     						}
     					}
     				}
     			} else {
     				if(CanLoadBulletsInMag()){
-    					DrawHelpLine("Insert bullet in magazine: tap [ z ]", true);
+    					DrawHelpLine($"Insert bullet in magazine: tap [ {GetBoundKey(RInput.player.Magazine.InsertRound)} ]", true);
     				}
     				if(CanRemoveBulletFromMag()){
-    					DrawHelpLine("Remove bullet from magazine: tap [ r ]");
+    					DrawHelpLine($"Remove bullet from magazine: tap [ {GetBoundKey(RInput.player.Magazine.RemoveRound)} ]");
     				}
     			}
     			if(mag_stage == HandMagStage.HOLD){
     				int empty_slot = GetEmptySlot();
     				if(empty_slot != -1){
-    					DrawHelpLine($"Put magazine in inventory: tap [ {empty_slot} ]", ShouldPutMagInInventory());
+    					DrawHelpLine($"Put magazine in inventory: tap [ {GetBoundInventoryKey(empty_slot)} ]", ShouldPutMagInInventory());
     				}
-    				DrawHelpLine("Drop magazine: tap [ e ]");
+    				DrawHelpLine($"Drop magazine: tap [ {GetBoundKey(RInput.player.Player.Drop)} ]");
     			}
     			
     			DrawHelpLine("");
     			if(show_advanced_help){
     				DrawHelpLine("Advanced help:");
-    				DrawHelpLine("Toggle crouch: [ c ]");
+    				DrawHelpLine($"Toggle crouch: [ {GetBoundKey(RInput.player.Player.Crouch)} ]");
     				if(aim_spring.state < 0.5f){
     					DrawHelpLine("Run: tap repeatedly [ w ]");
     				}
     				if(gun_instance != null){
     					if(!gun_script.IsSafetyOn() && gun_script.IsHammerCocked()){
-    						DrawHelpLine("Decock: Hold [f], hold [LMB], release [f]", ShouldPickUpNearby());
+    						DrawHelpLine($"Decock: Hold [ {GetBoundKey(RInput.gun.Gun.Hammer)} ], hold [ {GetBoundKey(RInput.gun.Gun.Trigger)} ], release [ {GetBoundKey(RInput.gun.Gun.Hammer)} ]", ShouldPickUpNearby());
     					}
     					if(!gun_script.IsSlideLocked() && !gun_script.IsSafetyOn()){
-    						DrawHelpLine("Inspect chamber: hold [ t ] and then [ r ]");
+    						DrawHelpLine($"Inspect chamber: hold [ {GetBoundKey(RInput.gun.Gun.SlideLock)} ] and then [ {GetBoundKey(RInput.gun.Gun.PullSlide)} ]");
     					}
     					if(mag_stage == HandMagStage.EMPTY && !gun_script.IsThereAMagInGun()){
     						int max_rounds_slot = GetMostLoadedMag();
     						if(max_rounds_slot != -1){
-    							DrawHelpLine($"Quick load magazine: double tap [ {max_rounds_slot} ]");
+    							DrawHelpLine($"Quick load magazine: double tap [ {GetBoundInventoryKey(max_rounds_slot)} ]");
     						}
     					}
     				}
-    				DrawHelpLine("Reset game: hold [ l ]");
+    				DrawHelpLine($"Reset game: hold [ {GetBoundKey(RInput.player.Player.LevelReset)} ]");
     			} else {
-    				DrawHelpLine("Advanced help: Hold [ ? ]");
+    				DrawHelpLine($"Advanced help: Hold [ {GetBoundKey(RInput.player.Player.HelpButton)} ]");
     			}
     		}
 
@@ -1924,9 +1934,10 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void PlatformInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), 0.0f, character_input.GetAxis("Vertical"));
+    	Vector2 input = RInput.GetAxis2D(RInput.player.Player.Move);
+    	Vector3 directionVector = new Vector3(input.x, 0.0f, input.y);
     	
-    	if(old_vert_axis < 0.9f && character_input.GetAxis("Vertical") >= 0.9f){
+    	if(old_vert_axis < 0.9f && input.y >= 0.9f){
     		if(!crouching && forward_input_delay < 0.4f && !GetComponent<AimScript>().IsAiming()){
     			SetRunning(Mathf.Clamp((0.4f-forward_input_delay)/0.2f,0.01f,1.0f));
     			bool_running = true;			
@@ -1941,7 +1952,7 @@ public class AimScript:MonoBehaviour{
     	if(bool_running){
     		directionVector.z = 1.0f;
     	}
-    	old_vert_axis = character_input.GetAxis("Vertical");
+    	old_vert_axis = input.y;
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -1962,7 +1973,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = transform.rotation * directionVector;
-    	inputJump = character_input.GetButton("Jump");	
+    	inputJump = RInput.GetButton(RInput.player.Player.Jump);
     }
     
     // This makes the character turn to face the current movement speed per default.
@@ -1972,7 +1983,8 @@ public class AimScript:MonoBehaviour{
     // Update is called once per frame
     public void FPSInputControllerUpdate() {
     	// Get the input vector from kayboard or analog stick
-    	Vector3 directionVector = new Vector3(character_input.GetAxis("Horizontal"), character_input.GetAxis("Vertical"), 0.0f);
+    	Vector2 input = RInput.GetAxis2D(RInput.player.Player.Move);
+    	Vector3 directionVector = new Vector3(input.x, 0.0f, input.y);
     	
     	if (directionVector != Vector3.zero) {
     		// Get the length of the directon vector and then normalize it
@@ -2000,7 +2012,7 @@ public class AimScript:MonoBehaviour{
     	
     	// Apply the direction to the CharacterMotor
     	inputMoveDirection = directionVector;
-    	inputJump = character_input.GetButton("Jump");
+    	inputJump = RInput.GetButton(RInput.player.Player.Jump);
     	
     	// Set rotation to the move direction	
     	if (autoRotate && directionVector.sqrMagnitude > 0.01f) {
@@ -2276,12 +2288,12 @@ public class AimScript:MonoBehaviour{
     
     public void CharacterMotorUpdate() {
     	if(PlayerPrefs.GetInt("toggle_crouch", 1)==1){
-    		if(!GetComponent<AimScript>().IsDead() && character_input.GetButtonDown("Crouch Toggle")){
+    		if(!GetComponent<AimScript>().IsDead() && RInput.GetButtonDown(RInput.player.Player.Crouch)){
     			crouching = !crouching;
     		}
     	} else {
     		if(!GetComponent<AimScript>().IsDead()){
-    			crouching = character_input.GetButton("Crouch Toggle");
+    			crouching = RInput.GetButton(RInput.player.Player.Crouch);
     		}
     	}	
     	if(running > 0.0f){
