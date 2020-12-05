@@ -237,11 +237,6 @@ public class ReceiverBuildScript {
         BuildWithConfiguration(Configurations.win32);
     }
 
-    [MenuItem("Wolfire/Build/Build Windows 64 With Profiling Enabled")]
-    public static void BuildWindows64ProfilingEnabled() {
-        BuildWithConfiguration(Configurations.win64_profiling);
-    }
-
     [MenuItem("Wolfire/Build/Build Linux 64")]
     public static void BuildLinux64() {
         BuildWithConfiguration(Configurations.linux64);
@@ -255,6 +250,11 @@ public class ReceiverBuildScript {
     [MenuItem("Wolfire/Build/Build MacOSX 64")]
     public static void BuildMacosx64() {
         BuildWithConfiguration(Configurations.macosx64);
+    }
+
+    [MenuItem("Wolfire/Build/Build Windows 64 With Profiling Enabled")]
+    public static void BuildWindows64ProfilingEnabled() {
+        BuildWithConfiguration(Configurations.win64_profiling);
     }
 
     [MenuItem("Wolfire/Build/Build MacOSX 64 With Profiling Enabled")]
