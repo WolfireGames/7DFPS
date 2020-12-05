@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+#if DEVELOPMENT_BUILD
+using UnityEngine.Profiling;
+#endif
+
 public class GUISkinHolder : MonoBehaviour {
     public GUISkin gui_skin;
     public LevelCreatorScript levelCreatorScript;
@@ -29,7 +33,19 @@ public class GUISkinHolder : MonoBehaviour {
         weapon = GetGunHolder();
         weapon.GetComponent<WeaponHolder>().Load();
         Debug.Log($"Starting Weapon: {weapon.GetComponent<WeaponHolder>().display_name}, mods: {ModManager.IsModsEnabled()}");
+
+#if DEVELOPMENT_BUILD
+        Profiler.logFile = System.IO.Path.Combine(Application.persistentDataPath + "/performance_log");
+        Profiler.enableBinaryLog = true;
+        Profiler.enabled = true;
+#endif
     }
+
+#if DEVELOPMENT_BUILD 
+    public void OnGUI() {
+        GUILayout.Label($"Profiler output: \"{Application.persistentDataPath}/performance_log.raw\"");
+    }
+#endif
 
     private void InsertMods() {
         InsertGunMods();
