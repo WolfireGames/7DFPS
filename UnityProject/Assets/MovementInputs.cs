@@ -259,7 +259,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""d7ef9a2a-52a5-436b-9b3a-b0cff3a7b47b"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
