@@ -236,7 +236,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""id"": ""31f57787-46d6-4850-95cd-00ab7f327f8b"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Scale(factor=0.01)"",
                     ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Spin Cylinder"",
                     ""isComposite"": false,
