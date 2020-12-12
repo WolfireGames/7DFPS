@@ -16,7 +16,7 @@ public class ModImporter : Singleton<ModImporter> {
     private void Update() {
         UpdateTimeout();
 
-        if(modImportQueue.Any() && currentModRoutine == null) {
+        if(modImportQueue.Count > 0 && currentModRoutine == null) {
             ResetImportTimeout();
 
             ImportData importData = modImportQueue.Dequeue();
