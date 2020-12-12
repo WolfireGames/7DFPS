@@ -410,6 +410,7 @@ public class AimScript:MonoBehaviour{
         }
            
     	loose_bullets.Add(round);
+    	round.GetComponentInChildren<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
     	Spring new_spring = new Spring(0.3f,0.3f,kAimSpringStrength,kAimSpringDamping);
     	loose_bullet_spring.Add(new_spring);
     	if(spring){
@@ -1538,10 +1539,6 @@ public class AimScript:MonoBehaviour{
             tmp_cs4.z = spring.state;
             bullet.transform.localScale = tmp_cs4;
     		bullet.transform.rotation = main_camera.transform.rotation * Quaternion.AngleAxis(90.0f, new Vector3(-1.0f,0.0f,0.0f));
-    		Renderer[] renderers = bullet.GetComponentsInChildren<Renderer>();
-    		foreach(Renderer renderer in renderers){
-                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-    		}
     	}
     }
     
