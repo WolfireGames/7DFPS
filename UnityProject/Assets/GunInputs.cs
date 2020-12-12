@@ -278,7 +278,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ada938ba-9a57-40f3-89e7-7b757b31fc72"",
-                    ""path"": ""<Keyboard>/y"",
+                    ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
