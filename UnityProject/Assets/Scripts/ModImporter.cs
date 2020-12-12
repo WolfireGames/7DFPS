@@ -35,7 +35,7 @@ public class ModImporter : Singleton<ModImporter> {
 
     /// <summary> Returns true if any mods are currently being imported or waiting in the queue </summary>
     public static bool IsImportingMods() {
-        return currentModRoutine != null || modImportQueue.Any();
+        return currentModRoutine != null || modImportQueue.Count > 0;
     }
 
     /// <summary> How many mods are being loaded right now? (Includes half finished imported mod) </summary>
