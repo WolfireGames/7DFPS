@@ -66,6 +66,7 @@ public class optionsmenuscript : MonoBehaviour {
 
         Preferences.UpdatePreferences();
         UpdateUIValuesAndApplyDefaults();
+        ImGuiUnity.instance.enableInput = false;
     }
 
     public void Update() {
@@ -103,6 +104,7 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void ShowMenu() {
         show_menu = true;
+        ImGuiUnity.instance.enableInput = true;
         menu.SetActive(true);
         UnlockCursor();
         Time.timeScale = 0.0f;
@@ -111,6 +113,7 @@ public class optionsmenuscript : MonoBehaviour {
     public void HideMenu() {
         show_menu = false;
         show_mod_ui = false;
+        ImGuiUnity.instance.enableInput = false;
         menu.SetActive(false);
         LockCursor();
         Time.timeScale = 1.0f;
