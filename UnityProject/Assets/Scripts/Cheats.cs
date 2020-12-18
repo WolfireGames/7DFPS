@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using System;
 using System.Linq;
 
@@ -14,12 +13,12 @@ public class Cheats : MonoBehaviour {
 
     public AudioClip[] sound_cheat_toggle;
 
-    private int[] progress = new int[cheats.Count];
-    private static Dictionary<string, Action> cheats = new Dictionary<string, Action> {
-        {"iddqd", () => { god_mode =! god_mode; } },
-        {"slomo", () => { slomo_mode =! slomo_mode; ToggleSlomo(); } },
-        {"idinf", () => { infinite_ammo =! infinite_ammo; } },
-        {"idkfa", () => { GiveBullets(); } }
+    private int[] progress = new int[cheats.Length];
+    private static readonly Cheat[] cheats = new Cheat[] {
+        new Cheat("iddqd", () => { god_mode =! god_mode; } ),
+        new Cheat("slomo", () => { slomo_mode =! slomo_mode; ToggleSlomo(); } ),
+        new Cheat("idinf", () => { infinite_ammo =! infinite_ammo; } ),
+        new Cheat("idkfa", () => { GiveBullets(); }),
     };
 
     public static void ResetCheats() {
@@ -69,11 +68,11 @@ public class Cheats : MonoBehaviour {
 
         // Update Cheats
         for (int i = 0; i < progress.Length; i++) {
-            KeyValuePair<string, Action> cheat = cheats.ElementAt(i);
-            if(Keyboard.current[cheat.Key[progress[i]].ToString()].IsPressed()) {
+            Cheat cheat = cheats[i];
+            if(Input.GetKeyDown(cheat.code[progress[i]])) {
                 progress[i]++;
-                if(progress[i] >= cheat.Key.Length) { // Cheat used
-                    cheat.Value.Invoke();
+                if(progress[i] >= cheat.code.Length) { // Cheat used
+                    cheat.action.Invoke();
                     hasCheated = true;
                     progress[i] = 0;
                     PlaySoundFromGroup(sound_cheat_toggle, 1.0f);
@@ -85,5 +84,18 @@ public class Cheats : MonoBehaviour {
 
     void Awake() {
         ResetCheats(); // Remove all cheats when a new round starts
+    }
+
+    
+    // Data class
+
+    private struct Cheat {
+        public KeyCode[] code;
+        public Action action;
+
+        public Cheat(string code, Action action) {
+            this.code = code.Select( (x) => (KeyCode)x).ToArray(); // Convert string into KeyCodes to avoid GC during runtime
+            this.action = action;
+        }
     }
 }
