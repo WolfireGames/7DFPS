@@ -205,6 +205,20 @@ public class ReceiverBuildScript {
             define_symbols = new string[0],
         };
 
+        public static BuildConfiguration macosx64_profiling = new BuildConfiguration() {
+            target_path = "Build/macosx64_profiling/Receiver",
+            build_target = BuildTarget.StandaloneOSX,
+            build_options = BuildOptions.Development,
+            define_symbols = new string[0],
+        };
+
+        public static BuildConfiguration linux64_profiling = new BuildConfiguration() {
+            target_path = "Build/linux64_profiling/Receiver",
+            build_target = BuildTarget.StandaloneLinux64,
+            build_options = BuildOptions.Development,
+            define_symbols = new string[0],
+        };
+
         public static BuildConfiguration win64_profiling = new BuildConfiguration() {
             target_path = "Build/win64_profiling/Receiver/Receiver.exe",
             build_target = BuildTarget.StandaloneWindows64,
@@ -223,11 +237,6 @@ public class ReceiverBuildScript {
         BuildWithConfiguration(Configurations.win32);
     }
 
-    [MenuItem("Wolfire/Build/Build Windows 64 With Profiling Enabled")]
-    public static void BuildWindows64ProfilingEnabled() {
-        BuildWithConfiguration(Configurations.win64_profiling);
-    }
-
     [MenuItem("Wolfire/Build/Build Linux 64")]
     public static void BuildLinux64() {
         BuildWithConfiguration(Configurations.linux64);
@@ -241,6 +250,21 @@ public class ReceiverBuildScript {
     [MenuItem("Wolfire/Build/Build MacOSX 64")]
     public static void BuildMacosx64() {
         BuildWithConfiguration(Configurations.macosx64);
+    }
+
+    [MenuItem("Wolfire/Build/Build Windows 64 With Profiling Enabled")]
+    public static void BuildWindows64ProfilingEnabled() {
+        BuildWithConfiguration(Configurations.win64_profiling);
+    }
+
+    [MenuItem("Wolfire/Build/Build MacOSX 64 With Profiling Enabled")]
+    public static void BuildMacosx64ProfilingEnabled() {
+        BuildWithConfiguration(Configurations.macosx64_profiling);
+    }
+
+    [MenuItem("Wolfire/Build/Build Linux 64 With Profiling Enabled")]
+    public static void BuildLinux64ProfilingEnabled() {
+        BuildWithConfiguration(Configurations.linux64_profiling);
     }
 
     private static void BuildPlayer(BuildPlayerOptions options) {
@@ -266,5 +290,12 @@ public class ReceiverBuildScript {
         BuildLinux64();
         BuildLinux32();
         BuildMacosx64();
+    }
+
+    [MenuItem("Wolfire/Build/Build All (Profiling)")]
+    public static void BuildAllProfiling() {
+        BuildWindows64ProfilingEnabled();
+        BuildLinux64ProfilingEnabled();
+        BuildMacosx64ProfilingEnabled();
     }
 }
