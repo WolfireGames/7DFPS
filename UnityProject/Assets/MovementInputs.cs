@@ -259,7 +259,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""d7ef9a2a-52a5-436b-9b3a-b0cff3a7b47b"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -563,7 +563,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f958cded-a188-4c75-97dd-e27118c1808b"",
-                    ""path"": ""<Keyboard>/y"",
+                    ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -574,7 +574,7 @@ public class @MovementInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7362d795-81e4-4e8e-b8b2-608736babf60"",
-                    ""path"": ""<Keyboard>/y"",
+                    ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

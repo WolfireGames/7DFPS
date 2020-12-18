@@ -236,7 +236,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""id"": ""31f57787-46d6-4850-95cd-00ab7f327f8b"",
                     ""path"": ""<Mouse>/scroll/y"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Scale(factor=0.01)"",
                     ""groups"": ""Mouse & Keyboard"",
                     ""action"": ""Spin Cylinder"",
                     ""isComposite"": false,
@@ -278,7 +278,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ada938ba-9a57-40f3-89e7-7b757b31fc72"",
-                    ""path"": ""<Keyboard>/y"",
+                    ""path"": ""<Keyboard>/z"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse & Keyboard"",
