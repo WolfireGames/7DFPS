@@ -24,6 +24,7 @@ public class RebindDialogScript : MonoBehaviour {
         input_action.Disable();
         rebindingOperation = input_action.PerformInteractiveRebinding()
             .WithCancelingThrough("<Keyboard>/escape")
+            .WithExpectedControlType("Button")
             .OnApplyBinding( (x, y) => { OnApplyRebinding(x, y); } )
             .OnCancel( (x) => Cancel(x) )
             .Start();
