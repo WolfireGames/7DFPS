@@ -38,7 +38,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""name"": ""Slide Lock"",
                     ""type"": ""Button"",
                     ""id"": ""46921d76-33df-4293-a1ec-9c393cc3bdb2"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -46,7 +46,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""name"": ""Safety"",
                     ""type"": ""Button"",
                     ""id"": ""afb8de5c-5c19-4e78-bc28-393b856c4765"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -54,7 +54,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""name"": ""Fire Selector"",
                     ""type"": ""Button"",
                     ""id"": ""7954041c-84b9-4619-a054-921b355af3f6"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
@@ -62,7 +62,7 @@ public class @GunInputs : IInputActionCollection, IDisposable
                     ""name"": ""Pull Slide"",
                     ""type"": ""Button"",
                     ""id"": ""00ca8563-88b4-4e22-9af0-554bd06b0819"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 },
