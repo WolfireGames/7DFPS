@@ -67,7 +67,7 @@ public class RebindDialogScript : MonoBehaviour {
     private void OnApplyRebinding(InputActionRebindingExtensions.RebindingOperation operation, string new_binding) {
         SetButtons(true);
         this.new_binding = new_binding;
-        text.text = $"Do you really want to use {new_binding}?";
+        text.text = $"Do you really want to use {new InputBinding(new_binding).ToDisplayString()}?";
     }
 
     private void SetButtons(bool is_active) {
