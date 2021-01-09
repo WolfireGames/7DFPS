@@ -24,6 +24,7 @@ public class RebindDialogScript : MonoBehaviour {
         input_action.Disable();
         rebindingOperation = input_action.PerformInteractiveRebinding()
             .WithCancelingThrough("<Keyboard>/escape")
+            .WithExpectedControlType("Button")
             .OnApplyBinding( (x, y) => { OnApplyRebinding(x, y); } )
             .OnCancel( (x) => Cancel(x) )
             .Start();
@@ -66,7 +67,7 @@ public class RebindDialogScript : MonoBehaviour {
     private void OnApplyRebinding(InputActionRebindingExtensions.RebindingOperation operation, string new_binding) {
         SetButtons(true);
         this.new_binding = new_binding;
-        text.text = $"Do you really want to use {new_binding}?";
+        text.text = $"Do you really want to use {new InputBinding(new_binding).ToDisplayString()}?";
     }
 
     private void SetButtons(bool is_active) {
