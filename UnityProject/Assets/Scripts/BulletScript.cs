@@ -94,6 +94,7 @@ public class BulletScript:MonoBehaviour{
                 GameObject hit_transform_obj = hit.transform.gameObject;
                 Rigidbody hit_rigidbody = hit.collider.attachedRigidbody;
 
+                IShootable shootable = RecursiveHasScript(hit_obj, typeof(IShootable), 1) as IShootable;
                 ShootableLight light_script = RecursiveHasScript(hit_obj, typeof(ShootableLight), 1) as ShootableLight;
                 AimScript aim_script = RecursiveHasScript(hit_obj, typeof(AimScript), 1) as AimScript;
                 RobotScript turret_script = RecursiveHasScript(hit_obj, typeof(RobotScript), 3) as RobotScript;
@@ -129,6 +130,11 @@ public class BulletScript:MonoBehaviour{
     					PlaySoundFromGroup(sound_glass_break, 1.0f);
     				}
     			}
+
+    			if(shootable != null) {
+    				shootable.WasShot(hit_obj, hit.point, velocity);
+    			}
+
     			if(Vector3.Magnitude(velocity) > 50){
                     GameObject hole = null;
                     GameObject effect;
