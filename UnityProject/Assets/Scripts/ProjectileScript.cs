@@ -109,6 +109,7 @@ public class ProjectileScript : MonoBehaviour {
         }
 #endif
 
+        IShootable shootable = RecursiveHasScript(other, typeof(IShootable), 1) as IShootable;
         ShootableLight light_script = RecursiveHasScript(other, typeof(ShootableLight), 1) as ShootableLight;
         AimScript aim_script = RecursiveHasScript(other, typeof(AimScript), 1) as AimScript;
         RobotScript robot_script = RecursiveHasScript(other, typeof(RobotScript), 3) as RobotScript;
@@ -118,6 +119,9 @@ public class ProjectileScript : MonoBehaviour {
             rigidbody.AddForceAtPosition(velocity * 0.01f, contact.point, ForceMode.Impulse);
         }
 
+        if(shootable != null) {
+            shootable.WasShot(other, contact.point, velocity);
+        }
 
         if(velocity.magnitude > lethal_speed) {
             bool broke_glass = false;
