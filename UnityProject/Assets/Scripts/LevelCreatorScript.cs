@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 
@@ -16,6 +17,8 @@ public class LevelCreatorScript:MonoBehaviour{
         public Transform tile_enemy_parent;
         public Transform tile_item_parent;
         public Transform tile_decals_parent;
+        public bool enemies_enabled = false;
+        public bool locked = false; // Is some process working with this tile right now?
     }
 
     public GameObject[] level_tiles;
@@ -24,9 +27,10 @@ public class LevelCreatorScript:MonoBehaviour{
     public GameObject turret;
     public GameObject drone;
     public GameObject player_obj;
+    public const int TILE_LOAD_DISTANCE = 3;
     Transform player_inventory_transform;
     
-    public void SpawnTile(int where_cs1,float challenge,bool player){
+    public IEnumerator SpawnTile(int where_cs1, float challenge, bool player, bool instant){
     	GameObject level_obj = level_tiles[UnityEngine.Random.Range(0,level_tiles.Length)];
     	GameObject level = new GameObject(where_cs1 + "_" + level_obj.name);
         GameObject level_enemies = new GameObject("enemies");
@@ -36,27 +40,43 @@ public class LevelCreatorScript:MonoBehaviour{
         level_items.transform.parent = level.transform;
         level_decals.transform.parent = level.transform;
 
-    	GameObject child_obj = null;
+        TileInstance tile = new TileInstance {
+            state = TileInstanceState.Enabled,
+            tile_position = where_cs1,
+            tile_object = level,
+            tile_item_parent = level_items.transform,
+            tile_decals_parent = level_decals.transform,
+            tile_enemy_parent = level_enemies.transform,
+            enemies_enabled = false,
+            locked = true,
+        };
+        tiles.Add(tile);
+
+        level_enemies.SetActive(false);
+
         foreach(Transform child in level_obj.transform){
     		if(child.gameObject.name != "enemies" && child.gameObject.name != "player_spawn" && child.gameObject.name != "items"){
-    			child_obj = (GameObject)Instantiate(child.gameObject, new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition, child.localRotation);
-    			child_obj.transform.parent = level.transform;
+    			Instantiate(child.gameObject, new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition, child.localRotation, level.transform);
+
+                if(!instant) {
+                    yield return null;
+                }
     		}
     	}
     	Transform enemies = level_obj.transform.Find("enemies");
     	if(enemies != null){
     		foreach(Transform child in enemies){
     			if(UnityEngine.Random.Range(0.0f,1.0f) <= challenge){
-                    GameObject go = null;
                     if(child.gameObject.name.Contains("flying_shock_drone_spawn")){
-                        go = (GameObject)Instantiate( drone,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
-                        go.transform.parent = level_enemies.transform;
+                        Instantiate( drone,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation, level_enemies.transform );
                     } else if(child.gameObject.name.Contains("stationary_turret_fixed_spawn")){
-                        go = (GameObject)Instantiate( turret,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation );
-                        go.transform.parent = level_enemies.transform;
+                        Instantiate( turret,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation, level_enemies.transform );
                     } else {
-                        child_obj = (GameObject)Instantiate(child.gameObject, new Vector3(0.0f, 0.0f, (float)(where_cs1 * 20)) + child.localPosition + enemies.localPosition, child.localRotation);
-                        child_obj.transform.parent = level_enemies.transform;
+                        Instantiate(child.gameObject, new Vector3(0.0f, 0.0f, (float)(where_cs1 * 20)) + child.localPosition + enemies.localPosition, child.localRotation, level_enemies.transform);
+                    }
+
+                    if(!instant) {
+                        yield return null;
                     }
                 }
     		}
@@ -65,32 +85,24 @@ public class LevelCreatorScript:MonoBehaviour{
     	if(items != null){
     		foreach(Transform child in items){
     			if(UnityEngine.Random.Range(0.0f,1.0f) <= (player?challenge+0.3f:challenge)){
-    				child_obj = (GameObject)Instantiate(child.gameObject, new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + items.localPosition, items.localRotation);
-    				child_obj.transform.parent = level_items.transform;
+    				Instantiate(child.gameObject, new Vector3(0.0f,0.0f, where_cs1*20) + child.localPosition + items.localPosition, items.localRotation, level_items.transform);
+
+                    if(!instant) {
+                        yield return null;
+                    }
     			}
             }
     	}
     	if(player){
     		Transform players = level_obj.transform.Find("player_spawn");
     		if(players != null){
-    			int num = 0;
-    			foreach(Transform child in players){
-    				++num;
-    			}
-    			int save = UnityEngine.Random.Range(0,num);
-    			int j=0;
-    			foreach(Transform child in players){
-    				if(j == save){
-    					child_obj = (GameObject)Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation);
-    					child_obj.transform.parent = this.gameObject.transform;
-    					child_obj.name = "Player";
+                Transform child = players.GetChild(UnityEngine.Random.Range(0, players.childCount));
+                GameObject player_object = Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation, gameObject.transform);
+                player_object.name = "Player";
 
-                        GameObject player_inventory = new GameObject("PlayerInventory");
-                        player_inventory_transform = player_inventory.transform;
-                        player_inventory_transform.parent = this.gameObject.transform;
-    				}
-    				++j;
-    			}
+                GameObject player_inventory = new GameObject("PlayerInventory");
+                player_inventory_transform = player_inventory.transform;
+                player_inventory_transform.parent = this.gameObject.transform;
     		}
     	}
     	level.transform.parent = this.gameObject.transform;
@@ -101,25 +113,19 @@ public class LevelCreatorScript:MonoBehaviour{
     			shadowed_lights.Add(light);
     		}
     	}
-    	tiles.Add(new TileInstance {state = TileInstanceState.Enabled,
-            tile_position = where_cs1,
-            tile_object = level,
-            tile_item_parent = level_items.transform,
-            tile_decals_parent = level_decals.transform,
-            tile_enemy_parent = level_enemies.transform,
-        } );
+        tile.locked = false;
     }
     
     public void Start() {
     	shadowed_lights = new List<Light>();
     	tiles = new List<TileInstance>();
-    	SpawnTile(0,0.0f,true);
-    	for(int i=-6; i <= 6; ++i){
-    		CreateTileIfNeeded(i);
-    	}
+    	StartCoroutine(SpawnTile(0, 0.0f, true, true));
+        for(int i=-TILE_LOAD_DISTANCE; i <= TILE_LOAD_DISTANCE; ++i){
+            CreateTileIfNeeded(i, true);
+        }
     }
     
-    public void CreateTileIfNeeded(int which){
+    public void CreateTileIfNeeded(int which, bool instant = false) {
     	bool found = false;
     	foreach(TileInstance tile in tiles){
     		if(tile.tile_position == which){
@@ -128,36 +134,34 @@ public class LevelCreatorScript:MonoBehaviour{
     	}
     	if(!found){
     		//Debug.Log("Spawning tile: "+which);
-    		SpawnTile(which, Mathf.Min(0.6f,0.1f * Mathf.Abs(which)), false);
+    		StartCoroutine(SpawnTile(which, Mathf.Min(0.6f,0.1f * Mathf.Abs(which)), false, instant));
     	}
     }
 
-    public void DeleteTile(int tile_position) {
-        for(int i = tiles.Count-1; i >= 0; i--) {
-            if(tiles[i].tile_position == tile_position) {
-                tiles[i].state = TileInstanceState.Destroyed;
-                Destroy(tiles[i].tile_object);
-                tiles.RemoveAt(i);
-            }
-        }
+    public void DeleteTile(TileInstance tile) {
+        tile.state = TileInstanceState.Destroyed;
+        Destroy(tile.tile_object);
+        tiles.Remove(tile);
     }
 
-    public void DisableTile(int tile_position) {
-        for(int i = 0; i < tiles.Count; i++) {
-            if(tiles[i].tile_position == tile_position) {
-                tiles[i].state = TileInstanceState.Disabled;
-                tiles[i].tile_object.SetActive(false);
-            }
-        }
+    public void DisableTile(TileInstance tile) {
+        tile.state = TileInstanceState.Disabled;
+        tile.tile_object.SetActive(false);
     }
 
-    public void EnableTile(int tile_position) {
-        for(int i = 0; i < tiles.Count; i++) {
-            if(tiles[i].tile_position == tile_position) {
-                tiles[i].state = TileInstanceState.Enabled;
-                tiles[i].tile_object.SetActive(true);
-            }
-        }
+    public void EnableTile(TileInstance tile) {
+        tile.state = TileInstanceState.Enabled;
+        tile.tile_object.SetActive(true);
+    }
+
+    public void EnableEnemies(TileInstance tile) {
+        tile.enemies_enabled = true;
+        tile.tile_enemy_parent.gameObject.SetActive(true);
+    }
+
+    public void DisableEnemies(TileInstance tile) {
+        tile.enemies_enabled = false;
+        tile.tile_enemy_parent.gameObject.SetActive(false);
     }
 
     public TileInstance GetTileAtPosition(int pos) {
@@ -216,28 +220,45 @@ public class LevelCreatorScript:MonoBehaviour{
     
     public void Update() {
     	Transform main_camera = Camera.main.transform;
-    	int tile_x = (int)(main_camera.position.z / 20.0f + 0.5f);
 
+    	int tile_x = (int)(main_camera.position.z / 20.0f + 0.5f);
         for(int i = tiles.Count-1; i >= 0; i--) {
-            int dist = Math.Abs(tile_x - tiles[i].tile_position);
-            if(dist < 3) {
-                if(tiles[i].state == TileInstanceState.Disabled) {
-                    EnableTile(tiles[i].tile_position);
+            TileInstance tile = tiles[i];
+            if(tile.locked) {
+                continue;
+            }
+
+            int dist = Math.Abs(tile_x - tile.tile_position);
+
+            if(tile.enemies_enabled != dist <= 2) {
+                if(tile.enemies_enabled) {
+                    DisableEnemies(tile);
+                } else {
+                    EnableEnemies(tile);
                 }
-            } else if(dist > 4) {
-                if(tiles[i].state == TileInstanceState.Enabled) {
-                    DisableTile(tiles[i].tile_position);
-                }
-            } else if(dist > 7) {
-                if(tiles[i].state == TileInstanceState.Disabled) {
-                    DeleteTile(tiles[i].tile_position);
-                }
+            }
+
+            switch(tile.state) {
+                case TileInstanceState.Disabled:
+                    if(dist <= TILE_LOAD_DISTANCE) {
+                        EnableTile(tile);
+                    }
+                    
+                    if(dist > 7) {
+                        DeleteTile(tile);
+                    }
+                    break;
+                case TileInstanceState.Enabled:
+                    if(dist > TILE_LOAD_DISTANCE) {
+                        DisableTile(tile);
+                    }
+                    break;
             }
         }
 
-    	for(int i=-4; i <= 4; ++i){
-    		CreateTileIfNeeded(tile_x+i);
-    	}
+    	for(int i=-TILE_LOAD_DISTANCE; i <= TILE_LOAD_DISTANCE; ++i){
+            CreateTileIfNeeded(tile_x+i);
+        }
 
     	if(PlayerPrefs.GetInt("shadowed_lights", 1) == 0) {
     		foreach(Light light in shadowed_lights){
@@ -257,5 +278,8 @@ public class LevelCreatorScript:MonoBehaviour{
     			}
     		}
         }
+    }
+    private void OnDestroy() {
+        StopAllCoroutines();
     }
 }
