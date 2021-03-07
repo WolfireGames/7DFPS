@@ -1487,8 +1487,8 @@ public class AimScript:MonoBehaviour{
     		} 
     		float scale = 0.0f;
     		Vector3 target_pos = main_camera.transform.position;
-    		if(main_camera.GetComponent<Camera>() != null){
-    			target_pos += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(main_camera.GetComponent<Camera>().pixelWidth * (0.05f + i*0.15f), main_camera.GetComponent<Camera>().pixelHeight * 0.17f,0.0f)).direction * 0.3f;
+    		if(main_camera.TryGetComponent(out Camera camera)) {
+    			target_pos += camera.ScreenPointToRay(new Vector3(camera.pixelWidth * (0.05f + i*0.15f), camera.pixelHeight * 0.17f,0.0f)).direction * 0.3f;
     		}
     		slot.obj.transform.position = mix(
     			start_pos, 
@@ -1527,8 +1527,8 @@ public class AimScript:MonoBehaviour{
     		spring.Update();
     		GameObject bullet = loose_bullets[i];
     		bullet.transform.position = main_camera.transform.position;
-    		if(main_camera.GetComponent<Camera>() != null){
-    			bullet.transform.position += main_camera.GetComponent<Camera>().ScreenPointToRay(new Vector3(0.0f, (float)main_camera.GetComponent<Camera>().pixelHeight,0.0f)).direction * 0.3f;
+    		if(main_camera.TryGetComponent(out Camera camera)){
+    			bullet.transform.position += camera.ScreenPointToRay(new Vector3(0.0f, camera.pixelHeight,0.0f)).direction * 0.3f;
     		}
     		bullet.transform.position += main_camera.transform.rotation * new Vector3(0.02f,-0.01f,0.0f);
     		bullet.transform.position += main_camera.transform.rotation * new Vector3(0.006f * i,0.0f,0.0f);
