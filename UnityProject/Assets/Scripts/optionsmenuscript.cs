@@ -244,6 +244,10 @@ public class optionsmenuscript : MonoBehaviour {
         show_mod_ui = !show_mod_ui;
     }
 
+    public void UpdateFOV() {
+        Camera.main.fieldOfView = PlayerPrefs.GetFloat("field_of_view", 60);
+    }
+
     public void UpdateGraphics() {
         GraphicsInitializer.ApplyGraphics();
     }
