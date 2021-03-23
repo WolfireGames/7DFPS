@@ -12,7 +12,6 @@ public class GunScript : MonoBehaviour {
     // Gun Settings
     [IsNonNull] public GameObject empty_casing; // TODO make IsNonNull work for non guncomponents
     [IsNonNull] public GameObject full_casing;
-    [Range(0.1f, 0.01f)] public float camera_nearplane_override = 0.1f;
     [HideInInspector, NonSerialized] public float base_volume = 0.2f;
 
     // Misc
@@ -23,10 +22,6 @@ public class GunScript : MonoBehaviour {
     [HideInInspector, NonSerialized] public GunSystemsContainer gun_systems;
 
     // MonoBehaviour Methods
-    public void Start() {
-        Camera.main.nearClipPlane = camera_nearplane_override; // Override Camera's near plane to support guns closer to the camera
-    }
-
     public void OnEnable() {
         gun_systems = GetGunSystems();
 
