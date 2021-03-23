@@ -1573,6 +1573,7 @@ public class AimScript:MonoBehaviour{
     		//round.rigidbody.position += round.rigidbody.velocity * Time.deltaTime;
     		if(Vector3.Distance(round.transform.position, attract_pos) < 0.5f){
     			if(round.gameObject.name == "cassette_tape(Clone)"){
+					GetComponent<SpeedrunTimer>().Split();
     				++unplayed_tapes;
     			} else {
     				AddLooseBullet(true);
