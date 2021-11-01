@@ -22,7 +22,7 @@ public class ResolutionMenuScript : OptionInitializerBase {
     private void UpdateDropdown() {
         dropdown = GetComponent<Dropdown>();
 
-        int index_override = dropdown.value;
+        int index_override = -1;
 
         // Clear previous options
         dropdown.ClearOptions();
@@ -32,7 +32,7 @@ public class ResolutionMenuScript : OptionInitializerBase {
             var screen = Screen.resolutions[i];
 
             strings[i] = Screen.resolutions[i].ToString();
-            if(Screen.fullScreen && Screen.Equals(screen, Screen.currentResolution)) {
+            if(screen.width == Screen.width && screen.height == Screen.height && screen.refreshRate == Screen.currentResolution.refreshRate) {
                 index_override = i;
             }
         }

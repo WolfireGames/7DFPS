@@ -17,7 +17,6 @@ public class mag_script : MonoBehaviour {
     public Vector3 hold_rotation;
     public List<AudioClip> sound_add_round;
     public List<AudioClip> sound_mag_bounce;
-    public bool disable_interp = true;
     public float bulletReloadTime = 1 / 20f;
     
     private bool collided = false;
@@ -146,9 +145,6 @@ public class mag_script : MonoBehaviour {
 		}
 
     	float mag_load_progress_display = mag_load_progress;
-    	if(disable_interp){
-    		mag_load_progress_display = Mathf.Floor(mag_load_progress + 0.5f);
-    	}
 
     	switch(mag_load_stage){
     		case MagLoadStage.PUSHING_DOWN:

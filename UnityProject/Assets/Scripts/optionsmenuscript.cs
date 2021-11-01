@@ -188,6 +188,8 @@ public class optionsmenuscript : MonoBehaviour {
         PlayerPrefs.SetInt("mouse_invert", 0);
         PlayerPrefs.SetInt("toggle_crouch", 1);
 
+        PlayerPrefs.SetInt("vsync", 0);
+
         PlayerPrefs.SetFloat("post_processing", 1f);
         PlayerPrefs.SetFloat("ambient_intensity", 0.44f);
         PlayerPrefs.SetFloat("bloom_intensity", 1f);
@@ -249,7 +251,11 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     public void UpdateGraphics() {
-        GraphicsInitializer.ApplyGraphics();
+        GraphicsInitializer.ApplyQuality();
+    }
+
+    public void UpdateResolution() {
+        GraphicsInitializer.ApplyResolution();
     }
 
     public void ReopenCurrentScene() {
