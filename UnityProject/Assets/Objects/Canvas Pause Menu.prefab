@@ -2839,7 +2839,7 @@ GameObject:
   - component: {fileID: 7044746990238619783}
   - component: {fileID: 5698562668962239840}
   m_Layer: 5
-  m_Name: resolution_setting
+  m_Name: _resolution_setting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12983,8 +12983,9 @@ GameObject:
   - component: {fileID: 4454494725476023041}
   - component: {fileID: 8832796334475274910}
   - component: {fileID: 6989481789012106954}
+  - component: {fileID: 5113537312258579380}
   m_Layer: 5
-  m_Name: screen_mode_setting
+  m_Name: _screen_mode_setting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13131,6 +13132,18 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &5113537312258579380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4002816726618695478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 437a62fdd26f4bf4fae6182f88aa7b6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4013602893327363946
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,8 +7,8 @@ public class GraphicsInitializer : MonoBehaviour {
     }
 
     public static void ApplyResolution() {
-        var resolution_id = PlayerPrefs.GetInt("resolution_setting", -1);
-        var fullscreen_mode = (FullScreenMode) PlayerPrefs.GetInt("screen_mode_setting", 0);
+        var resolution_id = PlayerPrefs.GetInt("_resolution_setting", -1);
+        var fullscreen_mode = (FullScreenMode) PlayerPrefs.GetInt("_screen_mode_setting", 0);
 
         if(Screen.resolutions.Length <= resolution_id || resolution_id < 0) { // Just select the highest one if we selected an invalid one
             resolution_id = Screen.resolutions.Length - 1;
