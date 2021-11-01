@@ -45,3 +45,25 @@ The following packages were updated:
   com.unity.inputsystem from version 1.0.0 to 1.0.2
   com.unity.test-framework from version 1.1.18 to 1.1.22
   com.unity.timeline from version 1.2.6 to 1.2.18
+
+=== Fri Jul 30 16:08:16 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.ide.visualstudio@2.0.8
+The following packages were updated:
+  com.unity.ide.rider from version 1.1.4 to 1.2.1
+  com.unity.test-framework from version 1.1.22 to 1.1.24
+  com.unity.textmeshpro from version 2.0.1 to 2.1.4
+
+=== Mon Aug  2 13:24:23 2021
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 1.2.16 to 1.6.0
+  com.unity.ide.visualstudio from version 2.0.8 to 2.0.9
+  com.unity.test-framework from version 1.1.24 to 1.1.27
