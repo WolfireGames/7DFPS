@@ -2969,7 +2969,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 7163399577596914369}
-        m_MethodName: UpdateGraphics
+        m_MethodName: UpdateResolution
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13120,7 +13120,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 7163399577596914369}
-        m_MethodName: UpdateGraphics
+        m_MethodName: UpdateResolution
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

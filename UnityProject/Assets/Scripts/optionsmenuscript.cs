@@ -249,7 +249,11 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     public void UpdateGraphics() {
-        GraphicsInitializer.ApplyGraphics();
+        GraphicsInitializer.ApplyQuality();
+    }
+
+    public void UpdateResolution() {
+        GraphicsInitializer.ApplyResolution();
     }
 
     public void ReopenCurrentScene() {

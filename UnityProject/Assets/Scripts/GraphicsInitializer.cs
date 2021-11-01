@@ -3,15 +3,10 @@
 public class GraphicsInitializer : MonoBehaviour {
     [RuntimeInitializeOnLoadMethod]
     static void OnRuntimeMethodLoad() {
-        ApplyGraphics();
-    }
-
-    public static void ApplyGraphics() {
-        ApplyResolution();
         ApplyQuality();
     }
 
-    private static void ApplyResolution() {
+    public static void ApplyResolution() {
         var resolution_id = PlayerPrefs.GetInt("resolution_setting", -1);
         var fullscreen_mode = (FullScreenMode) PlayerPrefs.GetInt("screen_mode_setting", 0);
 
@@ -25,7 +20,7 @@ public class GraphicsInitializer : MonoBehaviour {
         }
     }
 
-    private static void ApplyQuality() {
+    public static void ApplyQuality() {
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("quality_setting", 5), true);
     }
 }
