@@ -27,10 +27,6 @@ public class SplashScreen : MonoBehaviour {
     private AudioSource audiosource_music_b;
     private AudioSource audiosource_effect;
 
-    void Awake() {
-        Application.targetFrameRate = 60; 
-    }
-
 	// Use this for initialization
 	void Start () {
         Cursor.lockState = CursorLockMode.Locked;
