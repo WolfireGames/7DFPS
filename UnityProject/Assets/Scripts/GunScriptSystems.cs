@@ -881,7 +881,8 @@ namespace GunSystemsV1 {
     public class CylinderHammerCycleSystem : GunSystemBase {
         RevolverCylinderComponent rcc = null;
         HammerComponent hc = null;
-
+        float last_pos;
+        bool needsToReset;
         public override void Initialize() {
             if(!rcc.hammer_cycling)
                 gs.gun_systems.UnloadSystem(this);
@@ -890,14 +891,20 @@ namespace GunSystemsV1 {
         public override void Update() {
             if (rcc.hammer_cycling && hc.thumb_on_hammer != Thumb.SLOW_LOWERING) {
                 if (hc.hammer_cocked > 0.0f) {
-                    if (rcc.is_closed && hc.hammer_cocked == 1.0f && hc.prev_hammer_cocked != 1.0f) {
+                    if (rcc.is_closed && hc.hammer_cocked == 1.0f && hc.prev_hammer_cocked != 1.0f && !needsToReset) {
+                        last_pos = (rcc.active_cylinder + hc.hammer_cocked) * 360 / rcc.cylinder_capacity;
+                        needsToReset = true;
                         ++rcc.active_cylinder;
                         rcc.cylinder_rotation = rcc.active_cylinder * 360.0f / rcc.cylinder_capacity;
                     }
-                    if (rcc.is_closed && hc.hammer_cocked < 1.0f) {
+                    if (rcc.is_closed && hc.hammer_cocked < 1.0f && (rcc.active_cylinder + hc.hammer_cocked) * 360.0f / rcc.cylinder_capacity > last_pos && !needsToReset) {
+                        last_pos = (rcc.active_cylinder + hc.hammer_cocked) * 360.0f / rcc.cylinder_capacity;
                         rcc.cylinder_rotation = (rcc.active_cylinder + hc.hammer_cocked) * 360.0f / rcc.cylinder_capacity;
                         rcc.target_cylinder_offset = (int)0.0f;
                     }
+                }
+                if(hc.hammer_cocked == 0f) {
+                    needsToReset = false;
                 }
             }
         }
