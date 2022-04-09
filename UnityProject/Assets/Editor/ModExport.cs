@@ -35,6 +35,10 @@ public class ModExport : MonoBehaviour {
         if(!EditorUtility.DisplayDialog("Batch Export Mods", $"Are you sure you want to batch export following mods?\n - {string.Join("\n - ", names)}\nMods that raise errors will be skipped.", "Export", "Cancel"))
             return;
 
+        ExportBundles(paths);
+    }
+
+    public static void ExportBundles(params string[] paths) {
         // Export each path individually
         foreach (string path in paths) {
             try {
