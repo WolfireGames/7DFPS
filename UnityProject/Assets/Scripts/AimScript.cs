@@ -263,7 +263,7 @@ public class AimScript:MonoBehaviour{
     Quaternion mag_ground_rot;
     Vector3 mag_pos;
     Quaternion mag_rot;
-    GameObject magazine_instance_in_hand;
+    mag_script magazine_instance_in_hand;
 
     HandMagStage mag_stage = HandMagStage.EMPTY;
     bool queue_drop = false; // In case player pressed 'drop' again while mag is ejecting
@@ -628,7 +628,7 @@ public class AimScript:MonoBehaviour{
         }
         // Picking up magazine
         if((nearest_mag != null) && mag_stage == HandMagStage.EMPTY){
-            magazine_instance_in_hand = nearest_mag;
+            magazine_instance_in_hand = nearest_mag.GetComponent<mag_script>();
             Destroy(magazine_instance_in_hand.GetComponent<Rigidbody>());
             if(level_creator != null) {
                 magazine_instance_in_hand.transform.parent = level_creator.GetPlayerInventoryTransform(); //Move item out of tile into player inventory
@@ -703,12 +703,12 @@ public class AimScript:MonoBehaviour{
             if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTY){
                 // Put held mag in empty slot
                 for(int i=0; i<10; ++i){
-                    if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand){
+                    if(weapon_slots[target_weapon_slot].type != WeaponSlotType.EMPTY && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand.gameObject){
                         weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTY;
                     }
                 }
                 weapon_slots[target_weapon_slot].type = WeaponSlotType.MAGAZINE;
-                weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand;
+                weapon_slots[target_weapon_slot].obj = magazine_instance_in_hand.gameObject;
                 weapon_slots[target_weapon_slot].spring.state = 0.0f;
                 weapon_slots[target_weapon_slot].spring.target_state = 1.0f;
                 weapon_slots[target_weapon_slot].start_pos = magazine_instance_in_hand.transform.position - main_camera.transform.position;
@@ -716,12 +716,12 @@ public class AimScript:MonoBehaviour{
                 magazine_instance_in_hand = null;
                 mag_stage = HandMagStage.EMPTY;
                 target_weapon_slot = -2;
-            } else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTYING && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand && (gun_instance != null) && !gunScript.IsThereAMagInGun()){
+            } else if(mag_stage == HandMagStage.HOLD && target_weapon_slot != -1 && weapon_slots[target_weapon_slot].type == WeaponSlotType.EMPTYING && weapon_slots[target_weapon_slot].obj == magazine_instance_in_hand.gameObject && (gun_instance != null) && !gunScript.IsThereAMagInGun()){
                 insert_mag_with_number_key = true;
                 target_weapon_slot = -2;
             } else if (target_weapon_slot != -1 && mag_stage == HandMagStage.EMPTY && weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE){
                 // Take mag from inventory
-                magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
+                magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj.GetComponent<mag_script>();
                 mag_stage = HandMagStage.HOLD;
                 hold_pose_spring.state = 1.0f;
                 hold_pose_spring.target_state = 1.0f;
@@ -784,7 +784,7 @@ public class AimScript:MonoBehaviour{
                         weapon_slots[target_weapon_slot].spring.state = 1.0f;
                         target_weapon_slot = -2;
                     } else if(weapon_slots[target_weapon_slot].type == WeaponSlotType.MAGAZINE && mag_stage == HandMagStage.EMPTY){
-                        magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj;
+                        magazine_instance_in_hand = weapon_slots[target_weapon_slot].obj.GetComponent<mag_script>();
                         mag_stage = HandMagStage.HOLD;
                         weapon_slots[target_weapon_slot].type = WeaponSlotType.EMPTYING;
                         weapon_slots[target_weapon_slot].spring.target_state = 0.0f;
@@ -956,7 +956,7 @@ public class AimScript:MonoBehaviour{
         gun_script.ResetRecoil();
 
         if(gun_script.IsReadyToRemoveMagazine() && (magazine_instance_in_hand == null)){
-            magazine_instance_in_hand = gun_script.GrabMag();
+            magazine_instance_in_hand = gun_script.GrabMag().GetComponent<mag_script>();
             mag_stage = HandMagStage.HOLD;
             hold_pose_spring.state = 0.0f;
             hold_pose_spring.vel = 0.0f;
@@ -970,7 +970,7 @@ public class AimScript:MonoBehaviour{
         }
         if(mag_stage == HandMagStage.HOLD_TO_INSERT){
             if(hold_pose_spring.state < 0.01f){
-                gun_script.InsertMag(magazine_instance_in_hand);
+                gun_script.InsertMag(magazine_instance_in_hand.gameObject);
                 magazine_instance_in_hand = null;
                 mag_stage = HandMagStage.EMPTY;
             }
@@ -998,10 +998,10 @@ public class AimScript:MonoBehaviour{
         if(RInput.GetButtonDown(RInput.player.Player.Drop) || queue_drop){
             if(mag_stage == HandMagStage.HOLD){
                 mag_stage = HandMagStage.EMPTY;
-                magazine_instance_in_hand.AddComponent<Rigidbody>();
-                magazine_instance_in_hand.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
-                magazine_instance_in_hand.GetComponent<Rigidbody>().velocity = character_controller.velocity;
-                magazine_instance_in_hand.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+                Rigidbody magazine_rigidbody = magazine_instance_in_hand.gameObject.AddComponent<Rigidbody>();
+                magazine_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+                magazine_rigidbody.velocity = character_controller.velocity;
+                magazine_rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
                 if(level_creator != null) {
                     magazine_instance_in_hand.transform.parent = level_creator.GetPositionTileItemParent(magazine_instance_in_hand.transform.position);
@@ -1043,7 +1043,7 @@ public class AimScript:MonoBehaviour{
         } else if(mag_stage == HandMagStage.HOLD){
             if(RInput.GetButtonDown(RInput.player.Magazine.InsertRound)){
                 if(loose_bullets.Count > 0){
-                    if(magazine_instance_in_hand.GetComponent<mag_script>().AddRound()){
+                    if(magazine_instance_in_hand.AddRound()){
                         GameObject.Destroy(loose_bullets[loose_bullets.Count-1]);
                         loose_bullets.RemoveAt(loose_bullets.Count-1);
                         loose_bullet_spring.RemoveAt(loose_bullet_spring.Count-1);
@@ -1051,7 +1051,7 @@ public class AimScript:MonoBehaviour{
                 }
             }
             if(RInput.GetButtonDown(RInput.player.Magazine.RemoveRound)){
-                if(magazine_instance_in_hand.GetComponent<mag_script>().RemoveRoundAnimated()){
+                if(magazine_instance_in_hand.RemoveRoundAnimated()){
                     AddLooseBullet(true);
                     PlaySoundFromGroup(sound_bullet_grab, 0.2f);
                 }
@@ -1441,17 +1441,17 @@ public class AimScript:MonoBehaviour{
                         gun_instance.transform.Find("point_mag_inserted").position);
         }
        if(mag_stage == HandMagStage.HOLD || mag_stage == HandMagStage.HOLD_TO_INSERT){
-               mag_script mag_script = magazine_instance_in_hand.GetComponent<mag_script>();
-               Vector3 hold_pos = main_camera.transform.position + main_camera.transform.rotation*mag_script.hold_offset;
+            mag_script mag_script = magazine_instance_in_hand;
+            Vector3 hold_pos = main_camera.transform.position + main_camera.transform.rotation*mag_script.hold_offset;
             Quaternion hold_rot = main_camera.transform.rotation * Quaternion.AngleAxis(mag_script.hold_rotation.x, new Vector3(0.0f,1.0f,0.0f)) * Quaternion.AngleAxis(mag_script.hold_rotation.y, new Vector3(1.0f,0.0f,0.0f));
-               hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
-               hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
-               if(hold_pose_spring.state != 1.0f){
-                   float amount = hold_pose_spring.state;
-                   magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, amount);
+            hold_pos = mix(hold_pos, mag_ground_pos, mag_ground_pose_spring.state);
+            hold_rot = mix(hold_rot, mag_ground_rot, mag_ground_pose_spring.state);
+            if(hold_pose_spring.state != 1.0f){
+                float amount = hold_pose_spring.state;
+                magazine_instance_in_hand.transform.position = mix(mag_pos, hold_pos, amount);
                 magazine_instance_in_hand.transform.rotation = mix(mag_rot, hold_rot, amount);
             } else {
-                   magazine_instance_in_hand.transform.position = hold_pos;
+                magazine_instance_in_hand.transform.position = hold_pos;
                 magazine_instance_in_hand.transform.rotation = hold_rot;
             }
         } else {
@@ -1638,17 +1638,17 @@ public class AimScript:MonoBehaviour{
         } else return false;
         if(magazine_instance_in_hand != null){
         } else return false;
-        if(magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() == 0){
+        if(magazine_instance_in_hand.NumRounds() == 0){
         } else return false;
         return true;
     }
 
     public bool CanLoadBulletsInMag() {
-        return (gun_instance == null) && mag_stage == HandMagStage.HOLD && loose_bullets.Count > 0 && !magazine_instance_in_hand.GetComponent<mag_script>().IsFull();
+        return (gun_instance == null) && mag_stage == HandMagStage.HOLD && loose_bullets.Count > 0 && !magazine_instance_in_hand.IsFull();
     }
 
     public bool CanRemoveBulletFromMag() {
-        return (gun_instance == null) && mag_stage == HandMagStage.HOLD && magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() > 0;
+        return (gun_instance == null) && mag_stage == HandMagStage.HOLD && magazine_instance_in_hand.NumRounds() > 0;
     }
 
     public bool ShouldDrawWeapon() {
@@ -1671,7 +1671,7 @@ public class AimScript:MonoBehaviour{
     }
 
     public bool ShouldPutMagInInventory() {
-        int rounds = magazine_instance_in_hand.GetComponent<mag_script>().NumRounds();
+        int rounds = magazine_instance_in_hand.NumRounds();
         int most_loaded = GetMostLoadedMag();
         if(most_loaded == -1){
             return false;
@@ -1830,7 +1830,7 @@ public class AimScript:MonoBehaviour{
                     }
                     if(gun_script.HasGunComponent(GunAspect.EXTERNAL_MAGAZINE)) {
                         if(mag_stage == HandMagStage.HOLD && !gun_script.IsThereAMagInGun()){
-                            bool should_insert_mag = (magazine_instance_in_hand.GetComponent<mag_script>().NumRounds() >= 1);
+                            bool should_insert_mag = magazine_instance_in_hand.NumRounds() >= 1;
                             DrawHelpLine($"Insert magazine: tap [ {GetBoundKey(RInput.player.Magazine.InsertMagazine)} ]", should_insert_mag);
                         } else if(mag_stage == HandMagStage.EMPTY && gun_script.IsThereAMagInGun()){
                             DrawHelpLine($"Eject magazine: tap [ {GetBoundKey(RInput.gun.Gun.Eject)} ]", gun_script.ShouldEjectMag());
