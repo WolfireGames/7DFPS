@@ -111,7 +111,7 @@ public class ModExport : MonoBehaviour {
             if(lastBuildIndex >= 0) {
                 EditorSceneManager.OpenScene(lastScene, OpenSceneMode.Single);
             } else {
-                EditorSceneManager.OpenScene(EditorSceneManager.GetSceneByBuildIndex(0).path);
+                EditorSceneManager.OpenScene(SceneUtility.GetScenePathByBuildIndex(0));
             }
         }
 
