@@ -109,9 +109,6 @@ public class SteamScript : MonoBehaviour
         uint timeStamp = 0;
 
         uint retval = SteamUGC.GetItemState(publishedFileId);
-        EItemState state = (EItemState)retval;
-        Debug.Log("Item state: " + state.ToString());
-
         if (SteamUGC.GetItemInstallInfo(publishedFileId, out sizeOnDisk, out folder, folderSize, out timeStamp)) {
             try {
                 foreach (Mod m in ModManager.importedMods) {
