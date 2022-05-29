@@ -165,6 +165,8 @@ public class LevelCreatorScript:MonoBehaviour{
     }
 
     public TileInstance GetTileAtPosition(int pos) {
+        if (tiles == null) return null;
+
         for(int i = 0; i < tiles.Count; i++) {
             if(tiles[i].tile_position == pos) {
                 return tiles[i]; 
