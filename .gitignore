@@ -22,6 +22,7 @@ ehthumbs.db
 *.unityproj
 *.booproj
 /UnityProject/.vscode/
+/UnityProject/.vs/
 
 # Unity generated
 # ===============
@@ -32,7 +33,7 @@ ehthumbs.db
 /UnityProject/[Ll]ibrary/
 /UnityProject/sysinfo.txt
 /UnityProject/*.stackdump
-/UnityProject/.vs/
+/UnityProject/UserSettings/
 
 # Mod bundles
 # ===============
