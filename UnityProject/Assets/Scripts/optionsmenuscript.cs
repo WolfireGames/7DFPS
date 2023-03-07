@@ -12,6 +12,7 @@ public class optionsmenuscript : MonoBehaviour {
     public GameObject menu;
     public GameObject menuOptions;
     public GameObject optionsContent;
+    public GameObject modifiersContent;
     public GameObject adContent;
 
     public Camera uiCamera;
@@ -145,12 +146,22 @@ public class optionsmenuscript : MonoBehaviour {
         PlayerPrefs.SetInt(dropdown.name, dropdown.value);
     }
 
+    public void UpdateInputField(InputField inputField) {
+        PlayerPrefs.SetString(inputField.name, inputField.text);
+        Debug.Log($"Set: {inputField.name}, {inputField.text}");
+    }
+
     public void UpdateAd() {
         adContent.SetActive(PlayerPrefs.GetInt("show_ad") == 1);
     }
 
     public void UpdateUIValuesAndApplyDefaults() {
-        foreach(Transform transform in optionsContent.transform) {
+        UpdateUIValuesAndApplyDefaults(optionsContent.transform);
+        UpdateUIValuesAndApplyDefaults(modifiersContent.transform);
+    }
+
+    private void UpdateUIValuesAndApplyDefaults(Transform parent) {
+        foreach(Transform transform in parent) {
             if(transform.gameObject.GetComponent<OptionInitializerBase>()) {
                 transform.gameObject.GetComponent<OptionInitializerBase>().Initialize();
             }
@@ -182,6 +193,15 @@ public class optionsmenuscript : MonoBehaviour {
                 if(PlayerPrefs.HasKey(dropdown.name))
                     dropdown.SetValueWithoutNotify(PlayerPrefs.GetInt(dropdown.name));
                 dropdown.onValueChanged.Invoke(dropdown.value);
+                continue;
+            }
+
+            // Update Input Fields
+            InputField inputField = transform.GetComponent<InputField>();
+            if(inputField != null) {
+                if(PlayerPrefs.HasKey(inputField.name))
+                    inputField.SetTextWithoutNotify(PlayerPrefs.GetString(inputField.name));
+                inputField.onValueChanged.Invoke(inputField.text);
                 continue;
             }
         }
@@ -219,6 +239,10 @@ public class optionsmenuscript : MonoBehaviour {
         menuOptions.SetActive(!menuOptions.activeSelf);
     }
 
+    public void ToggleModifierWindow() {
+        modifiersContent.SetActive(!modifiersContent.activeSelf);
+    }
+
     public void ExitGame() {
         UnityEngine.Application.Quit();
     }
@@ -226,7 +250,7 @@ public class optionsmenuscript : MonoBehaviour {
     public void SetPostProcessingEnabled(Toggle toggle) {
         postProcessLayer.enabled = toggle.isOn;
     }
-    
+
     public void SetPostProcessingWeight(float weight) {
         postProcessVolume.weight = weight;
     }
@@ -238,7 +262,7 @@ public class optionsmenuscript : MonoBehaviour {
     public void SetBloomIntensity(float intensity) {
         bloom.intensity.Override(intensity);
     }
- 
+
     public void SetAAMode(int mode) {
         postProcessLayer.antialiasingMode = (PostProcessLayer.Antialiasing) mode;
     }

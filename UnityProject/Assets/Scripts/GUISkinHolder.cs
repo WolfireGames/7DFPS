@@ -19,8 +19,22 @@ public class GUISkinHolder : MonoBehaviour {
     public bool has_flashlight = false;
 
     public GameObject pause_menu;
-    
+
     public void Awake() {
+        SeededRNG.Reset();
+
+        string stringSeed = PlayerPrefs.GetString("generation_seed", "");
+
+        if (!string.IsNullOrEmpty(stringSeed)) {
+            // Try interpreting the string as a number first, fall back to the hash of the string
+            if (!int.TryParse(stringSeed, out int seed)) {
+                seed = Mathf.Abs(stringSeed.GetHashCode());
+            }
+
+            SeededRNG.SetSeed(seed);
+            PlayerPrefs.SetString("generation_seed", "");
+        }
+
         weapons_origin = weapons;
         if(ModManager.IsModsEnabled()) {
             InsertMods();
@@ -95,7 +109,7 @@ public class GUISkinHolder : MonoBehaviour {
         PlayerPrefs.DeleteKey("selected_gun_index");
 
         if(selected_gun < 0 || selected_gun >= weapons.Length)
-            return weapons[Random.Range(0, weapons.Length)];
+            return weapons[SeededRNG.Range(weapons.Length)];
         return weapons[selected_gun];
     } 
     

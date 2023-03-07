@@ -437,7 +437,7 @@ public class AimScript:MonoBehaviour{
     	gun_obj = weapon_holder.gun_object;
     	casing_with_bullet = weapon_holder.bullet_object;
     
-    	if(UnityEngine.Random.Range(0f, 1f) < 0.35f) {
+    	if(SeededRNG.Value < 0.35f) {
     		held_flashlight = (GameObject)Instantiate(holder.flashlight_object);
     		Destroy(held_flashlight.GetComponent<Rigidbody>());
     		held_flashlight.GetComponent<FlashlightScript>().TurnOn();
@@ -484,9 +484,9 @@ public class AimScript:MonoBehaviour{
     		RInput.player.Inventory.Inventory10,
     	};
     	
-    	int num_start_bullets = UnityEngine.Random.Range(0,10);
+    	int num_start_bullets = SeededRNG.Range(10);
     	if(magazine_obj != null) {
-    		int num_start_mags = UnityEngine.Random.Range(0,3);
+    		int num_start_mags = SeededRNG.Range(3);
     		for(int i=1; i<num_start_mags+1; ++i){
     			weapon_slots[i].type = WeaponSlotType.MAGAZINE;
     			weapon_slots[i].obj = (GameObject)Instantiate(magazine_obj);
@@ -495,7 +495,7 @@ public class AimScript:MonoBehaviour{
                 }
     		}
     	} else {
-    		num_start_bullets += UnityEngine.Random.Range(0,20);
+    		num_start_bullets += SeededRNG.Range(20);
     	}
     	loose_bullets = new List<GameObject>();
     	loose_bullet_spring = new List<Spring>();
@@ -519,7 +519,7 @@ public class AimScript:MonoBehaviour{
     			temp_total_tapes.AddRange(holder.sound_tape_content); // We have run out of tapes, but we need more => Allow for duplicates
     		}
     
-    		int rand_tape_id = UnityEngine.Random.Range(0, temp_total_tapes.Count);
+    		int rand_tape_id = SeededRNG.Range(temp_total_tapes.Count);
     		tapes_remaining.Add(temp_total_tapes[rand_tape_id]);
     		temp_total_tapes.RemoveAt(rand_tape_id);
     	}
@@ -1878,6 +1878,7 @@ public class AimScript:MonoBehaviour{
     						}
     					}
     				}
+    				DrawHelpLine($"Seed: {SeededRNG.GetSeed()}");
     				DrawHelpLine($"Reset game: hold [ {GetBoundKey(RInput.player.Player.LevelReset)} ]");
     			} else {
     				DrawHelpLine($"Advanced help: Hold [ {GetBoundKey(RInput.player.Player.HelpButton)} ]");
@@ -1903,6 +1904,9 @@ public class AimScript:MonoBehaviour{
     		if(start_info_duration > 0 && holder.weapon) {
     			DrawHelpLine("");
     			DrawHelpLine($"Weapon: {holder.weapon.GetComponent<WeaponHolder>().display_name}", true, Mathf.Clamp01(start_info_duration));
+    			
+				if(SeededRNG.IsSetSeed())
+					DrawHelpLine($"[Seeded Run] Seed: {SeededRNG.GetSeed()}", true, Mathf.Clamp01(start_info_duration));
     			start_info_duration -= Time.deltaTime;
     		}
 
