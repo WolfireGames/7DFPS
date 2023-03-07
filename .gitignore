@@ -44,3 +44,6 @@ UnityProject/Assets/Mods/*
 !UnityProject/Assets/Mods/Reference*
 
 # Temp folder
+UnityProject/Assets/FR2_Cache.asset
+UnityProject/Assets/FR2_Cache.asset.meta
+UnityProject/Packages/com.vietlabs.findreference2/
