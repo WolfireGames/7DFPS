@@ -1,8 +1,6 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-
 
 public class LevelCreatorScript:MonoBehaviour{
     public enum TileInstanceState {
@@ -228,7 +226,7 @@ public class LevelCreatorScript:MonoBehaviour{
                 continue;
             }
 
-            int dist = Math.Abs(tile_x - tile.tile_position);
+            int dist = Mathf.Abs(tile_x - tile.tile_position);
 
             if(tile.enemies_enabled != dist <= 2) {
                 if(tile.enemies_enabled) {
