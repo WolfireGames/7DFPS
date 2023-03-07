@@ -12,6 +12,8 @@ public class optionsmenuscript : MonoBehaviour {
     public GameObject menu;
     public GameObject menuOptions;
     public GameObject optionsContent;
+    public GameObject adContent;
+
     public Camera uiCamera;
     private GraphicRaycaster raycaster;
 
@@ -64,9 +66,15 @@ public class optionsmenuscript : MonoBehaviour {
             RestoreDefaults();
         }
 
+        if(!PlayerPrefs.HasKey("show_ad")) {
+            PlayerPrefs.SetInt("show_ad", 1);
+        }
+
         Preferences.UpdatePreferences();
         UpdateUIValuesAndApplyDefaults();
         ImGuiUnity.instance.enableInput = false;
+
+        UpdateAd();
     }
 
     public void Update() {
@@ -137,6 +145,10 @@ public class optionsmenuscript : MonoBehaviour {
         PlayerPrefs.SetInt(dropdown.name, dropdown.value);
     }
 
+    public void UpdateAd() {
+        adContent.SetActive(PlayerPrefs.GetInt("show_ad") == 1);
+    }
+
     public void UpdateUIValuesAndApplyDefaults() {
         foreach(Transform transform in optionsContent.transform) {
             if(transform.gameObject.GetComponent<OptionInitializerBase>()) {
@@ -199,6 +211,7 @@ public class optionsmenuscript : MonoBehaviour {
 
         PlayerPrefs.SetInt("ignore_vanilla_guns", 0);
         PlayerPrefs.SetInt("ignore_vanilla_tiles", 0);
+        PlayerPrefs.SetInt("show_ad", 1);
     }
 
     // Functionality
