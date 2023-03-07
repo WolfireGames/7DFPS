@@ -29,7 +29,7 @@ public class optionsmenuscript : MonoBehaviour {
     public static bool TryCloseCurrentWindow() {
         if(window_stack.Count > 0) {
             var window = window_stack.Pop();
-            if(window.activeSelf) {
+            if(window != null && window.activeSelf) {
                 window.SetActive(false);
                 return true;
             }
