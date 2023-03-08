@@ -2,8 +2,7 @@ using UnityEngine;
 using System;
 
 
-public class BulletPileScript : MonoBehaviour{
-    
+public class BulletPileScript : MonoBehaviour {
     public void Start() {
     	GUISkinHolder holder = GameObject.Find("gui_skin_holder").GetComponent<GUISkinHolder>();
     	WeaponHolder weapon_holder = holder.weapon.GetComponent<WeaponHolder>();
@@ -18,6 +17,26 @@ public class BulletPileScript : MonoBehaviour{
         }
 
     	int num_bullets = UnityEngine.Random.Range(1,6);
+        if (UnityEngine.Random.Range(0,4) == 0 && weapon_holder.mag_object != null && PlayerPrefs.GetInt("modifier_spawn_magazines") == 1) {
+    	    if (weapon_holder.mag_object.TryGetComponent(out mag_script magazinePrefab)) {
+                // Give each round individually a chance to be inside the magazine
+                int rounds_in_mag = 0;
+                for (int i = 0; i < Mathf.Min(num_bullets, magazinePrefab.kMaxRounds); i++) {
+                    if (UnityEngine.Random.value > 0.1f) {
+                        rounds_in_mag++;
+                    }
+                }
+                num_bullets -= rounds_in_mag;
+
+                mag_script magazine = Instantiate(magazinePrefab);
+                magazine.transform.parent = tile_parent;
+                magazine.transform.position = transform.position + new Vector3(UnityEngine.Random.Range(-0.1f,0.1f), UnityEngine.Random.Range(0.2f,0.4f), UnityEngine.Random.Range(-0.1f,0.1f));
+                magazine.transform.rotation = BulletScript.RandomOrientation();
+                magazine.gameObject.AddComponent<Rigidbody>();
+                magazine.SetRoundCount(rounds_in_mag);
+            }
+        }
+
     	for(int i=0; i<num_bullets; ++i){
     		GameObject bullet = (GameObject)Instantiate(weapon_holder.bullet_object);
             bullet.transform.parent = tile_parent;

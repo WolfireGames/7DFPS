@@ -20099,7 +20099,7 @@ GameObject:
   - component: {fileID: 4508777411767148923}
   - component: {fileID: 1646049532839990695}
   m_Layer: 5
-  m_Name: placeholder_modifier
+  m_Name: modifier_spawn_magazines
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24421,7 +24421,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Placeholder modifier 1
+  m_Text: Spawn Magazines
 --- !u!1 &6894483373041507927
 GameObject:
   m_ObjectHideFlags: 0

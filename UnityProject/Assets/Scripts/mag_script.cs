@@ -64,24 +64,28 @@ public class mag_script : MonoBehaviour {
     public int NumRounds() {
     	return num_rounds;
     }
-    
+
+    public void SetRoundCount(int count) {
+        num_rounds = count;
+        for (int i = 0; i < kMaxRounds; ++i) {
+            Transform round = transform.Find("round_" + (i + 1));
+            round.GetComponent<Renderer>().enabled = i < count;
+        }
+    }
+
     public void Start() {
     	old_pos = transform.position;
-    	num_rounds = UnityEngine.Random.Range(0,kMaxRounds);
     	round_pos = new Vector3[kMaxRounds];
     	round_rot = new Quaternion[kMaxRounds];
     	for(int i=0; i<kMaxRounds; ++i){
     		Transform round = transform.Find("round_"+(i+1));
     		round_pos[i] = round.localPosition;
     		round_rot[i] = round.localRotation;
-    		if(i < num_rounds){
-    			round.GetComponent<Renderer>().enabled = true;
-    		} else {
-    			round.GetComponent<Renderer>().enabled = false;
-    		}
     	}
+
+        SetRoundCount(UnityEngine.Random.Range(0, kMaxRounds));
     }
-    
+
     public void PlaySoundFromGroup(List<AudioClip> group,float volume){
     	if(group.Count != 0){
     		int which_shot = UnityEngine.Random.Range(0,group.Count);
