@@ -675,6 +675,8 @@ MonoBehaviour:
   shadowed_lights: []
   turret: {fileID: 100016, guid: d37ac9597e1adfd4cbbf352a23aa5afa, type: 3}
   drone: {fileID: 100008, guid: fc90c5a4b9b81664491435ff7495f9f2, type: 3}
+  green_demon_spawner: {fileID: 5552827087511364520, guid: 3574085338b09d347a68d20ca54bb015,
+    type: 3}
   player_obj: {fileID: 100002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
 --- !u!1 &2106325456
 GameObject:

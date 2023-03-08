@@ -24,9 +24,11 @@ public class LevelCreatorScript:MonoBehaviour{
     public List<TileInstance> tiles;
     public GameObject turret;
     public GameObject drone;
+    public GameObject green_demon_spawner;
     public GameObject player_obj;
     public const int TILE_LOAD_DISTANCE = 3;
     Transform player_inventory_transform;
+    private GameObject player_object;
     
     public IEnumerator SpawnTile(int where_cs1, float challenge, bool player, bool instant){
     	GameObject level_obj = level_tiles[SeededRNG.Range(level_tiles.Length)];
@@ -95,7 +97,7 @@ public class LevelCreatorScript:MonoBehaviour{
     		Transform players = level_obj.transform.Find("player_spawn");
     		if(players != null){
                 Transform child = players.GetChild(SeededRNG.Range(players.childCount));
-                GameObject player_object = Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation, gameObject.transform);
+                player_object = Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation, gameObject.transform);
                 player_object.name = "Player";
 
                 GameObject player_inventory = new GameObject("PlayerInventory");
@@ -120,6 +122,10 @@ public class LevelCreatorScript:MonoBehaviour{
     	StartCoroutine(SpawnTile(0, 0.0f, true, true));
         for(int i=-TILE_LOAD_DISTANCE; i <= TILE_LOAD_DISTANCE; ++i){
             CreateTileIfNeeded(i, true);
+        }
+
+        if (player_object != null && PlayerPrefs.GetInt("modifier_green_demon") == 1) {
+            Instantiate(green_demon_spawner, player_object.transform.position + player_object.transform.forward * 0.8f, Quaternion.identity);
         }
     }
     
