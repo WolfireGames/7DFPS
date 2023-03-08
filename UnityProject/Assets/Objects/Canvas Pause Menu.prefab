@@ -6209,7 +6209,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Placeholder Modifier 1
+  m_Text: Green Demon
 --- !u!1 &2130103317390680283
 GameObject:
   m_ObjectHideFlags: 0
@@ -17843,7 +17843,7 @@ GameObject:
   - component: {fileID: 5418317676994321288}
   - component: {fileID: 1589252199384283982}
   m_Layer: 5
-  m_Name: placeholder_modifier
+  m_Name: modifier_green_demon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
