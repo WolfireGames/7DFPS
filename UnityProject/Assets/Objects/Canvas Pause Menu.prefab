@@ -18587,7 +18587,7 @@ GameObject:
   - component: {fileID: 6257290532744009648}
   - component: {fileID: 2277148241482805271}
   m_Layer: 5
-  m_Name: placeholder_modifier
+  m_Name: modifier_fog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18669,6 +18669,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 2277148241482805271}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Toggle, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7163399577596914369}
+        m_TargetAssemblyTypeName: optionsmenuscript, Assembly-CSharp
+        m_MethodName: SetFog
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -21567,9 +21579,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Placeholder modifier 2
-
-'
+  m_Text: Thick Fog
 --- !u!1 &6059065339600522903
 GameObject:
   m_ObjectHideFlags: 0

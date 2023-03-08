@@ -271,6 +271,10 @@ public class optionsmenuscript : MonoBehaviour {
         vignette.active = enabled;
     }
 
+    public void SetFog(bool enabled) {
+        RenderSettings.fog = enabled;
+    }
+
     public void SetVSync(bool enabled) {
         QualitySettings.vSyncCount = enabled ? 1 : 0;
     }
