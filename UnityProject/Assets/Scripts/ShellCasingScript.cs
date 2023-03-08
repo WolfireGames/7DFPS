@@ -33,6 +33,7 @@ public class ShellCasingScript:MonoBehaviour{
     	}
     }
     
+    RaycastHit hit = new RaycastHit();
     public void FixedUpdate() {
     	Rigidbody rigidbody = GetComponent<Rigidbody>();
 
@@ -40,7 +41,6 @@ public class ShellCasingScript:MonoBehaviour{
     		Collider collider = GetComponent<Collider>();
     		if(collider != null && collider.enabled) {
     			life_time += Time.deltaTime;
-    			RaycastHit hit = new RaycastHit();
     			if(Physics.Linecast(old_pos, transform.position, out hit, 1)){
     				transform.position = hit.point;
     				rigidbody.velocity *= -0.3f;
