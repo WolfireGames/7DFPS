@@ -45,8 +45,13 @@ public class SplashScreen : MonoBehaviour {
         audiosource_effect = gameObject.AddComponent<AudioSource>();
         audiosource_effect.PlayOneShot(play_sound, Preferences.sound_volume);
         audiosource_effect.volume = Preferences.sound_volume;
+
+        // Reset modifiers here. This code is only run once at the start of the game
+        PlayerPrefs.SetInt("modifier_green_demon", 0);
+        PlayerPrefs.SetInt("modifier_fog", 0);
+        PlayerPrefs.SetInt("modifier_spawn_magazines", 0);
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
         fade_in = Mathf.Min(5.0f, fade_in + Time.deltaTime);
