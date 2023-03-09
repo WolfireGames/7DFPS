@@ -148,7 +148,6 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void UpdateInputField(InputField inputField) {
         PlayerPrefs.SetString(inputField.name, inputField.text);
-        Debug.Log($"Set: {inputField.name}, {inputField.text}");
     }
 
     public void UpdateAd() {
