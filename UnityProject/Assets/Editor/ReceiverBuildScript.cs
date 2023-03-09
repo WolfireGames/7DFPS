@@ -147,12 +147,12 @@ public class ReceiverBuildScript {
     }
 
     static void BuildWithConfiguration(BuildConfiguration configuration) {
-        BuildPlayerOptions options = new BuildPlayerOptions();
-
-        options.scenes = base_scenes;
-
         UpdateBuildInfo();
 
+        PlayerSettings.SplashScreen.showUnityLogo = false;
+
+        BuildPlayerOptions options = new BuildPlayerOptions();
+        options.scenes = base_scenes;
         options.locationPathName = configuration.target_path;
         options.target = configuration.build_target;
         options.options = configuration.build_options;

@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0, g: 0, b: 0, a: 1}
-  m_FogMode: 1
-  m_FogDensity: 0.01
+  m_FogColor: {r: 0.01, g: 0, b: 0, a: 1}
+  m_FogMode: 2
+  m_FogDensity: 0.25
   m_LinearFogStart: 30
   m_LinearFogEnd: 40
   m_AmbientSkyColor: {r: 0.16039206, g: 0.17300408, b: 0.23880595, a: 1}
@@ -415,7 +415,7 @@ MonoBehaviour:
     keepAlpha: 0
   fog:
     enabled: 1
-    excludeSkybox: 1
+    excludeSkybox: 0
   debugLayer:
     lightMeter:
       width: 512
@@ -675,6 +675,8 @@ MonoBehaviour:
   shadowed_lights: []
   turret: {fileID: 100016, guid: d37ac9597e1adfd4cbbf352a23aa5afa, type: 3}
   drone: {fileID: 100008, guid: fc90c5a4b9b81664491435ff7495f9f2, type: 3}
+  green_demon_spawner: {fileID: 5552827087511364520, guid: 3574085338b09d347a68d20ca54bb015,
+    type: 3}
   player_obj: {fileID: 100002, guid: 6b621344f5ad30248964c673fa94eb3c, type: 3}
 --- !u!1 &2106325456
 GameObject:

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public enum RobotType {SHOCK_DRONE, STATIONARY_TURRET, MOBILE_TURRET, GUN_DRONE};
+public enum RobotType {SHOCK_DRONE, STATIONARY_TURRET, MOBILE_TURRET, GUN_DRONE, GREEN_DEMON};
 
 public enum AIState {IDLE, ALERT, ALERT_COOLDOWN, AIMING, FIRING, DEACTIVATING, DEAD};
 
@@ -80,6 +80,7 @@ public class RobotScript:MonoBehaviour{
     float alert_cooldown_delay = 0.0f;
     float kMaxRange = 20.0f;
     float rotor_speed = 0.0f;
+    public float kFlySpeed = 10.0f;
     float top_rotor_rotation = 0.0f;
     float bottom_rotor_rotation = 0.0f;
     Vector3 initial_pos;
@@ -207,6 +208,7 @@ public class RobotScript:MonoBehaviour{
                 lensFlareObject = gun_camera.Find("lens flare").GetComponent<LensFlare>();
                 break;
     		case RobotType.GUN_DRONE:
+    		case RobotType.GREEN_DEMON:
     		case RobotType.SHOCK_DRONE:
     			lightObject = drone_camera.Find("light").GetComponent<Light>();
     			lensFlareObject = drone_camera.Find("lens flare").GetComponent<LensFlare>();
@@ -248,6 +250,7 @@ public class RobotScript:MonoBehaviour{
     			audiosource_motor.rolloffMode = AudioRolloffMode.Linear;
     			audiosource_motor.maxDistance = 4.0f;
     			break;
+    		case RobotType.GREEN_DEMON:
     		case RobotType.SHOCK_DRONE:
     			audiosource_motor.maxDistance = 8.0f;
     			audiosource_foley = gameObject.AddComponent<AudioSource>();
@@ -287,6 +290,10 @@ public class RobotScript:MonoBehaviour{
     	if(target == null) {
     		return true;
     	}
+
+		if(robot_type == RobotType.GREEN_DEMON)
+			return false;
+
     	return Vector3.Distance(target.position, transform.position) > kSleepDistance;
     }
 
@@ -540,7 +547,6 @@ public class RobotScript:MonoBehaviour{
     	Vector3 rel_pos = target_pos - transform.position;
     	if(motor_alive){		
     		float kFlyDeadZone = 0.2f;
-    		float kFlySpeed = 10.0f;
     		Vector3 target_vel = (target_pos - transform.position) / kFlyDeadZone;
     		if(target_vel.magnitude > 1.0f){
     			target_vel = target_vel.normalized;
@@ -700,12 +706,16 @@ public class RobotScript:MonoBehaviour{
     			// Target finding
     			rel_pos = target.position - drone_camera.position;
     			bool sees_target = false;
-    			if(dist < kMaxRange && Vector3.Dot(drone_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
-    				hit = new RaycastHit();
-    				if(!Physics.Linecast(drone_camera.position, target.position, out hit, 1<<0)){
-    					sees_target = true;
-    				}
-    			}
+				if(robot_type == RobotType.GREEN_DEMON) {
+    				sees_target = true;
+				} else {
+					if(dist < kMaxRange && Vector3.Dot(drone_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
+						hit = new RaycastHit();
+						if(!Physics.Linecast(drone_camera.position, target.position, out hit, 1<<0)){
+							sees_target = true;
+						}
+					}
+				}
 
     			// Attacking
     			if(sees_target){
@@ -761,17 +771,19 @@ public class RobotScript:MonoBehaviour{
     				}
     			}
     		}
-    		switch(ai_state){
-    			case AIState.IDLE:
-    				lightObject.color = new Color(0.0f,0.0f,1.0f);
-    				break;
-    			case AIState.AIMING:
-    				lightObject.color = new Color(1.0f,0.0f,0.0f);
-    				break;
-    			case AIState.ALERT:
-    			case AIState.ALERT_COOLDOWN:
-    				lightObject.color = new Color(1.0f,1.0f,0.0f);
-    				break;
+    		if(robot_type != RobotType.GREEN_DEMON) {
+    			switch(ai_state){
+    				case AIState.IDLE:
+    					lightObject.color = new Color(0.0f,0.0f,1.0f);
+    					break;
+    				case AIState.AIMING:
+    					lightObject.color = new Color(1.0f,0.0f,0.0f);
+    					break;
+    				case AIState.ALERT:
+    				case AIState.ALERT_COOLDOWN:
+    					lightObject.color = new Color(1.0f,1.0f,0.0f);
+    					break;
+    			}
     		}
     	}
     	if(!camera_alive){
@@ -808,6 +820,7 @@ public class RobotScript:MonoBehaviour{
     		case RobotType.STATIONARY_TURRET:
     			UpdateStationaryTurret();
     			break;
+    		case RobotType.GREEN_DEMON:
     		case RobotType.SHOCK_DRONE:
     			UpdateDrone();
     			break;
@@ -841,7 +854,7 @@ public class RobotScript:MonoBehaviour{
     }
     
     public void FixedUpdate() {
-    	if(robot_type == RobotType.SHOCK_DRONE && !distance_sleep){
+    	if((robot_type == RobotType.SHOCK_DRONE && !distance_sleep) || robot_type == RobotType.GREEN_DEMON){
     		GetComponent<Rigidbody>().AddForce(transform.rotation * new Vector3(0.0f,1.0f,0.0f) * rotor_speed, ForceMode.Force);
     		if(motor_alive){
     			GetComponent<Rigidbody>().AddTorque(tilt_correction, ForceMode.Force);

@@ -1,8 +1,6 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-
 
 public class LevelCreatorScript:MonoBehaviour{
     public enum TileInstanceState {
@@ -26,12 +24,14 @@ public class LevelCreatorScript:MonoBehaviour{
     public List<TileInstance> tiles;
     public GameObject turret;
     public GameObject drone;
+    public GameObject green_demon_spawner;
     public GameObject player_obj;
     public const int TILE_LOAD_DISTANCE = 3;
     Transform player_inventory_transform;
+    private GameObject player_object;
     
     public IEnumerator SpawnTile(int where_cs1, float challenge, bool player, bool instant){
-    	GameObject level_obj = level_tiles[UnityEngine.Random.Range(0,level_tiles.Length)];
+    	GameObject level_obj = level_tiles[SeededRNG.Range(level_tiles.Length)];
     	GameObject level = new GameObject(where_cs1 + "_" + level_obj.name);
         GameObject level_enemies = new GameObject("enemies");
         GameObject level_items = new GameObject("items");
@@ -66,7 +66,7 @@ public class LevelCreatorScript:MonoBehaviour{
     	Transform enemies = level_obj.transform.Find("enemies");
     	if(enemies != null){
     		foreach(Transform child in enemies){
-    			if(UnityEngine.Random.Range(0.0f,1.0f) <= challenge){
+    			if(SeededRNG.Value <= challenge){
                     if(child.gameObject.name.Contains("flying_shock_drone_spawn")){
                         Instantiate( drone,  new Vector3(0.0f,0.0f,(float)(where_cs1*20)) + child.localPosition + enemies.localPosition, child.localRotation, level_enemies.transform );
                     } else if(child.gameObject.name.Contains("stationary_turret_fixed_spawn")){
@@ -84,7 +84,7 @@ public class LevelCreatorScript:MonoBehaviour{
     	Transform items = level_obj.transform.Find("items");
     	if(items != null){
     		foreach(Transform child in items){
-    			if(UnityEngine.Random.Range(0.0f,1.0f) <= (player?challenge+0.3f:challenge)){
+    			if(SeededRNG.Value <= (player?challenge+0.3f:challenge)){
     				Instantiate(child.gameObject, new Vector3(0.0f,0.0f, where_cs1*20) + child.localPosition + items.localPosition, items.localRotation, level_items.transform);
 
                     if(!instant) {
@@ -96,8 +96,8 @@ public class LevelCreatorScript:MonoBehaviour{
     	if(player){
     		Transform players = level_obj.transform.Find("player_spawn");
     		if(players != null){
-                Transform child = players.GetChild(UnityEngine.Random.Range(0, players.childCount));
-                GameObject player_object = Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation, gameObject.transform);
+                Transform child = players.GetChild(SeededRNG.Range(players.childCount));
+                player_object = Instantiate(player_obj, new Vector3(0.0f,0.7f,(float)(where_cs1*20)) + child.localPosition + players.localPosition, child.localRotation, gameObject.transform);
                 player_object.name = "Player";
 
                 GameObject player_inventory = new GameObject("PlayerInventory");
@@ -122,6 +122,10 @@ public class LevelCreatorScript:MonoBehaviour{
     	StartCoroutine(SpawnTile(0, 0.0f, true, true));
         for(int i=-TILE_LOAD_DISTANCE; i <= TILE_LOAD_DISTANCE; ++i){
             CreateTileIfNeeded(i, true);
+        }
+
+        if (player_object != null && PlayerPrefs.GetInt("modifier_green_demon") == 1) {
+            Instantiate(green_demon_spawner, player_object.transform.position + player_object.transform.forward * 0.8f, Quaternion.identity);
         }
     }
     
@@ -228,7 +232,7 @@ public class LevelCreatorScript:MonoBehaviour{
                 continue;
             }
 
-            int dist = Math.Abs(tile_x - tile.tile_position);
+            int dist = Mathf.Abs(tile_x - tile.tile_position);
 
             if(tile.enemies_enabled != dist <= 2) {
                 if(tile.enemies_enabled) {
