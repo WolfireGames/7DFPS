@@ -69,19 +69,23 @@ public class SpeedrunTimer : MonoBehaviour {
     }
 
     public void OnGUI() {
-        if(PlayerPrefs.GetInt("speedrun_timer", 0) != 1) {
-            return;
+        if (Event.current.type == EventType.Repaint) {
+            if(PlayerPrefs.GetInt("speedrun_timer", 0) != 1) {
+                return;
+            }
+
+            Event.current.mousePosition = Vector2.zero;
+
+            float width = Screen.width * 0.5f;
+
+            style.normal.textColor = new Color(0.0f,0.0f,0.0f);
+            GUI.Label(new Rect(width - 4f, Screen.height - 25f, width + 0.5f, 20 + 0.5f), GetTimeString(), style);
+
+            style.normal.textColor = isLocked ? lockedColor : runningColor;
+            GUI.Label(new Rect(width - 4.5f, Screen.height - 25f, width, 30f), GetTimeString(), style);
+
+            DrawSplitGUI();
         }
-
-        float width = Screen.width * 0.5f;
-
-        style.normal.textColor = new Color(0.0f,0.0f,0.0f);
-        GUI.Label(new Rect(width - 4f, Screen.height - 25f, width + 0.5f, 20 + 0.5f), GetTimeString(), style);
-        
-        style.normal.textColor = isLocked ? lockedColor : runningColor;
-        GUI.Label(new Rect(width - 4.5f, Screen.height - 25f, width, 30f), GetTimeString(), style);
-
-        DrawSplitGUI();
     }
 
     private void DrawSplitGUI() {

@@ -1740,6 +1740,7 @@ public class AimScript:MonoBehaviour{
 
     public void OnGUI() {
     	if(main_client_control && Event.current.type == EventType.Repaint){
+            Event.current.mousePosition = Vector2.zero;
 			GUI.depth = 0;
     		GunScript gun_script = null;
     		if(gun_instance != null){
