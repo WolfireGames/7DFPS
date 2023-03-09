@@ -67,10 +67,6 @@ public class optionsmenuscript : MonoBehaviour {
             RestoreDefaults();
         }
 
-        if(!PlayerPrefs.HasKey("show_ad")) {
-            PlayerPrefs.SetInt("show_ad", 1);
-        }
-
         Preferences.UpdatePreferences();
         UpdateUIValuesAndApplyDefaults();
         ImGuiUnity.instance.enableInput = false;
