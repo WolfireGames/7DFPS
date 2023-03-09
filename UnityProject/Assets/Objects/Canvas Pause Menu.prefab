@@ -18774,9 +18774,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2709513891572696120}
   - component: {fileID: 3779183561027905780}
-  - component: {fileID: 8429311788453029962}
+  - component: {fileID: 8037227901637137728}
   - component: {fileID: 2078518558240288492}
   - component: {fileID: 4671999059091747488}
+  - component: {fileID: 4537308038076418930}
   m_Layer: 5
   m_Name: Advertisment
   m_TagString: Untagged
@@ -18802,7 +18803,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 20, y: -20}
-  m_SizeDelta: {x: 258.47, y: 145.39}
+  m_SizeDelta: {x: 303.54, y: 170.61}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3779183561027905780
 CanvasRenderer:
@@ -18812,7 +18813,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5198335201860244452}
   m_CullTransparentMesh: 1
---- !u!114 &8429311788453029962
+--- !u!114 &8037227901637137728
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -18821,7 +18822,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5198335201860244452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -18832,16 +18833,13 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e87bff0fb70f7a0448a67d80099aec0d, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_Texture: {fileID: 8400000, guid: 79f42580e7404544c906b9557bbc356d, type: 2}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!114 &2078518558240288492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18882,7 +18880,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 8429311788453029962}
+  m_TargetGraphic: {fileID: 8037227901637137728}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -18910,6 +18908,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5c13e417cc516b4b9680f72fac02a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!328 &4537308038076418930
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5198335201860244452}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 069bb24a4c33d164086097e6ec63e59b, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 8400000, guid: 79f42580e7404544c906b9557bbc356d, type: 2}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 1
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1 &5240244282009625647
 GameObject:
   m_ObjectHideFlags: 0
