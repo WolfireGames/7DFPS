@@ -71,8 +71,6 @@ public class optionsmenuscript : MonoBehaviour {
         Preferences.UpdatePreferences();
         UpdateUIValuesAndApplyDefaults();
         ImGuiUnity.instance.enableInput = false;
-
-        UpdateAd();
     }
 
     public void Update() {
@@ -145,10 +143,6 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void UpdateInputField(InputField inputField) {
         PlayerPrefs.SetString(inputField.name, inputField.text);
-    }
-
-    public void UpdateAd() {
-        adContent.SetActive(PlayerPrefs.GetInt("show_ad") == 1);
     }
 
     public void UpdateUIValuesAndApplyDefaults() {
@@ -237,6 +231,14 @@ public class optionsmenuscript : MonoBehaviour {
 
     public void ToggleModifierWindow() {
         menuModifiers.SetActive(!menuModifiers.activeSelf);
+    }
+
+    public void SetAd(bool enabled) {
+        if (!enabled) {
+            PlayerPrefs.SetInt("hide_ad_temporarily", 0);
+        }
+
+        adContent.SetActive(enabled && PlayerPrefs.GetInt("hide_ad_temporarily", 0) == 0);
     }
 
     public void ExitGame() {

@@ -14671,8 +14671,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 7163399577596914369}
         m_TargetAssemblyTypeName: optionsmenuscript, Assembly-CSharp
-        m_MethodName: UpdateAd
-        m_Mode: 1
+        m_MethodName: SetAd
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -15921,10 +15921,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5198335201860244452}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 4671999059091747488}
+        m_TargetAssemblyTypeName: AdvertismentScript, Assembly-CSharp
+        m_MethodName: HideTemporarily
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AdvertismentScript : MonoBehaviour {
+    public void HideTemporarily() {
+        PlayerPrefs.SetInt("hide_ad_temporarily", 1);
+        gameObject.SetActive(false);
+    }
+
     public void OpenLink() {
         if(SteamAPI.IsSteamRunning()) {
             SteamFriends.ActivateGameOverlayToStore(new Steamworks.AppId_t(1129310), EOverlayToStoreFlag.k_EOverlayToStoreFlag_None);
