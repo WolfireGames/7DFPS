@@ -83,6 +83,7 @@ public class RobotScript:MonoBehaviour{
     public float kFlySpeed = 10.0f;
     float top_rotor_rotation = 0.0f;
     float bottom_rotor_rotation = 0.0f;
+    float blind_spot_size = 0.7f;
     Vector3 initial_pos;
     //bool stuck = false;
     float stuck_delay = 0.0f;
@@ -188,14 +189,14 @@ public class RobotScript:MonoBehaviour{
     		Vector3 x_plane_pos = new Vector3(-Vector3.Dot(rel_pos, z_axis), 0.0f, Vector3.Dot(rel_pos, y_axis));
     		rotation_x.vel += Vector3.Dot(x_plane_vel, x_plane_pos) * 10.0f;
     	}
-    	
-    	if(robot_type == RobotType.SHOCK_DRONE) {
-    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.5f, damage))
-    			Damage(battery.gameObject);
-    	} else {
-    		if(Random.Range(0f, 1f) < 1 - Mathf.Pow(0.75f, damage))
-    			Damage(battery.gameObject);
-    	}
+
+        // Apply insta-kill chance, this is based on hitting a random wire that cuts the power
+        var baseSurvivalChance = robot_type == RobotType.SHOCK_DRONE ? 0.5f : 0.75f;
+        var instaKillChance = 1 - Mathf.Pow(baseSurvivalChance, damage) - (PlayerPrefs.GetInt("modifier_tougher_enemies", 0) == 1 ? 0.4f : 0);
+        if (Random.Range(0f, 1f) < instaKillChance)
+            Damage(battery.gameObject);
+
+        // Apply component damage
     	Damage(obj);
     }
     
@@ -267,6 +268,13 @@ public class RobotScript:MonoBehaviour{
     	
     	initial_pos = transform.position;	
     	target_pos = initial_pos;
+
+        if (PlayerPrefs.GetInt("modifier_deadly_enemies", 0) == 1) {
+            kMaxRange *= 2;
+            kAlertDelay /= 2f;
+            kFlySpeed += 1f;
+            blind_spot_size *= 0.7f;
+        }
     }
 
     internal void AttachHole(Transform hole_transform, Transform part_transform) {
@@ -416,7 +424,7 @@ public class RobotScript:MonoBehaviour{
     			
     			rel_pos = target.position - gun_camera.position;
     			bool sees_target = false;
-    			if(dist < kMaxRange && Vector3.Dot(gun_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
+    			if(dist < kMaxRange && Vector3.Dot(gun_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > blind_spot_size){
     				RaycastHit hit = new RaycastHit();
     				if(!Physics.Linecast(gun_camera.position, target.position, out hit, 1<<0)){
     					sees_target = true;
@@ -709,7 +717,7 @@ public class RobotScript:MonoBehaviour{
 				if(robot_type == RobotType.GREEN_DEMON) {
     				sees_target = true;
 				} else {
-					if(dist < kMaxRange && Vector3.Dot(drone_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > 0.7f){
+					if(dist < kMaxRange && Vector3.Dot(drone_camera.rotation*new Vector3(0.0f,-1.0f,0.0f), rel_pos.normalized) > blind_spot_size){
 						hit = new RaycastHit();
 						if(!Physics.Linecast(drone_camera.position, target.position, out hit, 1<<0)){
 							sees_target = true;
