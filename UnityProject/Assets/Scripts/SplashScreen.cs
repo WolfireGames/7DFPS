@@ -50,6 +50,8 @@ public class SplashScreen : MonoBehaviour {
         PlayerPrefs.DeleteKey("modifier_green_demon");
         PlayerPrefs.DeleteKey("modifier_fog");
         PlayerPrefs.DeleteKey("modifier_spawn_magazines");
+        PlayerPrefs.DeleteKey("modifier_tougher_enemies");
+        PlayerPrefs.DeleteKey("modifier_deadly_enemies");
 
         PlayerPrefs.DeleteKey("hide_ad_temporarily");
 	}
