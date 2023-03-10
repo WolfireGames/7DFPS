@@ -8547,7 +8547,8 @@ MonoBehaviour:
   menu: {fileID: 2866556412434144599}
   menuOptions: {fileID: 2866556412847085606}
   optionsContent: {fileID: 2866556413160670212}
-  modifiersContent: {fileID: 7634319890002512160}
+  menuModifiers: {fileID: 7634319890002512160}
+  modifiersContent: {fileID: 5362866899108684666}
   adContent: {fileID: 5198335201860244452}
   uiCamera: {fileID: 5228456363570771587}
 --- !u!1 &2866556412327301819

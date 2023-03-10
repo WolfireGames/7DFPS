@@ -12,6 +12,7 @@ public class optionsmenuscript : MonoBehaviour {
     public GameObject menu;
     public GameObject menuOptions;
     public GameObject optionsContent;
+    public GameObject menuModifiers;
     public GameObject modifiersContent;
     public GameObject adContent;
 
@@ -235,7 +236,7 @@ public class optionsmenuscript : MonoBehaviour {
     }
 
     public void ToggleModifierWindow() {
-        modifiersContent.SetActive(!modifiersContent.activeSelf);
+        menuModifiers.SetActive(!menuModifiers.activeSelf);
     }
 
     public void ExitGame() {
