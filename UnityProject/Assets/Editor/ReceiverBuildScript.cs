@@ -149,6 +149,11 @@ public class ReceiverBuildScript {
     static void BuildWithConfiguration(BuildConfiguration configuration) {
         UpdateBuildInfo();
 
+        if(configuration.build_target == BuildTarget.StandaloneOSX) {
+            //Force intel X64 so it can find the right libraries when running on an M1
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture = UnityEditor.OSXStandalone.MacOSArchitecture.x64;
+        }
+
         PlayerSettings.SplashScreen.showUnityLogo = false;
 
         BuildPlayerOptions options = new BuildPlayerOptions();
