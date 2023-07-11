@@ -1307,7 +1307,7 @@ public class AimScript:MonoBehaviour{
     	
     	sensitivity_x = Preferences.mouse_sensitivity * 10.0f;
     	sensitivity_y = Preferences.mouse_sensitivity * 10.0f;
-    	if(PlayerPrefs.GetInt("mouse_invert", 0) == 1){
+    	if(PlayerPrefs.GetInt("invert_mouse", 0) == 1){
     		sensitivity_y = -Mathf.Abs(sensitivity_y);
     	} else {
     		sensitivity_y = Mathf.Abs(sensitivity_y);

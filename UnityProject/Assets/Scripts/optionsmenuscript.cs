@@ -207,7 +207,7 @@ public class optionsmenuscript : MonoBehaviour {
         PlayerPrefs.SetFloat("mouse_sensitivity", 0.2f);
         PlayerPrefs.SetFloat("gun_distance", 1f);
         PlayerPrefs.SetInt("lock_gun_to_center", 0);
-        PlayerPrefs.SetInt("mouse_invert", 0);
+        PlayerPrefs.SetInt("invert_mouse", 0);
         PlayerPrefs.SetInt("toggle_crouch", 1);
 
         PlayerPrefs.SetInt("vsync", 0);
